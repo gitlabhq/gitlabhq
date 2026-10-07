@@ -304,10 +304,11 @@ response attributes:
 Example request:
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/snippets" \
-     --header 'Content-Type: application/json' \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     -d @snippet.json
+curl --request POST \
+  --header 'Content-Type: application/json' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data @snippet.json \
+  --url "https://gitlab.example.com/api/v4/snippets"
 ```
 
 `snippet.json` used in the previous example request:
@@ -415,10 +416,11 @@ response attributes:
 Example request:
 
 ```shell
-curl --request PUT "https://gitlab.example.com/api/v4/snippets/1" \
-     --header 'Content-Type: application/json' \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     -d @snippet.json
+curl --request PUT \
+  --header 'Content-Type: application/json' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data @snippet.json \
+  --url "https://gitlab.example.com/api/v4/snippets/1"
 ```
 
 `snippet.json` used in the previous example request:

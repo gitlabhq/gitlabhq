@@ -40,7 +40,7 @@ README.md
 
 ^[Database] @database-team
 model/db/
-config/db/database-setup.md @docs-team
+model/db/database-setup.md @docs-team
 ```
 
 ## Regular entries and sections
@@ -60,7 +60,7 @@ README.md
 
 [Database] @database-team
 model/db/
-config/db/database-setup.md @docs-team
+model/db/database-setup.md @docs-team
 ```
 
 In this example:
@@ -68,7 +68,7 @@ In this example:
 - `@general-approvers` owns all items everywhere, without overrides.
 - `@docs-team` owns all items in the `Documentation` section.
 - `@database-team` owns all items in the `Database` section except
-  `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
+  `model/db/database-setup.md`, which has an override assigning it to `@docs-team`.
 - A merge request that modifies `model/db/CHANGELOG.txt` would require three approvals: one from each
   of the `@general-approvers`, `@docs-team`, and `@database-team` groups.
 

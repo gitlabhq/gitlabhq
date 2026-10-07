@@ -44,26 +44,7 @@ RSpec.describe Authz::Organizations::RevokeOwnerRoleWorker, feature_category: :s
       perform
     end
 
-    # No fallback to another owner: that would make IAM's record of who
-    # performed the write false (gitlab-org/gitlab#627181). The user keeps
-    # the role until a valid actor is available again.
-    context 'when no actor is given' do
-      subject(:perform) { described_class.new.perform(organization.id, user.id) }
-
-      it 'does not call IAM and reports the retained access as an error', :aggregate_failures do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          an_instance_of(Authz::Organizations::OwnerRoleSync::UnauthorizedRevokeError),
-          organization_id: organization.id, user_id: user.id
-        )
-        expect(client).not_to receive(:revoke_roles)
-
-        expect { perform }.not_to raise_error
-      end
-    end
-
-    context 'when the actor is the user themselves (e.g. leaving the organization)' do
-      subject(:perform) { described_class.new.perform(organization.id, user.id, user.id) }
-
+    shared_examples 'revokes the role as the user themselves' do
       it 'revokes the role, minting the token as the user themselves' do
         expect(Authn::TokenExchange::TokenIssuer).to receive(:new)
           .with(audiences: [data_access_audience], user: user, organization: organization)
@@ -81,7 +62,56 @@ RSpec.describe Authz::Organizations::RevokeOwnerRoleWorker, feature_category: :s
       end
     end
 
+    shared_examples 'logs the requested actor' do
+      it 'logs that the user revoked their own role instead of the requested actor' do
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+          'message' => 'Organization admin role revoked as the user because no owner was available to act as',
+          Labkit::Fields::GL_ORGANIZATION_ID => organization.id,
+          Labkit::Fields::GL_USER_ID => user.id,
+          'requested_actor_id' => requested_actor_id
+        ))
+
+        perform
+      end
+    end
+
+    context 'when the actor is the user themselves (e.g. leaving the organization)' do
+      subject(:perform) { described_class.new.perform(organization.id, user.id, user.id) }
+
+      it_behaves_like 'revokes the role as the user themselves'
+
+      it 'does not log a requested actor' do
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).not_to receive(:info).with(hash_including('requested_actor_id' => anything))
+
+        perform
+      end
+    end
+
+    context 'when no actor is given' do
+      let(:requested_actor_id) { nil }
+
+      subject(:perform) { described_class.new.perform(organization.id, user.id) }
+
+      it_behaves_like 'revokes the role as the user themselves'
+      it_behaves_like 'logs the requested actor'
+    end
+
+    # The usual case when an instance admin demotes an owner from the Admin Area.
+    context 'when the actor is an instance admin who does not own this organization' do
+      let_it_be(:admin) { create(:admin) }
+      let(:requested_actor_id) { admin.id }
+
+      subject(:perform) { described_class.new.perform(organization.id, user.id, admin.id) }
+
+      it_behaves_like 'revokes the role as the user themselves'
+      it_behaves_like 'logs the requested actor'
+    end
+
     context 'when the actor is no longer an owner of this organization' do
+      let(:requested_actor_id) { actor.id }
+
       before do
         # update_columns bypasses the last-owner validation, since actor is
         # the only owner here and this state is just standing in for the
@@ -90,15 +120,8 @@ RSpec.describe Authz::Organizations::RevokeOwnerRoleWorker, feature_category: :s
           .update_columns(access_level: Gitlab::Access::GUEST)
       end
 
-      it 'does not call IAM and reports the retained access as an error', :aggregate_failures do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          an_instance_of(Authz::Organizations::OwnerRoleSync::UnauthorizedRevokeError),
-          organization_id: organization.id, user_id: user.id
-        )
-        expect(client).not_to receive(:revoke_roles)
-
-        expect { perform }.not_to raise_error
-      end
+      it_behaves_like 'revokes the role as the user themselves'
+      it_behaves_like 'logs the requested actor'
     end
 
     context 'when the organization cannot be found' do
@@ -148,18 +171,20 @@ RSpec.describe Authz::Organizations::RevokeOwnerRoleWorker, feature_category: :s
       end
     end
 
-    # currently_owner? only guards against revoking a grant for someone who
-    # is currently (or again) an owner; a user with no relationship to the
-    # organization at all is, correctly, also "not currently an owner" of
-    # it. Without an actor there is still no one to authorize the write, so
-    # this collapses into the same unauthorized-revoke case as above.
+    # A user with no membership is also not an owner, so they revoke as
+    # themselves and IAM answers :not_found when nothing was granted.
     context 'when the user is not a member of this organization at all' do
       let_it_be(:other_organization) { create(:organization) }
 
       subject(:perform) { described_class.new.perform(other_organization.id, user.id) }
 
-      it 'does not call IAM' do
-        expect(client).not_to receive(:revoke_roles)
+      it 'revokes as the user for that organization' do
+        expect(client).to receive(:revoke_roles) do |keys, organization_uuid:, **|
+          expect(organization_uuid).to eq(other_organization.uuid)
+          expect(keys).to contain_exactly(assignee_id: user.id, resource_id: other_organization.uuid)
+
+          ::Gitlab::Iam::Update::V1::DeleteRelationshipsResponse.new
+        end
 
         perform
       end

@@ -107,7 +107,6 @@ const Template = (args, { argTypes }) => ({
   provide: {
     namespaceId: '1',
     namespaceFullPath: 'gitlab-org/gitlab',
-    namespaceName: 'GitLab',
     isProject: true,
     dataSourceClickhouse: false,
     overviewCountsAggregationEnabled: true,
@@ -191,7 +190,6 @@ const ActionsTemplate = (args, { argTypes }) => ({
   provide: {
     namespaceId: '1',
     namespaceFullPath: 'gitlab-org/gitlab',
-    namespaceName: 'GitLab',
     isProject: true,
     dataSourceClickhouse: false,
     overviewCountsAggregationEnabled: true,

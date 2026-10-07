@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
@@ -191,6 +192,42 @@ describe('WorkItemDetailPanel', () => {
       findDynamicPanel().vm.$emit('maximize', new MouseEvent('click'));
 
       expect(visitUrl).toHaveBeenCalledWith('/gitlab-org/gitlab/-/issues/1');
+    });
+  });
+
+  describe('when browser history navigates away from the drawer', () => {
+    beforeEach(() => {
+      createComponent({ open: true });
+      updateHistory.mockClear();
+    });
+
+    afterEach(() => {
+      document.body.classList.remove('modal-open');
+      setWindowLocation('/');
+    });
+
+    it('closes without adding another history entry', () => {
+      window.dispatchEvent(new PopStateEvent('popstate'));
+
+      expect(wrapper.emitted('close')).toHaveLength(1);
+      expect(updateHistory).not.toHaveBeenCalled();
+    });
+
+    it('keeps the drawer open when history navigates to another panel', () => {
+      setWindowLocation('?show=another-panel');
+
+      window.dispatchEvent(new PopStateEvent('popstate'));
+
+      expect(wrapper.emitted('close')).toBeUndefined();
+      expect(updateHistory).not.toHaveBeenCalled();
+    });
+
+    it('keeps the drawer open when a modal is open', () => {
+      document.body.classList.add('modal-open');
+
+      window.dispatchEvent(new PopStateEvent('popstate'));
+
+      expect(wrapper.emitted('close')).toBeUndefined();
     });
   });
 

@@ -48,19 +48,6 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
 
         subject
       end
-
-      context 'when merge_request_metrics_outside_merge_transaction is disabled' do
-        before do
-          stub_feature_flags(merge_request_metrics_outside_merge_transaction: false)
-        end
-
-        it 'only merges the metrics inside the event transaction' do
-          expect(metrics_service).not_to receive(:prepare_merge_data)
-          expect(metrics_service).to receive(:merge)
-
-          subject
-        end
-      end
     end
 
     it 'calls the merge request activity counter' do

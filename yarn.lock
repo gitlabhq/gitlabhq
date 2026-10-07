@@ -2939,10 +2939,10 @@
   resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz#e3fcee093fbb5ce765e1ad088ff4de2889f6f9be"
   integrity sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==
 
-"@rollup/plugin-graphql@^2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-graphql/-/plugin-graphql-2.0.5.tgz#79f92e3a65f5ecab5c01edab943e95cf3e5ca5d6"
-  integrity sha512-NMx9uVIheYMOQHV9Aann0sk/2+henT8T5JUbHneOvbD3iUrVUC7AaZ1B1ELJ/1vhqUe2OQIkRtGHzOQwBLoCvg==
+"@rollup/plugin-graphql@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-graphql/-/plugin-graphql-3.0.0.tgz#bc2c831bd703cb49c54d19383a79ab8c6a7c81f7"
+  integrity sha512-AUF2YI2VoMMeEsF0tdhEEE02oZXRW749YhJdaAqgRzM8pgU8PlEAfTwNUSFaVI+7RSX3L6H6rHTnI2qshm5Yew==
   dependencies:
     "@rollup/pluginutils" "^5.0.1"
     graphql-tag "^2.12.6"

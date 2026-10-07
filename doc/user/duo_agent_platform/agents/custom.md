@@ -365,7 +365,8 @@ To hide an agent:
 
 ## Delete an agent
 
-Delete an agent to permanently remove it from the instance.
+Delete an agent to remove it from the instance. If a project other than the managing project has turned off
+the agent, the agent is hidden instead of removed.
 
 Prerequisites:
 

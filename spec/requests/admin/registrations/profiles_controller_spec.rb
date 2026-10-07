@@ -120,6 +120,18 @@ RSpec.describe Admin::Registrations::ProfilesController, feature_category: :onbo
       end
     end
 
+    context 'when admin mode is not enabled' do
+      before do
+        sign_in(admin)
+      end
+
+      it 'redirects to admin mode login' do
+        patch_update
+
+        expect(response).to redirect_to(new_admin_session_path)
+      end
+    end
+
     context 'with an admin user', :enable_admin_mode do
       before do
         sign_in(admin)
@@ -215,6 +227,51 @@ RSpec.describe Admin::Registrations::ProfilesController, feature_category: :onbo
 
   describe 'GET /admin/registrations/profile/skip' do
     subject(:get_skip) { get skip_admin_registrations_profile_path }
+
+    context 'when on a Dedicated instance' do
+      before do
+        stub_application_setting(gitlab_dedicated_instance: true)
+        sign_in(admin)
+      end
+
+      it 'returns not found', :enable_admin_mode do
+        get_skip
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with an unauthenticated user' do
+      it 'redirects to sign in' do
+        get_skip
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'with a non-admin user' do
+      before do
+        sign_in(regular_user)
+      end
+
+      it 'returns not found' do
+        get_skip
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when admin mode is not enabled' do
+      before do
+        sign_in(admin)
+      end
+
+      it 'redirects to admin mode login' do
+        get_skip
+
+        expect(response).to redirect_to(new_admin_session_path)
+      end
+    end
 
     context 'with an admin user', :enable_admin_mode do
       before do

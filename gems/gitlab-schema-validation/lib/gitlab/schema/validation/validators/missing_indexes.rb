@@ -9,10 +9,16 @@ module Gitlab
 
           def execute
             structure_sql.indexes.filter_map do |structure_sql_index|
-              next if database.index_exists?(structure_sql_index.name)
+              next unless index_missing?(structure_sql_index)
 
               build_inconsistency(self.class, structure_sql_index, nil)
             end
+          end
+
+          private
+
+          def index_missing?(index)
+            partition_index_matcher.missing?(index)
           end
         end
       end

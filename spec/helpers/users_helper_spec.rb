@@ -281,7 +281,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
       context 'when the viewer is not an instance admin' do
         before do
-          allow(helper).to receive(:current_user).and_return(create(:user))
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
         end
 
         it 'does not expose the instance Admin badge' do
@@ -310,7 +310,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
       context 'when the viewer cannot read admin users in the organization' do
         before do
-          allow(helper).to receive(:current_user).and_return(create(:user))
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
         end
 
         it 'does not expose the Organization admin badge' do
@@ -320,10 +320,10 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'in the organization admin area' do
-      let(:authorization_context) { create(:organization) }
+      let_it_be(:authorization_context) { create(:organization) }
 
       context 'with an instance admin user' do
-        let(:user) { create(:admin) }
+        let(:user) { build_stubbed(:admin) }
 
         it 'does not expose the instance Admin badge' do
           is_expected.not_to include({ text: s_("AdminUsers|Admin"), variant: "success" })
@@ -331,7 +331,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       context 'with an external user' do
-        let(:user) { create(:user, external: true) }
+        let(:user) { build_stubbed(:user, external: true) }
 
         it 'does not expose the External badge' do
           is_expected.not_to include({ text: s_("AdminUsers|External"), variant: "neutral" })
@@ -339,7 +339,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       context 'with a placeholder user' do
-        let(:user) { create(:user, :placeholder) }
+        let(:user) { build_stubbed(:user, :placeholder) }
 
         it 'still exposes the Placeholder badge' do
           is_expected.to include({ text: s_("UserMapping|Placeholder"), variant: "neutral" })
@@ -355,7 +355,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       context 'with a blocked user' do
-        let(:user) { create(:user, state: 'blocked') }
+        let(:user) { build_stubbed(:user, state: 'blocked') }
 
         it 'still exposes the Blocked badge' do
           is_expected.to include({ text: s_("AdminUsers|Blocked"), variant: "danger" })

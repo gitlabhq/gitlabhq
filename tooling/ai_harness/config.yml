@@ -35,3 +35,7 @@ allowed_committed_files:
   # requests. The policy it implements lives in
   # doc/development/ai_instruction_files_review.md.
   - .claude/skills/ai-principles-review-feedback/
+  # Project-scope postgresai skill. Runs EXPLAIN and index experiments on
+  # PostgresAI Database Lab clones. Source of truth is this repo; the
+  # gitlab-org/ai/skills project syncs it from here.
+  - .claude/skills/postgresai/

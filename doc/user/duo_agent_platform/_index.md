@@ -103,7 +103,7 @@ These features are either beta or experimental and consume GitLab Credits.
 | Feature | Free | Premium | Ultimate |
 |---------|---|---|---|
 | [GitLab for Slack app](../project/integrations/gitlab_slack_application.md#gitlab-duo) <br /> Interact with GitLab Duo from Slack. | {{< no >}} | {{< yes >}} | {{< yes >}} |
-| [Security Review Flow](flows/foundational_flows/security_review.md) <br /> Detects business logic vulnerabilities in merge requests. | {{< no >}} | {{< no >}} | {{< yes >}} |
+| [Security Review Flow](../application_security/security_review.md) <br /> Detects business logic vulnerabilities in merge requests. | {{< no >}} | {{< no >}} | {{< yes >}} |
 
 ## Beta and experimental features that don't consume credits
 

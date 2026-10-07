@@ -151,7 +151,7 @@ module LfsRequest
   end
 
   def objects
-    @objects ||= (objects_param || []).to_a
+    @objects ||= Array.try_convert(objects_param) || []
   end
 
   # Mirrors the Git LFS batch request shape. permit returns copies, and the LFS API

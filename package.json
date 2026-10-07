@@ -84,7 +84,7 @@
     "@mermaid-js/layout-elk": "0.2.2",
     "@rails/actioncable": "7.2.301",
     "@rails/ujs": "7.1.600",
-    "@rollup/plugin-graphql": "^2.0.5",
+    "@rollup/plugin-graphql": "^3.0.0",
     "@rsdoctor/rspack-plugin": "^1.6.4",
     "@rspack/cli": "^2.2.8",
     "@rspack/core": "^2.2.8",

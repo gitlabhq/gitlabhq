@@ -1346,6 +1346,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#can_admin_associated_clusters?' do
     let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:namespace) { project }
 
     subject { helper.send(:can_admin_associated_clusters?, project) }
 
@@ -1357,8 +1358,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when project has a cluster' do
-      let_it_be(:namespace) { project }
-
       before_all do
         create(:cluster, projects: [namespace])
       end
@@ -1398,8 +1397,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when project doesn\'t have a cluster' do
-      let_it_be(:namespace) { project }
-
       context 'if user can admin cluster' do
         let_it_be(:user_can_admin_cluster) { true }
 
@@ -1734,7 +1731,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it { is_expected.to be_falsey }
 
     context 'when beyond identity is disabled for a project' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance, active: false) }
+      let(:integration) { build_stubbed(:beyond_identity_integration, :instance, active: false) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1744,7 +1741,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when beyond identity is enabled for a project' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+      let(:integration) { build_stubbed(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1906,7 +1903,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when the user is an admin', :enable_admin_mode do
-      let_it_be(:user) { create(:admin) }
+      let(:user) { build_stubbed(:admin) }
 
       it 'includes the service ping settings path' do
         expect(data[:service_ping_settings_path]).to be_present

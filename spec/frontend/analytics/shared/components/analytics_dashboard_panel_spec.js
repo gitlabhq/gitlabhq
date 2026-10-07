@@ -91,7 +91,6 @@ describe('AnalyticsDashboardPanel', () => {
       provide: {
         hasUltimateLicense: true,
         namespaceId: '1',
-        namespaceName: 'Namespace name',
         namespaceFullPath: 'namespace/full/path',
         isProject: true,
         dataSourceClickhouse: true,

@@ -67,8 +67,13 @@ module Gitlab
             !!fetch_sequence_by_name(sequence_name)
           end
 
+          # From the rows, not from index_map: a public and a partition index can share a name.
           def indexes
-            index_map.values
+            @indexes ||= fetch_indexes.map do |_name, index_stmt, parent_schema, parent_name|
+              parent = [parent_schema, parent_name] if parent_name
+
+              SchemaObjects::Index.new(PgQuery.parse(index_stmt).tree.stmts.first.stmt.index_stmt, parent: parent)
+            end
           end
 
           def triggers
@@ -160,22 +165,27 @@ module Gitlab
           def fetch_indexes
             # rubocop:disable Rails/SquishedSQLHeredocs
             sql = <<~SQL
-              SELECT indexname, indexdef
+              SELECT i.indexname, i.indexdef, parent_namespace.nspname, parent.relname
               FROM pg_indexes i
               LEFT JOIN pg_constraint AS c ON i.indexname = c.conname
-              WHERE i.indexname NOT LIKE '%_pkey' AND schemaname IN ($1, $2)
+              LEFT JOIN pg_namespace AS index_namespace ON index_namespace.nspname = i.schemaname
+              LEFT JOIN pg_class AS index_class
+                ON index_class.relname = i.indexname AND index_class.relnamespace = index_namespace.oid
+              LEFT JOIN pg_inherits AS inheritance ON inheritance.inhrelid = index_class.oid
+              LEFT JOIN pg_class AS parent ON parent.oid = inheritance.inhparent
+              LEFT JOIN pg_namespace AS parent_namespace ON parent_namespace.oid = parent.relnamespace
+              WHERE i.indexname NOT LIKE '%_pkey' AND i.schemaname IN ($1, $2)
               AND c.conname IS NULL;
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.select_rows(sql, schemas).to_h
+            connection.select_rows(sql, schemas)
           end
 
           def index_map
-            @index_map ||=
-              fetch_indexes.transform_values! do |index_stmt|
-                SchemaObjects::Index.new(PgQuery.parse(index_stmt).tree.stmts.first.stmt.index_stmt)
-              end
+            @index_map ||= indexes.each_with_object({}) do |index, map| # rubocop:disable Rails/IndexBy -- This gem does not depend on ActiveSupport.
+              map[index.name] = index
+            end
           end
 
           def foreign_key_map

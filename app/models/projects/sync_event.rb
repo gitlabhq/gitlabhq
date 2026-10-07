@@ -7,12 +7,17 @@ class Projects::SyncEvent < ApplicationRecord
 
   belongs_to :project
 
-  scope :unprocessed_events, -> { all }
+  scope :unprocessed_events, -> { where(ci_synced: false) }
   scope :preload_synced_relation, -> { preload(:project) }
   scope :order_by_id_asc, -> { order(id: :asc) }
 
+  # Each mirror database marks its own column; the row is deleted once every
+  # active mirror has been written. Scoped by id so no index on the flags is needed.
   def self.mark_records_processed(records)
-    id_in(records).delete_all
+    transaction do
+      id_in(records).update_all(ci_synced: true)
+      id_in(records).where(ci_synced: true).delete_all
+    end
   end
 
   def self.enqueue_worker
@@ -20,6 +25,6 @@ class Projects::SyncEvent < ApplicationRecord
   end
 
   def self.upper_bound_count
-    select('COALESCE(MAX(id) - MIN(id) + 1, 0) AS upper_bound_count').to_a.first.upper_bound_count
+    unprocessed_events.select('COALESCE(MAX(id) - MIN(id) + 1, 0) AS upper_bound_count').to_a.first.upper_bound_count
   end
 end

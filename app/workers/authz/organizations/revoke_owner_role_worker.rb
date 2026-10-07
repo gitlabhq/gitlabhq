@@ -19,13 +19,15 @@ module Authz
             user_id: user.id)
         end
 
-        # A self-revoke authorizes as themselves via IAM's self-delete rule,
-        # since deleting your own grant can only reduce access. Otherwise, no
-        # fallback to another owner: borrowing their identity would make
-        # IAM's record of who performed this write false.
+        # Without an owner to act as, the user revokes their own role, which IAM's
+        # self-delete rule always allows. Never another owner, since IAM would then
+        # record an uninvolved person as having made this change.
         acting_owner = actor_id == user.id ? user : acting_owner_for(organization, actor_id)
 
-        return unauthorized_revoke(organization, user) unless acting_owner
+        unless acting_owner
+          log_self_revoke(organization, user, actor_id)
+          acting_owner = user
+        end
 
         iam_client.revoke_roles(
           [{ assignee_id: user.id, resource_id: organization.uuid }],
@@ -38,16 +40,14 @@ module Authz
 
       private
 
-      # Distinct from log_skip: retained access nobody is aware of is a
-      # different class of event than a missing record, and this never
-      # reaches IAM, so DataAccessClient's own reporting never fires for it.
-      def unauthorized_revoke(organization, user)
-        error = UnauthorizedRevokeError.new(
-          "no acting owner available to authorize revoking organization_admin from user #{user.id} " \
-            "in organization #{organization.id}"
-        )
-        Gitlab::ErrorTracking.track_exception(error, organization_id: organization.id, user_id: user.id)
-        log_error(error.message, organization_id: organization.id, user_id: user.id)
+      # IAM records the user as making this change, so the log keeps who asked for it.
+      def log_self_revoke(organization, user, actor_id)
+        Gitlab::AppLogger.info(build_structured_payload_labkit(
+          message: 'Organization admin role revoked as the user because no owner was available to act as',
+          Labkit::Fields::GL_ORGANIZATION_ID => organization.id,
+          Labkit::Fields::GL_USER_ID => user.id,
+          requested_actor_id: actor_id
+        ))
       end
 
       # :not_found means the subject was never granted anything at all - a

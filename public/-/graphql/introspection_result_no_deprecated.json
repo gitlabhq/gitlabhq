@@ -161848,7 +161848,7 @@
             },
             {
               "name": "ciConfigPathOrDefault",
-              "description": "Path of the CI configuration file.",
+              "description": "Path of the CI configuration file. Returns an empty string if the user does not have permission to read the repository.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -162953,6 +162953,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ProjectDataTransfer",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "defaultMergeRequestTarget",
+              "description": "Default target project of merge requests created from the project. For a fork, this is the upstream project when the fork can target it, and the fork itself otherwise. Returns `null` when the target project is not visible to the current user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
                 "ofType": null
               },
               "isDeprecated": false,

@@ -39,6 +39,10 @@ Three questions the agent must answer **from the contract alone**:
      (`Response.error_reason`) rather than building an error without one. A route-backed inner
      tool's reason comes from the HTTP status, so when you match a known refusal and replace its
      message, give that table entry its own reason and read it with `fetch`.
+   - Test each `reason:` by driving the branch with an input that occurs in practice, not a
+     stubbed exception shaped like the expected cause, and assert it with
+     `Response.error_reason(result)`. When the same condition can be reached another way (a
+     single note vs. inside a review), check that both paths log the same reason.
    - It isn't needlessly verbose: every returned field costs the agent tokens, so drop
      what it won't use.
    - **Don't silently truncate or transform a returned value.** If you shorten a field (a

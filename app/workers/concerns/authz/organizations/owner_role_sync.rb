@@ -32,10 +32,6 @@ module Authz
       # unconditionally.
       RequestError = Class.new(Gitlab::SidekiqMiddleware::RetryError)
 
-      # Not retried: a stale/missing actor won't resolve itself, so raising
-      # RequestError here would just retry into the same dead end.
-      UnauthorizedRevokeError = Class.new(StandardError)
-
       # Single enqueue gate for every owner change: IAM must be configured and
       # this edition must be able to mint the token the write is authorized with.
       def self.enabled?

@@ -90,7 +90,7 @@ To show them, turn on planning for that work item.
 
 Prerequisites:
 
-- The work item must be an issue or a task.
+- An issue or a task.
 - Permission to edit the work item.
 
 To turn on planning:
@@ -247,7 +247,7 @@ You can also record a decision yourself at any time.
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- The Planner, Reporter, Security Manager, Developer, Maintainer, or Owner role for the project.
 
 To open the decision log:
 
@@ -282,6 +282,9 @@ additional context.
 Prerequisites:
 
 - GitLab Duo Agent Platform remote flows turned on.
+- [Developer Flow](../project/merge_requests/developer.md) turned on for the top-level
+  group and the project. For more information, see
+  [turn foundational flows on or off](../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
 To implement a workplan with GitLab Duo, use one of the following methods:
 

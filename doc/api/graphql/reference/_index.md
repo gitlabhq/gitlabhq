@@ -4643,6 +4643,7 @@ Arguments:
 | <a id="mutation-aiselfhostedmodelconnectioncheck-apitoken"></a>`apiToken` | [`String`](#string) | API token to access the self-hosted model, if any. |
 | <a id="mutation-aiselfhostedmodelconnectioncheck-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aiselfhostedmodelconnectioncheck-endpoint"></a>`endpoint` | [`String`](#string) | Endpoint of the self-hosted model. |
+| <a id="mutation-aiselfhostedmodelconnectioncheck-iamrole"></a>`iamRole` | [`String`](#string) | IAM role ARN that the AI Gateway assumes through STS AssumeRole when calling Amazon Bedrock. Only used by the Amazon Bedrock provider. |
 | <a id="mutation-aiselfhostedmodelconnectioncheck-identifier"></a>`identifier` | [`String`](#string) | Identifier for 3rd party model provider. |
 | <a id="mutation-aiselfhostedmodelconnectioncheck-model"></a>`model` | [`AiAcceptedSelfHostedModels!`](#aiacceptedselfhostedmodels) | AI model deployed. |
 | <a id="mutation-aiselfhostedmodelconnectioncheck-name"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
@@ -4674,6 +4675,7 @@ Arguments:
 | <a id="mutation-aiselfhostedmodelcreate-apitoken"></a>`apiToken` | [`String`](#string) | API token to access the self-hosted model, if any. |
 | <a id="mutation-aiselfhostedmodelcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aiselfhostedmodelcreate-endpoint"></a>`endpoint` | [`String`](#string) | Endpoint of the self-hosted model. |
+| <a id="mutation-aiselfhostedmodelcreate-iamrole"></a>`iamRole` | [`String`](#string) | IAM role ARN that the AI Gateway assumes through STS AssumeRole when calling Amazon Bedrock. Only used by the Amazon Bedrock provider. |
 | <a id="mutation-aiselfhostedmodelcreate-identifier"></a>`identifier` | [`String`](#string) | Identifier for 3rd party model provider. |
 | <a id="mutation-aiselfhostedmodelcreate-model"></a>`model` | [`AiAcceptedSelfHostedModels!`](#aiacceptedselfhostedmodels) | AI model deployed. |
 | <a id="mutation-aiselfhostedmodelcreate-name"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
@@ -4734,6 +4736,7 @@ Arguments:
 | <a id="mutation-aiselfhostedmodelupdate-apitoken"></a>`apiToken` | [`String`](#string) | API token to access the self-hosted model, if any. |
 | <a id="mutation-aiselfhostedmodelupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aiselfhostedmodelupdate-endpoint"></a>`endpoint` | [`String`](#string) | Endpoint of the self-hosted model. |
+| <a id="mutation-aiselfhostedmodelupdate-iamrole"></a>`iamRole` | [`String`](#string) | IAM role ARN that the AI Gateway assumes through STS AssumeRole when calling Amazon Bedrock. Only used by the Amazon Bedrock provider. |
 | <a id="mutation-aiselfhostedmodelupdate-id"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | Global ID of the self-hosted model to update. |
 | <a id="mutation-aiselfhostedmodelupdate-identifier"></a>`identifier` | [`String`](#string) | Identifier for 3rd party model provider. |
 | <a id="mutation-aiselfhostedmodelupdate-model"></a>`model` | [`AiAcceptedSelfHostedModels!`](#aiacceptedselfhostedmodels) | AI model deployed. |
@@ -36134,6 +36137,7 @@ Fields:
 | <a id="aiselfhostedmodel-endpoint"></a>`endpoint` | [`String`](#string) | Endpoint of the self-hosted model server. |
 | <a id="aiselfhostedmodel-featuresettings"></a>`featureSettings` | [`AiFeatureSettingConnection`](#aifeaturesettingconnection) | AI feature settings using the self-hosted model. (see [Connections](#connections)) |
 | <a id="aiselfhostedmodel-hasapitoken"></a>`hasApiToken` | [`Boolean!`](#boolean) | Indicates if an API key is set for the self-hosted model server. |
+| <a id="aiselfhostedmodel-iamrole"></a>`iamRole` | [`String`](#string) | IAM role ARN that the AI Gateway assumes when calling Amazon Bedrock. |
 | <a id="aiselfhostedmodel-id"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | ID of the self-hosted model server. |
 | <a id="aiselfhostedmodel-identifier"></a>`identifier` | [`String`](#string) | Identifier for 3rd party model provider. |
 | <a id="aiselfhostedmodel-model"></a>`model` | [`String!`](#string) | AI model deployed. |
@@ -47254,6 +47258,7 @@ Fields:
 | <a id="gitlabsubscriptionusage-lasteventtransactionat"></a>`lastEventTransactionAt` | [`ISO8601DateTime`](#iso8601datetime) | Date and time when the last usage event resulted in a wallet transaction. |
 | <a id="gitlabsubscriptionusage-monthlycommitment"></a>`monthlyCommitment` | [`GitlabSubscriptionMonthlyCommitment`](#gitlabsubscriptionmonthlycommitment) | Monthly commitment usage for the subscription. |
 | <a id="gitlabsubscriptionusage-monthlywaiver"></a>`monthlyWaiver` | [`GitlabSubscriptionMonthlyWaiver`](#gitlabsubscriptionmonthlywaiver) | Monthly waiver usage for the subscription. |
+| <a id="gitlabsubscriptionusage-nonbillableusage"></a>`nonBillableUsage` | [`[GitlabSubscriptionUsageNonBillableUsage!]`](#gitlabsubscriptionusagenonbillableusage) | GitLab Credits usage that was not billed, grouped by product and skip reason. Not included in `creditsUsed` or `dailyUsage`. Null when the usage cannot be read. |
 | <a id="gitlabsubscriptionusage-overage"></a>`overage` | [`GitlabSubscriptionOverage`](#gitlabsubscriptionoverage) | Overage statistics. |
 | <a id="gitlabsubscriptionusage-overagetermsaccepted"></a>`overageTermsAccepted` | [`Boolean!`](#boolean) | Indicates whether overage terms have been accepted for the subscription. |
 | <a id="gitlabsubscriptionusage-paidtiertrial"></a>`paidTierTrial` | [`GitlabSubscriptionPaidTierTrial!`](#gitlabsubscriptionpaidtiertrial) | Paid tier trial data for the subscription. |
@@ -47299,6 +47304,19 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageflowtypeinfo-id"></a>`id` | [`String!`](#string) | Identifier for the flow type, used for filtering. |
 | <a id="gitlabsubscriptionusageflowtypeinfo-title"></a>`title` | [`String!`](#string) | Display name for the flow type. |
+
+### `GitlabSubscriptionUsageNonBillableUsage`
+
+GitLab Credits usage that was not billed, for one product and skip reason.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusagenonbillableusage-dailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]!`](#gitlabsubscriptiondailyusage) | Daily non-billable GitLab Credits for the product and skip reason. |
+| <a id="gitlabsubscriptionusagenonbillableusage-productid"></a>`productId` | [`String!`](#string) | Identifier of the product the usage belongs to. Matches `GitlabSubscriptionUsageProduct.id`. |
+| <a id="gitlabsubscriptionusagenonbillableusage-skipreason"></a>`skipReason` | [`String`](#string) | Reason the usage was not billed, as recorded on the usage event. Null when the event has no recorded reason. |
+| <a id="gitlabsubscriptionusagenonbillableusage-totalcreditsused"></a>`totalCreditsUsed` | [`Float!`](#float) | Total non-billable GitLab Credits for the product and skip reason in the date range. |
 
 ### `GitlabSubscriptionUsageProduct`
 
@@ -58402,7 +58420,7 @@ Fields:
 | <a id="project-avatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
 | <a id="project-ciaccessauthorizedagents"></a>`ciAccessAuthorizedAgents` | [`ClusterAgentAuthorizationCiAccessConnection`](#clusteragentauthorizationciaccessconnection) | Authorized cluster agents for the project through ci_access keyword. (see [Connections](#connections)) |
 | <a id="project-cicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
-| <a id="project-ciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
+| <a id="project-ciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. Returns an empty string if the user does not have permission to read the repository. |
 | <a id="project-cidownstreamprojectsubscriptions"></a>`ciDownstreamProjectSubscriptions` {{< icon name="warning-solid" >}} | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | Introduced in GitLab 17.6. Status: Experiment. Pipeline subscriptions where this project is the upstream project.When this project's pipeline completes, a pipeline is triggered in the downstream project. |
 | <a id="project-cijobtokenauthlogs"></a>`ciJobTokenAuthLogs` {{< icon name="warning-solid" >}} | [`CiJobTokenAuthLogConnection`](#cijobtokenauthlogconnection) | Introduced in GitLab 17.6. Status: Experiment. The CI Job Tokens authorization logs. |
 | <a id="project-cijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
@@ -58424,6 +58442,7 @@ Fields:
 | <a id="project-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the project. Only available to admins. |
 | <a id="project-dastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="project-dastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
+| <a id="project-defaultmergerequesttarget"></a>`defaultMergeRequestTarget` | [`Project`](#project) | Default target project of merge requests created from the project. For a fork, this is the upstream project when the fork can target it, and the fork itself otherwise. Returns `null` when the target project is not visible to the current user. |
 | <a id="project-dependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. |
 | <a id="project-description"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="project-descriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |

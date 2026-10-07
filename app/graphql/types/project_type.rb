@@ -36,7 +36,8 @@ module Types
 
     field :ci_config_path_or_default, GraphQL::Types::String,
       null: false,
-      description: 'Path of the CI configuration file.'
+      description: 'Path of the CI configuration file. Returns an empty string ' \
+        'if the user does not have permission to read the repository.'
 
     field :ci_config_variables, [Types::Ci::ConfigVariableType],
       null: true,
@@ -254,6 +255,12 @@ module Types
       null: true,
       description: 'Indicates if merge requests of a forked project target the fork itself by default ' \
         'instead of the upstream project.'
+
+    field :default_merge_request_target, Types::ProjectType,
+      null: true,
+      description: 'Default target project of merge requests created from the project. ' \
+        'For a fork, this is the upstream project when the fork can target it, and the fork itself otherwise. ' \
+        'Returns `null` when the target project is not visible to the current user.'
 
     field :shared_runners_enabled, GraphQL::Types::Boolean,
       null: true,
@@ -1001,6 +1008,20 @@ module Types
       end
     end
 
+    # Batched by hand: the model method touches project_setting, the fork
+    # relation, and the upstream's project_feature per project. Preloading
+    # those keeps the rule in the model without N+1 on project lists.
+    def default_merge_request_target
+      BatchLoader::GraphQL.for(unpresented).batch(key: :default_merge_request_target) do |projects, loader|
+        ActiveRecord::Associations::Preloader.new(
+          records: projects,
+          associations: [:project_setting, { forked_from_project: :project_feature }]
+        ).call
+
+        projects.each { |project| loader.call(project, project.default_merge_request_target) }
+      end
+    end
+
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names
     end
@@ -1159,6 +1180,12 @@ module Types
     def job(id:)
       object.commit_statuses.find(id.model_id)
     rescue ActiveRecord::RecordNotFound
+    end
+
+    def ci_config_path_or_default
+      return '' unless Ability.allowed?(current_user, :read_code, object)
+
+      object.ci_config_path_or_default
     end
 
     def sast_ci_configuration

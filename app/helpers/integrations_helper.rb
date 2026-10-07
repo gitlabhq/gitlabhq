@@ -166,11 +166,11 @@ module IntegrationsHelper
 
   def integration_webhook_event_human_name(event)
     event_i18n_map = {
-      confidential_issues_events: s_('Webhooks|Confidential issue events'),
+      confidential_issues_events: s_('Webhooks|Confidential work item events'),
       confidential_note_events: s_('Webhooks|Confidential comments'),
       deployment_events: s_('Webhooks|Deployment events'),
       feature_flag_events: s_('Webhooks|Feature flag events'),
-      issues_events: s_('Webhooks|Issue events'),
+      issues_events: s_('Webhooks|Work item events'),
       job_events: s_('Webhooks|Job events'),
       member_events: s_('Webhooks|Member events'),
       merge_requests_events: s_('Webhooks|Merge request events'),

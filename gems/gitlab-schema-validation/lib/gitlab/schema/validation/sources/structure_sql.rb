@@ -57,7 +57,12 @@ module Gitlab
           end
 
           def indexes
-            @indexes ||= map_with_default_schema(index_statements, SchemaObjects::Index)
+            @indexes ||= index_statements.map do |statement|
+              statement.relation.schemaname = schema_name if statement.relation.schemaname == ''
+
+              parent = index_parents[[statement.relation.schemaname, statement.idxname]]
+              SchemaObjects::Index.new(statement, parent: parent)
+            end
           end
 
           def triggers
@@ -110,6 +115,21 @@ module Gitlab
 
           def index_statements
             statements.filter_map { |s| s.stmt.index_stmt }
+          end
+
+          # Parent schema and name of each attached child index, keyed by the child's schema and name.
+          def index_parents
+            @index_parents ||= alter_table_statements(:AT_AttachPartition).each_with_object({}) do |stmt, parents|
+              next unless stmt.objtype == :OBJECT_INDEX
+
+              child = stmt.cmds.first.alter_table_cmd.def.partition_cmd.name
+              parent = [schema_or_default(stmt.relation), stmt.relation.relname]
+              parents[[schema_or_default(child), child.relname]] = parent
+            end
+          end
+
+          def schema_or_default(relation)
+            relation.schemaname == '' ? schema_name : relation.schemaname
           end
 
           def trigger_statements

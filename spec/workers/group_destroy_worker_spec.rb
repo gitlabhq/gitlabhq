@@ -26,6 +26,20 @@ RSpec.describe GroupDestroyWorker, feature_category: :groups_and_projects do
       expect(Project.all).not_to include(project)
       expect(Dir.exist?(project.path)).to be_falsey
     end
+
+    context 'when the user does not exist' do
+      it 'logs a warning and does not delete the group', :aggregate_failures do
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: described_class.name,
+          group_id: group.id,
+          user_id: non_existing_record_id,
+          message: 'User not found, group was not deleted'
+        )
+        expect(Groups::DestroyService).not_to receive(:new)
+
+        worker.perform(group.id, non_existing_record_id)
+      end
+    end
   end
 
   describe 'concurrency limit' do

@@ -22,7 +22,12 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
-import { makeDetailPanelItemFullPath, makeDetailPanelUrlParam, canRouterNav } from '../utils';
+import {
+  makeDetailPanelItemFullPath,
+  makeDetailPanelUrlParam,
+  canRouterNav,
+  getRequestedPanel,
+} from '../utils';
 import WorkItemMetadataProvider from './work_item_metadata_provider.vue';
 
 export default {
@@ -132,9 +137,11 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', this.handleKeydown);
+    window.addEventListener('popstate', this.handlePopState);
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
+    window.removeEventListener('popstate', this.handlePopState);
   },
 
   methods: {
@@ -187,6 +194,11 @@ export default {
         this.copyTooltipText = this.$options.i18n.copyTooltipText;
       }, 2000);
     },
+    handlePopState() {
+      if (this.open && !getRequestedPanel()) {
+        this.handleClose(true);
+      }
+    },
     setDetailPanelParams() {
       const params = makeDetailPanelUrlParam(this.activeItem, this.fullPath, this.issuableType);
       updateHistory({
@@ -213,9 +225,11 @@ export default {
         return;
       }
 
-      updateHistory({
-        url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME, DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME]),
-      });
+      if (getRequestedPanel()) {
+        updateHistory({
+          url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME, DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME]),
+        });
+      }
 
       if (!isClickedOutside) {
         document

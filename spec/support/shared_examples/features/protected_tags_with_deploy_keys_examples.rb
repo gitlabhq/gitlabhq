@@ -22,7 +22,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         within('.dropdown-menu') do
           dropdown_headers = page.all('.dropdown-header', count: all_dropdown_sections.size).map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
+          expect(dropdown_headers).to match_array(all_dropdown_sections)
           expect(page).to have_content('title 1')
           expect(page).not_to have_content('title 2')
         end
@@ -40,7 +40,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
 
           dropdown_headers = page.all('.dropdown-header', count: all_dropdown_sections.size).map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
+          expect(dropdown_headers).to match_array(all_dropdown_sections)
         end
       end
     end
@@ -56,7 +56,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         within('.dropdown-menu', visible: true) do
           dropdown_headers = page.all('.dropdown-header', count: dropdown_sections_minus_deploy_keys.size).map(&:text)
 
-          expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)
+          expect(dropdown_headers).to match_array(dropdown_sections_minus_deploy_keys)
         end
       end
     end

@@ -43,7 +43,6 @@ project:
   - read_label
   - read_milestone
   - read_namespace
-  - read_namespace_via_membership
   - read_note
   - read_project
   - read_project_member

@@ -77,6 +77,19 @@ To install the GitLab for Slack app from the Slack App Directory:
 1. Go to the [GitLab for Slack page](https://gitlab.com/-/profile/slack/edit).
 1. Select a GitLab project to link with your Slack workspace.
 
+### Effect on the Slack notifications integration
+
+The deprecated [Slack notifications](slack.md) integration is hidden from the list of
+integrations in a project's settings when all of the following are true:
+
+- The GitLab for Slack app is available on the instance.
+- The project has no Slack notifications integration, including one that is turned off
+  or inherited from a group.
+- No Slack notifications integration exists for the instance.
+
+Hiding affects only the list. Projects that have Slack notifications configured still
+see it in the list and keep receiving notifications.
+
 ## Reinstall the GitLab for Slack app
 
 When GitLab releases new features for the GitLab for Slack app, you might have to reinstall the app to use these features.

@@ -44,7 +44,7 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
         merge_request.update_attribute(:head_pipeline_id, pipeline.id)
       end
 
-      context 'when there is a pipeline being created' do
+      context 'when there is a pipeline being created for the merge request' do
         before do
           allow(Ci::PipelineCreation::Requests).to receive(:pipeline_creating_for_merge_request?).and_return(true)
         end
@@ -54,9 +54,26 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
         end
       end
 
+      context 'when there is a pipeline being created for the source ref' do
+        before do
+          stub_feature_flags(track_ref_pipeline_creation: true)
+          allow(Ci::PipelineCreation::Requests).to receive_messages(
+            pipeline_creating_for_merge_request?: false,
+            pipeline_creating_for_ref?: true
+          )
+        end
+
+        it 'is checking' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+        end
+      end
+
       context 'when there is no pipeline being created' do
         before do
-          allow(Ci::PipelineCreation::Requests).to receive(:pipeline_creating_for_merge_request?).and_return(false)
+          allow(Ci::PipelineCreation::Requests).to receive_messages(
+            pipeline_creating_for_merge_request?: false,
+            pipeline_creating_for_ref?: false
+          )
         end
 
         context 'when the diff head pipeline is skipped' do

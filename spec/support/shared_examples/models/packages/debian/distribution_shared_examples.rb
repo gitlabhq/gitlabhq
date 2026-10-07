@@ -274,7 +274,7 @@ RSpec.shared_examples 'Debian Distribution with group container' do
       subject { distribution_with_suite.package_files }
 
       it 'returns only files from public packages with same codename' do
-        expect(subject.to_a).to contain_exactly(*public_package_with_same_codename.package_files)
+        expect(subject.to_a).to match_array(public_package_with_same_codename.package_files)
       end
 
       context 'with pending destruction package files' do

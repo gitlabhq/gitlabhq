@@ -28,7 +28,7 @@ Pipelines run the unit tests suite as well.
 To run system tests using Vue 3, [GDK must be running with Vue 3 enabled](../fe_guide/vue3_migration.md#switching-between-vue-versions). You may enable it with these commands:
 
 ```shell
-gdk config set vite.vue_version 3 # or 2, to return to vue 2
+gdk config set rspack.vue_version 3 # or 2, to return to vue 2
 gdk reconfigure
 gdk restart
 ```

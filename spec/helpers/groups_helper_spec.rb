@@ -7,6 +7,10 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   include AvatarsHelper
   include NumbersHelper
 
+  let(:current_user) { build_stubbed(:user) }
+  let(:group) { build_stubbed(:group) }
+  let(:user) { build_stubbed(:user) }
+
   describe '#group_icon_url' do
     it 'returns an url for the avatar' do
       group = create(:group, :with_avatar)
@@ -221,7 +225,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#can_disable_group_emails?' do
-    let(:current_user) { build_stubbed(:user) }
     let(:group) { build_stubbed(:group, name: 'group') }
     let(:subgroup) { build_stubbed(:group, name: 'subgroup', parent: group) }
 
@@ -269,7 +272,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     let(:subgroup) { create(:group, name: 'subgroup', parent: group) }
-    let(:current_user) { build_stubbed(:user) }
 
     it 'returns true for an owner of the group' do
       allow(helper).to receive(:current_user) { group_owner }
@@ -310,9 +312,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#can_update_default_branch_protection?' do
-    let(:current_user) { build_stubbed(:user) }
-    let(:group) { build_stubbed(:group) }
-
     subject { helper.can_update_default_branch_protection?(group) }
 
     before do
@@ -383,7 +382,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe 'group member permission helpers' do
-    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:owner) { create(:user) }
     let_it_be_with_reload(:group) { create(:group, owners: owner) }
 
@@ -476,8 +474,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#groups_show_app_data' do
     let(:initial_sort) { 'created_asc' }
-    let(:group) { build_stubbed(:group) }
-    let(:user) { build_stubbed(:user) }
 
     before do
       allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
@@ -652,8 +648,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#show_prevent_inviting_groups_outside_hierarchy_setting?' do
-    let(:group) { build_stubbed(:group) }
-
     it 'returns true for a root group' do
       expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(group)).to be(true)
     end
@@ -667,7 +661,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#groups_list_with_filtered_search_app_data' do
     let(:endpoint) { '/groups' }
-    let(:user) { build_stubbed(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -703,8 +696,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#step_up_auth_provider_options_for_select' do
     using RSpec::Parameterized::TableSyntax
-
-    let(:current_user) { build_stubbed(:user) }
 
     let(:omniauth_provider_oidc) do
       build(:omniauth_provider_config, :with_namespace_scope)

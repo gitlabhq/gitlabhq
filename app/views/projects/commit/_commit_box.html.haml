@@ -51,9 +51,10 @@
     %span.commit-info#js-commit-merge-requests{ 'data-project-commit-path' => merge_requests_project_commit_path(@project, @commit.id, format: :json) }
       = gl_loading_icon(inline: true, css_class: 'gl-align-middle')
 
-  - if can?(current_user, :read_pipeline, @last_pipeline)
+  - pipeline_summary_data = commit_pipeline_summary_data(@project, @last_pipeline)
+  - if pipeline_summary_data
     .well-segment
-      #js-commit-box-pipeline-summary{ data: { full_path: @project.full_path, iid: @last_pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@last_pipeline) } }
+      #js-commit-box-pipeline-summary{ data: pipeline_summary_data }
         = sprite_icon('pipeline', variant: 'default', css_class: "gl-ml-2 gl-mr-3")
         = gl_loading_icon(inline: true, css_class: 'gl-align-middle')
 

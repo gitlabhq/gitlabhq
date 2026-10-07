@@ -22,13 +22,20 @@ class GroupDestroyWorker
   def perform(group_id, user_id, params = {}) # rubocop:disable Lint/UnusedMethodArgument -- Keep params parameter for backwards compatibility. Remove `param` in 18.0 release.
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464673', new_threshold: 300)
 
-    begin
-      group = Group.find(group_id)
-    rescue ActiveRecord::RecordNotFound
+    group = Group.find_by_id(group_id)
+    return unless group
+
+    user = User.find_by_id(user_id)
+
+    unless user
+      Sidekiq.logger.warn(
+        class: self.class.name,
+        group_id: group_id,
+        user_id: user_id,
+        message: 'User not found, group was not deleted'
+      )
       return
     end
-
-    user = User.find(user_id)
 
     # AdjournedGroupDeletionWorker will destroy groups days after they are scheduled for deletion.
     # If admin_mode is enabled, it will potentially halt group and project deletion.

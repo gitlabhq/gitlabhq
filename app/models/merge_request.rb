@@ -2124,7 +2124,17 @@ class MergeRequest < ApplicationRecord
   end
 
   def pipeline_creating?
-    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self)
+    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self) ||
+      pipeline_creating_for_source_ref?
+  end
+
+  def pipeline_creating_for_source_ref?
+    return false unless source_project
+    return false unless Feature.enabled?(:track_ref_pipeline_creation, source_project)
+
+    # or_sha: false keeps the refs/heads/... form the requests are keyed by, even
+    # when source_branch_sha is force-set (e.g. imports).
+    Ci::PipelineCreation::Requests.pipeline_creating_for_ref?(source_project, source_branch_ref(or_sha: false))
   end
 
   def environments_in_head_pipeline(deployment_status: nil)

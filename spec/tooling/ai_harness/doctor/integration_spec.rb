@@ -349,6 +349,16 @@ RSpec.describe 'AiHarness::Doctor integration', :aggregate_failures, feature_cat
       expect(result[:stdout]).not_to include('.claude/skills/ai-principles-review-feedback/')
     end
 
+    it 'allows files under the .claude/skills/postgresai/ directory committed' do
+      setup_valid_repo
+      add_tracked_file('.claude/skills/postgresai/SKILL.md')
+
+      result = run_doctor
+
+      expect(result[:exit_code]).to eq(0)
+      expect(result[:stdout]).not_to include('.claude/skills/postgresai/')
+    end
+
     it 'reports AGENTS.local.md as forbidden when force-committed at root' do
       setup_valid_repo
       add_tracked_file('AGENTS.local.md', '# personal overrides')

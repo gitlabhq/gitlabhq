@@ -16,8 +16,11 @@ module Gitlab
       # Values clients already send in X-Gitlab-Client-Type that predate the taxonomy.
       TYPE_ALIASES = { 'web' => 'browser', 'web_browser' => 'browser', 'duo_cli' => 'cli' }.freeze
 
-      # Allowlisted name slugs and the type each belongs to. Browser clients are not
-      # listed: their name is the browser family, see BROWSER_NAMES.
+      # Browser family ids from the `browser` gem. They come from the User-Agent, or from
+      # the name header when Workhorse forwards the family Rails resolved for the session.
+      BROWSER_NAMES = %w[chrome firefox safari edge opera electron].freeze
+
+      # Allowlisted name slugs and the type each belongs to.
       NAMES = {
         'gitlab-mobile-ios' => 'mobile',
         'gitlab-mobile-android' => 'mobile',
@@ -33,10 +36,7 @@ module Gitlab
         'slack' => 'integration',
         'mcp' => 'integration',
         'gitlab-rails' => 'system'
-      }.freeze
-
-      # Browser families read from the User-Agent (ids of the `browser` gem).
-      BROWSER_NAMES = %w[chrome firefox safari edge opera electron].freeze
+      }.merge(BROWSER_NAMES.index_with('browser')).freeze
 
       # Product names clients already send in X-Gitlab-Client-Name, lowercased.
       NAME_ALIASES = {

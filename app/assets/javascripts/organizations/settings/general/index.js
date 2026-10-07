@@ -1,9 +1,12 @@
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import App from 'ee_else_ce/organizations/settings/general/components/app.vue';
+
+Vue.use(VueApollo);
 
 export const initOrganizationsSettingsGeneral = () => {
   const el = document.getElementById('js-organizations-settings-general');

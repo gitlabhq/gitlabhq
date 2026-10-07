@@ -8,6 +8,7 @@ require_relative 'validation/inconsistency'
 require_relative 'validation/pg_types'
 
 require_relative 'validation/validators/base'
+require_relative 'validation/validators/partition_index_matcher'
 
 require_relative 'validation/fixers/base'
 require_relative 'validation/fixers/missing_index'

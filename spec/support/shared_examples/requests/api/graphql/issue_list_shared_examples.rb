@@ -739,7 +739,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
         alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlert', 'title') }
         expected_titles = issues.map { |issue| issue.alert_management_alerts.first&.title }
 
-        expect(alert_titles).to contain_exactly(*expected_titles)
+        expect(alert_titles).to match_array(expected_titles)
       end
 
       it 'returns the alerts data' do
@@ -750,7 +750,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
           issue.alert_management_alerts.map { |alert| { 'title' => alert.title } }
         end
 
-        expect(alert_titles).to contain_exactly(*expected_titles)
+        expect(alert_titles).to match_array(expected_titles)
       end
     end
 
@@ -925,9 +925,9 @@ RSpec.shared_examples 'graphql issue list request spec' do
   it 'includes discussion locked' do
     post_query
 
-    expect(issues_data).to contain_exactly(
-      *locked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => true) },
-      *unlocked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => false) }
+    expect(issues_data).to match_array(
+      locked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => true) } +
+        unlocked_discussion_issues.map { |i| hash_including('id' => i.to_gid.to_s, 'discussionLocked' => false) }
     )
   end
 

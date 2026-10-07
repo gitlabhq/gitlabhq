@@ -48,7 +48,6 @@ export default {
     return {
       namespaceFullPath: computed(() => this.selectedNamespaceFullPath),
       namespaceId: computed(() => this.primaryNamespace?.id ?? null),
-      namespaceName: computed(() => this.selectedNamespaceName),
       isProject: computed(() => this.isProjectScope),
 
       // TODO: Investigate how to handle this namespace specific check. It was
@@ -81,9 +80,6 @@ export default {
     },
     primaryNamespace() {
       return this.selectedNamespaces[0] ?? null;
-    },
-    selectedNamespaceName() {
-      return this.primaryNamespace?.name ?? '';
     },
     selectedNamespaceFullPath() {
       return this.primaryNamespace?.fullPath ?? '';

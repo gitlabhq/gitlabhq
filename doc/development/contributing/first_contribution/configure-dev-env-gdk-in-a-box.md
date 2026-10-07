@@ -38,7 +38,7 @@ If you prefer to use GDK locally without a container, use the steps in [Install 
    -p 3000:3000 \
    -p 3005:3005 \
    -p 3010:3010 \
-   -p 3038:3038 \
+   -p 3808:3808 \
    -p 5100:5100 \
    -p 5778:5778 \
    -p 9000:9000 \

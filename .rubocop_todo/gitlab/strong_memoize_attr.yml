@@ -371,7 +371,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/banzai/filter/references/reference_cache.rb'
     - 'lib/banzai/filter/repository_link_filter.rb'
     - 'lib/bulk_imports/pipeline.rb'
-    - 'lib/bulk_imports/users_mapper.rb'
     - 'lib/container_registry/client.rb'
     - 'lib/container_registry/gitlab_api_client.rb'
     - 'lib/container_registry/tag.rb'

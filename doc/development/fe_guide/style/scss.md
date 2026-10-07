@@ -93,7 +93,7 @@ See <https://design.gitlab.com/tailwind-documentation/text-color> for available 
 
 #### Building the Tailwind CSS bundle
 
-When using Vite or Webpack with the GitLab Development Kit, Tailwind CSS watches for file changes to
+When using Rspack with the GitLab Development Kit, Tailwind CSS watches for file changes to
 build detected utilities on the fly.
 
 To build a fresh Tailwind CSS bundle, run `yarn tailwindcss:build`. This is the script that gets

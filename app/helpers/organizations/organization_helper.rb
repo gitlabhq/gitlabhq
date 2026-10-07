@@ -48,7 +48,8 @@ module Organizations
     def organization_groups_and_projects_app_data(organization)
       {
         user_preference_sort: current_user&.user_preference&.organization_groups_projects_sort,
-        user_preference_display: current_user&.user_preference&.organization_groups_projects_display
+        user_preference_display: current_user&.user_preference&.organization_groups_projects_display,
+        base_path: groups_and_projects_organization_path(organization)
       }.merge(shared_groups_and_projects_app_data(organization)).to_json
     end
 

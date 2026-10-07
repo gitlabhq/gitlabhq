@@ -103,6 +103,69 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		require.Equal(t, int32(201), result.GetActionResponse().GetHttpResponse().StatusCode)
 	})
 
+	t.Run("forwards the client identity from the connection config", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "mobile", r.Header.Get("X-Gitlab-Client-Type"))
+			assert.Equal(t, "gitlab-mobile-ios", r.Header.Get("X-Gitlab-Client-Name"))
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{}`)
+		}))
+		defer server.Close()
+
+		action := &pb.Action{
+			RequestID: "req-789",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{Method: "GET", Path: "/api/v4/user"},
+			},
+		}
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+
+		handler := &runHTTPActionHandler{
+			backend:     http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
+			token:       "test-token",
+			originalReq: originalReq,
+			clientType:  "mobile",
+			clientName:  "gitlab-mobile-ios",
+		}
+
+		result, err := handler.Execute(context.Background(), action)
+
+		require.NoError(t, err)
+		require.Equal(t, int32(200), result.GetActionResponse().GetHttpResponse().StatusCode)
+	})
+
+	t.Run("sends no client headers when the connection config has none", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Empty(t, r.Header.Values("X-Gitlab-Client-Type"))
+			assert.Empty(t, r.Header.Values("X-Gitlab-Client-Name"))
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{}`)
+		}))
+		defer server.Close()
+
+		action := &pb.Action{
+			RequestID: "req-790",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{Method: "GET", Path: "/api/v4/user"},
+			},
+		}
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+
+		handler := &runHTTPActionHandler{
+			backend:     http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
+			token:       "test-token",
+			originalReq: originalReq,
+		}
+
+		_, err := handler.Execute(context.Background(), action)
+
+		require.NoError(t, err)
+	})
+
 	t.Run("successful request without body", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/api/projects", r.URL.Path)

@@ -20,9 +20,10 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
   end
 
   context 'when there is a pipeline present' do
+    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, status: 'success') }
+
     context 'when pipeline has stages' do
       before do
-        pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, status: 'success')
         create(:ci_build, pipeline: pipeline, stage: 'build')
 
         assign(:last_pipeline, project.commit.last_pipeline)
@@ -31,7 +32,21 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
       it 'shows pipeline stages in vue' do
         render
 
-        expect(rendered).to have_selector('#js-commit-box-pipeline-summary')
+        expect(rendered).to have_selector("#js-commit-box-pipeline-summary[data-iid='#{pipeline.iid}']")
+      end
+    end
+
+    context 'when pipeline has no iid' do
+      before do
+        pipeline.update_column(:iid, nil)
+
+        assign(:last_pipeline, pipeline)
+      end
+
+      it 'does not show the pipeline summary' do
+        render
+
+        expect(rendered).not_to have_selector('#js-commit-box-pipeline-summary')
       end
     end
   end

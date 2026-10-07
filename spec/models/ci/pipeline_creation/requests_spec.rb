@@ -228,4 +228,84 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
       end
     end
   end
+
+  # Seeds an in-progress ref request in the same shape the ref writer stores.
+  def start_ref_request(project, ref)
+    request = { 'key' => described_class.ref_key(project, ref), 'id' => described_class.generate_id }
+    described_class.hset(request, described_class::IN_PROGRESS)
+    request
+  end
+
+  describe '.pipeline_creating_for_ref?' do
+    let_it_be(:ref_project) { create(:project) }
+    let(:ref) { 'refs/heads/feature-branch' }
+
+    context 'when there are in-progress pipeline creations for the ref' do
+      it 'returns true' do
+        start_ref_request(ref_project, ref)
+
+        expect(described_class.pipeline_creating_for_ref?(ref_project, ref)).to be true
+      end
+    end
+
+    context 'when all pipeline creations for the ref are completed' do
+      it 'returns false' do
+        request = start_ref_request(ref_project, ref)
+        described_class.succeeded(request, 1)
+
+        expect(described_class.pipeline_creating_for_ref?(ref_project, ref)).to be false
+      end
+    end
+
+    context 'when there are no pipeline creations for the ref' do
+      it 'returns false' do
+        expect(described_class.pipeline_creating_for_ref?(ref_project, ref)).to be false
+      end
+    end
+
+    context 'when some requests are completed and some are in progress' do
+      it 'returns true' do
+        request1 = start_ref_request(ref_project, ref)
+        start_ref_request(ref_project, ref)
+        described_class.succeeded(request1, 1)
+
+        expect(described_class.pipeline_creating_for_ref?(ref_project, ref)).to be true
+      end
+    end
+  end
+
+  describe '.for_ref' do
+    let_it_be(:ref_project) { create(:project) }
+    let(:ref) { 'refs/heads/feature-branch' }
+
+    it 'returns all requests for the ref' do
+      allow(SecureRandom).to receive(:uuid).and_return('test-id-1')
+      request1 = start_ref_request(ref_project, ref)
+
+      allow(SecureRandom).to receive(:uuid).and_return('test-id-2')
+      start_ref_request(ref_project, ref)
+
+      described_class.succeeded(request1, 1)
+
+      requests = described_class.for_ref(ref_project, ref)
+
+      expect(requests).to contain_exactly(
+        { 'status' => 'succeeded', 'pipeline_id' => 1, 'id' => 'test-id-1' },
+        { 'status' => 'in_progress', 'id' => 'test-id-2' }
+      )
+    end
+  end
+
+  describe '.ref_key' do
+    let_it_be(:ref_project) { create(:project) }
+
+    it 'returns the Redis cache key for the ref' do
+      ref = 'refs/heads/feature-branch'
+      ref_hash = Digest::SHA256.hexdigest(ref)
+
+      expect(described_class.ref_key(ref_project, ref)).to eq(
+        "pipeline_creation:projects:{#{ref_project.id}}:ref:{#{ref_hash}}"
+      )
+    end
+  end
 end

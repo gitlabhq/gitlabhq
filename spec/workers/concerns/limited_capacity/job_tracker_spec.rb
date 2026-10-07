@@ -22,7 +22,7 @@ RSpec.describe LimitedCapacity::JobTracker, :clean_gitlab_redis_shared_state, fe
       end
 
       expect(job_tracker.register('jid3', max_jids)).to be false
-      expect(job_tracker.running_jids).to contain_exactly(*%w[jid1 jid2])
+      expect(job_tracker.running_jids).to match_array(%w[jid1 jid2])
     end
   end
 

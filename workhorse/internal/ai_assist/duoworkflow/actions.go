@@ -54,6 +54,11 @@ type runHTTPActionHandler struct {
 	// and is forwarded as the X-Gitlab-Duo-Workflow-Id header so the GitLab
 	// API can correlate tool-originated traffic with the originating workflow.
 	workflowID string
+	// clientType and clientName identify the client that opened the websocket,
+	// as resolved by Rails in the connection config. Forwarded on every action
+	// so the events those calls fire attribute to that client, not to Workhorse.
+	clientType string
+	clientName string
 }
 
 // applyRelativeURLRoot prepends the relative URL root to a DWS action path so
@@ -272,6 +277,14 @@ func (a *runHTTPActionHandler) buildRequest(ctx context.Context, action *pb.Acti
 
 	if a.workflowID != "" {
 		req.Header.Set("X-Gitlab-Duo-Workflow-Id", a.workflowID)
+	}
+
+	if a.clientType != "" {
+		req.Header.Set("X-Gitlab-Client-Type", a.clientType)
+	}
+
+	if a.clientName != "" {
+		req.Header.Set("X-Gitlab-Client-Name", a.clientName)
 	}
 
 	if clientIP, _, splitHostErr := net.SplitHostPort(a.originalReq.RemoteAddr); splitHostErr == nil {

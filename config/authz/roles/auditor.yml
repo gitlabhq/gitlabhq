@@ -113,7 +113,6 @@ project:
   - read_milestone
   - read_namespace
   - read_namespace_cluster_agent_mapping
-  - read_namespace_via_membership
   - read_note
   - read_npm_package
   - read_npm_package_tag

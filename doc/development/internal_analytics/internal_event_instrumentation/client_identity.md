@@ -34,8 +34,9 @@ The allowlist lives in `Gitlab::Tracking::ClientIdentity`.
 | `slack`, `mcp`                                                                        | `integration` |
 | `gitlab-rails`                                                                        | `system`      |
 
-For `browser`, Rails derives the name from the User-Agent browser family.
-The allowed values are `chrome`, `firefox`, `safari`, `edge`, `opera`, and `electron`.
+For `browser`, Rails accepts the `X-Gitlab-Client-Name` header when it carries `chrome`, `firefox`, `safari`, `edge`, `opera`, or `electron`.
+Workhorse sends it when it runs an agent's HTTP actions for a browser session, forwarding the family Rails resolved when the websocket was opened.
+Otherwise, Rails reads the family from the User-Agent.
 The web frontend sends only the `X-Gitlab-Client-Type` header.
 Other browsers keep the `browser` type with no name.
 
@@ -46,7 +47,7 @@ Other browsers keep the `browser` type with no name.
 1. The User-Agent: the existing IDE and glab patterns; `gitlab-runner`, `git/`, `GitLab-Shell`, `gitlab-workhorse`, and `Agent-Flow-via-GitLab-Workhorse` mean `system`; a `Mozilla/` User-Agent means `browser`.
 1. Otherwise `api` with no name.
 
-A `browser` identity takes its name from the User-Agent browser family, not from the name header.
+A `browser` identity without an allowlisted name takes its name from the User-Agent browser family.
 
 ## Propagation to background jobs
 

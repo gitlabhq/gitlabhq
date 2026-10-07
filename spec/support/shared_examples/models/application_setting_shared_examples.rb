@@ -294,13 +294,13 @@ RSpec.shared_examples 'application settings examples' do
   describe '#allowed_key_types' do
     context 'in non-FIPS mode', fips_mode: false do
       it 'includes all key types by default' do
-        expect(setting.allowed_key_types).to contain_exactly(*Gitlab::SSHPublicKey.supported_types)
+        expect(setting.allowed_key_types).to match_array(Gitlab::SSHPublicKey.supported_types)
       end
     end
 
     context 'in FIPS mode', :fips_mode do
       it 'excludes DSA from supported key types' do
-        expect(setting.allowed_key_types).to contain_exactly(*Gitlab::SSHPublicKey.supported_types - %i[dsa])
+        expect(setting.allowed_key_types).to match_array(Gitlab::SSHPublicKey.supported_types - %i[dsa])
       end
     end
 

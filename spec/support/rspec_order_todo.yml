@@ -3804,7 +3804,6 @@
 - './spec/lib/bulk_imports/projects/stage_spec.rb'
 - './spec/lib/bulk_imports/projects/transformers/project_attributes_transformer_spec.rb'
 - './spec/lib/bulk_imports/retry_pipeline_error_spec.rb'
-- './spec/lib/bulk_imports/users_mapper_spec.rb'
 - './spec/lib/container_registry/blob_spec.rb'
 - './spec/lib/container_registry/client_spec.rb'
 - './spec/lib/container_registry/gitlab_api_client_spec.rb'

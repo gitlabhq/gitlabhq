@@ -399,6 +399,24 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 let(:message) { 'Not found.' }
               end
             end
+
+            context 'when sending objects as a hash' do
+              let(:body) { { 'operation' => 'download', 'objects' => sample_object } }
+
+              it_behaves_like 'LFS http expected response code and message' do
+                let(:response_code) { 404 }
+                let(:message) { 'Not found.' }
+              end
+            end
+
+            context 'when sending objects as a numeric-keyed hash' do
+              let(:body) { { 'operation' => 'download', 'objects' => { '0' => sample_object } } }
+
+              it_behaves_like 'LFS http expected response code and message' do
+                let(:response_code) { 404 }
+                let(:message) { 'Not found.' }
+              end
+            end
           end
 
           context 'when user is authenticated' do
@@ -582,6 +600,24 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
             describe 'when user has project push access' do
               before do
                 authorize_upload
+              end
+
+              context 'when sending objects as a hash' do
+                let(:body) { { 'operation' => 'upload', 'objects' => sample_object } }
+
+                it_behaves_like 'LFS http expected response code and message' do
+                  let(:response_code) { 404 }
+                  let(:message) { 'Not found.' }
+                end
+              end
+
+              context 'when sending objects as a numeric-keyed hash' do
+                let(:body) { { 'operation' => 'upload', 'objects' => { '0' => sample_object } } }
+
+                it_behaves_like 'LFS http expected response code and message' do
+                  let(:response_code) { 404 }
+                  let(:message) { 'Not found.' }
+                end
               end
 
               context 'when pushing an LFS object that already exists' do

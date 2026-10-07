@@ -122,7 +122,7 @@ module MergeRequests
 
     def create_event(merge_request)
       metrics_service = merge_request_metrics_service(merge_request)
-      metrics_service.prepare_merge_data if Feature.enabled?(:merge_request_metrics_outside_merge_transaction, project)
+      metrics_service.prepare_merge_data
 
       # Making sure MergeRequest::Metrics updates are in sync with
       # Event creation.

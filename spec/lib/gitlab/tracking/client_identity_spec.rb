@@ -16,7 +16,8 @@ RSpec.describe Gitlab::Tracking::ClientIdentity, feature_category: :application_
       'MOBILE'         | 'GitLab-Mobile-Android'    | 'mobile'      | 'gitlab-mobile-android'
       'web_browser'    | nil                        | 'browser'     | nil
       'browser'        | 'gitlab-duo-workflow'      | 'browser'     | nil
-      'web'            | 'chrome'                   | 'browser'     | nil
+      'web'            | 'chrome'                   | 'browser'     | 'chrome'
+      nil              | 'Firefox'                  | 'browser'     | 'firefox'
       'node-websocket' | 'Duo CLI'                  | 'cli'         | 'duo-cli'
       'node-websocket' | 'IntelliJ IDEA'            | 'ide'         | 'jetbrains'
       nil              | 'gitlab-jetbrains-plugin'  | 'ide'         | 'jetbrains'
@@ -108,6 +109,20 @@ RSpec.describe Gitlab::Tracking::ClientIdentity, feature_category: :application_
       end
 
       it 'names the client after the browser family' do
+        expect(described_class.from_request(request)).to have_attributes(type: 'browser', name: 'chrome')
+      end
+    end
+
+    context 'with the headers Workhorse forwards for a browser session' do
+      let(:env) do
+        Rack::MockRequest.env_for('/').merge(
+          'HTTP_X_GITLAB_CLIENT_TYPE' => 'browser',
+          'HTTP_X_GITLAB_CLIENT_NAME' => 'chrome',
+          'HTTP_USER_AGENT' => 'Agent-Flow-via-GitLab-Workhorse'
+        )
+      end
+
+      it 'keeps the forwarded browser family' do
         expect(described_class.from_request(request)).to have_attributes(type: 'browser', name: 'chrome')
       end
     end

@@ -86,6 +86,19 @@ RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboar
       post admin_registrations_groups_path, params: { group: group_params, project: project_params }
     end
 
+    context 'when on a Dedicated instance' do
+      before do
+        stub_application_setting(gitlab_dedicated_instance: true)
+        sign_in(admin)
+      end
+
+      it 'returns not found', :enable_admin_mode do
+        post_create
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'with an authenticated admin user', :enable_admin_mode do
       before do
         sign_in(admin)
@@ -292,6 +305,18 @@ RSpec.describe Admin::Registrations::GroupsController, feature_category: :onboar
         post_create
 
         expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'when admin mode is not enabled' do
+      before do
+        sign_in(admin)
+      end
+
+      it 'redirects to admin mode login' do
+        post_create
+
+        expect(response).to redirect_to(new_admin_session_path)
       end
     end
   end

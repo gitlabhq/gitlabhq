@@ -261,7 +261,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
           'organization_groups_projects_sort' => 'name_asc',
           'organization_groups_projects_display' => 'groups',
           'user_preference_sort' => 'name_asc',
-          'user_preference_display' => 'groups'
+          'user_preference_display' => 'groups',
+          'base_path' => "/o/#{organization.path}/-/groups_and_projects"
         }
       )
     end

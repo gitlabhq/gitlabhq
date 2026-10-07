@@ -363,10 +363,9 @@ class BulkImports::Entity < ApplicationRecord
   private
 
   # request_channel is captured at CreateService time in EphemeralData
-  # (Redis) rather than on the BulkImport record, matching the pattern used
-  # by importer_user_mapping_enabled?. Only sent on start_* events, and
-  # deliberately not added to entity_import_event_attributes, per the design in
-  # gitlab-org/gitlab#617884.
+  # (Redis) rather than on the BulkImport record. Only sent on start_* events,
+  # and deliberately not added to entity_import_event_attributes, per the
+  # design in gitlab-org/gitlab#617884.
   def with_request_channel(attrs)
     attrs.merge(
       additional_properties: attrs[:additional_properties].merge(

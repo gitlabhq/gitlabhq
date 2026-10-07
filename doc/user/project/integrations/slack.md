@@ -20,6 +20,94 @@ The Slack notifications integration enables your GitLab project to send events
 (such as issue creation) to your existing Slack team as notifications. Setting up
 Slack notifications requires configuration changes for both Slack and GitLab.
 
+## Comparison with the GitLab for Slack app
+
+Both integrations send the same events with the same notification settings. For
+each event, you enter up to 10 Slack channel names, separated by commas. In both
+integrations, you can limit notifications to:
+
+- Broken pipelines only
+- Pipeline status changes only
+- Selected branches
+- Events with selected labels
+
+You can configure both integrations for the project, group, or instance.
+
+You install the GitLab for Slack app from the integration settings of your project,
+group, or instance.
+On GitLab Self-Managed and GitLab Dedicated, the app appears there only after an
+administrator configures it for the instance.
+For more information, see
+[GitLab for Slack app administration](../../../administration/settings/slack_app.md).
+
+They differ in the following ways:
+
+| Feature | Slack notifications | GitLab for Slack app |
+| ------- | ------------------- | -------------------- |
+| Status | Deprecated in GitLab 15.9. | Current and recommended. |
+| Setup | Paste a Slack incoming webhook URL into GitLab. | Install a native Slack app from GitLab. |
+| Capabilities | Notifications only. | Notifications, slash commands, and the [GitLab Duo integration](gitlab_slack_application.md#gitlab-duo). |
+| Credentials | A webhook URL stored in GitLab. Anyone with the URL can post to the channel. | An OAuth bot token stored in GitLab. |
+| Availability | No administrator setup required. | On GitLab Self-Managed and GitLab Dedicated, an administrator must configure the app before it appears. |
+
+## Migrate to the GitLab for Slack app
+
+Migrate to the GitLab for Slack app to keep receiving Slack notifications and to
+use slash commands and the GitLab Duo integration.
+
+Settings do not transfer automatically, so you must repeat your configuration in
+the new integration. You can run both integrations at the same time during the
+migration. Until you turn off Slack notifications, each event is delivered twice.
+
+Prerequisites:
+
+- The GitLab for Slack app must be available on your instance. On GitLab
+  Self-Managed and GitLab Dedicated, an administrator must configure the app
+  first.
+- You must have at least the Maintainer role for the project, the Owner role for
+  the group, or administrator access for the instance where Slack notifications
+  is configured.
+- You must have
+  [permission to add apps to your Slack workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
+
+These steps describe migrating a project-level integration. If Slack
+notifications is configured at the group or instance level, follow the same steps
+at that level instead:
+
+- For a group, in the top bar, select **Search or go to** and find your group.
+- For the instance, in the upper-right corner, select **Admin**.
+
+Then, in the left sidebar, select **Settings** > **Integrations**.
+
+To migrate to the GitLab for Slack app:
+
+1. Note your current configuration. In the top bar, select **Search or go to**
+   and find your project. In the left sidebar, select **Settings** >
+   **Integrations**, then select **Slack notifications**. Record the events
+   you have selected, the channel names for each event, and your notification
+   settings.
+1. [Install the GitLab for Slack app](gitlab_slack_application.md#install-the-gitlab-for-slack-app).
+1. In the GitLab for Slack app, re-enter the event selections, channel names,
+   and notification settings you recorded. For more information, see
+   [configure notifications](gitlab_slack_application.md#configure-notifications).
+1. If a target channel is private,
+   [add the app to the channel](gitlab_slack_application.md#receive-notifications-to-a-private-channel).
+1. Select **Test settings** and confirm the notification arrives in Slack.
+1. Turn off the Slack notifications integration. Return to the
+   **Slack notifications** settings from the first step. Under
+   **Enable integration**, clear the **Active** checkbox, then select
+   **Save changes**. Your configuration is retained, so you can turn it back on
+   if you need to.
+1. Confirm that notifications continue to arrive from the GitLab for Slack app.
+1. In Slack, remove the incoming webhook integration you created in
+   [Configure Slack](#configure-slack) so it stops being a live credential.
+   This step cannot be undone. After you remove the webhook, you can no longer
+   roll back by turning Slack notifications back on, because the stored webhook
+   URL stops working.
+
+After you turn off Slack notifications, the integration remains in the
+project's list of integrations.
+
 ## Configure Slack
 
 1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook).
@@ -36,16 +124,8 @@ Slack notifications requires configuration changes for both Slack and GitLab.
 
 {{< /history >}}
 
-The **Slack notifications** integration is hidden from a project's **Settings** > **Integrations**
-list when all of these are true:
-
-- The GitLab for Slack app is enabled for the instance, so a replacement integration is available.
-- The project has no Slack notifications integration of its own.
-- The project does not inherit an instance-level Slack notifications integration.
-
-A project that already has Slack notifications configured continues to see it in the list. So does
-a project that inherits an instance-level integration. In both cases, GitLab keeps sending
-notifications as before.
+If **Slack notifications** is not in your project's list of integrations, see
+[effect on the Slack notifications integration](gitlab_slack_application.md#effect-on-the-slack-notifications-integration).
 
 To configure Slack notifications:
 

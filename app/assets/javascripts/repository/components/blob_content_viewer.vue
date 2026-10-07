@@ -272,7 +272,13 @@ export default {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
     },
     shouldRenderAiGenie() {
-      return this.explainCodeAvailable && this.activeViewerType === 'simple' && !this.isTooLarge;
+      // Hidden while blame is shown, because the button clashes with the blame info column
+      return (
+        this.explainCodeAvailable &&
+        this.activeViewerType === 'simple' &&
+        !this.isTooLarge &&
+        !this.showBlame
+      );
     },
     shouldHideViewerSwitcher() {
       return (

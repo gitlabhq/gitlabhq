@@ -2466,7 +2466,6 @@ Layout/LineLength:
     - 'spec/lib/bulk_imports/projects/pipelines/project_feature_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/protected_branches_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/snippets_pipeline_spec.rb'
-    - 'spec/lib/bulk_imports/users_mapper_spec.rb'
     - 'spec/lib/container_registry/client_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
     - 'spec/lib/container_registry/registry_spec.rb'

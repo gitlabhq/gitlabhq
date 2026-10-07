@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+using RSpec::Parameterized::TableSyntax
+
 RSpec.describe Mcp::Tools::MergeRequests::AcceptMergeRequestService, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :public, maintainers: [user]) }
@@ -120,6 +122,7 @@ RSpec.describe Mcp::Tools::MergeRequests::AcceptMergeRequestService, feature_cat
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('The merge-head is not at the anticipated SHA')
         expect(merge_request.reload.merge_jid).to be_nil
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 
@@ -132,6 +135,7 @@ RSpec.describe Mcp::Tools::MergeRequests::AcceptMergeRequestService, feature_cat
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('This branch cannot be merged')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
       end
     end
 
@@ -146,6 +150,7 @@ RSpec.describe Mcp::Tools::MergeRequests::AcceptMergeRequestService, feature_cat
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('The merge failed')
         expect(result[:content].first[:text]).to include('Omit strategy to merge immediately.')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
       end
     end
 
@@ -198,6 +203,7 @@ RSpec.describe Mcp::Tools::MergeRequests::AcceptMergeRequestService, feature_cat
             result = service.execute(request: request, params: params)
 
             expect(result[:isError]).to be(true)
+            expect(result[:reason]).to eq(:bad_request)
             expect(result[:content].first[:text]).to include('head no longer matches the provided sha')
           end
         end
@@ -210,7 +216,36 @@ RSpec.describe Mcp::Tools::MergeRequests::AcceptMergeRequestService, feature_cat
           result = service.execute(request: request, params: params)
 
           expect(result[:isError]).to be(true)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
           expect(result[:content].first[:text]).to include('already scheduled to be merged')
+        end
+      end
+    end
+
+    context 'when the mutation returns an error in its payload' do
+      let(:params) { { arguments: identification.merge(sha: merge_request.diff_head_sha) } }
+
+      where(:payload_error, :expected_reason) do
+        ::Mutations::MergeRequests::Accept::SHA_MISMATCH | :bad_request
+        ::Mutations::MergeRequests::Accept::ALREADY_SCHEDULED | :error
+        ::Mutations::MergeRequests::Accept::NOT_MERGEABLE | :error
+        ::Mutations::MergeRequests::Accept::HOOKS_VALIDATION_ERROR | :error
+        ::Mutations::MergeRequests::Accept::MERGE_FAILED | :error
+        'Merge request is not mergeable' | :error
+      end
+
+      with_them do
+        before do
+          allow(GitlabSchema).to receive(:execute).and_return(
+            { 'data' => { 'mergeRequestAccept' => { 'errors' => [payload_error], 'mergeRequest' => nil } } }
+          )
+        end
+
+        it 'reports a bad request only when the caller sent a stale sha', :aggregate_failures do
+          result = service.execute(request: request, params: params)
+
+          expect(result[:isError]).to be(true)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(expected_reason)
         end
       end
     end

@@ -139,6 +139,19 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
         expect(export_job.queued?).to be(true)
       end
 
+      it 'logs the queue size and configured limit alongside the re-enqueue' do
+        expect(Gitlab::Export::Logger).to receive(:info).with(
+          hash_including(
+            message: 'Throttled project export was re-enqueued',
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            queue_size: 1,
+            concurrent_relation_export_limit: 1
+          )
+        )
+
+        perform
+      end
+
       it "updates its jid to the re-enqueued job's, so StuckExportJobsWorker sees it as still alive" do
         perform
 
@@ -183,7 +196,10 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
 
         it 'logs the abandoned export and leaves it queued' do
           expect(Gitlab::Export::Logger).to receive(:error).with(
-            hash_including(message: 'Throttled project export was not re-enqueued', project_id: project.id)
+            hash_including(
+              message: 'Throttled project export was not re-enqueued',
+              Labkit::Fields::GL_PROJECT_ID => project.id
+            )
           )
 
           perform
@@ -191,6 +207,14 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
           export_job = project.export_jobs.last
           expect(export_job.queued?).to be(true)
           expect(export_job.jid).to eq(jid)
+        end
+
+        it 'does not log a successful re-enqueue' do
+          expect(Gitlab::Export::Logger).not_to receive(:info).with(
+            hash_including(message: 'Throttled project export was re-enqueued')
+          )
+
+          perform
         end
       end
     end

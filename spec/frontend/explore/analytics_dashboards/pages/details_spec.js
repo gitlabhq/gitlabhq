@@ -1315,16 +1315,16 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   // end up here intact or they query nothing and spin.
   describe('what a panel is given for the selected scope', () => {
     const probe = {
-      inject: ['namespaceFullPath', 'namespaceName', 'namespaceId', 'isProject'],
+      inject: ['namespaceFullPath', 'namespaceId', 'isProject'],
       template: '<div />',
     };
 
     const findProbe = () => wrapper.findComponent(probe);
     // Injected computed refs arrive unwrapped, so these read as plain values.
     const injected = () => {
-      const { namespaceFullPath, namespaceName, namespaceId, isProject } = findProbe().vm;
+      const { namespaceFullPath, namespaceId, isProject } = findProbe().vm;
 
-      return { namespaceFullPath, namespaceName, namespaceId, isProject };
+      return { namespaceFullPath, namespaceId, isProject };
     };
 
     beforeEach(async () => {
@@ -1340,7 +1340,6 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
       expect(injected()).toEqual({
         namespaceFullPath: mockGroup.fullPath,
-        namespaceName: mockGroup.name,
         namespaceId: mockGroup.id,
         isProject: false,
       });
@@ -1351,7 +1350,6 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
       expect(injected()).toEqual({
         namespaceFullPath: mockProject.fullPath,
-        namespaceName: mockProject.name,
         namespaceId: mockProject.id,
         isProject: true,
       });
@@ -1384,10 +1382,9 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       beforeEach(() => selectScope(mockGroup, mockProject));
 
       it('narrows them to one namespace rather than none', () => {
-        const { namespaceFullPath, namespaceName, namespaceId } = injected();
+        const { namespaceFullPath, namespaceId } = injected();
 
         expect([mockGroup.fullPath, mockProject.fullPath]).toContain(namespaceFullPath);
-        expect([mockGroup.name, mockProject.name]).toContain(namespaceName);
         expect([mockGroup.id, mockProject.id]).toContain(namespaceId);
       });
     });

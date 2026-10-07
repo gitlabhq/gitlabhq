@@ -97,7 +97,6 @@ Style/FormatString:
     - 'ee/spec/features/groups/analytics/cycle_analytics/multiple_value_streams_spec.rb'
     - 'lib/api/helpers/packages/conan/api_helpers.rb'
     - 'lib/bulk_imports/network_error.rb'
-    - 'lib/bulk_imports/users_mapper.rb'
     - 'lib/gitlab/checks/push_file_count_check.rb'
     - 'lib/gitlab/ci/ansi2json/line.rb'
     - 'lib/gitlab/ci/badge/coverage/template.rb'

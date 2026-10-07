@@ -22879,12 +22879,14 @@ CREATE TABLE import_sync_repositories (
     provider_default_branch text,
     provider_webhook_xid bigint,
     webhook_secret jsonb,
+    consecutive_auth_failures smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_40e5f3d631 CHECK ((char_length(provider_default_branch) <= 255)),
     CONSTRAINT check_6e9da9633d CHECK ((char_length(provider_account_login) <= 255)),
     CONSTRAINT check_94a7426e52 CHECK ((char_length(provider_repository_node_id) <= 255)),
     CONSTRAINT check_dd03f3c714 CHECK ((char_length(provider_full_name) <= 255)),
     CONSTRAINT chk_import_sync_repositories_account_xid CHECK ((provider_account_xid > 0)),
     CONSTRAINT chk_import_sync_repositories_application_gen CHECK ((application_generation >= 0)),
+    CONSTRAINT chk_import_sync_repositories_auth_failures CHECK ((consecutive_auth_failures >= 0)),
     CONSTRAINT chk_import_sync_repositories_authority_state CHECK (((authority_state >= 0) AND (authority_state <= 6))),
     CONSTRAINT chk_import_sync_repositories_disconnect_reason CHECK (((disconnect_reason IS NULL) OR ((disconnect_reason >= 0) AND (disconnect_reason <= 9)))),
     CONSTRAINT chk_import_sync_repositories_installation_xid CHECK (((provider_installation_xid IS NULL) OR (provider_installation_xid > 0))),
@@ -25856,7 +25858,9 @@ ALTER SEQUENCE namespaces_storage_limit_exclusions_id_seq OWNED BY namespaces_st
 
 CREATE TABLE namespaces_sync_events (
     id bigint NOT NULL,
-    namespace_id bigint NOT NULL
+    namespace_id bigint NOT NULL,
+    ci_synced boolean DEFAULT false NOT NULL,
+    sec_synced boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE namespaces_sync_events_id_seq
@@ -30197,7 +30201,9 @@ ALTER SEQUENCE projects_id_seq OWNED BY projects.id;
 
 CREATE TABLE projects_sync_events (
     id bigint NOT NULL,
-    project_id bigint NOT NULL
+    project_id bigint NOT NULL,
+    ci_synced boolean DEFAULT false NOT NULL,
+    sec_synced boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE projects_sync_events_id_seq
@@ -50270,6 +50276,10 @@ CREATE INDEX index_namespaces_on_type_and_id ON namespaces USING btree (type, id
 
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
 
+CREATE INDEX index_namespaces_sync_events_on_id_where_not_ci_synced ON namespaces_sync_events USING btree (id) WHERE (ci_synced = false);
+
+CREATE INDEX index_namespaces_sync_events_on_id_where_not_sec_synced ON namespaces_sync_events USING btree (id) WHERE (sec_synced = false);
+
 CREATE INDEX index_namespaces_sync_events_on_namespace_id ON namespaces_sync_events USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_nfas_on_namespaced_id_on_reference ON namespace_foundational_agent_statuses USING btree (namespace_id, reference);
@@ -51261,6 +51271,10 @@ CREATE INDEX index_projects_on_repository_storage ON projects USING btree (repos
 CREATE INDEX index_projects_on_star_count ON projects USING btree (star_count);
 
 CREATE INDEX index_projects_on_updated_at_and_id ON projects USING btree (updated_at, id);
+
+CREATE INDEX index_projects_sync_events_on_id_where_not_ci_synced ON projects_sync_events USING btree (id) WHERE (ci_synced = false);
+
+CREATE INDEX index_projects_sync_events_on_id_where_not_sec_synced ON projects_sync_events USING btree (id) WHERE (sec_synced = false);
 
 CREATE INDEX index_projects_sync_events_on_project_id ON projects_sync_events USING btree (project_id);
 

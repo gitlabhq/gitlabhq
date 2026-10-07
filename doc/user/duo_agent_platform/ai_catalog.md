@@ -330,6 +330,13 @@ To confine the AI Catalog to your group hierarchy:
 1. In the **Data and privacy** section, under **AI Catalog**, select the **Confine the AI Catalog to this group** checkbox.
 1. Select **Save changes**.
 
+## Delete an item
+
+When you delete an agent or flow, GitLab removes it from the instance. If a project other than the managing
+project has turned on the item, GitLab hides the item instead. The item is no longer listed in the AI Catalog,
+and no project can enable it. For the steps, see
+[delete an agent](agents/custom.md#delete-an-agent) and [delete a flow](flows/custom.md#delete-a-flow).
+
 ## Related topics
 
 - [Agents](agents/_index.md)

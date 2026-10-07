@@ -1119,7 +1119,7 @@ RSpec.shared_examples 'get web-hook event endpoint' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.pluck('id')).to contain_exactly(*recent_logs.map(&:id))
+        expect(json_response.pluck('id')).to match_array(recent_logs.map(&:id))
       end
 
       it 'returns 404 when web hook not found' do
@@ -1164,26 +1164,27 @@ RSpec.shared_examples 'get web-hook event endpoint' do
           it 'can filter by status client_failure' do
             get api("#{path}?status=client_failure", user)
 
-            expect(json_response.pluck('id')).to contain_exactly(*[log_400, log_404].map(&:id))
+            expect(json_response.pluck('id')).to match_array([log_400, log_404].map(&:id))
           end
 
           it 'can filter by status server_failure' do
             get api("#{path}?status=server_failure", user)
 
-            expect(json_response.pluck('id')).to contain_exactly(*[log_500, log_502, log_internal_error].map(&:id))
+            expect(json_response.pluck('id')).to match_array([log_500, log_502, log_internal_error].map(&:id))
           end
 
           it 'can filter by status successful' do
             get api("#{path}?status=successful", user)
 
-            expect(json_response.pluck('id')).to contain_exactly(*[log_200].map(&:id))
+            expect(json_response.pluck('id')).to match_array([log_200].map(&:id))
           end
 
           it 'can filter by multiple status' do
             get api("#{path}?status=successful,server_failure", user)
 
-            expect(json_response.pluck('id')).to contain_exactly(*[log_200, log_500, log_502,
-              log_internal_error].map(&:id))
+            expect(json_response.pluck('id')).to match_array(
+              [log_200, log_500, log_502, log_internal_error].map(&:id)
+            )
           end
 
           it 'return 400 when invalid status' do

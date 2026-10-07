@@ -25,6 +25,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       created_at updated_at last_activity_at archived is_self_archived visibility
       container_registry_enabled shared_runners_enabled
       lfs_enabled merge_requests_ff_only_enabled merge_requests_default_target_self avatar_url
+      default_merge_request_target
       issues_enabled merge_requests_enabled wiki_enabled
       forking_access_level issues_access_level merge_requests_access_level
       snippets_enabled jobs_enabled public_jobs open_issues_count open_merge_requests_count import_status
@@ -178,6 +179,61 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
         it 'returns false' do
           expect(subject.dig('data', 'project', 'containerRegistryEnabled')).to be(false)
+        end
+      end
+    end
+  end
+
+  describe 'ci_config_path_or_default' do
+    let_it_be(:ci_config_path) { '.gitlab-ci.yml@group/private-project:refs/heads/secret-branch' }
+    let_it_be_with_reload(:project) do
+      create(:project, :public, :repository_private, ci_config_path: ci_config_path)
+    end
+
+    let_it_be(:member) { create(:user, developer_of: project) }
+    let_it_be(:non_member) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            ciConfigPathOrDefault
+          }
+        }
+      )
+    end
+
+    subject(:result) do
+      GitlabSchema.execute(query, context: { current_user: current_user })
+        .as_json.dig('data', 'project', 'ciConfigPathOrDefault')
+    end
+
+    context 'when the user can read the repository' do
+      let(:current_user) { member }
+
+      it { is_expected.to eq(ci_config_path) }
+
+      context 'when ci_config_path is not set' do
+        before do
+          project.update!(ci_config_path: nil)
+        end
+
+        it { is_expected.to eq(Ci::Pipeline::DEFAULT_CONFIG_PATH) }
+      end
+    end
+
+    context 'when the user cannot read the repository' do
+      where(:current_user) { [nil, ref(:non_member)] }
+
+      with_them do
+        it { is_expected.to eq('') }
+
+        context 'when ci_config_path is not set' do
+          before do
+            project.update!(ci_config_path: nil)
+          end
+
+          it { is_expected.to eq('') }
         end
       end
     end

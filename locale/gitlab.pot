@@ -9467,6 +9467,9 @@ msgstr ""
 msgid "AiPowered|Configure the URLs your GitLab instance uses to connect to AI services."
 msgstr ""
 
+msgid "AiPowered|Connection closed unexpectedly (%{category}, code %{code})%{reasonSuffix}"
+msgstr ""
+
 msgid "AiPowered|Connection method"
 msgstr ""
 
@@ -9564,6 +9567,9 @@ msgid "AiPowered|Enter the URL for your Duo Agent Platform service. This endpoin
 msgstr ""
 
 msgid "AiPowered|Enter the URL for your local AI Gateway. This endpoint is used for GitLab Duo Self-Hosted requests.%{br}The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\".%{br}For more information, see how to %{linkStart}install the GitLab AI Gateway.%{linkEnd}"
+msgstr ""
+
+msgid "AiPowered|Error: %{error}. View Workhorse logs for more details."
 msgstr ""
 
 msgid "AiPowered|Everyone"
@@ -9764,6 +9770,9 @@ msgstr ""
 msgid "AiPowered|No groups found"
 msgstr ""
 
+msgid "AiPowered|No response from the WebSocket connection. If using a reverse proxy, verify it supports WebSocket upgrades."
+msgstr ""
+
 msgid "AiPowered|No self-hosted model is configured. AI requests route to GitLab-managed models until a self-hosted model is available."
 msgstr ""
 
@@ -9795,6 +9804,9 @@ msgid "AiPowered|Purchase credits"
 msgstr ""
 
 msgid "AiPowered|Purchase credits (opens in new window)"
+msgstr ""
+
+msgid "AiPowered|Reason: %{reason}. %{message}"
 msgstr ""
 
 msgid "AiPowered|Remove"
@@ -10034,10 +10046,16 @@ msgstr ""
 msgid "AiPowered|Verification check supports only self-hosted models"
 msgstr ""
 
+msgid "AiPowered|Verification run timed out."
+msgstr ""
+
 msgid "AiPowered|Verifications do not consume GitLab Credits."
 msgstr ""
 
 msgid "AiPowered|Verifies the request flow of Agentic Chat end to end."
+msgstr ""
+
+msgid "AiPowered|View Workhorse logs for more details."
 msgstr ""
 
 msgid "AiPowered|View configuration"
@@ -89558,6 +89576,9 @@ msgstr ""
 msgid "UsageBilling|Monthly waiver limit"
 msgstr ""
 
+msgid "UsageBilling|No overrides to save. Please add at least one entry."
+msgstr ""
+
 msgid "UsageBilling|No per-user overrides set."
 msgstr ""
 
@@ -93941,7 +93962,7 @@ msgstr ""
 msgid "WebhooksTrigger|Confidential comments"
 msgstr ""
 
-msgid "WebhooksTrigger|Confidential work items events"
+msgid "WebhooksTrigger|Confidential work item events"
 msgstr ""
 
 msgid "WebhooksTrigger|Deployment events"
@@ -94046,7 +94067,7 @@ msgstr ""
 msgid "Webhooks|Confidential comments"
 msgstr ""
 
-msgid "Webhooks|Confidential issue events"
+msgid "Webhooks|Confidential work item events"
 msgstr ""
 
 msgid "Webhooks|Copy token"
@@ -94116,9 +94137,6 @@ msgid "Webhooks|How do I create a custom webhook template?"
 msgstr ""
 
 msgid "Webhooks|How it looks in the UI"
-msgstr ""
-
-msgid "Webhooks|Issue events"
 msgstr ""
 
 msgid "Webhooks|Job events"
@@ -94275,6 +94293,9 @@ msgid "Webhooks|Wildcard pattern"
 msgstr ""
 
 msgid "Webhooks|Wildcards such as %{WILDCARD_CODE_STABLE} or %{WILDCARD_CODE_PRODUCTION} are supported."
+msgstr ""
+
+msgid "Webhooks|Work item events"
 msgstr ""
 
 msgid "Webhooks|You cannot access the token unless you regenerate it."

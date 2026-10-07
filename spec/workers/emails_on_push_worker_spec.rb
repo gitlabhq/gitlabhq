@@ -130,7 +130,7 @@ RSpec.describe EmailsOnPushWorker, :mailer, feature_category: :source_code_manag
         it "sends the mail to each of the recipients" do
           perform
 
-          expect(email_recipients).to contain_exactly(*recipients.split)
+          expect(email_recipients).to match_array(recipients.split)
         end
 
         it "only generates the mail once" do

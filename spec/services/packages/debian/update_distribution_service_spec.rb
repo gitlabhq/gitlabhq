@@ -47,8 +47,8 @@ RSpec.describe Packages::Debian::UpdateDistributionService, feature_category: :p
         end
       end
 
-      expect(distribution.components.map(&:name)).to contain_exactly(*expected_components)
-      expect(distribution.architectures.map(&:name)).to contain_exactly(*expected_architectures)
+      expect(distribution.components.map(&:name)).to match_array(expected_components)
+      expect(distribution.architectures.map(&:name)).to match_array(expected_architectures)
     end
   end
 

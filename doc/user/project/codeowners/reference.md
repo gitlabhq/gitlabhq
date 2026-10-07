@@ -164,14 +164,14 @@ README.md
 
 [Database] @database-team @agarcia
 model/db/
-config/db/database-setup.md @docs-team
+model/db/database-setup.md @docs-team
 ```
 
 In this example:
 
 - `@docs-team` owns all items in the `Documentation` section.
 - `@database-team` and `@agarcia` own all items in the `Database` section except
-  `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
+  `model/db/database-setup.md`, which has an override assigning it to `@docs-team`.
 
 Compare this behavior to when you use [regular entries and sections together](advanced.md#regular-entries-and-sections),
 when entries in sections don't override entries without sections.

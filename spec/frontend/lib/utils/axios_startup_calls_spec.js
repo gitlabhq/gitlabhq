@@ -100,6 +100,18 @@ describe('setupAxiosStartupCalls', () => {
       expect(data).toEqual(AXIOS_RESPONSE);
     });
 
+    it('does not replay a consumed startup call through a second interceptor', async () => {
+      // The Vue 2 and Vue 3 realms each evaluate axios_utils and set this up
+      // on the same axios instance; the second one can arrive after the first
+      // already served a request.
+      await axios.get('/startup');
+      setupAxiosStartupCalls(axios);
+
+      const { data } = await axios.get('/startup');
+
+      expect(data).toEqual(AXIOS_RESPONSE);
+    });
+
     it('does not delegate to startup calls if the call is failing', async () => {
       mockConsoleWarn();
       const { data } = await axios.get('/startup-failing');

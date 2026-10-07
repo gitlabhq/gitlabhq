@@ -14,7 +14,7 @@ module Database
       return_stmt, *body_stmts = parsed_function_statements(name).reverse
 
       expect(return_stmt).to eq('return old')
-      expect(body_stmts).to contain_exactly(*statements)
+      expect(body_stmts).to match_array(statements)
     end
 
     def expect_trigger_not_to_exist(table_name, name)

@@ -206,6 +206,8 @@ func newRunner(client clientTransport, rails *api.API, backend http.Handler, rel
 		token:                     cfg.Service.Headers["x-gitlab-oauth-token"],
 		shouldTimeoutHTTPRequests: cfg.TimeoutHTTPRequests,
 		originalReq:               r,
+		clientType:                cfg.Service.Headers["x-gitlab-client-type"],
+		clientName:                cfg.Service.Headers["x-gitlab-client-name"],
 	}
 
 	rnr := &runner{

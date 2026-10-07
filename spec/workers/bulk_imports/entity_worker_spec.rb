@@ -108,35 +108,33 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
       worker.perform(entity.id)
     end
 
-    context 'when starting the next stage' do
-      it 'enqueues Import::LoadPlaceholderReferencesWorker' do
+    it 'enqueues Import::LoadPlaceholderReferencesWorker' do
+      expect(Import::LoadPlaceholderReferencesWorker)
+        .to receive(:perform_async)
+        .with(
+          Import::SOURCE_DIRECT_TRANSFER,
+          entity.bulk_import_id
+        )
+
+      subject
+    end
+
+    context 'when the import is offline' do
+      let(:offline_bulk_import) { create(:bulk_import, :with_offline_configuration) }
+
+      before do
+        entity.update!(bulk_import: offline_bulk_import)
+      end
+
+      it 'enqueues Import::LoadPlaceholderReferencesWorker with offline transfer source' do
         expect(Import::LoadPlaceholderReferencesWorker)
           .to receive(:perform_async)
           .with(
-            Import::SOURCE_DIRECT_TRANSFER,
+            Import::SOURCE_OFFLINE_TRANSFER,
             entity.bulk_import_id
           )
 
         subject
-      end
-
-      context 'when the import is offline' do
-        let(:offline_bulk_import) { create(:bulk_import, :with_offline_configuration) }
-
-        before do
-          entity.update!(bulk_import: offline_bulk_import)
-        end
-
-        it 'enqueues Import::LoadPlaceholderReferencesWorker with offline transfer source' do
-          expect(Import::LoadPlaceholderReferencesWorker)
-            .to receive(:perform_async)
-            .with(
-              Import::SOURCE_OFFLINE_TRANSFER,
-              entity.bulk_import_id
-            )
-
-          subject
-        end
       end
     end
 

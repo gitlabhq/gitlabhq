@@ -55,9 +55,7 @@ module BulkImports
         extra: { source_equals_destination: bulk_import.source_equals_destination? }
       )
 
-      ephemeral_data = ::Import::BulkImports::EphemeralData.new(bulk_import.id)
-      ephemeral_data.enable_importer_user_mapping
-      ephemeral_data.request_channel = request_channel
+      ::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel = request_channel
 
       ::Import::BulkImports::SourceUsersAttributesWorker.perform_async(bulk_import.id)
 

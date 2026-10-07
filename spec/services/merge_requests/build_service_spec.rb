@@ -102,7 +102,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
     end
 
     it 'adds an error message to the merge request' do
-      expect(merge_request.errors).to contain_exactly(*Array(error_message))
+      expect(merge_request.errors).to match_array(Array(error_message))
     end
   end
 
@@ -928,7 +928,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
       context 'for labels in the project' do
         it 'is allowed for developers' do
-          expect(merge_request.label_ids).to contain_exactly(*label_ids)
+          expect(merge_request.label_ids).to match_array(label_ids)
         end
       end
 

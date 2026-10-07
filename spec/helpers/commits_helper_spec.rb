@@ -366,6 +366,46 @@ RSpec.describe CommitsHelper do
     end
   end
 
+  describe '#commit_pipeline_summary_data' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:user) { create(:user) }
+
+    let(:can_read_pipeline) { true }
+
+    subject { helper.commit_pipeline_summary_data(project, pipeline) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).with(user, :read_pipeline, pipeline).and_return(can_read_pipeline)
+    end
+
+    it 'returns the pipeline summary data' do
+      is_expected.to eq(
+        full_path: project.full_path,
+        iid: pipeline.iid,
+        graphql_resource_etag: graphql_etag_pipeline_path(pipeline)
+      )
+    end
+
+    context 'when the pipeline is nil' do
+      let(:pipeline) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the pipeline has no iid' do
+      let(:pipeline) { build_stubbed(:ci_pipeline, project: project, iid: nil) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the user cannot read the pipeline' do
+      let(:can_read_pipeline) { false }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe "#commit_partial_cache_key" do
     subject(:cache_key) { helper.commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
 

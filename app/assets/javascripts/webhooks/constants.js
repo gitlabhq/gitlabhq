@@ -50,7 +50,7 @@ export const TRIGGER_CONFIG = [
   {
     key: 'confidentialIssuesEvents',
     inputName: 'hook[confidential_issues_events]',
-    label: s__('WebhooksTrigger|Confidential work items events'),
+    label: s__('WebhooksTrigger|Confidential work item events'),
     helpText: s__(
       'WebhooksTrigger|A confidential work item is created, updated, closed, or reopened.',
     ),

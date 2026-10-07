@@ -372,12 +372,9 @@ not ever need to manually add an entry point to the `webpack.config.js` file.
 > browser's developer console from any page in GitLab.
 
 TROUBLESHOOTING:
-If using Vite, keep in mind that support for it is new and you may encounter unexpected effects from time to
-time. If the entrypoint is correctly configured but the JavaScript is not loading,
-try clearing the Vite cache and restarting the service:
-`rm -rf tmp/cache/vite && gdk restart vite`
-
-Alternatively, you can opt to use Webpack instead. Follow these [instructions for disabling Vite and using Webpack](https://gitlab-org.gitlab.io/gitlab-development-kit/configuration/#vite-settings).
+If the entrypoint is correctly configured but the JavaScript is not loading,
+try clearing the frontend caches and restarting the service:
+`yarn clean && gdk restart rspack`
 
 #### Important Considerations
 

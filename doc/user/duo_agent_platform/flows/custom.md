@@ -473,7 +473,8 @@ To hide a flow:
 
 ## Delete a flow
 
-Delete a flow to permanently remove it from the instance.
+Delete a flow to remove it from the instance. If a project other than the managing project has turned off the
+flow, the flow is hidden instead of removed.
 
 Prerequisites:
 

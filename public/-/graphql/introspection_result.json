@@ -27646,6 +27646,18 @@
               "deprecationReason": null
             },
             {
+              "name": "iamRole",
+              "description": "IAM role ARN that the AI Gateway assumes when calling Amazon Bedrock.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID of the self-hosted model server.",
               "args": [],
@@ -27917,6 +27929,18 @@
               "deprecationReason": null
             },
             {
+              "name": "iamRole",
+              "description": "IAM role ARN that the AI Gateway assumes through STS AssumeRole when calling Amazon Bedrock. Only used by the Amazon Bedrock provider.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "provider",
               "description": "Provider for the self-hosted model.",
               "type": {
@@ -28073,6 +28097,18 @@
             {
               "name": "identifier",
               "description": "Identifier for 3rd party model provider.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "iamRole",
+              "description": "IAM role ARN that the AI Gateway assumes through STS AssumeRole when calling Amazon Bedrock. Only used by the Amazon Bedrock provider.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -28448,6 +28484,18 @@
             {
               "name": "identifier",
               "description": "Identifier for 3rd party model provider.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "iamRole",
+              "description": "IAM role ARN that the AI Gateway assumes through STS AssumeRole when calling Amazon Bedrock. Only used by the Amazon Bedrock provider.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -177091,6 +177139,26 @@
               "deprecationReason": null
             },
             {
+              "name": "nonBillableUsage",
+              "description": "GitLab Credits usage that was not billed, grouped by product and skip reason. Not included in `creditsUsed` or `dailyUsage`. Null when the usage cannot be read.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "GitlabSubscriptionUsageNonBillableUsage",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "overage",
               "description": "Overage statistics.",
               "args": [],
@@ -177322,6 +177390,85 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GitlabSubscriptionUsageNonBillableUsage",
+          "description": "GitLab Credits usage that was not billed, for one product and skip reason.",
+          "fields": [
+            {
+              "name": "dailyUsage",
+              "description": "Daily non-billable GitLab Credits for the product and skip reason.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "GitlabSubscriptionDailyUsage",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "productId",
+              "description": "Identifier of the product the usage belongs to. Matches `GitlabSubscriptionUsageProduct.id`.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "skipReason",
+              "description": "Reason the usage was not billed, as recorded on the usage event. Null when the event has no recorded reason.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalCreditsUsed",
+              "description": "Total non-billable GitLab Credits for the product and skip reason in the date range.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
                   "ofType": null
                 }
               },
@@ -330362,7 +330509,7 @@
             },
             {
               "name": "ciConfigPathOrDefault",
-              "description": "Path of the CI configuration file.",
+              "description": "Path of the CI configuration file. Returns an empty string if the user does not have permission to read the repository.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -332552,6 +332699,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ProjectDataTransfer",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "defaultMergeRequestTarget",
+              "description": "Default target project of merge requests created from the project. For a fork, this is the upstream project when the fork can target it, and the fork itself otherwise. Returns `null` when the target project is not visible to the current user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
                 "ofType": null
               },
               "isDeprecated": false,

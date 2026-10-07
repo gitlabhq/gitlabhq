@@ -14,7 +14,7 @@ that prevent us from using the following deprecated features in the codebase.
 
 The GitLab frontend team has enabled Vue 3 (@vue/compat) for development environments like GDK. While not yet production-ready, you can opt-in locally to verify your client code is forward-compatible with Vue 3.
 
-**How does it work?** When the build tool (Vite or Webpack) detects the VUE_VERSION=3 environment variable,
+**How does it work?** When Rspack detects the `VUE_VERSION=3` environment variable,
 it uses module aliasing to swap out certain dependencies, including Vue itself, for their Vue 3-compatible counterparts.
 
 Some of these replacement libraries are maintained by the team. They act as thin wrappers around existing
@@ -22,13 +22,13 @@ libraries, making them Vue 3-compatible without requiring any changes in consume
 
 ## Set up GDK to use Vue 3 (@vue/compat)
 
-This guide walks you through configuring the GitLab Development Kit (GDK) to use Vite as the build tool with Vue 3.
+This guide walks you through configuring the GitLab Development Kit (GDK) to use Rspack as the build tool with Vue 3.
 
 ### Prerequisites
 
 - GDK installed and configured
-- Basic familiarity with Vue.js and Vite
-- Vite configured in your GDK environment (see [GDK Vite Settings](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md?ref_type=heads#vite-settings))
+- Basic familiarity with Vue.js and Rspack
+- Rspack configured in your GDK environment (see [GDK Rspack settings](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#rspack-settings))
 
 ### Initial Setup
 
@@ -39,7 +39,7 @@ To switch between Vue 2 and Vue 3, follow these steps:
 1. **Set the desired Vue version:**
 
    ```shell
-   gdk config set vite.vue_version 3  # or 2
+   gdk config set rspack.vue_version 3  # or 2
    ```
 
 1. **Reconfigure GDK:**
@@ -54,26 +54,29 @@ To switch between Vue 2 and Vue 3, follow these steps:
    gdk restart # or `gdk start` if running for the first time
    ```
 
-> **Important:** You can clear caches with `yarn clean` or `gdk kill vite` if you face issues switching Vue versions.
+> **Important:** If you face issues switching Vue versions, clear the caches with `yarn clean`, or clear the Rspack cache and restart the service with `rm -rf tmp/cache/rspack && gdk restart rspack`.
 
 ### Verifying Your Setup
 
-You can verify your Vite configuration by checking your `gdk.yml` file:
+You can verify your Rspack configuration by checking your `gdk.yml` file:
 
 ```shell
-gdk config get vite
+gdk config get rspack
 ```
 
-This should display your current Vite settings, including the enabled status and Vue version. Your GDK
+This should display your current Rspack settings, including the enabled status and Vue version. Your GDK
 should also be up and running.
 
 ```shell
 ---
+allowed_hosts: []
 enabled: true
-hot_module_reloading: true
-https:
-  enabled: true
-port: 3038
+host: 127.0.0.1
+live_reload: true
+port: 3808
+public_address: ''
+sourcemaps: true
+static: false
 vue_version: 3
 ```
 
@@ -81,19 +84,19 @@ vue_version: 3
 
 #### General Debugging
 
-When encountering issues, start by checking the Vite logs:
+When encountering issues, start by checking the Rspack logs:
 
 ```shell
-gdk tail vite
+gdk tail rspack
 ```
 
-This shows real-time Vite output and error messages that can help identify the problem.
+This shows real-time Rspack output and error messages that can help identify the problem.
 
 #### Build Errors After Switching Versions
 
 If you encounter build errors after switching Vue versions:
 
-1. Ensure you've cleared the Vite cache with `yarn clean`
+1. Ensure you've cleared the cache with `yarn clean`
 1. Try clearing `node_modules` and reinstalling dependencies:
 
    ```shell
@@ -101,17 +104,15 @@ If you encounter build errors after switching Vue versions:
    yarn install
    ```
 
-#### Vite Not Starting
+#### Rspack Not Starting
 
-If Vite fails to start:
+If Rspack fails to start:
 
-- Check that `vite.enabled` is set to `true`
-- Verify your Node.js version meets Vite's requirements
+- Check that `rspack.enabled` is set to `true`
 - Review GDK logs for specific error messages
 
 ### Additional Resources
 
-- [Vite Documentation](https://vitejs.dev/)
 - [Vue 3 Documentation](https://vuejs.org/)
 - [GDK Documentation](https://gitlab.com/gitlab-org/gitlab-development-kit)
 
@@ -497,7 +498,7 @@ in `config/helpers/entry_points.js` instead of a page under `pages/`.
    If the page is shadowed across CE and EE, add the file to whichever directory currently owns
    the `index.js`, or to both if both directories contain an `index.js`. CE and EE YAMLs for the
    same page must agree on `status` and `feature_flag`.
-1. Restart Vite with `gdk restart vite`. Vite builds its page entry map at startup, so it does not
+1. Restart Rspack with `gdk restart rspack`. Rspack builds its page entry map at startup, so it does not
    serve an entrypoint added while it was running.
 1. Enable the feature flag and load the page locally.
 1. Verify that the console shows
