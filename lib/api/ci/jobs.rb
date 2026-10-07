@@ -16,12 +16,12 @@ module API
         before { authenticate! }
 
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         end
 
         helpers do
           params :optional_scope do
-            optional :scope, type: Array[String], desc: 'The scope of builds to show',
+            optional :scope, type: Array[String], desc: 'Filter jobs by status. Accepts a single value or an array of values. If omitted, returns all jobs.',
               values: ::CommitStatus::AVAILABLE_STATUSES,
               coerce_with: ->(scope) {
                 case scope
@@ -53,7 +53,7 @@ module API
         end
         params do
           use :optional_scope
-          optional :ref, type: String, desc: 'The branch name (ref) to filter jobs by', documentation: { example: 'feature-branch' }
+          optional :ref, type: String, desc: 'Branch name (ref) to filter jobs by.', documentation: { example: 'feature-branch' }
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
@@ -84,7 +84,7 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
         end
         route_setting :authorization, permissions: :read_job, boundary_type: :project
         get ':id/jobs/:job_id', urgency: :low, feature_category: :continuous_integration do
@@ -106,11 +106,11 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-          optional :byte_offset, type: Integer, desc: 'Byte offset to start reading from',
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
+          optional :byte_offset, type: Integer, desc: 'Byte offset to start reading the trace from.',
             values: 0.., documentation: { example: 0 }
-          optional :byte_limit, type: Integer, desc: 'Maximum number of bytes to return',
+          optional :byte_limit, type: Integer, desc: 'Maximum number of bytes to return.',
             values: 1..Gitlab::Ci::Trace::Stream::LIMIT_SIZE, documentation: { example: 51200 }
         end
 
@@ -155,8 +155,8 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-          optional :force, type: Boolean, desc: 'Force cancellation for a job with a state of `canceling`', documentation: { example: true }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
+          optional :force, type: Boolean, desc: 'If `true`, [forces cancellation](https://docs.gitlab.com/ci/jobs/#force-cancel-a-job) of a job in `canceling` state.', documentation: { example: true }
         end
 
         route_setting :authorization, permissions: :cancel_job, boundary_type: :project
@@ -188,8 +188,8 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-          optional :inputs, type: Hash, desc: 'Input values for the job', documentation: { example: { 'environment' => 'production' } }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
+          optional :inputs, type: Hash, desc: 'Input values for the job.', documentation: { example: { 'environment' => 'production' } }
         end
         # This endpoint can be used for retrying both builds and bridges.
         route_setting :authorization, permissions: :retry_job, boundary_type: :project
@@ -227,7 +227,7 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
         end
         route_setting :authorization, permissions: :erase_job, boundary_type: :project
         post ':id/jobs/:job_id/erase', urgency: :low, feature_category: :continuous_integration do
@@ -255,14 +255,14 @@ module API
           tags ['ci_jobs']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a Job', documentation: { example: 88 }
+          requires :job_id, type: Integer, desc: 'ID of the job.', documentation: { example: 88 }
           optional :job_variables_attributes,
-            type: Array, desc: 'User defined variables that will be included when running the job' do
-            requires :key, type: String, desc: 'The name of the variable', documentation: { example: 'foo' }
-            requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'bar' }
+            type: Array, desc: 'User-defined variables to include when running the job.' do
+            requires :key, type: String, desc: 'Name of the variable.', documentation: { example: 'foo' }
+            requires :value, type: String, desc: 'Value of the variable.', documentation: { example: 'bar' }
           end
           optional :job_inputs,
-            type: Hash, desc: 'Input values for the job', documentation: { example: { environment: 'production' } }
+            type: Hash, desc: 'Hash of [job input](https://docs.gitlab.com/ci/jobs/job_inputs/) values to use when playing the job. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17833) in GitLab 18.10.', documentation: { example: { environment: 'production' } }
         end
 
         route_setting :authorization, permissions: :play_job, boundary_type: :project

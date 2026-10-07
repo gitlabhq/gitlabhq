@@ -372,7 +372,6 @@ type:DuoSettings
 type:DuoUsageEventsAggregationResponse
 type:DuoUsageEventsAggregationResponseDimensions
 type:DuoUsageEventsAggregationScope
-type:DuoWorkflow
 type:DuoWorkflowEnablement
 type:DuoWorkflowEnablementCheck
 type:DuoWorkflowEvent

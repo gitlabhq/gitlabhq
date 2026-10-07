@@ -13,16 +13,21 @@ module Gitlab
           :stages, :jobs, :job_name_mappings,
           :workflow_rules, :workflow_name, :workflow_auto_cancel
 
-        def initialize(ci_config: nil, errors: [], warnings: [])
+        def initialize(ci_config: nil, errors: [], warnings: [], timed_out: false)
           @ci_config = ci_config
           @errors = errors || []
           @warnings = warnings || []
+          @timed_out = timed_out
 
           assign_valid_attributes if valid?
         end
 
         def valid?
           errors.empty?
+        end
+
+        def timed_out?
+          @timed_out
         end
 
         def only_no_visible_jobs_error?

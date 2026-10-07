@@ -118,7 +118,8 @@ row. Both methods emit identically over the network.
 An air-gapped instance cannot reach the billing collector, so usage sent over the
 network is lost. When such an instance is licensed offline, the client writes to a
 local daily aggregate table instead of emitting, and an administrator exports that data
-for upload. This is behind the `local_billing_persistence` feature flag.
+for upload. This is behind the `local_billing_persistence` feature flag, which is enabled
+by default, and does not depend on `billing_event_tracking`.
 
 Callers do not need to detect this. The same call works on both kinds of instance.
 

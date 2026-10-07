@@ -27,6 +27,9 @@ module Organizations
             payload: { failed: validation_errors })
         end
 
+        transfer_error = transfer_validation_error
+        return ServiceResponse.error(message: transfer_error) if transfer_error
+
         # The event payload needs each group's pre-transfer organization, so snapshot it here.
         original_organizations_by_group_id = groups.to_h { |group| [group.id, group.organization_id] }
 
@@ -152,6 +155,8 @@ module Organizations
 
         errors
       end
+
+      def transfer_validation_error; end
 
       def error_message_for_group(group)
         return group_not_root_error unless group_is_root?(group)

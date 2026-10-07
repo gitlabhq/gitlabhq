@@ -18,24 +18,24 @@ module API
 
     helpers do
       params :statistics_params do
-        optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
+        optional :statistics, type: Boolean, default: false, desc: 'If `true`, includes group statistics. Administrators only.'
       end
 
       params :group_list_params do
         use :statistics_params
-        optional :archived, type: Boolean, desc: 'Limit by archived status'
-        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
-        optional :all_available, type: Boolean, desc: 'When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.'
+        optional :archived, type: Boolean, desc: 'If `true`, returns only archived groups or projects.'
+        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Skip the specified group IDs.'
+        optional :all_available, type: Boolean, desc: 'If `true`, returns all accessible groups. If `false`, returns only groups where the user is a member. When omitted, administrators receive all groups and other authenticated users receive only their own. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence.'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-          desc: 'Limit by visibility'
-        optional :search, type: String, desc: 'Search for a specific group'
-        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
-        optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
-        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
-        optional :top_level_only, type: Boolean, desc: 'Only include top-level groups'
-        optional :marked_for_deletion_on, type: Date, desc: 'Return groups that are marked for deletion on this date'
-        optional :active, type: Boolean, desc: 'Limit by groups that are not archived and not marked for deletion'
+          desc: 'Return groups with the specified visibility.'
+        optional :search, type: String, desc: 'Return the list of authorized groups matching the search criteria.'
+        optional :owned, type: Boolean, default: false, desc: 'If `true`, returns only groups explicitly owned by the current user.'
+        optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Sort results by the specified field.'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort results in ascending or descending order.'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Return groups where the current user has at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+        optional :top_level_only, type: Boolean, desc: 'If `true`, returns only top-level groups, excluding subgroups.'
+        optional :marked_for_deletion_on, type: Date, desc: 'Return groups that are marked for deletion on this date. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1.'
+        optional :active, type: Boolean, desc: 'If `true`, returns only groups that are not archived and not marked for deletion.'
         use :optional_group_list_params_ee
         use :pagination
       end
@@ -350,7 +350,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Update group attributes' do
@@ -443,7 +443,7 @@ module API
       end
       params do
         use :with_custom_attributes
-        optional :with_projects, type: Boolean, default: true, desc: 'Omit project details'
+        optional :with_projects, type: Boolean, default: true, desc: 'If `true`, includes details of the projects that belong to the group. Deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To list the projects in a group, use the List all projects in a group operation instead.'
       end
       # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357841
       route_setting :authorization, permissions: :read_group, boundary_type: :group
@@ -497,12 +497,12 @@ module API
         tags %w[groups]
       end
       params do
-        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
-        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'Limit by visibility'
-        optional :search, type: String, desc: 'Search for a specific group'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
-        optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
-        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Skip the specified group IDs.'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'Return groups with the specified visibility.'
+        optional :search, type: String, desc: 'Return the list of authorized groups matching the search criteria.'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Return groups where the current user has at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+        optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Sort results by the specified field.'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort results in ascending or descending order.'
 
         use :pagination
         use :with_custom_attributes
@@ -524,9 +524,9 @@ module API
         tags %w[groups]
       end
       params do
-        optional :relation, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: %w[direct inherited], desc: 'Include group relations'
-        optional :search, type: String, desc: 'Search for a specific group'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+        optional :relation, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: %w[direct inherited], desc: 'Filter groups by relation.'
+        optional :search, type: String, desc: 'Return the list of authorized groups matching the search criteria.'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Return groups where the current user has at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
 
         use :pagination
         use :with_custom_attributes
@@ -548,25 +548,25 @@ module API
         tags %w[groups]
       end
       params do
-        optional :active, type: Boolean, desc: 'Limit by projects that are not archived and not marked for deletion'
-        optional :archived, type: Boolean, desc: 'Limit by archived status'
+        optional :active, type: Boolean, desc: 'If `true`, returns active projects. If `false`, returns projects that are archived or marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218053) in GitLab 18.8.'
+        optional :archived, type: Boolean, desc: 'If `true`, returns only archived groups or projects.'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-          desc: 'Limit by visibility'
-        optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+          desc: 'Return groups with the specified visibility.'
+        optional :search, type: String, desc: 'Return the list of authorized projects matching the search criteria.'
         optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at similarity star_count],
-          default: 'created_at', desc: 'Return projects ordered by field'
+          default: 'created_at', desc: 'Sort results by the specified field.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return projects sorted in ascending and descending order'
+          desc: 'Sort results in ascending or descending order.'
         optional :simple, type: Boolean, default: false,
-          desc: 'Return only the ID, URL, name, and path of each project'
-        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
-        optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
-        optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
-        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
-        optional :with_shared, type: Boolean, default: true, desc: 'Include projects shared to this group'
-        optional :include_subgroups, type: Boolean, default: false, desc: 'Includes projects in subgroups of this group'
-        optional :include_ancestor_groups, type: Boolean, default: false, desc: 'Includes projects in ancestors of this group'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user on projects' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+          desc: 'If `true`, returns only limited fields for each project. Without authentication, only limited fields are returned regardless of this setting.'
+        optional :owned, type: Boolean, default: false, desc: 'If `true`, returns only groups explicitly owned by the current user.'
+        optional :starred, type: Boolean, default: false, desc: 'If `true`, returns only projects starred by the current user.'
+        optional :with_issues_enabled, type: Boolean, default: false, desc: 'If `true`, returns only projects that have the issues feature enabled.'
+        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'If `true`, returns only projects that have the merge requests feature enabled.'
+        optional :with_shared, type: Boolean, default: true, desc: 'If `true`, includes projects shared with the group.'
+        optional :include_subgroups, type: Boolean, default: false, desc: 'If `true`, includes projects in subgroups of this group.'
+        optional :include_ancestor_groups, type: Boolean, default: false, desc: 'If `true`, includes projects in the ancestors of this group.'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Return projects where the current user has at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
 
         use :pagination
         use :with_custom_attributes
@@ -595,20 +595,20 @@ module API
         tags %w[groups]
       end
       params do
-        optional :archived, type: Boolean, desc: 'Limit by archived status'
+        optional :archived, type: Boolean, desc: 'If `true`, returns only archived groups or projects.'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-          desc: 'Limit by visibility'
-        optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+          desc: 'Return groups with the specified visibility.'
+        optional :search, type: String, desc: 'Return the list of authorized projects matching the search criteria.'
         optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at star_count],
-          default: 'created_at', desc: 'Return projects ordered by field'
+          default: 'created_at', desc: 'Sort results by the specified field.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return projects sorted in ascending and descending order'
+          desc: 'Sort results in ascending or descending order.'
         optional :simple, type: Boolean, default: false,
-          desc: 'Return only the ID, URL, name, and path of each project'
-        optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
-        optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
-        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
-        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user on projects' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+          desc: 'If `true`, returns only limited fields for each project. Without authentication, only limited fields are returned regardless of this setting.'
+        optional :starred, type: Boolean, default: false, desc: 'If `true`, returns only projects starred by the current user.'
+        optional :with_issues_enabled, type: Boolean, default: false, desc: 'If `true`, returns only projects that have the issues feature enabled.'
+        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'If `true`, returns only projects that have the merge requests feature enabled.'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Return projects where the current user has at least the specified access level. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
 
         use :pagination
         use :with_custom_attributes
@@ -659,7 +659,7 @@ module API
         tags %w[groups]
       end
       params do
-        requires :project_id, type: String, desc: 'The ID or path of the project'
+        requires :project_id, type: String, desc: 'ID or URL-encoded path of the project.'
       end
       route_setting :authorization, permissions: :transfer_project, boundary_type: :instance, assignable_when: [:admin]
       post ":id/projects/:project_id", requirements: { project_id: /.+/ }, feature_category: :groups_and_projects do
@@ -683,7 +683,7 @@ module API
         tags %w[groups]
       end
       params do
-        optional :search, type: String, desc: 'Return list of namespaces matching the search criteria'
+        optional :search, type: String, desc: 'Group name to search for.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_group_transfer_location, boundary_type: :group
@@ -705,8 +705,7 @@ module API
       params do
         optional :group_id,
           type: Integer,
-          desc: 'The ID of the target group to which the group needs to be transferred to.'\
-                'If not provided, the source group will be promoted to a top-level group.'
+          desc: 'ID of the new parent group. If omitted, the group becomes a top-level group.'
       end
       route_setting :authorization, permissions: :transfer_group, boundary_type: :group
       post ':id/transfer', feature_category: :groups_and_projects do
@@ -730,7 +729,7 @@ module API
         tags %w[groups]
       end
       params do
-        requires :organization_id, type: Integer, desc: 'The ID of the organization to transfer the group to'
+        requires :organization_id, type: Integer, desc: 'ID of the organization to transfer the group to.'
       end
       route_setting :authorization, permissions: :transfer_group, boundary_type: :group
       route_setting :lifecycle, :experiment
@@ -765,10 +764,10 @@ module API
         tags %w[groups]
       end
       params do
-        requires :group_id, type: Integer, desc: 'The ID of the group to share'
-        requires :group_access, type: Integer, values: Gitlab::Access.values_with_minimal_access, desc: 'The group access level'
-        optional :expires_at, type: Date, desc: 'Share expiration date'
-        optional :member_role_id, type: Integer, desc: 'The ID of the Member Role to be assigned to the group'
+        requires :group_id, type: Integer, desc: 'ID of the group to invite.'
+        requires :group_access, type: Integer, values: Gitlab::Access.values_with_minimal_access, desc: 'Access level to grant to the invited group. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).'
+        optional :expires_at, type: Date, desc: 'Date when the share expires.'
+        optional :member_role_id, type: Integer, desc: 'ID of a [custom role](https://docs.gitlab.com/user/custom_roles/#assign-a-custom-role-to-an-invited-group) to assign to the invited group. If set, `group_access` must match the base role used to create the custom role.'
       end
       route_setting :authorization, permissions: :share_group, boundary_type: :group
       post ":id/share", feature_category: :groups_and_projects, urgency: :low do
@@ -796,7 +795,7 @@ module API
         tags ['groups']
       end
       params do
-        requires :group_id, type: Integer, desc: 'The ID of the shared group'
+        requires :group_id, type: Integer, desc: 'ID of the shared group.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :unshare_group, boundary_type: :group
@@ -828,7 +827,7 @@ module API
         tags %w[groups]
       end
       params do
-        requires :project_id, type: Integer, desc: 'The ID of the shared project'
+        requires :project_id, type: Integer, desc: 'ID of the shared project.'
       end
       # rubocop: disable CodeReuse/ActiveRecord -- Composite-key find_by/destroy; lightweight Grape endpoint, no finder reuse
       route_setting :authorization, permissions: :unshare_project, boundary_type: :group

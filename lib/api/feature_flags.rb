@@ -16,7 +16,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource 'projects/:id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :feature_flags do
@@ -34,7 +34,7 @@ module API
         params do
           optional :scope,
             type: String,
-            desc: 'The scope of feature flags, one of: `enabled`, `disabled`',
+            desc: 'Filter feature flags by condition.',
             values: %w[enabled disabled]
           use :pagination
         end
@@ -58,16 +58,16 @@ module API
           tags feature_flags_tags
         end
         params do
-          requires :name, type: String, desc: 'The name of the feature flag'
-          optional :description, type: String, desc: 'The description of the feature flag'
-          optional :active, type: Boolean, default: true, desc: 'The active state of the flag. Supported in GitLab 13.3 and later'
+          requires :name, type: String, desc: 'Name of the feature flag.'
+          optional :description, type: String, desc: 'Description of the feature flag.'
+          optional :active, type: Boolean, default: true, desc: 'If `true`, the feature flag is active.'
           optional :version, type: String, desc: 'The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.'
-          optional :strategies, type: Array, desc: 'Array of feature flag strategies' do
-            requires :name, type: String, desc: 'The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In GitLab 13.5 and later, can be `flexibleRollout`'
-            optional :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
-            optional :user_list_id, type: Integer, desc: "The ID of the feature flag user list. If strategy is `gitlabUserList`."
-            optional :scopes, type: Array, desc: 'Array of scopes for the strategy' do
-              requires :environment_scope, type: String, desc: 'The environment scope of the scope'
+          optional :strategies, type: Array, desc: 'Array of feature flag [strategies](https://docs.gitlab.com/operations/feature_flags/#feature-flag-strategies).' do
+            requires :name, type: String, desc: 'Name of the strategy. Can be `default`, `gradualRolloutUserId`, `userWithId`, `gitlabUserList`, or `flexibleRollout`.'
+            optional :parameters, type: JSON, desc: 'Strategy parameters as a JSON-formatted string, for example `{"userIds":"user1"}`.', documentation: { type: 'String' }
+            optional :user_list_id, type: Integer, desc: 'ID of the feature flag user list. Applies only if the strategy is `gitlabUserList`.'
+            optional :scopes, type: Array, desc: 'Array of scopes for the strategy.' do
+              requires :environment_scope, type: String, desc: 'Environment scope of the scope.'
             end
           end
         end
@@ -145,7 +145,7 @@ module API
       end
 
       params do
-        requires :feature_flag_name, type: String, desc: 'The name of the feature flag'
+        requires :feature_flag_name, type: String, desc: 'Name of the feature flag.'
       end
       resource 'feature_flags/:feature_flag_name', requirements: FEATURE_FLAG_ENDPOINT_REQUIREMENTS do
         desc 'Retrieve a feature flag' do
@@ -177,19 +177,19 @@ module API
           tags feature_flags_tags
         end
         params do
-          optional :name, type: String, desc: 'The new name of the feature flag. Supported in GitLab 13.3 and later'
-          optional :description, type: String, desc: 'The description of the feature flag'
-          optional :active, type: Boolean, desc: 'The active state of the flag. Supported in GitLab 13.3 and later'
-          optional :strategies, type: Array, desc: 'Array of feature flag strategies' do
-            optional :id, type: Integer, desc: 'The feature flag strategy ID'
-            optional :name, type: String, desc: 'The strategy name'
-            optional :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
-            optional :user_list_id, type: Integer, desc: "The ID of the feature flag user list"
-            optional :_destroy, type: Boolean, desc: 'Delete the strategy when true'
-            optional :scopes, type: Array, desc: 'Array of scopes for the strategy' do
-              optional :id, type: Integer, desc: 'The scope id'
-              optional :environment_scope, type: String, desc: 'The environment scope of the scope'
-              optional :_destroy, type: Boolean, desc: 'Delete the scope when true'
+          optional :name, type: String, desc: 'New name of the feature flag.'
+          optional :description, type: String, desc: 'Description of the feature flag.'
+          optional :active, type: Boolean, desc: 'If `true`, the feature flag is active.'
+          optional :strategies, type: Array, desc: 'Array of feature flag [strategies](https://docs.gitlab.com/operations/feature_flags/#feature-flag-strategies).' do
+            optional :id, type: Integer, desc: 'ID of the feature flag strategy.'
+            optional :name, type: String, desc: 'Name of the strategy.'
+            optional :parameters, type: JSON, desc: 'Strategy parameters as a JSON-formatted string, for example `{"userIds":"user1"}`.', documentation: { type: 'String' }
+            optional :user_list_id, type: Integer, desc: 'ID of the feature flag user list. Applies only if the strategy is `gitlabUserList`.'
+            optional :_destroy, type: Boolean, desc: 'If `true`, deletes the strategy.'
+            optional :scopes, type: Array, desc: 'Array of scopes for the strategy.' do
+              optional :id, type: Integer, desc: 'ID of the scope.'
+              optional :environment_scope, type: String, desc: 'Environment scope of the scope.'
+              optional :_destroy, type: Boolean, desc: 'If `true`, deletes the scope.'
             end
           end
         end

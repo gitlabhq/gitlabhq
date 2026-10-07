@@ -30,11 +30,18 @@ module Gitlab
         streaming = false
         error = nil
         operation = nil
+        # Resolved once and reused for the stub and for the error metadata, including errors raised while a stream
+        # is consumed. Resolving may evaluate the `route_gitaly_through_gitway` flag, and under a percentage-of-time
+        # rollout a second evaluation could name an address this call never dialled. It sits outside
+        # `recording_request` because a flag lookup is not time spent waiting on Gitaly.
+        @address = GitalyClient.address(@storage)
+
         response = recording_request do
           operation = GitalyClient.execute(@storage, @service, @rpc, @request,
             remote_storage: @remote_storage,
             timeout: @timeout,
-            gitaly_context: @gitaly_context, &block)
+            gitaly_context: @gitaly_context,
+            resolved_address: @address, &block)
           operation.execute
         end
 
@@ -152,7 +159,7 @@ module Gitlab
       def set_gitaly_error_metadata(err)
         err.metadata[::Gitlab::Git::BaseError::METADATA_KEY] = {
           storage: @storage,
-          address: ::Gitlab::GitalyClient.address(@storage),
+          address: @address,
           service: @service,
           rpc: @rpc
         }

@@ -123,7 +123,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       stub_repos_storages address
 
       2.times do
-        expect(described_class.stub_address('default')).to eq('localhost:9876')
+        expect(described_class.stub_address(described_class.address('default'))).to eq('localhost:9876')
       end
     end
 
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       it 'returns the expected stub address' do
         stub_repos_storages address
 
-        expect(described_class.stub_address('default')).to eq(expected_stub_address)
+        expect(described_class.stub_address(described_class.address('default'))).to eq(expected_stub_address)
       end
     end
   end
@@ -155,42 +155,42 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       address = 'unix:/tmp/gitaly.sock'
       stub_repos_storages address
 
-      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+      expect(described_class.stub_creds(described_class.address('default'))).to eq(:this_channel_is_insecure)
     end
 
     it 'returns :this_channel_is_insecure if tcp' do
       address = 'tcp://localhost:9876'
       stub_repos_storages address
 
-      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+      expect(described_class.stub_creds(described_class.address('default'))).to eq(:this_channel_is_insecure)
     end
 
     it 'returns :this_channel_is_insecure if dns' do
       address = 'dns:///localhost:9876'
       stub_repos_storages address
 
-      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+      expect(described_class.stub_creds(described_class.address('default'))).to eq(:this_channel_is_insecure)
     end
 
     it 'returns :this_channel_is_insecure if dns (short-form)' do
       address = 'dns:localhost:9876'
       stub_repos_storages address
 
-      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+      expect(described_class.stub_creds(described_class.address('default'))).to eq(:this_channel_is_insecure)
     end
 
     it 'returns :this_channel_is_insecure if dns (with authority)' do
       address = 'dns://1.1.1.1/localhost:9876'
       stub_repos_storages address
 
-      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+      expect(described_class.stub_creds(described_class.address('default'))).to eq(:this_channel_is_insecure)
     end
 
     it 'returns Credentials object if tls' do
       address = 'tls://localhost:9876'
       stub_repos_storages address
 
-      expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
     end
 
     it 'raise an exception if the scheme is not supported' do
@@ -198,7 +198,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       stub_repos_storages address
 
       expect do
-        described_class.stub_creds('default')
+        described_class.stub_creds(described_class.address('default'))
       end.to raise_error(/unsupported Gitaly address/i)
     end
 
@@ -208,7 +208,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
           'default' => { 'gitaly_address' => 'dns+tls:///localhost:9876' }
         })
 
-        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+        expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
       end
 
       it 'returns Credentials object with dns+tls://authority/host:port' do
@@ -216,7 +216,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
           'default' => { 'gitaly_address' => 'dns+tls://1.1.1.1/gitaly.example.com:8075' }
         })
 
-        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+        expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
       end
 
       it 'returns Credentials object with dns+tls:host:port (short form)' do
@@ -224,7 +224,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
           'default' => { 'gitaly_address' => 'dns+tls:localhost:9876' }
         })
 
-        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+        expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
       end
     end
   end
@@ -253,25 +253,33 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'creates channel based on storage' do
-        channel = described_class.create_channel(storage)
+        channel = described_class.create_channel(storage, address)
 
         expect(channel).to be_a(GRPC::Core::Channel)
         expect(channel.target).to eql(expected_target)
       end
 
       it 'caches channel based on storage' do
-        channel_1 = described_class.create_channel(storage)
-        channel_2 = described_class.create_channel(storage)
+        channel_1 = described_class.create_channel(storage, address)
+        channel_2 = described_class.create_channel(storage, address)
 
         expect(channel_1).to equal(channel_2)
       end
 
       it 'returns different channels for different storages' do
-        channel_1 = described_class.create_channel(storage)
-        channel_2 = described_class.create_channel('other')
+        channel_1 = described_class.create_channel(storage, address)
+        channel_2 = described_class.create_channel('other', address)
 
         expect(channel_1).not_to equal(channel_2)
       end
+    end
+
+    it 'returns different channels for different addresses of the same storage' do
+      channel_1 = described_class.create_channel('default', 'tcp://gitaly.example.com:8075')
+      channel_2 = described_class.create_channel('default', 'tcp://gitway.example.com:8075')
+
+      expect(channel_1).not_to equal(channel_2)
+      expect(channel_2.target).to eq('dns:///gitway.example.com:8075')
     end
   end
 
@@ -398,6 +406,171 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         end.to raise_error(/Unsupported Gitaly address/i)
       end
     end
+
+    context 'when the route_gitaly_through_gitway feature flag changes between calls' do
+      before do
+        stub_storage_settings(
+          'default' => { 'gitaly_address' => 'tcp://gitaly.example.com:8075',
+                         'gitway_address' => 'tcp://gitway.example.com:8075' }
+        )
+      end
+
+      it 'moves the stub onto the other address without clear_stubs!' do
+        stub_feature_flags(route_gitaly_through_gitway: false)
+        stub_gitaly = described_class.stub(:commit_service, 'default')
+
+        stub_feature_flags(route_gitaly_through_gitway: true)
+        stub_gitway = described_class.stub(:commit_service, 'default')
+
+        expect(stub_gitway).not_to have_same_channel(stub_gitaly)
+        expect(stub_gitaly.instance_variable_get(:@ch).target).to eq('dns:///gitaly.example.com:8075')
+        expect(stub_gitway.instance_variable_get(:@ch).target).to eq('dns:///gitway.example.com:8075')
+      end
+
+      it 'returns the cached stub while the flag is unchanged' do
+        stub_feature_flags(route_gitaly_through_gitway: true)
+
+        expect(described_class.stub(:commit_service, 'default'))
+          .to equal(described_class.stub(:commit_service, 'default'))
+      end
+
+      it 'returns to the original stub when the flag is flipped back' do
+        stub_feature_flags(route_gitaly_through_gitway: false)
+        stub_before = described_class.stub(:commit_service, 'default')
+
+        stub_feature_flags(route_gitaly_through_gitway: true)
+        described_class.stub(:commit_service, 'default')
+
+        stub_feature_flags(route_gitaly_through_gitway: false)
+
+        expect(described_class.stub(:commit_service, 'default')).to equal(stub_before)
+      end
+    end
+  end
+
+  describe '.address' do
+    let(:gitaly_address) { 'tcp://gitaly.example.com:8075' }
+    let(:gitway_address) { 'tcp://gitway.example.com:8075' }
+
+    it 'raises when the storage does not exist' do
+      expect { described_class.address('nonexistent') }.to raise_error('storage not found: "nonexistent"')
+    end
+
+    context 'when the storage has no gitway_address' do
+      before do
+        stub_storage_settings('default' => { 'gitaly_address' => gitaly_address })
+      end
+
+      where(:flag_enabled) { [true, false] }
+
+      with_them do
+        it 'returns the gitaly_address' do
+          stub_feature_flags(route_gitaly_through_gitway: flag_enabled)
+
+          expect(described_class.address('default')).to eq(gitaly_address)
+        end
+      end
+
+      it 'does not evaluate the feature flag' do
+        expect(Feature).not_to receive(:enabled?).with(:route_gitaly_through_gitway, any_args)
+
+        described_class.address('default')
+      end
+    end
+
+    context 'when the storage has a gitway_address' do
+      before do
+        stub_storage_settings('default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address })
+      end
+
+      context 'when the route_gitaly_through_gitway feature flag is disabled' do
+        before do
+          stub_feature_flags(route_gitaly_through_gitway: false)
+        end
+
+        it 'returns the gitaly_address' do
+          expect(described_class.address('default')).to eq(gitaly_address)
+        end
+      end
+
+      context 'when the route_gitaly_through_gitway feature flag is enabled' do
+        before do
+          stub_feature_flags(route_gitaly_through_gitway: true)
+        end
+
+        it 'returns the gitway_address' do
+          expect(described_class.address('default')).to eq(gitway_address)
+        end
+
+        it 'returns the gitway_address in the connection data' do
+          expect(described_class.connection_data('default')).to include('address' => gitway_address)
+        end
+
+        context 'when the gitway_address uses an unsupported scheme' do
+          let(:gitway_address) { 'custom://gitway.example.com:8075' }
+
+          it 'raises an unsupported address error' do
+            expect { described_class.address('default') }.to raise_error(/Unsupported Gitaly address: "#{gitway_address}"/)
+          end
+        end
+      end
+    end
+
+    context 'when the route_gitaly_through_gitway feature flag is enabled for one storage only' do
+      before do
+        stub_storage_settings(
+          'default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address },
+          'other' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address }
+        )
+        stub_feature_flags(
+          route_gitaly_through_gitway: Feature::ActorWrapper.new(Gitlab::GitalyClient::StorageSettings, 'default')
+        )
+      end
+
+      it 'routes only that storage through gitway' do
+        expect(described_class.address('default')).to eq(gitway_address)
+        expect(described_class.address('other')).to eq(gitaly_address)
+      end
+    end
+
+    context 'when the storage has a gitway_address and the features table is unavailable' do
+      before do
+        stub_storage_settings('default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address })
+        stub_feature_flags(route_gitaly_through_gitway: true)
+      end
+
+      it 'returns the gitaly_address when the features table does not exist' do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
+
+        expect(described_class.address('default')).to eq(gitaly_address)
+      end
+
+      it 'returns the gitaly_address when the database does not exist' do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise(ActiveRecord::NoDatabaseError)
+
+        expect(described_class.address('default')).to eq(gitaly_address)
+      end
+
+      it 'returns the gitaly_address when the database connection fails' do
+        allow(Feature).to receive(:enabled?).and_call_original
+        allow(Feature).to receive(:enabled?).with(:route_gitaly_through_gitway, any_args).and_raise(PG::ConnectionBad)
+
+        expect(described_class.address('default')).to eq(gitaly_address)
+      end
+    end
+
+    context 'when the storage has a gitway_address but no gitaly_address' do
+      before do
+        # StorageSettings refuses a storage without gitaly_address, so bypass it.
+        allow(Gitlab.config.repositories).to receive(:storages)
+          .and_return({ 'default' => { 'gitway_address' => gitway_address } })
+        stub_feature_flags(route_gitaly_through_gitway: true)
+      end
+
+      it 'raises a missing gitaly_address error' do
+        expect { described_class.address('default') }.to raise_error('storage "default" is missing a gitaly_address')
+      end
+    end
   end
 
   describe '.connection_data' do
@@ -406,6 +579,128 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       stub_repos_storages address
 
       expect(described_class.connection_data('default')).to eq({ 'address' => address, 'token' => 'secret' })
+    end
+  end
+
+  context 'when the storage is routed through gitway' do
+    let(:gitaly_address) { 'tcp://gitaly.example.com:8075' }
+    let(:gitway_address) { 'tcp://gitway.example.com:8075' }
+
+    before do
+      stub_storage_settings(
+        'default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address, 'gitaly_token' => 'secret' }
+      )
+      stub_feature_flags(route_gitaly_through_gitway: true)
+    end
+
+    describe '.connection_data' do
+      it 'returns the gitway_address' do
+        expect(described_class.connection_data('default')).to eq({ 'address' => gitway_address, 'token' => 'secret' })
+      end
+    end
+
+    describe '.address_metadata' do
+      it 'returns the gitaly_address, because Gitaly-to-Gitaly traffic does not go through gitway' do
+        metadata = Gitlab::Json::SafeParser.parse(Base64.strict_decode64(described_class.address_metadata('default')))
+
+        expect(metadata).to eq('default' => { 'address' => gitaly_address, 'token' => 'secret' })
+      end
+
+      it 'does not evaluate the feature flag' do
+        expect(Feature).not_to receive(:enabled?).with(:route_gitaly_through_gitway, any_args)
+
+        described_class.address_metadata('default')
+      end
+    end
+
+    describe '.gitaly_address' do
+      it 'returns the gitaly_address' do
+        expect(described_class.gitaly_address('default')).to eq(gitaly_address)
+      end
+
+      it 'does not evaluate the feature flag' do
+        expect(Feature).not_to receive(:enabled?).with(:route_gitaly_through_gitway, any_args)
+
+        described_class.gitaly_address('default')
+      end
+    end
+  end
+
+  describe '.validate_storage_addresses!' do
+    let(:gitaly_address) { 'tcp://gitaly.example.com:8075' }
+    let(:gitway_address) { 'tcp://gitway.example.com:8075' }
+
+    subject(:validate) { described_class.validate_storage_addresses!('default') }
+
+    before do
+      stub_feature_flags(route_gitaly_through_gitway: false)
+    end
+
+    context 'with valid addresses' do
+      before do
+        stub_storage_settings('default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address })
+      end
+
+      it 'does not raise' do
+        expect { validate }.not_to raise_error
+      end
+
+      it 'does not evaluate the feature flag' do
+        expect(Feature).not_to receive(:enabled?).with(:route_gitaly_through_gitway, any_args)
+
+        validate
+      end
+    end
+
+    context 'without a gitway_address' do
+      before do
+        stub_storage_settings('default' => { 'gitaly_address' => gitaly_address })
+      end
+
+      it 'does not raise' do
+        expect { validate }.not_to raise_error
+      end
+    end
+
+    context 'when the gitway_address uses an unsupported scheme and the flag is disabled' do
+      let(:gitway_address) { 'custom://gitway.example.com:8075' }
+
+      before do
+        stub_storage_settings('default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address })
+      end
+
+      it 'raises an unsupported address error' do
+        expect { validate }.to raise_error(/Unsupported Gitaly address: "#{gitway_address}"/)
+      end
+    end
+
+    context 'when the gitaly_address uses an unsupported scheme' do
+      let(:gitaly_address) { 'custom://gitaly.example.com:8075' }
+
+      before do
+        stub_storage_settings('default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address })
+      end
+
+      it 'raises an unsupported address error' do
+        expect { validate }.to raise_error(/Unsupported Gitaly address: "#{gitaly_address}"/)
+      end
+    end
+
+    context 'when the storage has no gitaly_address' do
+      before do
+        # StorageSettings refuses a storage without gitaly_address, so bypass it.
+        allow(Gitlab.config.repositories).to receive(:storages)
+          .and_return({ 'default' => { 'gitway_address' => gitway_address } })
+      end
+
+      it 'raises a missing gitaly_address error' do
+        expect { validate }.to raise_error('storage "default" is missing a gitaly_address')
+      end
+    end
+
+    it 'raises when the storage does not exist' do
+      expect { described_class.validate_storage_addresses!('nonexistent') }
+        .to raise_error('storage not found: "nonexistent"')
     end
   end
 
@@ -1132,7 +1427,8 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       let(:stub)      { instance_double(Gitaly::RefService::Stub, find_local_branches: operation) }
 
       before do
-        allow(described_class).to receive(:stub).with(:ref_service, 'default').and_return(stub)
+        allow(described_class).to receive(:stub).with(:ref_service, 'default', described_class.address('default'))
+          .and_return(stub)
       end
 
       it 'requests the operation handle via return_op: true' do
@@ -1145,6 +1441,24 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
 
       it 'returns the operation handle' do
         expect(execute).to eq(operation)
+      end
+    end
+
+    context 'with a resolved_address' do
+      subject(:execute) do
+        described_class.execute('default', :ref_service, :find_local_branches, Gitaly::FindLocalBranchesRequest.new,
+          remote_storage: nil, timeout: 10.seconds, resolved_address: resolved_address)
+      end
+
+      let(:resolved_address) { 'tcp://gitway.example.com:8075' }
+      let(:operation) { instance_double(GRPC::ActiveCall::Operation) }
+      let(:stub) { instance_double(Gitaly::RefService::Stub, find_local_branches: operation) }
+
+      it 'dials the resolved address without resolving it again' do
+        expect(described_class).not_to receive(:address)
+        expect(described_class).to receive(:stub).with(:ref_service, 'default', resolved_address).and_return(stub)
+
+        execute
       end
     end
   end
@@ -1203,7 +1517,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'adds SNI override with the hostname' do
-        expect(described_class.send(:channel_args, 'default')).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
+        expect(described_class.send(:channel_args, described_class.address('default'))).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
       end
     end
 
@@ -1217,7 +1531,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'adds SNI override with the host from the path' do
-        expect(described_class.send(:channel_args, 'default')).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
+        expect(described_class.send(:channel_args, described_class.address('default'))).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
       end
     end
 
@@ -1231,7 +1545,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'adds SNI override with the hostname from opaque' do
-        expect(described_class.send(:channel_args, 'default')).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
+        expect(described_class.send(:channel_args, described_class.address('default'))).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
       end
     end
 
@@ -1245,7 +1559,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'does not add SNI override without dns scheme' do
-        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+        expect(described_class.send(:channel_args, described_class.address('default'))).not_to have_key('grpc.ssl_target_name_override')
       end
     end
 
@@ -1259,7 +1573,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'does not add SNI override' do
-        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+        expect(described_class.send(:channel_args, described_class.address('default'))).not_to have_key('grpc.ssl_target_name_override')
       end
     end
 
@@ -1273,7 +1587,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'does not add SNI override when path is only a slash' do
-        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+        expect(described_class.send(:channel_args, described_class.address('default'))).not_to have_key('grpc.ssl_target_name_override')
       end
     end
 
@@ -1287,7 +1601,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'does not add SNI override when hostname is blank' do
-        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+        expect(described_class.send(:channel_args, described_class.address('default'))).not_to have_key('grpc.ssl_target_name_override')
       end
     end
   end
@@ -1303,10 +1617,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'creates a channel with TLS credentials' do
-        channel = described_class.create_channel('default')
+        channel = described_class.create_channel('default', described_class.address('default'))
 
         expect(channel).to be_a(GRPC::Core::Channel)
-        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+        expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
       end
     end
 
@@ -1320,10 +1634,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'creates a channel with TLS credentials' do
-        channel = described_class.create_channel('default')
+        channel = described_class.create_channel('default', described_class.address('default'))
 
         expect(channel).to be_a(GRPC::Core::Channel)
-        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+        expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
       end
     end
 
@@ -1337,10 +1651,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'creates a channel with TLS credentials' do
-        channel = described_class.create_channel('default')
+        channel = described_class.create_channel('default', described_class.address('default'))
 
         expect(channel).to be_a(GRPC::Core::Channel)
-        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+        expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
       end
     end
 
@@ -1354,10 +1668,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'creates a channel with TLS credentials' do
-        channel = described_class.create_channel('default')
+        channel = described_class.create_channel('default', described_class.address('default'))
 
         expect(channel).to be_a(GRPC::Core::Channel)
-        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+        expect(described_class.stub_creds(described_class.address('default'))).to be_a(GRPC::Core::ChannelCredentials)
       end
     end
 
@@ -1371,10 +1685,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       end
 
       it 'creates a channel with insecure credentials' do
-        channel = described_class.create_channel('default')
+        channel = described_class.create_channel('default', described_class.address('default'))
 
         expect(channel).to be_a(GRPC::Core::Channel)
-        expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+        expect(described_class.stub_creds(described_class.address('default'))).to eq(:this_channel_is_insecure)
       end
     end
   end

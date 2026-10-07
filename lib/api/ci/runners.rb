@@ -18,18 +18,18 @@ module API
 
         params :deprecated_filter_params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
-            desc: 'Deprecated: Use `type` or `status` instead. The scope of runners to return'
+            desc: 'Scope of runners to return. Deprecated. Use `type` or `status` instead.'
         end
 
         params :filter_params do
-          optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES, desc: 'The type of runners to return'
+          optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES, desc: 'Type of runners to return.'
           optional :paused, type: Boolean,
-            desc: 'Whether to include only runners that are accepting or ignoring new jobs'
+            desc: 'If `true`, returns only runners that are ignoring new jobs. If `false`, returns only runners that are accepting new jobs.'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES_INCL_DEPRECATED,
-            desc: 'The status of runners to return'
+            desc: 'Status of runners to return.'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-            desc: 'A list of runner tags', documentation: { example: %w[macos shell] }
-          optional :version_prefix, type: String, desc: 'The version prefix of runners to return', documentation: { example: '15.1.' },
+            desc: 'List of runner tags.', documentation: { example: %w[macos shell] }
+          optional :version_prefix, type: String, desc: 'Version prefix of runners to return.', documentation: { example: '15.1.' },
             regexp: /^[\d+.]+/
 
           use :pagination
@@ -191,8 +191,8 @@ module API
           tags %w[runners]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of a runner'
-          optional :include_projects, type: Boolean, desc: 'Include projects in the response. Set to false to improve performance for runners with many projects.', default: true
+          requires :id, type: Integer, desc: 'ID of the runner.'
+          optional :include_projects, type: Boolean, desc: 'If `true`, includes projects in the response. If `false`, improves performance for runners with many projects.', default: true
         end
         route_setting :authorization,
           permissions: :read_runner,
@@ -212,7 +212,7 @@ module API
           tags %w[runners]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of a runner'
+          requires :id, type: Integer, desc: 'ID of the runner.'
         end
         route_setting :authorization,
           permissions: :read_runner,
@@ -234,7 +234,7 @@ module API
           tags %w[runners projects]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of a runner'
+          requires :id, type: Integer, desc: 'ID of the runner.'
           use :pagination
         end
         route_setting :authorization,
@@ -262,20 +262,20 @@ module API
           tags %w[runners]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of a runner'
-          optional :description, type: String, desc: 'The description of the runner'
-          optional :active, type: Boolean, desc: 'Deprecated: Use `paused` instead. Flag indicating whether the runner is allowed to receive jobs'
-          optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs'
+          requires :id, type: Integer, desc: 'ID of the runner.'
+          optional :description, type: String, desc: 'Description of the runner.'
+          optional :active, type: Boolean, desc: 'If `true`, the runner is allowed to receive jobs. Deprecated. Use `paused` instead.'
+          optional :paused, type: Boolean, desc: 'If `true`, the runner ignores new jobs.'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-            desc: 'The list of tags for a runner', documentation: { example: %w[macos shell] }
-          optional :run_untagged, type: Boolean, desc: 'Specifies if the runner can execute untagged jobs'
-          optional :locked, type: Boolean, desc: 'Specifies if the runner is locked'
+            desc: 'List of tags for the runner.', documentation: { example: %w[macos shell] }
+          optional :run_untagged, type: Boolean, desc: 'If `true`, the runner can execute untagged jobs.'
+          optional :locked, type: Boolean, desc: 'If `true`, the runner is locked.'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
-            desc: 'The access level of the runner'
+            desc: 'Access level of the runner.'
           optional :maximum_timeout, type: Integer,
-            desc: 'Maximum timeout that limits the amount of time (in seconds) that runners can run jobs'
+            desc: 'Maximum time, in seconds, that runners can spend running a job.'
           optional :maintenance_note, type: String,
-            desc: 'Free-form maintenance notes for the runner (1024 characters)'
+            desc: 'Free-form maintenance notes for the runner. Limited to 1024 characters.'
           at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout, :maintenance_note
           mutually_exclusive :active, :paused
         end
@@ -306,7 +306,7 @@ module API
           tags %w[runners]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of a runner'
+          requires :id, type: Integer, desc: 'ID of the runner.'
         end
         route_setting :authorization,
           permissions: :delete_runner,
@@ -328,13 +328,12 @@ module API
           tags %w[runners jobs]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of a runner'
-          optional :system_id, type: String, desc: 'System ID associated with the runner manager'
-          optional :status, type: String, desc: 'Status of the job', values: ::Ci::Build::AVAILABLE_STATUSES
-          optional :order_by, type: String, desc: 'Order by `id`', values: ::Ci::RunnerJobsFinder::ALLOWED_INDEXED_COLUMNS
-          optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Sort by `asc` or `desc` order. ' \
-            'Specify `order_by` as well, including for `id`'
-          optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
+          requires :id, type: Integer, desc: 'ID of the runner.'
+          optional :system_id, type: String, desc: 'System ID associated with the runner manager.'
+          optional :status, type: String, desc: 'Status of the job.', values: ::Ci::Build::AVAILABLE_STATUSES
+          optional :order_by, type: String, desc: 'Sort results by the specified field.', values: ::Ci::RunnerJobsFinder::ALLOWED_INDEXED_COLUMNS
+          optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Sort results in ascending or descending order. Specify `order_by` as well, including for `id`.'
+          optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records.'
           use :pagination
         end
         route_setting :authorization,
@@ -364,7 +363,7 @@ module API
           tags %w[runners]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of the runner'
+          requires :id, type: Integer, desc: 'ID of the runner.'
         end
         route_setting :authorization,
           permissions: :update_runner,
@@ -384,7 +383,7 @@ module API
       params do
         requires :id,
           types: [String, Integer],
-          desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+          desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authorize! :read_runners, user_project }
@@ -424,7 +423,7 @@ module API
           tags %w[runners projects]
         end
         params do
-          requires :runner_id, type: Integer, desc: 'The ID of a runner'
+          requires :runner_id, type: Integer, desc: 'ID of the runner.'
         end
         route_setting :authorization, permissions: :assign_runner, boundary_type: :project
         post ':id/runners' do
@@ -451,7 +450,7 @@ module API
           tags %w[runners projects]
         end
         params do
-          requires :runner_id, type: Integer, desc: 'The ID of a runner'
+          requires :runner_id, type: Integer, desc: 'ID of the runner.'
         end
         route_setting :authorization, permissions: :unassign_runner, boundary_type: :project
         delete ':id/runners/:runner_id' do
@@ -466,7 +465,7 @@ module API
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a group'
+        requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
       end
       resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authorize! :read_runners, user_group }
@@ -510,7 +509,7 @@ module API
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, type: String, desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate_non_get! }
@@ -532,7 +531,7 @@ module API
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a group'
+        requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
       end
       resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate_non_get! }

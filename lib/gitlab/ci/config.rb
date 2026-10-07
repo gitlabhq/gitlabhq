@@ -9,6 +9,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       ConfigError = Class.new(StandardError)
+      TimeoutError = Class.new(ConfigError)
       TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS', 30).to_i.clamp(0, 60).seconds
       OVERRIDE_TIMEOUT_SECONDS = 90.seconds
       TIMEOUT_MESSAGE = 'Request timed out when fetching configuration files.'
@@ -187,7 +188,11 @@ module Gitlab
       def expand_config(config, inputs)
         build_config(config, inputs)
 
-      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError, Gitlab::Ci::Config::External::Context::TimeoutError, Gitlab::Ci::Config::External::Context::HTTPTimeoutError => e
+      rescue Gitlab::Ci::Config::External::Context::TimeoutError, Gitlab::Ci::Config::External::Context::HTTPTimeoutError => e
+        Gitlab::ErrorTracking.track_exception(e)
+        raise TimeoutError, e.message
+
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
         Gitlab::ErrorTracking.track_exception(e)
         raise ConfigError, e.message
 

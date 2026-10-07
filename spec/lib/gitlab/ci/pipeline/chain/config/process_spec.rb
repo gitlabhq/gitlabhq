@@ -70,11 +70,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Process, feature_category: :
     context 'when config has a syntax error' do
       let(:ci_yaml) { 'invalid: yaml: content: [' }
 
-      it 'reports config_error', :aggregate_failures do
+      it 'reports config_error and keeps the invalid result on the command', :aggregate_failures do
         perform
 
         expect(step.break?).to be true
         expect(pipeline.failure_reason).to eq('config_error')
+        expect(command.yaml_processor_result).to be_present
+        expect(command.yaml_processor_result).not_to be_valid
       end
     end
   end

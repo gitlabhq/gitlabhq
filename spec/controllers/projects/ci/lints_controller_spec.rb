@@ -105,6 +105,16 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
 
       it_behaves_like 'returns a successful validation'
 
+      it 'passes the web surface to the linter' do
+        expect(Gitlab::Ci::Lint).to receive(:new)
+          .with(project: project, current_user: user, surface: :web_lint_page)
+          .and_call_original
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
       context 'using legacy validation (YamlProcessor)' do
         it_behaves_like 'returns a successful validation'
 

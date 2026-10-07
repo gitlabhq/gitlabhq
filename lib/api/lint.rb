@@ -57,7 +57,7 @@ module API
 
         content = user_project.repository.blob_data_at(commit.sha, user_project.ci_config_path_or_default)
         result = Gitlab::Ci::Lint
-          .new(project: user_project, current_user: current_user, sha: commit.sha)
+          .new(project: user_project, current_user: current_user, sha: commit.sha, surface: :rest_get)
           .legacy_validate(content, dry_run: params[:dry_run], ref: dry_run_ref)
 
         present result, with: Entities::Ci::Lint::Result, current_user: current_user, include_jobs: params[:include_jobs]
@@ -85,7 +85,7 @@ module API
         authorize! :create_pipeline, user_project
 
         result = Gitlab::Ci::Lint
-          .new(project: user_project, current_user: current_user)
+          .new(project: user_project, current_user: current_user, surface: :rest_post)
           .legacy_validate(params[:content], dry_run: params[:dry_run], ref: params[:ref] || user_project.default_branch)
 
         status 200

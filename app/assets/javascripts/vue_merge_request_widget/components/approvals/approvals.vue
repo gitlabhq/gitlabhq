@@ -4,7 +4,7 @@ import { mapActions } from 'pinia';
 import { createAlert } from '~/alert';
 import csrf from '~/lib/utils/csrf';
 import { STATUS_MERGED } from '~/issues/constants';
-import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { BV_HIDE_MODAL, BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { s__, __, n__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -15,6 +15,8 @@ import StateContainer from '../state_container.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
 import { FETCH_LOADING, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
+
+const SUBSCRIPTION_FALLBACK_TIMEOUT = 5000;
 
 export default {
   name: 'MRWidgetApprovals',
@@ -106,7 +108,7 @@ export default {
       return this.mr.mergeRequestApproversAvailable && this.invalidFailedRules.length;
     },
     approvedBy() {
-      return this.approvals.approvedBy?.nodes || [];
+      return this.approvals?.approvedBy?.nodes || [];
     },
     userHasApproved() {
       return this.approvedBy.some(
@@ -193,6 +195,14 @@ export default {
       return this.mr.requireSamlAuthToApprove;
     },
   },
+  watch: {
+    userHasApproved() {
+      this.stopApproving();
+    },
+  },
+  beforeDestroy() {
+    clearTimeout(this.subscriptionFallbackTimeout);
+  },
   methods: {
     ...mapActions(useBatchComments, ['clearDrafts']),
     approve() {
@@ -221,7 +231,10 @@ export default {
         () =>
           this.service
             .approveMergeRequestWithAuth({ approval_password: data, publish_review: hasDrafts })
-            .then(() => this.clearDrafts()),
+            .then(() => {
+              this.$root.$emit(BV_HIDE_MODAL, this.modalId);
+              return this.clearDrafts();
+            }),
         (error) => {
           if (error?.response?.status === HTTP_STATUS_UNAUTHORIZED) {
             this.hasApprovalAuthError = true;
@@ -251,16 +264,28 @@ export default {
       this.clearError();
       return serviceFn()
         .then(() => {
-          // TODO: Remove this line when we move to Apollo subscriptions
-          this.$apollo.queries.approvals.refetch();
           // Approval changes which auto-merge strategies are available; refresh them so the
           // merge button doesn't stay stale until the next (backed-off) poll (#629566).
           eventHub.$emit('mr-widget-check-status');
+
+          if (this.isApproving) this.startSubscriptionFallback();
         })
-        .catch(errFn)
-        .then(() => {
-          this.isApproving = false;
+        .catch((error) => {
+          this.stopApproving();
+          errFn(error);
         });
+    },
+    startSubscriptionFallback() {
+      this.subscriptionFallbackTimeout = setTimeout(() => {
+        this.$apollo.queries.approvals
+          .refetch()
+          .catch(() => {})
+          .finally(() => this.stopApproving());
+      }, SUBSCRIPTION_FALLBACK_TIMEOUT);
+    },
+    stopApproving() {
+      clearTimeout(this.subscriptionFallbackTimeout);
+      this.isApproving = false;
     },
   },
   FETCH_LOADING,

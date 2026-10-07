@@ -901,10 +901,12 @@ Grants the ability to create, delete, read, restart, resume, and update duo work
 | Create | Group | Mutation | `AiDuoWorkflowCreate` |
 | Create | User | Mutation | `AiDuoWorkflowCreate` |
 | Delete | User | Mutation | `DeleteDuoWorkflowsWorkflow` |
+| Read | User | Type | `DuoWorkflow` |
 | Read | User | Type | `DuoWorkflowMergeRequestLink` |
 | Read | User | Type | `DuoWorkflowNoteLink` |
 | Read | User | Type | `DuoWorkflowPipelineLink` |
 | Read | User | Type | `DuoWorkflowWorkItemLink` |
+| Read | User | Type | `DuoWorkflowWorkflowLink` |
 | Read | User | Field | `Note.duoCreatedSession` |
 | Read | User | Field | `Note.duoTriggeredSession` |
 | Read | User | Field | `Query.duoWorkflowBranches` |

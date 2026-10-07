@@ -43,10 +43,64 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
 
       expect(client).to receive(:execute).with(
         storage, service, rpc, request,
-        remote_storage: remote_storage, timeout: timeout, gitaly_context: gitaly_context
+        remote_storage: remote_storage, timeout: timeout, gitaly_context: gitaly_context,
+        resolved_address: client.address(storage)
       ).and_return(operation)
 
       expect(subject).to eq(response)
+    end
+
+    # Under a percentage-of-time rollout of route_gitaly_through_gitway, each resolution can pick a different address,
+    # so the stubbed `address` hands out a different one every time it is asked.
+    context 'when the address changes between resolutions' do
+      let(:response) { Gitaly::FindLocalBranchesResponse.new }
+      let(:dialled_addresses) { [] }
+
+      before do
+        allow(client).to receive(:address).with(storage)
+          .and_return('tcp://gitaly.example.com:8075', 'tcp://gitway.example.com:8075')
+        allow(client).to receive(:execute) do |*, resolved_address:, **|
+          dialled_addresses << resolved_address
+          instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {})
+        end
+      end
+
+      it 'resolves the address once per call' do
+        subject
+
+        expect(client).to have_received(:address).with(storage).once
+        expect(dialled_addresses).to eq(['tcp://gitaly.example.com:8075'])
+      end
+
+      context 'when the call raises a BadStatus error' do
+        before do
+          allow(client).to receive(:execute) do |*, resolved_address:, **|
+            dialled_addresses << resolved_address
+            raise GRPC::Unavailable
+          end
+        end
+
+        it 'reports the address the call dialled' do
+          expect { subject }.to raise_error(GRPC::Unavailable) do |err|
+            expect(err.metadata[:gitaly_error_metadata][:address]).to eq(dialled_addresses.sole)
+          end
+        end
+      end
+
+      context 'when a stream raises a BadStatus error' do
+        let(:response) do
+          Enumerator.new do |yielder|
+            yielder << 1
+            raise GRPC::Unavailable
+          end
+        end
+
+        it 'reports the address the call dialled' do
+          expect { subject.to_a }.to raise_error(GRPC::Unavailable) do |err|
+            expect(err.metadata[:gitaly_error_metadata][:address]).to eq(dialled_addresses.sole)
+          end
+        end
+      end
     end
 
     context 'when the response is not an enumerator' do

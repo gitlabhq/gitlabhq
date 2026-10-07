@@ -14,7 +14,7 @@ module API
     MIN_SEARCH_LENGTH = 3
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all environments' do
@@ -34,7 +34,7 @@ module API
         optional :states,
           type: String,
           values: Environment.valid_states.map(&:to_s),
-          desc: 'List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments'
+          desc: 'Filter environments by state. If omitted, returns all environments.'
         mutually_exclusive :name, :search, message: 'cannot be used together'
       end
       route_setting :authentication, job_token_allowed: true
@@ -64,15 +64,15 @@ module API
         tags environments_tags
       end
       params do
-        requires :name, type: String, desc: 'The name of the environment'
-        optional :external_url, type: String, desc: 'Place to link to for this environment'
+        requires :name, type: String, desc: 'Name of the environment.'
+        optional :external_url, type: String, desc: 'URL to link to for the environment.'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
-        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
-        optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
-        optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'
-        optional :flux_resource_path, type: String, desc: 'The Flux resource path to associate with this environment'
-        optional :description, type: String, desc: 'The description of the environment'
-        optional :auto_stop_setting, type: String, values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
+        optional :tier, type: String, values: Environment.tiers.keys, desc: 'Tier of the environment.'
+        optional :cluster_agent_id, type: Integer, desc: 'ID of the cluster agent to associate with the environment. When updating an environment, set to `null` to remove it.'
+        optional :kubernetes_namespace, type: String, desc: 'Kubernetes namespace to associate with the environment. When updating an environment, set to `null` to remove it.'
+        optional :flux_resource_path, type: String, desc: 'Flux resource path to associate with the environment, for example `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`. When updating an environment, set to `null` to remove it.'
+        optional :description, type: String, desc: 'Description of the environment.'
+        optional :auto_stop_setting, type: String, values: Environment.auto_stop_settings.keys, desc: 'Auto stop setting for the environment.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :create_environment, boundary_type: :project,
@@ -110,15 +110,15 @@ module API
         tags environments_tags
       end
       params do
-        requires :environment_id, type: Integer,  desc: 'The ID of the environment'
-        optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
+        requires :environment_id, type: Integer,  desc: 'ID of the environment.'
+        optional :external_url,   type: String,   desc: 'New URL to link to for the environment.'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
-        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
-        optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
-        optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'
-        optional :flux_resource_path, type: String, desc: 'The Flux resource path to associate with this environment'
-        optional :description, type: String, desc: 'The description of the environment'
-        optional :auto_stop_setting, type: String, values: Environment.auto_stop_settings.keys, desc: 'The auto stop setting for the environment. Allowed values are `always` and `with_action`'
+        optional :tier, type: String, values: Environment.tiers.keys, desc: 'Tier of the environment.'
+        optional :cluster_agent_id, type: Integer, desc: 'ID of the cluster agent to associate with the environment. When updating an environment, set to `null` to remove it.'
+        optional :kubernetes_namespace, type: String, desc: 'Kubernetes namespace to associate with the environment. When updating an environment, set to `null` to remove it.'
+        optional :flux_resource_path, type: String, desc: 'Flux resource path to associate with the environment, for example `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`. When updating an environment, set to `null` to remove it.'
+        optional :description, type: String, desc: 'Description of the environment.'
+        optional :auto_stop_setting, type: String, values: Environment.auto_stop_settings.keys, desc: 'Auto stop setting for the environment.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :update_environment, boundary_type: :project,
@@ -168,9 +168,9 @@ module API
         tags environments_tags
       end
       params do
-        optional :before, type: Time, desc: "The date before which environments can be deleted. Defaults to 30 days ago. Expected in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)", default: -> { 30.days.ago }
-        optional :limit, type: Integer, desc: "Maximum number of environments to delete. Defaults to 100", default: 100, values: 1..1000
-        optional :dry_run, type: Boolean, desc: "Defaults to true for safety reasons. It performs a dry run where no actual deletion will be performed. Set to false to actually delete the environment", default: true
+        optional :before, type: Time, desc: 'Date before which environments can be deleted. Defaults to 30 days ago.', default: -> { 30.days.ago }
+        optional :limit, type: Integer, desc: 'Maximum number of environments to delete.', default: 100, values: 1..1000
+        optional :dry_run, type: Boolean, desc: 'If `true`, performs a dry run where no deletion is actually performed. If `false`, deletes the environment.', default: true
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :delete_environment_review_app, boundary_type: :project,
@@ -203,7 +203,7 @@ module API
         tags %w[environments]
       end
       params do
-        requires :environment_id, type: Integer, desc: 'The ID of the environment'
+        requires :environment_id, type: Integer, desc: 'ID of the environment.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :delete_environment, boundary_type: :project,
@@ -228,8 +228,8 @@ module API
         tags %w[environments]
       end
       params do
-        requires :environment_id, type: Integer, desc: 'The ID of the environment'
-        optional :force, type: Boolean, default: false, desc: 'Force environment to stop without executing `on_stop` actions'
+        requires :environment_id, type: Integer, desc: 'ID of the environment.'
+        optional :force, type: Boolean, default: false, desc: 'If `true`, stops the environment without executing `on_stop` actions.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :stop_environment, boundary_type: :project,
@@ -265,7 +265,7 @@ module API
       params do
         requires :before,
           type: DateTime,
-          desc: 'Stop all environments that were last modified or deployed to before this date.'
+          desc: 'Stop environments that were modified or deployed to before the specified date. Valid inputs are between 10 years ago and 1 week ago.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :stop_stale_environment, boundary_type: :project,
@@ -296,7 +296,7 @@ module API
         tags %w[environments]
       end
       params do
-        requires :environment_id, type: Integer, desc: 'The ID of the environment'
+        requires :environment_id, type: Integer, desc: 'ID of the environment.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_environment, boundary_type: :project,

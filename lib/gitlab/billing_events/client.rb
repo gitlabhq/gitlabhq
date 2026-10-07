@@ -61,7 +61,7 @@ module Gitlab
         timestamp: nil,
         metadata: nil
       )
-        return unless Feature.enabled?(:billing_event_tracking, :instance)
+        return unless Feature.enabled?(:billing_event_tracking, :instance) || local_persistence_enabled?
 
         if !quantity.is_a?(Numeric) || quantity <= 0
           return Gitlab::AppLogger.warn(

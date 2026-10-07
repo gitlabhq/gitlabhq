@@ -37,6 +37,18 @@ jest.mock('~/alert', () => ({
 }));
 const TEST_HELP_PATH = 'help/path';
 const testApprovedBy = () => [1, 7, 10].map((id) => ({ id }));
+const subscriptionPayload = (response) => {
+  const { mergeRequest } = response.data.project;
+
+  return {
+    ...mergeRequest,
+    approvalState: {
+      ...mergeRequest.approvalState,
+      suggestedApprovers: { nodes: [], __typename: 'UserCoreConnection' },
+    },
+  };
+};
+
 const testApprovals = () => ({
   approved: false,
   approved_by: testApprovedBy().map((user) => ({ user })),
@@ -51,6 +63,7 @@ const testApprovals = () => ({
 
 describe('MRWidget approvals', () => {
   let mockedSubscription;
+  let approvalsQueryHandler;
   let wrapper;
   let service;
   let mr;
@@ -62,7 +75,8 @@ describe('MRWidget approvals', () => {
   const createComponent = (options = {}, responses = { query: approvedByCurrentUser }) => {
     mockedSubscription = createMockApolloSubscription();
 
-    const requestHandlers = [[approvedByQuery, jest.fn().mockResolvedValue(responses.query)]];
+    approvalsQueryHandler = jest.fn().mockResolvedValue(responses.query);
+    const requestHandlers = [[approvedByQuery, approvalsQueryHandler]];
     const subscriptionHandlers = [[approvedBySubscription, () => mockedSubscription]];
     const apolloProvider = createMockApollo(requestHandlers);
     const provide = {
@@ -282,6 +296,30 @@ describe('MRWidget approvals', () => {
           });
         });
 
+        it('does not refetch when the subscription updates before the request resolves', async () => {
+          let resolveApprove;
+          jest.spyOn(service, 'approveMergeRequest').mockReturnValue(
+            new Promise((resolve) => {
+              resolveApprove = resolve;
+            }),
+          );
+          findAction().vm.$emit('click');
+          approvalsQueryHandler.mockClear();
+
+          mockedSubscription.next({
+            data: {
+              mergeRequestApprovalStateUpdated: subscriptionPayload(approvedByCurrentUser),
+            },
+          });
+          resolveApprove();
+          await waitForPromises();
+          jest.runOnlyPendingTimers();
+          await waitForPromises();
+
+          expect(findAction().props('loading')).toBe(false);
+          expect(approvalsQueryHandler).not.toHaveBeenCalled();
+        });
+
         describe('and after loading', () => {
           beforeEach(() => {
             findAction().vm.$emit('click');
@@ -296,6 +334,39 @@ describe('MRWidget approvals', () => {
             await waitForPromises();
 
             expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-check-status');
+          });
+
+          it('keeps the loading icon until the subscription includes the approval of the user', async () => {
+            await waitForPromises();
+
+            mockedSubscription.next({
+              data: {
+                mergeRequestApprovalStateUpdated: subscriptionPayload(canApproveResponse),
+              },
+            });
+            await waitForPromises();
+
+            expect(findAction().props('loading')).toBe(true);
+
+            mockedSubscription.next({
+              data: {
+                mergeRequestApprovalStateUpdated: subscriptionPayload(approvedByCurrentUser),
+              },
+            });
+            await waitForPromises();
+
+            expect(findAction().props('loading')).toBe(false);
+          });
+
+          it('refetches approvals and hides the loading icon when the subscription does not update', async () => {
+            await waitForPromises();
+            approvalsQueryHandler.mockClear();
+
+            jest.runOnlyPendingTimers();
+            await waitForPromises();
+
+            expect(approvalsQueryHandler).toHaveBeenCalledTimes(1);
+            expect(findAction().props('loading')).toBe(false);
           });
         });
 
@@ -320,6 +391,10 @@ describe('MRWidget approvals', () => {
 
           it('shows an alert with error message', () => {
             expect(createAlert).toHaveBeenCalledWith({ message: APPROVE_ERROR });
+          });
+
+          it('hides the loading icon', () => {
+            expect(findAction().props('loading')).toBe(false);
           });
 
           it('clears the previous alert', () => {

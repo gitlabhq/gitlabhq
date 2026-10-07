@@ -6,6 +6,7 @@ import {
   GlIcon,
   GlLoadingIcon,
   GlTooltipDirective,
+  GlTruncate,
 } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import {
@@ -23,6 +24,7 @@ export default {
     GlFormCheckbox,
     GlIcon,
     GlLoadingIcon,
+    GlTruncate,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -180,7 +182,7 @@ export default {
            the top of the item's 24px line, so cancel that. Grows so the name inside it, rather than
            the parent label beside it, is what gives way when the row runs out of room. -->
       <gl-form-checkbox
-        class="gl-pointer-events-none -gl-mb-3 gl-min-w-0 gl-grow"
+        class="scope-picker-item-checkbox gl-pointer-events-none -gl-mb-3 gl-min-w-0 gl-grow"
         :checked="selected"
         :indeterminate="indeterminate"
         :disabled="disabled"
@@ -189,9 +191,9 @@ export default {
       >
         <span class="gl-flex gl-min-w-0 gl-items-center gl-gap-2">
           <gl-icon :name="icon" class="gl-shrink-0 gl-text-subtle" />
-          <span class="gl-min-w-0 gl-truncate" data-testid="scope-picker-item-name">{{
-            text
-          }}</span>
+          <span class="gl-pointer-events-auto gl-min-w-0" @click.prevent>
+            <gl-truncate :text="text" with-tooltip data-testid="scope-picker-item-name" />
+          </span>
         </span>
       </gl-form-checkbox>
 
@@ -201,28 +203,29 @@ export default {
            drops its click listener, so the row could not be collapsed while its children load. -->
       <gl-loading-icon v-if="expanding" class="gl-ml-auto gl-shrink-0 gl-pl-3" />
 
-      <!-- A disabled listbox option puts pointer-events: none on its content, so opt the badge back
-           in for its tooltip. -->
-      <gl-badge
-        v-if="restricted"
-        v-gl-tooltip.bottom.viewport
-        class="gl-pointer-events-auto gl-ml-auto gl-shrink-0"
-        :title="restrictedLabel"
-      >
-        {{ s__('AnalyticsDashboards|Restricted') }}
-      </gl-badge>
+      <!-- Keeps its full width ahead of the name, but capped at 3/8 of the row so a long
+           parent cannot crowd the name out. -->
+      <div v-if="restricted || parentName" class="gl-ml-auto gl-flex gl-max-w-3/8 gl-shrink-0">
+        <gl-badge
+          v-if="restricted"
+          v-gl-tooltip.bottom.viewport
+          class="gl-pointer-events-auto"
+          :title="restrictedLabel"
+        >
+          {{ s__('AnalyticsDashboards|Restricted') }}
+        </gl-badge>
 
-      <!-- Allowed to shrink and truncate rather than crowding out the name it is qualifying, and
-           capped so a long parent cannot take the row. The tooltip still carries the full path. -->
-      <span
-        v-else-if="parentName"
-        v-gl-tooltip
-        :title="fullPath"
-        class="gl-ml-auto gl-min-w-0 gl-max-w-1/2 gl-truncate gl-pl-3 gl-text-sm gl-text-subtle"
-        data-testid="scope-picker-item-parent"
-      >
-        {{ parentLabel }}
-      </span>
+        <!-- The tooltip still carries the full path. -->
+        <span
+          v-else
+          v-gl-tooltip
+          :title="fullPath"
+          class="gl-min-w-0 gl-truncate gl-pl-3 gl-text-sm gl-text-subtle"
+          data-testid="scope-picker-item-parent"
+        >
+          {{ parentLabel }}
+        </span>
+      </div>
     </template>
   </div>
 </template>

@@ -19,7 +19,7 @@ Sessions are created by GitLab Duo Agentic Chat and foundational flows in the ID
 
 - Flows that are executed on a runner, like the [Fix CI/CD Pipeline Flow](../../../ci/pipelines/fix_pipeline.md).
   These sessions are visible in the UI under **AI** > **Sessions**.
-- Flows that run in the IDE, like the [Software Development Flow](../flows/foundational_flows/software_development.md).
+- Flows that run in the IDE, like the [Software Development Flow](../../../editor_extensions/software_development.md).
   These sessions are visible in the IDE, on the **Flows** tab, under **Sessions**.
 - Sessions created by GitLab Duo Chat. These sessions are visible on the right sidebar
   by selecting **GitLab Duo Chat history**.

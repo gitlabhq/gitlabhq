@@ -2,7 +2,7 @@
 stage: Agent Foundations
 group: Agent Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Replace the default Docker image with a custom, hardened, or offline image to run GitLab Duo Agent Platform flows in CI/CD.
+description: Default image contents, and how to replace it with a custom, hardened, or offline image to run GitLab Duo Agent Platform flows in CI/CD.
 title: Configure images for flow execution
 ---
 
@@ -17,6 +17,57 @@ Flows that run with CI/CD execute inside a Docker image. By default, GitLab prov
 an image that includes the tools and network protection flows need. You can replace
 the default image with a custom or hardened image to add project dependencies, meet compliance
 requirements, or run flows in an offline environment.
+
+## Default image for flows
+
+If you do not set `image` in `agent-config.yml`, flows use the default image. The default image is based on
+Red Hat UBI 9 Minimal and runs as root. It includes Anthropic Sandbox Runtime (SRT)
+and a set of common language runtimes, so many projects can run flows without a custom image.
+
+The default image is published at
+`registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image`.
+
+It is built for `linux/amd64` and `linux/arm64`, and uses the following tag scheme:
+
+- `:<short-sha>` for each build
+- `:<git-tag>` for each release
+
+### Image contents
+
+For the authoritative and up-to-date list of all components and pinned versions,
+see the [default image runtime inventory](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/blob/main/README.md#default-image)
+in the `default-docker-image` README.
+
+The following table lists the current pinned versions:
+
+| Component                             | Version or source                                       |
+|---------------------------------------|---------------------------------------------------------|
+| Base image                            | Red Hat UBI 9 Minimal (`ubi9-minimal:9.7-1776833838`)   |
+| `git`                                 | 2.47.x (UBI 9 stock)                                    |
+| `git-lfs`                             | UBI 9 stock                                             |
+| Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                    |
+| `npm`                                 | Bundled with Node.js 20                                 |
+| `@gitlab/duo-cli`                     | 9.25.0                                                  |
+| `glab` (GitLab CLI)                   | 1.119.0                                                 |
+| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                        |
+| `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, root-based sandboxing)  |
+| `socat`                               | AlmaLinux 9 EPEL                                        |
+| `rg` (ripgrep)                        | AlmaLinux 9 EPEL                                        |
+| `unshare`                             | UBI 9 (`util-linux-core`)                               |
+| Python                                | 3.12 with pip (`python3.12`, `python3.12-pip`)          |
+| Go                                    | 1.22.12 (upstream tarball)                              |
+| Ruby                                  | 3.3 (UBI 9 module stream `ruby:3.3`)                    |
+| Java                                  | 17 (`java-17-openjdk-headless`)                         |
+| Runtime user                          | root                                                    |
+
+The default and hardened images share a single base layer. The default image is built
+`FROM` the hardened stage and adds only the language runtimes to the default and hardened
+images. 
+
+Default and hardened images two differ in
+runtime user and in how the sandbox obtains its privileges. The default image runs as
+root and uses root-based sandboxing, and the hardened image runs as UID 1001 and relies
+on unprivileged user namespaces.
 
 ## Change the default Docker image
 
@@ -113,7 +164,7 @@ and [configure a network policy](../../environment_sandbox.md#configure-a-networ
 
 To reduce job startup time by approximately 15-20 seconds, include the
 GitLab Duo CLI binary and the `glab` CLI in your custom image.
-The hardened image pre-installs both tools.
+The default and hardened images pre-install both tools.
 
 ## Use a custom image in an offline environment
 
@@ -285,7 +336,8 @@ image: registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow
 ### Image contents
 
 For the authoritative and up-to-date list of all components and pinned versions,
-see the runtime inventory in the `default-docker-image` [README](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/blob/main/README.md#runtime-inventory).
+see the [hardened image runtime inventory](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/blob/main/README.md#hardened-ubi-9-minimal-image)
+in the `default-docker-image` README.
 
 The following table lists the current pinned versions:
 

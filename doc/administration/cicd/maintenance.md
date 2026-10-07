@@ -54,7 +54,9 @@ mr.project.try(:ci_integration)
 ```ruby
 project = Project.find_by_full_path('<project_path>')
 content = project.ci_config_for(project.repository.root_ref_sha)
-Gitlab::Ci::Lint.new(project: project, current_user: User.first).validate(content)
+Gitlab::Ci::Lint
+  .new(project: project, current_user: User.first, surface: :rails_console)
+  .validate(content, dry_run: false, ref: project.default_branch)
 ```
 
 ## Disable AutoDevOps on Existing Projects

@@ -51,35 +51,73 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
   end
 
-  describe '#bulk_import_offline_complete' do
+  shared_examples 'an offline transfer import email' do
     let(:bulk_import) { build_stubbed(:bulk_import, :finished, :with_offline_configuration) }
     let(:configuration) { bulk_import.offline_configuration }
-
-    subject { Notify.bulk_import_offline_complete('user_id', 'bulk_import_id') }
+    let(:start_date) { I18n.l(bulk_import.created_at.to_date, format: :long) }
 
     before do
       allow(User).to receive(:find).and_return(user)
       allow(BulkImport).to receive(:find).and_return(bulk_import)
     end
 
-    it 'sends complete email', :aggregate_failures do
-      start_date = I18n.l(bulk_import.created_at.to_date, format: :long)
-
-      is_expected.to have_subject('Offline transfer import completed')
-      is_expected.to have_content('Offline transfer import completed')
-      is_expected.to have_content("The offline transfer import you started on #{start_date} " \
-        "from export #{configuration.export_prefix} has completed. You can now review your import results.")
+    it 'reports the import outcome', :aggregate_failures do
+      is_expected.to have_subject(expected_title)
+      is_expected.to have_content(expected_title)
+      is_expected.to have_content(format(
+        expected_message_with_prefix,
+        start_date: start_date,
+        strong_open: '',
+        strong_close: '',
+        export_prefix: configuration.export_prefix
+      ))
       is_expected.to have_content('is not verified, so it may not be trustworthy')
-      is_expected.to have_content(configuration.source_hostname)
+      is_expected.to have_content(expected_results_label)
       is_expected.to have_body_text(history_import_bulk_import_url(bulk_import.id))
     end
 
+    context 'when the bulk import has no configuration' do
+      before do
+        allow(bulk_import).to receive(:offline_configuration).and_return(nil)
+      end
+
+      it 'omits the unverified source section and export prefix', :aggregate_failures do
+        is_expected.to have_content(format(expected_message_without_prefix, start_date: start_date))
+        is_expected.not_to have_content('is not verified, so it may not be trustworthy')
+        is_expected.not_to have_content('from export')
+      end
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
+  describe '#bulk_import_offline_complete' do
+    subject { Notify.bulk_import_offline_complete('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import completed') }
+      let(:expected_results_label) { s_('OfflineTransfer|View import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has completed. You can now review your import results.')
+      end
+
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. ' \
+          'You can now review your import results.')
+      end
+    end
+
     context 'when source_hostname contains credentials' do
+      let(:bulk_import) { build_stubbed(:bulk_import, :finished) }
       let(:configuration) do
         build_stubbed(:offline_configuration, source_hostname: 'https://user:secret@gitlab.example.com')
       end
 
       before do
+        allow(User).to receive(:find).and_return(user)
+        allow(BulkImport).to receive(:find).and_return(bulk_import)
         allow(bulk_import).to receive(:offline_configuration).and_return(configuration)
       end
 
@@ -89,11 +127,12 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     context 'when source_hostname is not present' do
-      let(:configuration) do
-        build_stubbed(:offline_configuration, source_hostname: nil)
-      end
+      let(:bulk_import) { build_stubbed(:bulk_import, :finished) }
+      let(:configuration) { build_stubbed(:offline_configuration, source_hostname: nil) }
 
       before do
+        allow(User).to receive(:find).and_return(user)
+        allow(BulkImport).to receive(:find).and_return(bulk_import)
         allow(bulk_import).to receive(:offline_configuration).and_return(configuration)
       end
 
@@ -102,21 +141,62 @@ RSpec.describe Emails::Imports, feature_category: :importers do
         is_expected.not_to have_content('is not verified, so it may not be trustworthy')
       end
     end
+  end
 
-    context 'when the bulk import has no configuration' do
-      before do
-        allow(bulk_import).to receive(:offline_configuration).and_return(nil)
+  describe '#bulk_import_offline_complete_with_errors' do
+    subject { Notify.bulk_import_offline_complete_with_errors('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import completed with errors') }
+      let(:expected_results_label) { s_('OfflineTransfer|View import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has completed with errors. ' \
+          'You can now review your import results.')
       end
 
-      it 'omits the unverified source section and export prefix', :aggregate_failures do
-        is_expected.to have_content('Offline transfer import completed')
-        is_expected.not_to have_content('is not verified, so it may not be trustworthy')
-        is_expected.not_to have_content('from export')
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has completed ' \
+          'with errors. You can now review your import results.')
       end
     end
+  end
 
-    it_behaves_like 'appearance header and footer enabled'
-    it_behaves_like 'appearance header and footer not enabled'
+  describe '#bulk_import_offline_failed' do
+    subject { Notify.bulk_import_offline_failed('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import failed') }
+      let(:expected_results_label) { s_('OfflineTransfer|View partial import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has failed. You can now review your partial import results.')
+      end
+
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has failed. ' \
+          'You can now review your partial import results.')
+      end
+    end
+  end
+
+  describe '#bulk_import_offline_timeout' do
+    subject { Notify.bulk_import_offline_timeout('user_id', 'bulk_import_id') }
+
+    it_behaves_like 'an offline transfer import email' do
+      let(:expected_title) { s_('OfflineTransfer|Offline transfer import timed out') }
+      let(:expected_results_label) { s_('OfflineTransfer|View partial import results') }
+      let(:expected_message_with_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export ' \
+          '%{strong_open}%{export_prefix}%{strong_close} has timed out. ' \
+          'You can now review your partial import results.')
+      end
+
+      let(:expected_message_without_prefix) do
+        s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has timed out. ' \
+          'You can now review your partial import results.')
+      end
+    end
   end
 
   describe '#bulk_import_csv_user_mapping' do

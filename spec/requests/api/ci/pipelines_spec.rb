@@ -1907,11 +1907,11 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         properties: {
           'id' => {
             type: 'string',
-            description: 'The project ID or URL-encoded path'
+            description: 'ID or URL-encoded path of the project.'
           },
           'pipeline_id' => {
             type: 'integer',
-            description: 'The pipeline ID'
+            description: 'ID of the pipeline.'
           },
           'per_page' => {
             type: 'integer',
@@ -1933,15 +1933,15 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         properties: {
           'id' => {
             type: 'string',
-            description: 'The project ID or URL-encoded path'
+            description: 'ID or URL-encoded path of the project.'
           },
           'ref' => {
             type: 'string',
-            description: 'The ref of pipelines'
+            description: 'Return pipelines for the specified branch or tag.'
           },
           'status' => {
             type: 'string',
-            description: 'The status of pipelines',
+            description: 'Return pipelines with the specified status.',
             enum: %w[
               created waiting_for_resource preparing waiting_for_callback pending running success failed canceling
               canceled skipped manual scheduled
@@ -1959,22 +1959,20 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           },
           'created_after' => {
             type: 'string',
-            description: 'Return pipelines created after the specified datetime. Format: ISO 8601 ' \
-              'YYYY-MM-DDTHH:MM:SSZ'
+            description: 'Return pipelines created on or after the specified time.'
           },
           'created_before' => {
             type: 'string',
-            description: 'Return pipelines created before the specified datetime. Format: ISO 8601 ' \
-              'YYYY-MM-DDTHH:MM:SSZ'
+            description: 'Return pipelines created on or before the specified time.'
           },
           'order_by' => {
             type: 'string',
-            description: 'Order pipelines',
+            description: 'Sort results by the specified field.',
             enum: %w[id status ref updated_at user_id]
           },
           'sort' => {
             type: 'string',
-            description: 'Sort pipelines',
+            description: 'Sort results in ascending or descending order.',
             enum: %w[asc desc]
           },
           'page' => {

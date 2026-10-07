@@ -147,9 +147,16 @@ module StubConfiguration
     # Default storage is always required
     messages['default'] ||= Gitlab.config.repositories.storages[GitalySetup::REPOS_STORAGE]
     messages.each do |storage_name, storage_hash|
-      # Default additional storages to connect to the default storage
+      # Default additional storages to connect to the default storage, including its gitway_address when it has one.
+      # A storage inherits both addresses or neither, so one given its own gitaly_address is never routed through the
+      # default storage's gitway.
       unless storage_hash.key?('gitaly_address')
-        storage_hash['gitaly_address'] = Gitlab.config.repositories.storages[GitalySetup::REPOS_STORAGE].gitaly_address
+        default_storage = Gitlab.config.repositories.storages[GitalySetup::REPOS_STORAGE]
+        storage_hash['gitaly_address'] = default_storage.gitaly_address
+
+        if !storage_hash.key?('gitway_address') && default_storage['gitway_address']
+          storage_hash['gitway_address'] = default_storage['gitway_address']
+        end
       end
 
       messages[storage_name] = Gitlab::GitalyClient::StorageSettings.new(storage_hash.to_h)

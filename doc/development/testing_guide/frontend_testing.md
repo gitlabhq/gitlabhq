@@ -2023,6 +2023,29 @@ Do not pass `glFeatures` through `provide`. Nested components do not receive it.
 
 The harness resets `window.gon` before each test. You do not need to remove the flags after the test.
 
+#### Enable licensed features
+
+Components read licensed features through the `glLicensedFeatures` inject.
+The inject comes from `window.gon.licensed_features`.
+
+Use `setLicensedFeatures` before you mount a component:
+
+```javascript
+import { setLicensedFeatures } from 'ee_jest/integration/helpers/setup_utils';
+
+setLicensedFeatures({ fileLocks: true });
+
+fullMount(...);
+```
+
+Do not pass `glLicensedFeatures` through `provide`, and do not assign
+`window.gon.licensed_features` directly. The harness resets `window.gon`
+before each test, so you do not need to remove the features after the test.
+
+This helper only controls what the frontend reads from `gon`. A GraphQL or REST
+response that drops a field for an unlicensed namespace is a different concern.
+For that, see [Test unlicensed feature states](#test-unlicensed-feature-states).
+
 #### Prefer DOM assertions over Vue Test Utils wrappers
 
 Use `fullMount` from `test_helpers.js` only to create the component. After mount,

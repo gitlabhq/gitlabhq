@@ -349,3 +349,8 @@ export const GRAPHQL_STATUS_MAP = {
   FAILED: SCAN_PROFILE_SCANNER_HEALTH_FAILED,
   STALE: SCAN_PROFILE_SCANNER_HEALTH_STALE,
 };
+
+export const BOOLEAN_OPTIONS = [
+  { value: true, text: __('Enabled') },
+  { value: false, text: __('Disabled') },
+];

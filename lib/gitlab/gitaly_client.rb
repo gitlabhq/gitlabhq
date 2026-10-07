@@ -34,13 +34,19 @@ module Gitlab
 
     MUTEX = Mutex.new
 
-    def self.stub(name, storage)
+    # `resolved_address` lets a caller that already resolved the storage's address (`Call` does, once per call) reuse
+    # it, so the stub it dials and the address it reports agree. Resolving may evaluate a feature flag, and under a
+    # percentage-of-time rollout a second evaluation could disagree with the first.
+    #
+    # The address is resolved once, before taking the mutex, so the cache key and the channel always agree and a flag
+    # lookup never blocks every other Gitaly call.
+    def self.stub(name, storage, resolved_address = address(storage))
       MUTEX.synchronize do
         @stubs ||= {}
-        @stubs[storage] ||= {}
-        @stubs[storage][name] ||= begin
+        @stubs[[storage, resolved_address]] ||= {}
+        @stubs[[storage, resolved_address]][name] ||= begin
           klass = stub_class(name)
-          channel = create_channel(storage)
+          channel = create_channel(storage, resolved_address)
           klass.new(channel.target, nil, interceptors: interceptors, channel_override: channel)
         end
       end
@@ -89,7 +95,7 @@ module Gitlab
       }
     end
 
-    def self.channel_args(storage = nil)
+    def self.channel_args(address = nil)
       args = {
         # These keepalive values match the go Gitaly client
         # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
@@ -213,9 +219,9 @@ module Gitlab
         }.to_json
       }
 
-      # Add TLS-specific channel arguments if storage is provided and TLS is enabled
-      if storage
-        uri = URI(address(storage))
+      # Add TLS-specific channel arguments if an address is provided and TLS is enabled
+      if address
+        uri = URI(address)
 
         # For dns+tls:// scheme, extract hostname for SNI override
         # This ensures proper certificate validation during TLS handshake when using DNS resolution
@@ -242,8 +248,8 @@ module Gitlab
     end
     private_class_method :channel_args
 
-    def self.stub_creds(storage)
-      uri = URI(address(storage))
+    def self.stub_creds(address)
+      uri = URI(address)
 
       # Check if TLS is enabled via URI scheme
       # Supported TLS schemes:
@@ -264,17 +270,25 @@ module Gitlab
       end
     end
 
-    def self.stub_address(storage)
-      address(storage).sub(%r{^tcp://|^tls://}, '').sub(%r{^dns\+tls:}, 'dns:')
+    def self.stub_address(address)
+      address.sub(%r{^tcp://|^tls://}, '').sub(%r{^dns\+tls:}, 'dns:')
     end
 
-    # Cache gRPC servers by storage. All the client stubs in the same process can share the underlying connection to the
-    # same host thanks to HTTP2 framing protocol that gRPC is built on top. This method is not thread-safe. It is
-    # intended to be a part of `stub`, method behind a mutex protection.
-    def self.create_channel(storage)
+    # Cache gRPC servers by storage and address. All the client stubs in the same process can share the underlying
+    # connection to the same host thanks to HTTP2 framing protocol that gRPC is built on top.
+    #
+    # The address is part of the key because it is not fixed per storage: the `route_gitaly_through_gitway` feature
+    # flag switches a storage between its `gitaly_address` and `gitway_address` at runtime. Keying by storage alone
+    # would pin the process to whichever address the first call resolved until `clear_stubs!` or a restart, so a flag
+    # flip would reach Workhorse and gitlab-shell but not Rails' own connections. The channel for the address no
+    # longer in use stays open until `clear_stubs!`, which bounds the cost at two channels per storage.
+    #
+    # `address` must be the one `stub` already resolved, not re-read here, so a channel never mixes two evaluations of
+    # the flag. This method is not thread-safe. It is intended to be a part of `stub`, method behind a mutex protection.
+    def self.create_channel(storage, address)
       @channels ||= {}
-      @channels[storage] ||= GRPC::ClientStub.setup_channel(
-        nil, stub_address(storage), stub_creds(storage), channel_args(storage)
+      @channels[[storage, address]] ||= GRPC::ClientStub.setup_channel(
+        nil, stub_address(address), stub_creds(address), channel_args(address)
       )
     end
 
@@ -290,24 +304,82 @@ module Gitlab
       Gitlab.config.repositories.storages.keys.sample
     end
 
+    # The address Rails dials for the storage, and hands to Workhorse, gitlab-shell and other clients: its
+    # gitway_address while the `route_gitaly_through_gitway` flag is enabled for it, otherwise its gitaly_address.
     def self.address(storage)
+      params = storage_params(storage)
+
+      validate_address!(route_through_gitway?(storage, params) ? params['gitway_address'] : params['gitaly_address'])
+    end
+
+    # The storage's Gitaly node itself, never gitway, and without evaluating the feature flag. Use this where the
+    # answer must identify the node rather than the hop in front of it, such as a metrics label.
+    def self.gitaly_address(storage)
+      validate_address!(storage_params(storage)['gitaly_address'])
+    end
+
+    # Validates every address configured for the storage without evaluating the feature flag. `address` only checks
+    # the one the flag selects, so a malformed gitway_address would pass boot and only fail, on every call for the
+    # storage, once the flag is enabled.
+    def self.validate_storage_addresses!(storage)
+      params = storage_params(storage)
+
+      validate_address!(params['gitaly_address'])
+      validate_address!(params['gitway_address']) if params['gitway_address'].present?
+
+      nil
+    end
+
+    def self.storage_params(storage)
       params = Gitlab.config.repositories.storages[storage]
       raise "storage not found: #{storage.inspect}" if params.nil?
 
-      address = params['gitaly_address']
-      unless address.present?
+      # gitaly_address stays required even when a gitway_address is set: it is the fallback whenever the flag is off.
+      unless params['gitaly_address'].present?
         raise "storage #{storage.inspect} is missing a gitaly_address"
       end
 
+      params
+    end
+    private_class_method :storage_params
+
+    def self.validate_address!(address)
       unless %w[tcp unix tls dns dns+tls].include?(URI(address).scheme)
         raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls' or 'dns' or 'dns+tls'"
       end
 
       address
     end
+    private_class_method :validate_address!
 
+    # The flag is only evaluated when the storage has a gitway_address, so installs without one pay nothing and see no
+    # change. The actor is the storage, so the flag can be enabled one storage at a time.
+    #
+    # The table guard is needed because `Feature.enabled?` only tolerates a missing database, not a missing `features`
+    # table: without it, `db:schema:load` and `gitlab:db:configure` raise PG::UndefinedTable on any install that
+    # configures a gitway_address. Falling back to the gitaly_address is always safe. This mirrors
+    # `Feature::Gitaly.enabled_for_any?`.
+    def self.route_through_gitway?(storage, params)
+      return false unless params['gitway_address'].present?
+      return false unless Feature::FlipperFeature.table_exists?
+
+      Feature.enabled?(
+        :route_gitaly_through_gitway,
+        Feature::ActorWrapper.new(StorageSettings, storage),
+        type: :ops
+      )
+    rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
+      false
+    end
+    private_class_method :route_through_gitway?
+
+    # Used for the `gitaly-servers` header, which tells one Gitaly node how to reach another. That traffic is
+    # server-to-server between Gitaly nodes and gains nothing from the gitway hop, so it always gets the storage's
+    # gitaly_address and never evaluates the flag. Clients outside Rails get `connection_data` instead, which does.
     def self.address_metadata(storage)
-      Base64.strict_encode64(Gitlab::Json.dump(storage => connection_data(storage)))
+      Base64.strict_encode64(
+        Gitlab::Json.dump(storage => { 'address' => gitaly_address(storage), 'token' => token(storage) })
+      )
     end
 
     def self.connection_data(storage)
@@ -351,7 +423,9 @@ module Gitlab
     # which is how callers read the x-gitaly-cost trailer. For streaming
     # responses the trailer is only available after the stream is fully
     # consumed.
-    def self.execute(storage, service, rpc, request, remote_storage:, timeout:, gitaly_context: {})
+    #
+    # `resolved_address` is the storage's address as the caller already resolved it; see `stub`.
+    def self.execute(storage, service, rpc, request, remote_storage:, timeout:, gitaly_context: {}, resolved_address: nil)
       enforce_gitaly_request_limits(:call)
       Gitlab::RequestContext.instance.ensure_deadline_not_exceeded!
       raise_if_concurrent_ruby!
@@ -359,7 +433,7 @@ module Gitlab
       kwargs = request_kwargs(storage, timeout: timeout.to_f, remote_storage: remote_storage, gitaly_context: gitaly_context)
       kwargs = yield(kwargs) if block_given?
 
-      stub(service, storage).__send__(rpc, request, kwargs.merge(return_op: true)) # rubocop:disable GitlabSecurity/PublicSend
+      stub(service, storage, resolved_address || address(storage)).__send__(rpc, request, kwargs.merge(return_op: true)) # rubocop:disable GitlabSecurity/PublicSend -- rpc is a gRPC method name from internal callers, not user input
     end
 
     def self.query_time

@@ -317,7 +317,7 @@ The following CI/CD variables are available:
 
 Every external agent receives a GitLab OAuth token set as the environment variable `AI_FLOW_GITLAB_TOKEN`.
 These tokens are limited to the scope granted to them. They can only access
-[GitLab API endpoints with the `ai_workflows` scope](../flows/foundational_flows/software_development.md#apis-that-the-flow-has-access-to).
+[GitLab API endpoints with the `ai_workflows` scope](../../../editor_extensions/software_development.md#apis-that-the-flow-has-access-to).
 Endpoints outside that scope are refused even when the token is sent correctly.
 
 To call the GitLab API from an external agent, send `AI_FLOW_GITLAB_TOKEN` as an `Authorization: Bearer` token.

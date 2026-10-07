@@ -106,14 +106,16 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            'Project not found: it does not exist or you do not have access to it.'
+            'Project not found: it does not exist or you do not have access to it.',
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 
         def repository_access_error
           ::Mcp::Tools::Base::Response.error(
             "The repository of project '#{project.full_path}' is not available: repository access is " \
-              'disabled, or you do not have permission to read it.'
+              'disabled, or you do not have permission to read it.',
+            reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
           )
         end
 
@@ -130,7 +132,8 @@ module Mcp
         def ref_not_found_error
           ::Mcp::Tools::Base::Response.error(
             "Ref '#{params[:ref]}' not found. Provide an existing branch name, tag name, or commit SHA, " \
-              'or use HEAD for the default branch.'
+              'or use HEAD for the default branch.',
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 
@@ -138,7 +141,8 @@ module Mcp
           ::Mcp::Tools::Base::Response.error(
             "Path '#{params[:path]}' not found at ref '#{params[:ref].presence || 'HEAD'}': it does not exist " \
               'or is a file, not a directory. Provide a directory path relative to the repository root, ' \
-              'or use get_repository_file to read a file.'
+              'or use get_repository_file to read a file.',
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
       end

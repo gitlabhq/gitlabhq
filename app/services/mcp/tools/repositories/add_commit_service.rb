@@ -7,7 +7,14 @@ module Mcp
         include Mcp::Tools::Concerns::ResourceFinder
         include Mcp::Tools::Concerns::UrlParser
 
-        PartialEditError = Class.new(StandardError)
+        class PartialEditError < StandardError
+          attr_reader :reason
+
+          def initialize(message, reason: nil)
+            super(message)
+            @reason = reason
+          end
+        end
 
         container_arguments project: %i[project_id start_project]
 
@@ -127,7 +134,10 @@ module Mcp
 
           execute_graphql_tool(arguments.merge(actions: expand_partial_edits(arguments)))
         rescue PartialEditError => error
-          Base::Response.error(error.message)
+          Base::Response.error(
+            error.message,
+            reason: error.reason || ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
+          )
         end
 
         override :perform_default
@@ -140,7 +150,10 @@ module Mcp
         def validate_project_identifier(arguments)
           return if arguments[:project_id].present? ^ arguments[:url].present?
 
-          Base::Response.error('Provide exactly one of project_id or url')
+          Base::Response.error(
+            'Provide exactly one of project_id or url',
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
+          )
         end
 
         def partial?(action)
@@ -188,8 +201,11 @@ module Mcp
           result = read_blobs(arguments, paths)
 
           if result[:isError]
-            raise PartialEditError, 'Could not read the file(s) needed to expand the partial edit; ' \
-              "check the project and ref. Error: #{result.dig(:content, 0, :text)}"
+            raise PartialEditError.new(
+              'Could not read the file(s) needed to expand the partial edit; ' \
+                "check the project and ref. Error: #{result.dig(:content, 0, :text)}",
+              reason: ::Mcp::Tools::Base::Response.error_reason(result)
+            )
           end
 
           result[:structuredContent].dig('repository', 'blobs', 'nodes').to_h do |node|

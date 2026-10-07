@@ -23,6 +23,12 @@
   --gl-button-confirm-primary-foreground-color-active: var(--gl-action-strong-confirm-foreground-color-active);
 }
 
+// The checkbox label is an inline-block, so with nowrap text it grows to the full name and
+// nothing inside it can truncate. Capping it at the checkbox's width lets the name shrink.
+.scope-picker-item-checkbox .custom-control-label {
+  @apply gl-max-w-full;
+}
+
 // Below md the filters stack vertically and would cover most of a small
 // viewport when stuck, so the bar only sticks once it lays out as a row.
 @include media-breakpoint-up(md) {

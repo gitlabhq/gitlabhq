@@ -32,7 +32,7 @@ RSpec.describe Integrations::ChatMessage::MergeMessage, feature_category: :integ
   it_behaves_like Integrations::ChatMessage
 
   context 'without markdown' do
-    let(:color) { '#345' }
+    let(:color) { '#334455' }
 
     context 'open' do
       it 'returns a message regarding opening of merge requests' do

@@ -16,6 +16,24 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
     let(:dry_run) { nil }
     let(:include_jobs) { nil }
 
+    context 'when reporting the lint surface' do
+      let_it_be(:api_user) { create(:user) }
+
+      before do
+        project.add_developer(api_user)
+      end
+
+      it 'passes the REST GET surface to the linter' do
+        expect(Gitlab::Ci::Lint).to receive(:new)
+          .with(project: project, current_user: api_user, sha: project.commit.sha, surface: :rest_get)
+          .and_call_original
+
+        ci_lint
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     RSpec.shared_examples 'valid config with warnings' do
       it 'passes validation with warnings' do
         ci_lint
@@ -794,6 +812,22 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
 
     let_it_be(:included_content) do
       { another_test: { stage: 'test', script: 'echo 1' } }.to_yaml
+    end
+
+    context 'when reporting the lint surface' do
+      before do
+        project.add_developer(api_user)
+      end
+
+      it 'passes the REST POST surface to the linter' do
+        expect(Gitlab::Ci::Lint).to receive(:new)
+          .with(project: project, current_user: api_user, surface: :rest_post)
+          .and_call_original
+
+        ci_lint
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
 
     RSpec.shared_examples 'valid project config' do

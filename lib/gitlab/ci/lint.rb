@@ -10,16 +10,21 @@ module Gitlab
       class Result
         attr_reader :jobs, :merged_yaml, :errors, :warnings, :includes
 
-        def initialize(jobs:, merged_yaml:, errors:, warnings:, includes:)
+        def initialize(jobs:, merged_yaml:, errors:, warnings:, includes:, timed_out: false)
           @jobs = jobs
           @merged_yaml = merged_yaml
           @errors = errors
           @warnings = warnings
           @includes = includes
+          @timed_out = timed_out
         end
 
         def valid?
           @errors.empty?
+        end
+
+        def timed_out?
+          @timed_out
         end
 
         def status
@@ -28,10 +33,15 @@ module Gitlab
       end
 
       LOG_MAX_DURATION_THRESHOLD = 2.seconds
+      USER_EXPERIENCE_ID = :lint_ci_config
+      SURFACES = %i[graphql_ci_lint graphql_ci_config rest_get rest_post web_lint_page rails_console].freeze
 
-      def initialize(project:, current_user:, sha: nil, verify_project_sha: true)
+      def initialize(project:, current_user:, surface:, sha: nil, verify_project_sha: true)
+        raise ArgumentError, "unknown lint surface: #{surface}" unless SURFACES.include?(surface)
+
         @project = project
         @current_user = current_user
+        @surface = surface
 
         #
         # We are deprecating these parameters because we'll replace the `legacy_validate` with the `validate` method.
@@ -46,27 +56,63 @@ module Gitlab
       # This legacy method is aimed to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/543727.
       def legacy_validate(content, dry_run: false, ref: project&.default_branch)
         raise RateLimitError if ci_lint_rate_limited?
+        return simulate_pipeline_creation(content, ref) if dry_run
 
-        if dry_run
-          simulate_pipeline_creation(content, ref)
-        else
-          legacy_static_validation(content)
-        end
+        measure_lint_experience { legacy_static_validation(content) }
       end
 
       def validate(content, dry_run:, ref:)
         raise RateLimitError if ci_lint_rate_limited?
+        return simulate_pipeline_creation(content, ref) if dry_run
 
-        if dry_run
-          simulate_pipeline_creation(content, ref)
-        else
-          lint_pipeline_creation(content, ref)
-        end
+        measure_lint_experience { lint_pipeline_creation(content, ref) }
       end
 
       private
 
-      attr_accessor :project, :current_user, :legacy_sha, :legacy_verify_project_sha
+      attr_accessor :project, :current_user, :legacy_sha, :legacy_verify_project_sha, :surface
+
+      def measure_lint_experience
+        return yield if surface == :rails_console
+
+        started_at = Time.current
+        begin
+          result = yield
+        rescue StandardError
+          raised = true
+          raise
+        ensure
+          report_lint_experience(started_at, result, raised: raised)
+        end
+      end
+
+      # Invalid YAML is the right answer for a bad config, so it isn't an SLI error.
+      # A timed-out `include:` fetch also returns an invalid result, but the config was
+      # never fully checked, so that one is an SLI error.
+      def report_lint_experience(started_at, result, raised:)
+        Labkit::UserExperienceSli.observed(
+          USER_EXPERIENCE_ID,
+          start_time: started_at,
+          error: raised || result.timed_out?,
+          lint_result: lint_result_for(result, raised),
+          **experience_extra
+        )
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e, **experience_extra)
+      end
+
+      def lint_result_for(result, raised)
+        return :error if raised
+        return :timeout if result.timed_out?
+
+        result.status
+      end
+
+      # `lint_surface` names the entry point because GraphQL requests all share the
+      # `GraphqlController#execute` caller_id, so the request context cannot tell them apart.
+      def experience_extra
+        { lint_surface: surface, Labkit::Fields::GL_PROJECT_ID.to_sym => project&.id }
+      end
 
       # Increments the :ci_lint counter and logs when over the limit, but only reports the request
       # as rate limited (so callers can reject it) when the ci_enforce_ci_lint_rate_limit flag
@@ -111,7 +157,8 @@ module Gitlab
           merged_yaml: pipeline.config_metadata.try(:[], :merged_yaml)&.call,
           errors: pipeline.error_messages.map(&:content),
           warnings: pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content),
-          includes: pipeline.config_metadata.try(:[], :includes)
+          includes: pipeline.config_metadata.try(:[], :includes),
+          timed_out: !!service.yaml_processor_result&.timed_out?
         )
       end
 
@@ -125,7 +172,8 @@ module Gitlab
           merged_yaml: result.config_metadata[:merged_yaml]&.call,
           errors: result.errors,
           warnings: result.warnings.take(::Gitlab::Ci::Warnings::MAX_LIMIT), # rubocop: disable CodeReuse/ActiveRecord
-          includes: result.config_metadata[:includes]
+          includes: result.config_metadata[:includes],
+          timed_out: result.timed_out?
         )
       ensure
         logger.commit(pipeline: ::Ci::Pipeline.new, caller: self.class.name)

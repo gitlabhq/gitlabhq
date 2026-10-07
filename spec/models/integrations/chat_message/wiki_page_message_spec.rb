@@ -63,7 +63,7 @@ RSpec.describe Integrations::ChatMessage::WikiPageMessage do
     end
 
     describe '#attachments' do
-      let(:color) { '#345' }
+      let(:color) { '#334455' }
 
       context 'when :action == "create"' do
         before do

@@ -206,8 +206,18 @@ RSpec.describe BulkImport, feature_category: :importers do
       subject(:import) { create(:bulk_import, :started, :with_offline_configuration) }
 
       it { expect { import.finish! }.to send_completion_notification(:bulk_import_offline_complete) }
-      it { expect { import.fail_op! }.to send_completion_notification(:bulk_import_offline_complete) }
-      it { expect { import.cleanup_stale! }.to send_completion_notification(:bulk_import_offline_complete) }
+      it { expect { import.fail_op! }.to send_completion_notification(:bulk_import_offline_failed) }
+      it { expect { import.cleanup_stale! }.to send_completion_notification(:bulk_import_offline_timeout) }
+
+      context 'when an entity has failures' do
+        before do
+          create(:bulk_import_entity, :started, bulk_import: import, has_failures: true)
+        end
+
+        it { expect { import.finish! }.to send_completion_notification(:bulk_import_offline_complete_with_errors) }
+        it { expect { import.fail_op! }.to send_completion_notification(:bulk_import_offline_failed) }
+        it { expect { import.cleanup_stale! }.to send_completion_notification(:bulk_import_offline_timeout) }
+      end
 
       it 'does not send the direct transfer completion notification' do
         expect { import.finish! }.not_to send_completion_notification(:bulk_import_complete)

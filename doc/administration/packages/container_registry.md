@@ -814,7 +814,7 @@ you can pull from the container registry, but you cannot push.
    CLI before, you have to configure your credentials by running `sudo aws configure`.
    Because a non-administrator user likely can't access the container registry folder,
    ensure you use `sudo`. To check your credential configuration, run
-   [`ls`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/ls.html) to list
+   [`ls`](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html) to list
    all buckets.
 
    ```shell
@@ -823,8 +823,8 @@ you can pull from the container registry, but you cannot push.
 
    If you are using AWS as your back end, you do not need the [`--endpoint-url`](https://docs.aws.amazon.com/cli/latest/reference/#options).
 1. Copy initial data to your S3 bucket, for example with the `aws` CLI
-   [`cp`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)
-   or [`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)
+   [`cp`](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html)
+   or [`sync`](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html)
    command. Make sure to keep the `docker` folder as the top-level folder inside the bucket.
 
    ```shell

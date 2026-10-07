@@ -34573,6 +34573,9 @@ msgstr ""
 msgid "DuoFoundationalFlows|:warning: %{user_reference}, you need to set a default GitLab Duo namespace to use this flow. Please set a default GitLab Duo namespace in your %{link_start}preferences%{link_end}."
 msgstr ""
 
+msgid "DuoFoundationalFlows|This flow could not start because GitLab could not prepare the session. Try again later. If the problem continues, contact your administrator."
+msgstr ""
+
 msgid "DuoFoundationalFlows|This flow could not start because the namespace has run out of compute minutes. Ask someone with billing access to add compute minutes before trying again."
 msgstr ""
 
@@ -57821,10 +57824,28 @@ msgstr ""
 msgid "OfflineTransferImport|The export was created on %{strong_open}%{hostname}%{strong_close}. This source is self-reported by the export and is not verified, so it may not be trustworthy."
 msgstr ""
 
+msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} from export %{strong_open}%{export_prefix}%{strong_close} has completed with errors. You can now review your import results."
+msgstr ""
+
 msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} from export %{strong_open}%{export_prefix}%{strong_close} has completed. You can now review your import results."
 msgstr ""
 
+msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} from export %{strong_open}%{export_prefix}%{strong_close} has failed. You can now review your partial import results."
+msgstr ""
+
+msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} from export %{strong_open}%{export_prefix}%{strong_close} has timed out. You can now review your partial import results."
+msgstr ""
+
+msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has completed with errors. You can now review your import results."
+msgstr ""
+
 msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. You can now review your import results."
+msgstr ""
+
+msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has failed. You can now review your partial import results."
+msgstr ""
+
+msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has timed out. You can now review your partial import results."
 msgstr ""
 
 msgid "OfflineTransferImport|These credentials are used to read the export package to be imported. The credentials are not used to browse or write to your storage."
@@ -57929,6 +57950,15 @@ msgstr ""
 msgid "OfflineTransfer|Offline transfer import completed"
 msgstr ""
 
+msgid "OfflineTransfer|Offline transfer import completed with errors"
+msgstr ""
+
+msgid "OfflineTransfer|Offline transfer import failed"
+msgstr ""
+
+msgid "OfflineTransfer|Offline transfer import timed out"
+msgstr ""
+
 msgid "OfflineTransfer|Offline transfer requires a configured %{boldStart}AWS S3 object storage service%{boldEnd}. Set up your bucket and credentials before exporting."
 msgstr ""
 
@@ -57972,6 +58002,9 @@ msgid "OfflineTransfer|Use path-style URLs (optional)"
 msgstr ""
 
 msgid "OfflineTransfer|View import results"
+msgstr ""
+
+msgid "OfflineTransfer|View partial import results"
 msgstr ""
 
 msgid "OfflineTransfer|Your object storage access key. For AWS S3, find this in your IAM security credentials."
@@ -63511,6 +63544,9 @@ msgid "PolicyRuleMultiSelect|Select %{itemTypeName}"
 msgstr ""
 
 msgid "PolicyRuleMultiSelect|Select all"
+msgstr ""
+
+msgid "PolicyStore|%{count}+"
 msgstr ""
 
 msgid "PolicyStore|%{field} in %{rule} must open with %{statement}."
@@ -74234,6 +74270,9 @@ msgstr ""
 msgid "SecretsManager|Protected Branches"
 msgstr ""
 
+msgid "SecretsManager|Request GitLab Secrets Manager"
+msgstr ""
+
 msgid "SecretsManager|Secret %{secretName} has been deleted."
 msgstr ""
 
@@ -74327,7 +74366,19 @@ msgstr ""
 msgid "SecretsManager|To confirm, enter %{secretName}:"
 msgstr ""
 
+msgid "SecretsManager|To use GitLab Secrets Manager, request it from your group owner or instance administrator."
+msgstr ""
+
+msgid "SecretsManager|Try GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManager|Use GitLab Secrets Manager to store your sensitive credentials, and then safely use them in your processes. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "SecretsManager|Use the secrets manager to store your sensitive credentials, and then safely use them in your processes."
+msgstr ""
+
+msgid "SecretsManager|View GitLab Secrets Manager"
 msgstr ""
 
 msgid "SecretsManager|You pay for GitLab Secrets Manager through GitLab Credits. Usage across all projects and subgroups is combined."
@@ -87951,6 +88002,9 @@ msgid "TransferOrganization|Only top-level groups can be transferred to a differ
 msgstr ""
 
 msgid "TransferOrganization|Target organization must be specified."
+msgstr ""
+
+msgid "TransferOrganization|There can only be one top-level group with a GitLab subscription in an Organization."
 msgstr ""
 
 msgid "TransferOrganization|Top-level group organization transfer failed: %{error_message}"

@@ -196,9 +196,17 @@ module Keeps
 
       return unless result.count == 1
 
-      migration_model = ::Gitlab::Database::BackgroundMigration::BatchedMigration.new(result.first)
+      migration_model = ::Gitlab::Database::BackgroundMigration::BatchedMigration.new(cast_attributes(result.first))
 
       migration_model if migration_model.finished?
+    end
+
+    # Postgres.ai returns jsonb as a String, which BatchedMigration does not parse.
+    def cast_attributes(attributes)
+      job_arguments = attributes['job_arguments']
+      return attributes unless job_arguments.is_a?(String)
+
+      attributes.merge('job_arguments' => ::Gitlab::Json::SafeParser.parse(job_arguments))
     end
 
     def postgres_ai

@@ -44,7 +44,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :pipeline_compos
         expect(response[:includes]).to eq([])
         expect(response[:errors]).to be_empty
         expect(::Gitlab::Ci::Lint).to have_received(:new)
-          .with(current_user: user, project: project, sha: sha, verify_project_sha: true)
+          .with(current_user: user, project: project, sha: sha, verify_project_sha: true, surface: :graphql_ci_config)
       end
     end
 

@@ -12,7 +12,12 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
   describe '#invoke' do
     let(:tool_name) { 'test_tool' }
     let(:params) { { name: tool_name, arguments: { param: 'value' } } }
-    let(:tool) { instance_double(Mcp::Tools::Base::BaseService) }
+    # EE resolves the telemetry namespace from the tool's own container declaration.
+    let(:no_containers) do
+      Mcp::Tools::Concerns::GovernanceContainerResolver::GovernanceContainerResolutionResult.none
+    end
+
+    let(:tool) { instance_double(Mcp::Tools::Base::BaseService, governed_containers: no_containers) }
     let(:logger) { instance_double(Gitlab::Mcp::Logger) }
 
     before do
@@ -52,6 +57,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
             session_id: '1',
             tool_status: 'ok',
             argument_keys: ['param'],
+            ::Labkit::Fields::GL_ROOT_NAMESPACE_ID => nil,
             expanded: { arguments: { 'param' => 'value' } }
           )
         )
@@ -185,7 +191,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
     end
 
     context 'when tool is a custom service' do
-      let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService) }
+      let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService, governed_containers: no_containers) }
 
       before do
         allow(manager).to receive(:get_tool).with(name: tool_name).and_return(custom_tool)
@@ -205,7 +211,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
     end
 
     context 'when tool is a graphql service' do
-      let(:graphql_tool) { instance_double(Mcp::Tools::Base::GraphqlService) }
+      let(:graphql_tool) { instance_double(Mcp::Tools::Base::GraphqlService, governed_containers: no_containers) }
 
       before do
         allow(manager).to receive(:get_tool).with(name: tool_name).and_return(graphql_tool)

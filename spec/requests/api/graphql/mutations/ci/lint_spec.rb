@@ -91,6 +91,16 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
     let(:request) { post_graphql_mutation(mutation_without_config, token: { personal_access_token: pat }) }
   end
 
+  it 'passes the GraphQL mutation surface to the linter' do
+    expect(Gitlab::Ci::Lint).to receive(:new)
+      .with(project: project, current_user: user, surface: :graphql_ci_lint)
+      .and_call_original
+
+    post_mutation
+
+    expect(graphql_errors).to be_nil
+  end
+
   it 'returns the correct structure' do
     post_mutation
 

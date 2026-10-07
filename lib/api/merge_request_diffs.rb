@@ -14,7 +14,7 @@ module API
     feature_category :code_review_workflow
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve merge request diff versions' do
@@ -25,7 +25,7 @@ module API
       end
 
       params do
-        requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
@@ -42,8 +42,8 @@ module API
       end
 
       params do
-        requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request'
-        requires :version_id, type: Integer, desc: 'The ID of the merge request diff version'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
+        requires :version_id, type: Integer, desc: 'ID of the merge request diff version.'
         use :with_unidiff
       end
 

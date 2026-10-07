@@ -3825,9 +3825,25 @@ module Gitlab
         context 'when the YAML could not be parsed' do
           let(:content) { YAML.dump('invalid: yaml: test') }
 
-          it 'returns errors and empty configuration' do
+          it 'returns errors and empty configuration', :aggregate_failures do
             expect(subject.valid?).to be(false)
+            expect(subject.timed_out?).to be(false)
             expect(subject.errors).to eq(['Invalid configuration format'])
+          end
+        end
+
+        context 'when resolving includes times out' do
+          let(:content) { YAML.dump(include: 'other.yml') }
+
+          before do
+            allow(Gitlab::Ci::Config).to receive(:new)
+              .and_raise(Gitlab::Ci::Config::TimeoutError, Gitlab::Ci::Config::TIMEOUT_MESSAGE)
+          end
+
+          it 'returns an invalid result flagged as timed out', :aggregate_failures do
+            expect(subject.valid?).to be(false)
+            expect(subject.timed_out?).to be(true)
+            expect(subject.errors).to eq([Gitlab::Ci::Config::TIMEOUT_MESSAGE])
           end
         end
 

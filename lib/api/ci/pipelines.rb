@@ -19,7 +19,7 @@ module API
       allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       params do
-        requires :id, type: String, desc: 'The project ID or URL-encoded path', documentation: { example: '11' }
+        requires :id, type: String, desc: 'ID or URL-encoded path of the project.', documentation: { example: '11' }
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all project pipelines' do
@@ -37,37 +37,37 @@ module API
         params do
           use :pagination
           optional :scope,    type: String, values: %w[running pending finished branches tags],
-            desc: 'The scope of pipelines',
+            desc: 'Return pipelines in the specified scope.',
             documentation: { example: 'pending' }
           optional :status,   type: String, values: ::Ci::HasStatus::AVAILABLE_STATUSES,
-            desc: 'The status of pipelines',
+            desc: 'Return pipelines with the specified status.',
             documentation: { example: 'pending' }
-          optional :ref,      type: String, desc: 'The ref of pipelines',
+          optional :ref,      type: String, desc: 'Return pipelines for the specified branch or tag.',
             documentation: { example: 'develop' }
-          optional :sha,      type: String, desc: 'The sha of pipelines',
+          optional :sha,      type: String, desc: 'Return pipelines for the specified commit SHA.',
             documentation: { example: 'a91957a858320c0e17f3a0eca7cfacbff50ea29a' }
-          optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations',
+          optional :yaml_errors, type: Boolean, desc: 'If `true`, returns only pipelines with invalid configurations.',
             documentation: { example: false }
-          optional :username, type: String, desc: 'The username of the user who triggered pipelines',
+          optional :username, type: String, desc: 'Return pipelines triggered by the specified username.',
             documentation: { example: 'root' }
-          optional :updated_before, type: DateTime, desc: 'Return pipelines updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :updated_before, type: DateTime, desc: 'Return pipelines updated on or before the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :updated_after, type: DateTime, desc: 'Return pipelines updated on or after the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :created_before, type: DateTime, desc: 'Return pipelines created before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :created_before, type: DateTime, desc: 'Return pipelines created on or before the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :created_after, type: DateTime, desc: 'Return pipelines created after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+          optional :created_after, type: DateTime, desc: 'Return pipelines created on or after the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :order_by, type: String, values: ::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
-            desc: 'Order pipelines',
+            desc: 'Sort results by the specified field.',
             documentation: { example: 'status' }
           optional :sort,     type: String, values: %w[asc desc], default: 'desc',
-            desc: 'Sort pipelines',
+            desc: 'Sort results in ascending or descending order.',
             documentation: { example: 'asc' }
           optional :source,   type: String, values: ::Ci::Pipeline.sources.keys,
             desc: 'The source of pipelines',
             documentation: { example: 'push' }
-          optional :name,     types: String, desc: 'Filter pipelines by name',
+          optional :name,     types: String, desc: 'Return pipelines with the specified name.',
             documentation: { example: 'Build pipeline' }
         end
 
@@ -140,7 +140,7 @@ module API
           tags ['pipelines']
         end
         params do
-          optional :ref, type: String, desc: 'Branch ref of pipeline. Uses project default branch if not specified.',
+          optional :ref, type: String, desc: 'Branch or tag to check for the latest pipeline. If omitted, uses the default branch.',
             documentation: { example: 'develop' }
         end
 
@@ -162,7 +162,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authentication, job_token_allowed: true
@@ -187,8 +187,8 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
-          optional :include_retried, type: Boolean, default: false, desc: 'Includes retried jobs'
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
+          optional :include_retried, type: Boolean, default: false, desc: 'If `true`, includes retried jobs in the response.'
           use :optional_scope
           use :pagination
         end
@@ -229,7 +229,7 @@ module API
           deprecated true
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
           use :optional_scope
           use :pagination
         end
@@ -255,7 +255,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
           use :optional_scope
           use :pagination
         end
@@ -281,7 +281,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :read_pipeline_variable, boundary_type: :project
@@ -302,7 +302,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :read_pipeline_test_report, boundary_type: :project
@@ -325,7 +325,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :read_pipeline_test_report_summary, boundary_type: :project
@@ -342,7 +342,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :mcp,
@@ -380,8 +380,8 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
-          requires :name, type: String, desc: 'The name of the pipeline', documentation: { example: 'Deployment to production' }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
+          requires :name, type: String, desc: 'New name of the pipeline.', documentation: { example: 'Deployment to production' }
         end
         route_setting :mcp,
           tool_name: :update_pipeline,
@@ -419,7 +419,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :retry_pipeline, boundary_type: :project
@@ -447,7 +447,7 @@ module API
           tags ['pipelines']
         end
         params do
-          requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
+          requires :pipeline_id, type: Integer, desc: 'ID of the pipeline.', documentation: { example: 18 }
         end
 
         route_setting :authorization, permissions: :cancel_pipeline, boundary_type: :project

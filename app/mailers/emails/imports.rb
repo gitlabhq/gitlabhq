@@ -53,16 +53,21 @@ module Emails
     end
 
     def bulk_import_offline_complete(user_id, bulk_import_id)
-      user = User.find(user_id)
-      @bulk_import = BulkImport.find(bulk_import_id)
-      configuration = @bulk_import.offline_configuration
-      @export_prefix = configuration&.export_prefix
-      @hostname = Gitlab::UrlSanitizer.sanitize(configuration&.source_hostname.to_s)
+      bulk_import_offline_email(user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import completed'))
+    end
 
-      email_with_layout(
-        to: user.notification_email_or_default,
-        subject: subject(s_('OfflineTransfer|Offline transfer import completed'))
+    def bulk_import_offline_complete_with_errors(user_id, bulk_import_id)
+      bulk_import_offline_email(
+        user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import completed with errors')
       )
+    end
+
+    def bulk_import_offline_failed(user_id, bulk_import_id)
+      bulk_import_offline_email(user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import failed'))
+    end
+
+    def bulk_import_offline_timeout(user_id, bulk_import_id)
+      bulk_import_offline_email(user_id, bulk_import_id, s_('OfflineTransfer|Offline transfer import timed out'))
     end
 
     def bulk_import_csv_user_mapping(
@@ -184,6 +189,22 @@ module Emails
       email_with_layout(
         to: @reassign_to_user.notification_email_or_default,
         subject: subject(title)
+      )
+    end
+
+    private
+
+    def bulk_import_offline_email(user_id, bulk_import_id, title)
+      user = User.find(user_id)
+      @bulk_import = BulkImport.find(bulk_import_id)
+      configuration = @bulk_import.offline_configuration
+      @export_prefix = configuration&.export_prefix
+      @hostname = Gitlab::UrlSanitizer.sanitize(configuration&.source_hostname.to_s)
+      @title = title
+
+      email_with_layout(
+        to: user.notification_email_or_default,
+        subject: subject(@title)
       )
     end
   end

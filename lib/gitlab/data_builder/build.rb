@@ -6,7 +6,7 @@ module Gitlab
       extend self
 
       # rubocop:disable Metrics/AbcSize -- build webhook payload
-      def build(build)
+      def build(build, retries_count: build.retries_count)
         project = build.project
         commit = build.pipeline
         user = build.user
@@ -20,7 +20,7 @@ module Gitlab
           tag: build.tag,
           before_sha: build.before_sha,
           sha: build.sha,
-          retries_count: build.retries_count,
+          retries_count: retries_count,
 
           # TODO: should this be not prefixed with build_?
           # Leaving this way to have backward compatibility

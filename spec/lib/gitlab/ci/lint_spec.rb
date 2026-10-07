@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
   let_it_be_with_refind(:project) { create(:project, :repository) }
@@ -14,11 +15,25 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       project: project,
       current_user: user,
       sha: sha,
-      verify_project_sha: verify_project_sha
+      verify_project_sha: verify_project_sha,
+      surface: :rest_post
     }.compact
   end
 
   let(:lint) { described_class.new(project: project, **kwargs) }
+
+  describe '#initialize' do
+    described_class::SURFACES.each do |surface|
+      it "accepts the #{surface} surface" do
+        expect { described_class.new(project: project, current_user: user, surface: surface) }.not_to raise_error
+      end
+    end
+
+    it 'raises for an unknown surface' do
+      expect { described_class.new(project: project, current_user: user, surface: :bogus) }
+        .to raise_error(ArgumentError, 'unknown lint surface: bogus')
+    end
+  end
 
   describe '#legacy_validate' do
     subject { lint.legacy_validate(content, dry_run: dry_run, ref: ref) }
@@ -1314,7 +1329,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       it_behaves_like 'rate-limited lint entry point'
 
       context 'when there is no current user' do
-        let(:lint) { described_class.new(project: project, current_user: nil) }
+        let(:lint) { described_class.new(project: project, current_user: nil, surface: :rest_post) }
 
         it 'checks the rate limit scoped to a nil user and does not raise', :aggregate_failures do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
@@ -1349,6 +1364,175 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       subject { lint.validate(content, dry_run: false, ref: ref) }
 
       it_behaves_like 'rate-limited lint entry point'
+    end
+  end
+
+  describe 'lint_ci_config UX SLI', :freeze_time do
+    let(:lint) { described_class.new(project: project, current_user: user, surface: :rest_post) }
+    let(:sli_logger) { Labkit::UserExperienceSli.configuration.logger }
+    let(:dry_run) { false }
+    let(:content) { valid_content }
+
+    let(:valid_content) do
+      <<~YAML
+      build:
+        script: echo
+      YAML
+    end
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    before do
+      allow(sli_logger).to receive(:info).and_call_original
+    end
+
+    shared_examples 'measured lint entry point' do
+      it 'observes the experience and logs a valid result', :aggregate_failures do
+        expect { lint_call }.to observed_user_experience(:lint_ci_config)
+
+        expect(sli_logger).to have_received(:info).with(
+          hash_including(
+            checkpoint: 'end', lint_result: :valid, lint_surface: :rest_post,
+            Labkit::Fields::GL_PROJECT_ID => project.id
+          )
+        )
+      end
+
+      context 'when the content is invalid' do
+        let(:content) do
+          <<~YAML
+          build:
+            invalid: syntax
+          YAML
+        end
+
+        it 'observes without an SLI error and logs an invalid result', :aggregate_failures do
+          expect { lint_call }.to observed_user_experience(:lint_ci_config, error: false)
+
+          expect(sli_logger).to have_received(:info).with(hash_including(checkpoint: 'end', lint_result: :invalid))
+        end
+      end
+
+      context 'when resolving includes times out' do
+        let(:content) do
+          <<~YAML
+          include: other.yml
+          build:
+            script: echo
+          YAML
+        end
+
+        before do
+          allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
+            allow(instance).to receive(:execution_expired?).and_return(true)
+          end
+        end
+
+        it 'observes an SLI error and still returns the invalid lint result', :aggregate_failures do
+          result = nil
+
+          expect { result = lint_call }.to observed_user_experience(:lint_ci_config, error: true)
+
+          expect(result.status).to eq(:invalid)
+          expect(result.errors).to include(Gitlab::Ci::Config::TIMEOUT_MESSAGE)
+          expect(sli_logger).to have_received(:info)
+            .with(hash_including(checkpoint: 'end', lint_result: :timeout, error: true))
+        end
+      end
+
+      context 'when validation raises' do
+        before do
+          allow_next_instance_of(collaborator_class) do |instance|
+            allow(instance).to receive(:execute).and_raise(StandardError, 'boom')
+          end
+        end
+
+        it 'observes an SLI error, logs the outcome, and re-raises', :aggregate_failures do
+          expect do
+            expect { lint_call }.to raise_error(StandardError, 'boom')
+          end.to observed_user_experience(:lint_ci_config, error: true)
+
+          expect(sli_logger).to have_received(:info)
+            .with(hash_including(checkpoint: 'end', lint_result: :error, error: true))
+        end
+      end
+
+      context 'when the SLI emission raises' do
+        before do
+          allow(Labkit::UserExperienceSli).to receive(:observed).and_raise(StandardError, 'labkit down')
+        end
+
+        it 'tracks the exception and still returns the lint result', :aggregate_failures do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(StandardError), lint_surface: :rest_post, Labkit::Fields::GL_PROJECT_ID.to_sym => project.id
+          )
+
+          expect(lint_call.status).to eq(:valid)
+        end
+      end
+
+      context 'when dry_run is set' do
+        let(:dry_run) { true }
+
+        it 'does not start the experience' do
+          expect { lint_call }.not_to start_user_experience(:lint_ci_config)
+        end
+      end
+
+      context 'when called from the Rails console' do
+        let(:lint) { described_class.new(project: project, current_user: user, surface: :rails_console) }
+
+        it 'returns the lint result without starting the experience', :aggregate_failures do
+          result = nil
+
+          expect { result = lint_call }.not_to start_user_experience(:lint_ci_config)
+
+          expect(result.status).to eq(:valid)
+        end
+      end
+
+      context 'when the request is rate limited' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:ci_lint, scope: { user: user }).and_return(true)
+        end
+
+        it 'raises before starting the experience' do
+          expect do
+            expect { lint_call }.to raise_error(described_class::RateLimitError)
+          end.not_to start_user_experience(:lint_ci_config)
+        end
+      end
+    end
+
+    describe '#legacy_validate' do
+      subject(:lint_call) { lint.legacy_validate(content, dry_run: dry_run) }
+
+      let(:collaborator_class) { Gitlab::Ci::YamlProcessor }
+
+      it_behaves_like 'measured lint entry point'
+
+      context 'when there is no project' do
+        let(:lint) { described_class.new(project: nil, current_user: user, surface: :rest_post) }
+
+        it 'observes the experience without a project id', :aggregate_failures do
+          expect { lint_call }.to observed_user_experience(:lint_ci_config)
+
+          expect(sli_logger).to have_received(:info)
+            .with(hash_including(checkpoint: 'end', lint_result: :valid, lint_surface: :rest_post))
+        end
+      end
+    end
+
+    describe '#validate' do
+      subject(:lint_call) { lint.validate(content, dry_run: dry_run, ref: ref) }
+
+      let(:collaborator_class) { ::Ci::CreatePipelineService }
+
+      it_behaves_like 'measured lint entry point'
     end
   end
 end

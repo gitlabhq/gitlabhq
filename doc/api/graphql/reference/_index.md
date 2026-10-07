@@ -27388,6 +27388,29 @@ Fields:
 | <a id="duoworkflowworkitemlinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="duoworkflowworkitemlinkedge-node"></a>`node` | [`DuoWorkflowWorkItemLink`](#duoworkflowworkitemlink) | The item at the end of the edge. |
 
+#### `DuoWorkflowWorkflowLinkConnection`
+
+The connection type for [`DuoWorkflowWorkflowLink`](#duoworkflowworkflowlink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowworkflowlinkconnection-edges"></a>`edges` | [`[DuoWorkflowWorkflowLinkEdge]`](#duoworkflowworkflowlinkedge) | A list of edges. |
+| <a id="duoworkflowworkflowlinkconnection-nodes"></a>`nodes` | [`[DuoWorkflowWorkflowLink]`](#duoworkflowworkflowlink) | A list of nodes. |
+| <a id="duoworkflowworkflowlinkconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DuoWorkflowWorkflowLinkEdge`
+
+The edge type for [`DuoWorkflowWorkflowLink`](#duoworkflowworkflowlink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowworkflowlinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="duoworkflowworkflowlinkedge-node"></a>`node` | [`DuoWorkflowWorkflowLink`](#duoworkflowworkflowlink) | The item at the end of the edge. |
+
 #### `DuoWorkflowsAggregationResponseConnection`
 
 The connection type for [`DuoWorkflowsAggregationResponse`](#duoworkflowsaggregationresponse).
@@ -44650,6 +44673,22 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-firstcheckpoint-checkpointns"></a>`checkpointNs` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. LangGraph checkpoint namespace to scope the lookup to. Omit (or pass an empty string) for the session's own top-level checkpoint lineage; used internally to resolve one nested subgraph invocation, e.g. a delegated subagent. |
 
+##### `DuoWorkflow.inverseWorkflowLinks`
+
+Other sessions that link to the session, for example the sessions restarted from it. On each link, `workflow` is the other session and `linkedWorkflow` is the session.
+
+Returns [`DuoWorkflowWorkflowLinkConnection`](#duoworkflowworkflowlinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-inverseworkflowlinks-linktype"></a>`linkType` | [`DuoWorkflowWorkflowLinkType`](#duoworkflowworkflowlinktype) | Filter links by their link type. |
+
 ##### `DuoWorkflow.latestCheckpoint`
 
 Latest checkpoint of the session.
@@ -44758,6 +44797,22 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-workitemlinks-linktype"></a>`linkType` | [`DuoWorkflowWorkItemLinkType`](#duoworkflowworkitemlinktype) | Filter links by their link type. |
+
+##### `DuoWorkflow.workflowLinks`
+
+Other sessions linked to the session, for example the session it was restarted from.
+
+Returns [`DuoWorkflowWorkflowLinkConnection`](#duoworkflowworkflowlinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-workflowlinks-linktype"></a>`linkType` | [`DuoWorkflowWorkflowLinkType`](#duoworkflowworkflowlinktype) | Filter links by their link type. |
 
 ### `DuoWorkflowBranch`
 
@@ -44934,6 +44989,19 @@ Fields:
 | <a id="duoworkflowworkitemlink-linktype"></a>`linkType` | [`DuoWorkflowWorkItemLinkType!`](#duoworkflowworkitemlinktype) | How the work item relates to the session. |
 | <a id="duoworkflowworkitemlink-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Linked work item. |
 | <a id="duoworkflowworkitemlink-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Linked GitLab Duo Agent Platform session. |
+
+### `DuoWorkflowWorkflowLink`
+
+Link between a GitLab Duo Agent Platform session and another session.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowworkflowlink-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the link was created. |
+| <a id="duoworkflowworkflowlink-linktype"></a>`linkType` | [`DuoWorkflowWorkflowLinkType!`](#duoworkflowworkflowlinktype) | How the linked session relates to the session. |
+| <a id="duoworkflowworkflowlink-linkedworkflow"></a>`linkedWorkflow` | [`DuoWorkflow`](#duoworkflow) | Session the link points to. For a `SOURCE` link, the session that was restarted. |
+| <a id="duoworkflowworkflowlink-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Linked GitLab Duo Agent Platform session. |
 
 ### `DuoWorkflowsAggregationResponse`
 
@@ -71703,6 +71771,14 @@ Type of link between a GitLab Duo Agent Platform session and a work item.
 | ----- | ----------- |
 | <a id="duoworkflowworkitemlinktype-created"></a>`CREATED` | Link of type `created` between a session and a work item. |
 | <a id="duoworkflowworkitemlinktype-source"></a>`SOURCE` | Link of type `source` between a session and a work item. |
+
+### `DuoWorkflowWorkflowLinkType`
+
+Type of link between two GitLab Duo Agent Platform sessions.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowworkflowlinktype-source"></a>`SOURCE` | Link of type `source` between a session and another session. |
 
 ### `DuoWorkflowsModelHosting`
 

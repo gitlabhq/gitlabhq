@@ -1,0 +1,2 @@
+<% message = @export_prefix.present? ? s_('OfflineTransferImport|The offline transfer import you started on %{start_date} from export %{strong_open}%{export_prefix}%{strong_close} has timed out. You can now review your partial import results.') : s_('OfflineTransferImport|The offline transfer import you started on %{start_date} has timed out. You can now review your partial import results.') %>
+<%= render 'notify/bulk_import_offline_email', message: message, results_label: s_('OfflineTransfer|View partial import results') %>

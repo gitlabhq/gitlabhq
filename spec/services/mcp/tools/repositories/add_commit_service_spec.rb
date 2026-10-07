@@ -138,6 +138,68 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
       expect(project.repository.blob_at_branch(project.default_branch, 'mcp-test.txt').data).to eq('Test content')
     end
 
+    context 'when the project identifier is missing or doubled' do
+      let(:valid_rest) do
+        {
+          branch: 'main',
+          commit_message: 'Valid everywhere but the identifier',
+          actions: [{ action: 'create', file_path: 'x.txt', content: 'x' }]
+        }
+      end
+
+      it 'refuses a call with neither or both identifiers', :aggregate_failures do
+        both = valid_rest.merge(
+          project_id: project.full_path,
+          url: "#{Gitlab.config.gitlab.url}/#{project.full_path}"
+        )
+
+        [valid_rest, both].each do |arguments|
+          result = service.execute(params: { arguments: arguments })
+
+          expect(result[:isError]).to be(true)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
+          expect(result.dig(:content, 0, :text)).to eq('Provide exactly one of project_id or url')
+        end
+      end
+    end
+
+    context 'when reading the file for a partial edit fails' do
+      let(:params) do
+        {
+          arguments: {
+            project_id: project.full_path,
+            branch: project.default_branch,
+            commit_message: 'Partial edit',
+            actions: [{ action: 'update', file_path: 'README.md', old_str: 'Sample', new_str: 'MCP' }]
+          }
+        }
+      end
+
+      it 'reports an uncategorized read failure as an error, not a bad request' do
+        allow_next_instance_of(Mcp::Tools::Repositories::BlobsTool) do |tool|
+          allow(tool).to receive(:execute).and_return(Mcp::Tools::Base::Response.error('Internal server error'))
+        end
+
+        result = service.execute(params: params)
+
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
+      end
+
+      it "forwards the read failure's own reason" do
+        allow_next_instance_of(Mcp::Tools::Repositories::BlobsTool) do |tool|
+          allow(tool).to receive(:execute).and_return(
+            Mcp::Tools::Base::Response.error(
+              'Operation returned no data', reason: Mcp::Tools::Base::Response::Reason::NOT_FOUND
+            )
+          )
+        end
+
+        result = service.execute(params: params)
+
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+      end
+    end
+
     context 'when starting a new branch from a sha' do
       let(:start_sha) { project.repository.commit("#{project.default_branch}~1").sha }
       let(:params) do
@@ -214,6 +276,7 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
         result = service.execute(params: params)
 
         expect(result[:isError]).to be(true)
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
         expect(result.dig(:content, 0, :text)).to include('not supported with start_project')
       end
     end

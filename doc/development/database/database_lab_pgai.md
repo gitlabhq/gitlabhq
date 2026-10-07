@@ -14,7 +14,7 @@ greatly simplifies access to a database clone, with support for:
 ## Prerequisites
 
 - `AllFeaturesUser` [`psql` access](database_lab.md#access-database-lab-engine) to Database Lab.
-- [1Password CLI (`op`)](https://developer.1password.com/docs/cli/get-started/) installed and signed in to your 1Password account.
+- [1Password CLI (`op`)](https://www.1password.dev/cli/get-started) installed and signed in to your 1Password account.
 
 To configure the `pgai` gem:
 

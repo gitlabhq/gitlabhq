@@ -36,7 +36,7 @@ The following foundational flows are available:
 | [SAST Vulnerability Resolution](../../../application_security/vulnerabilities/agentic_vulnerability_resolution.md) | Automatically generate merge requests to resolve SAST vulnerabilities. |
 | [Secret False Positive Detection](secret_false_positive_detection.md) | Automatically identify and filter false positives in secret detection findings. |
 | [Security Review](../../../application_security/security_review.md) | Detect business logic security vulnerabilities in merge request changes. |
-| [Software Development](software_development.md) | Create AI-generated solutions for work across the software development lifecycle. |
+| [Software Development](../../../../editor_extensions/software_development.md) | Create AI-generated solutions for work across the software development lifecycle. |
 
 ## For developers
 

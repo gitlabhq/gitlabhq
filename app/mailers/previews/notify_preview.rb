@@ -491,9 +491,31 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def bulk_import_offline_complete
-    bulk_import = BulkImport.offline_export.last
+    cleanup do
+      bulk_import = create_offline_bulk_import(:finished)
+      Notify.bulk_import_offline_complete(user.id, bulk_import.id).message
+    end
+  end
 
-    Notify.bulk_import_offline_complete(user.id, bulk_import.id)
+  def bulk_import_offline_complete_with_errors
+    cleanup do
+      bulk_import = create_offline_bulk_import(:finished, has_failures: true)
+      Notify.bulk_import_offline_complete_with_errors(user.id, bulk_import.id).message
+    end
+  end
+
+  def bulk_import_offline_failed
+    cleanup do
+      bulk_import = create_offline_bulk_import(:failed, has_failures: true)
+      Notify.bulk_import_offline_failed(user.id, bulk_import.id).message
+    end
+  end
+
+  def bulk_import_offline_timeout
+    cleanup do
+      bulk_import = create_offline_bulk_import(:timeout)
+      Notify.bulk_import_offline_timeout(user.id, bulk_import.id).message
+    end
   end
 
   # To generate the appropriate test record via the Rails console:
@@ -735,6 +757,31 @@ class NotifyPreview < ActionMailer::Preview
     # app/services/notes/create_service.rb:191 will obtain an exclusive lease.
     # visual_review_bot is a EE only method.
     Users::Internal.try(:visual_review_bot)
+  end
+
+  def create_offline_bulk_import(status, has_failures: false)
+    bulk_import = BulkImport.create!(
+      user: user,
+      organization: project.organization,
+      source_type: :offline_export,
+      status: BulkImport.state_machine.states[status].value,
+      has_failures: has_failures
+    )
+    Import::Offline::Configuration.create!(
+      bulk_import: bulk_import,
+      organization: project.organization,
+      provider: :aws,
+      bucket: 'gitlab-exports',
+      source_hostname: 'https://offline.example.com',
+      object_storage_credentials: {
+        aws_access_key_id: 'AwsUserAccessKey',
+        aws_secret_access_key: 'aws/secret+access/key',
+        region: 'us-east-1',
+        path_style: false
+      }
+    )
+
+    bulk_import
   end
 
   def cleanup

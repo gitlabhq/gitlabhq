@@ -1,4 +1,4 @@
-import { GlBadge, GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlBadge, GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import {
@@ -27,7 +27,7 @@ describe('ScopePickerItem', () => {
 
   const findItem = () => wrapper.findByTestId(`scope-picker-item-${defaultProps.value}`);
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
-  const findName = () => wrapper.findByTestId('scope-picker-item-name');
+  const findName = () => wrapper.findComponent(GlTruncate);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findExpandButton = () => wrapper.findComponent(GlButton);
   const findParentName = () => wrapper.findByTestId('scope-picker-item-parent');
@@ -43,9 +43,17 @@ describe('ScopePickerItem', () => {
       expect(findItem().exists()).toBe(true);
     });
 
-    it('renders the namespace name', () => {
-      expect(findName().text()).toBe(defaultProps.text);
-      expect(findCheckbox().text()).toBe(defaultProps.text);
+    it('renders the namespace name inside the checkbox, truncated with a tooltip', () => {
+      expect(findName().props()).toMatchObject({ text: defaultProps.text, withTooltip: true });
+      expect(findCheckbox().findComponent(GlTruncate).exists()).toBe(true);
+    });
+
+    it('prevents a click on the name from also toggling the checkbox, which would undo the selection', () => {
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+
+      findName().element.dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(true);
     });
 
     it('renders an unchecked, enabled checkbox', () => {

@@ -175,6 +175,39 @@ RSpec.describe Gitaly::Server do
     end
   end
 
+  describe '#address' do
+    let(:gitaly_address) { 'tcp://gitaly.example.com:8075' }
+    let(:gitway_address) { 'tcp://gitway.example.com:8075' }
+
+    before do
+      stub_storage_settings(
+        'default' => { 'gitaly_address' => gitaly_address, 'gitway_address' => gitway_address }
+      )
+    end
+
+    # The page shows this next to disk and replication stats read from the node, so naming the
+    # gitway hop here would leave an admin correlating two different machines.
+    context 'when the storage is routed through gitway' do
+      before do
+        stub_feature_flags(route_gitaly_through_gitway: true)
+      end
+
+      it 'still reports the Gitaly node address' do
+        expect(server.address).to eq(gitaly_address)
+      end
+    end
+
+    context 'when the storage is not routed through gitway' do
+      before do
+        stub_feature_flags(route_gitaly_through_gitway: false)
+      end
+
+      it 'reports the Gitaly node address' do
+        expect(server.address).to eq(gitaly_address)
+      end
+    end
+  end
+
   describe 'replication_factor' do
     context 'when examining for a given server' do
       let(:storage_status) { double('storage_status', storage_name: 'default') }

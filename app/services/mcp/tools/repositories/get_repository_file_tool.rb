@@ -250,7 +250,8 @@ module Mcp
 
         def excluded_response
           ::Mcp::Tools::Base::Response.error(
-            "File '#{target[:path]}' is excluded from AI context by this project's settings and cannot be read."
+            "File '#{target[:path]}' is excluded from AI context by this project's settings and cannot be read.",
+            reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
           )
         end
 
@@ -270,27 +271,31 @@ module Mcp
         def ref_not_found_response
           ::Mcp::Tools::Base::Response.error(
             "Ref '#{target[:ref]}' not found. Provide an existing branch name, tag name, or commit SHA, " \
-              "or use HEAD for the default branch."
+              "or use HEAD for the default branch.",
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 
         def file_not_found_response
           ::Mcp::Tools::Base::Response.error(
             "File '#{target[:path]}' does not exist at ref '#{target[:ref]}'. The path must be relative to the " \
-              "repository root. Do not retry the same path; use the search tool with scope 'blobs' to locate the file."
+              "repository root. Do not retry the same path; use the search tool with scope 'blobs' to locate the file.",
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 
         def lfs_response(node)
           ::Mcp::Tools::Base::Response.error(
             "File '#{target[:path]}' is stored in LFS (#{node['externalStorage']}) and its content cannot be read " \
-              "with this tool. Size: #{node['rawSize']} bytes."
+              "with this tool. Size: #{node['rawSize']} bytes.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
           )
         end
 
         def binary_response(node)
           ::Mcp::Tools::Base::Response.error(
-            "File '#{target[:path]}' is binary and cannot be returned as text. Size: #{node['rawSize']} bytes."
+            "File '#{target[:path]}' is binary and cannot be returned as text. Size: #{node['rawSize']} bytes.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
           )
         end
       end

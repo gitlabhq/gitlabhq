@@ -110,9 +110,11 @@ GET /projects/:id/invitations
 | `query`    | string         | no       | A query string to search for invited members by invite email. Query text must match email address exactly. When empty, returns all invitations. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/invitations?query=member@example.org"
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/invitations?query=member@example.org"
 ```
 

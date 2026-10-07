@@ -150,25 +150,85 @@ When adding a flow to the `FoundationalFlow` model, you must provide the followi
 
 A flow that keeps a record outside its session, such as a placeholder row a widget
 reads, can react to the session's own lifecycle instead of polling or setting a
-timer. Declare these optional attributes:
+timer. Declare the hooks you need. All hooks are optional. When a hook writes data,
+use a class instead of a lambda, so the hook gets its own tests and owner.
 
-| Attribute | Runs when | Event |
-|-----------|-----------|-------|
-| `on_session_finished` | The session completes successfully. | `Ai::DuoWorkflows::WorkflowFinishedCloudEvent` |
-| `on_session_failed` | The session is dropped, so it failed and never reports back. | `Ai::DuoWorkflows::WorkflowFailedEvent` |
-| `on_session_stopped` | A user cancels the session. | `Ai::DuoWorkflows::WorkflowStoppedEvent` |
+| Attribute | Runs when | Execution | Called by |
+|-----------|-----------|-----------|-----------|
+| `on_session_created` | GitLab creates the session. | Synchronous | `Ai::DuoWorkflows::CreateWorkflowService`, inline |
+| `on_session_finished` | The session completes successfully. | Asynchronous | `Ai::DuoWorkflows::SessionLifecycleWorker`, on `Ai::DuoWorkflows::WorkflowFinishedCloudEvent` |
+| `on_session_failed` | The session is dropped, so it failed and never reports back. | Asynchronous | `Ai::DuoWorkflows::SessionLifecycleWorker`, on `Ai::DuoWorkflows::WorkflowFailedEvent` |
+| `on_session_stopped` | A user cancels the session. | Asynchronous | `Ai::DuoWorkflows::SessionLifecycleWorker`, on `Ai::DuoWorkflows::WorkflowStoppedEvent` |
 
-Each is either a `->(workflow:)` lambda or a class responding to `call(workflow:)`.
-Prefer a class once the hook writes data, so it gets its own tests and owner.
-Declare only the points you want: a flow that treats a cancellation differently from
-a failure declares both, one that only cares about failures declares one.
+#### Synchronous and asynchronous hooks
+
+A synchronous hook runs inline. It runs in the same process and request as the code
+that creates the session, before that call returns. It runs once for each created
+session.
+
+A synchronous hook can stop the run. If the hook raises an error, GitLab tracks the
+error, drops the session, and records the failure event and the audit event. The caller
+gets an error response with the `could_not_prepare_session` reason, and the session does
+not start. The hook blocks session creation, so keep it fast.
+
+An asynchronous hook runs later, in a Sidekiq job, after the session changes state.
+It cannot block or undo the state change. Delivery is at least once and can be out of
+order, so you must write these hooks to be idempotent.
+
+#### Run code when GitLab creates a session
+
+Use `on_session_created` for side effects the flow needs in place before it runs, for
+example a placeholder record that a widget reads. To refuse a run, use
+`start_request_validator` instead.
+
+The hook is either a `->(resource:)` lambda or an object that responds to
+`call(resource:)`.
+
+```ruby
+on_session_created: ->(resource:) do
+  ::MergeRequests::RiskAssessment.ensure_for!(resource)
+end
+```
+
+The hook runs:
+
+- After GitLab saves the session record and the runner precondition check passes.
+- For every caller of `Ai::DuoWorkflows::CreateWorkflowService`. These include the
+  REST API (`POST /api/v4/ai/duo_workflows/workflows`),
+  `Ai::DuoWorkflows::CreateAndStartWorkflowService`, and flow triggers.
+- When GitLab creates the session, even if the session then fails to start in CI. Give
+  the record that the hook creates its own cleanup.
+
+The hook does not run:
+
+- When GitLab cannot save the session record, or the runner precondition check drops
+  the session.
+- When the session is client-executed, for example a session that an IDE or the CLI
+  runs locally. GitLab does not run these sessions, and their caller is not authorized
+  as a consumer of the flow's catalog item.
+- When a session resumes, because resuming does not create a session. A restart
+  creates a new session, so the hook runs again.
+- When there is no resource, or when the resource type is not in the flow's
+  `supported_resource_types`.
+
+The `resource` argument is the resource the caller passed. For flow triggers, it is
+the resource the trigger fired on. If the caller passed no resource, it is the issue
+or merge request of the session.
+
+#### Run code when a session ends
+
+The `on_session_finished`, `on_session_failed`, and `on_session_stopped` hooks are
+asynchronous. Each is either a `->(workflow:)` lambda or a class that responds to
+`call(workflow:)`.
+Declare only the hooks you want. A flow that treats a cancellation differently from a
+failure declares both. A flow that only cares about failures declares one.
 
 Declaring the hook is all you must do. `Ai::DuoWorkflows::SessionLifecycleWorker`
 finds the flow that a session ran, and calls the hook for that ending. A flow with no
 hook for that ending is never enqueued. This check happens when the event is
 published, not in a job.
 
-Hooks run for every session, whatever started it. A drop publishes
+These hooks run for every session, whatever started it. A drop publishes
 `Ai::DuoWorkflows::WorkflowFailedEvent`. A cancellation publishes
 `Ai::DuoWorkflows::WorkflowStoppedEvent`. Both events carry the flow identifier,
 which is how the worker finds your flow.
@@ -189,11 +249,7 @@ on_session_failed: ->(workflow:) do
 end
 ```
 
-Hooks differ from `before_start`, which runs inline while a trigger
-starts a flow. These run asynchronously after the session changes state, so they fire
-no matter which service created the session.
-
-Write hooks to this contract:
+Write asynchronous hooks to this contract:
 
 - Make them idempotent. The same event can be delivered more than once.
 - Do not assume the session is still in the state the hook is named for. A retried
@@ -205,9 +261,9 @@ Write hooks to this contract:
   non-terminal state, so give the hook's record its own cleanup.
 - Keep them cheap. To wait before acting, the hook must schedule its own worker.
 
-The three terminal points exist today. An `on_session_started` hook does not exist, because
-`Ai::DuoWorkflows::WorkflowStartedEvent` still publishes only for messaging sessions. Adding
-one means migrating that event first.
+The three terminal points exist today for asynchronous hooks. An `on_session_started` hook
+does not exist, because `Ai::DuoWorkflows::WorkflowStartedEvent` still publishes only for
+messaging sessions. Adding one means migrating that event first.
 
 A session that finishes has not necessarily done what the flow asked of it. An agent can
 complete its run without writing the record the flow depends on. So `on_session_finished`

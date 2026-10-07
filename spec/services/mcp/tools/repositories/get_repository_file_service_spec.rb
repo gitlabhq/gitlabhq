@@ -264,6 +264,7 @@ RSpec.describe Mcp::Tools::Repositories::GetRepositoryFileService, feature_categ
         result = call(base_args('file_path' => 'files/images/logo-black.png'))
 
         expect(result[:isError]).to be true
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
         expect(error_text(result)).to include('is binary and cannot be returned as text')
       end
 
@@ -284,6 +285,7 @@ RSpec.describe Mcp::Tools::Repositories::GetRepositoryFileService, feature_categ
                           'file_path' => 'files/lfs/lfs_object.iso' })
 
           expect(result[:isError]).to be true
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
           expect(error_text(result)).to include('stored in LFS')
           expect(error_text(result)).not_to include('git-lfs.github.com')
         end
@@ -291,9 +293,14 @@ RSpec.describe Mcp::Tools::Repositories::GetRepositoryFileService, feature_categ
     end
 
     context 'when the target cannot be resolved' do
-      it 'distinguishes a missing ref from a missing file' do
-        expect(error_text(call(base_args('ref' => 'no-such-ref')))).to include("Ref 'no-such-ref' not found")
-        expect(error_text(call(base_args('file_path' => 'no/such.rb')))).to include('does not exist at ref')
+      it 'distinguishes a missing ref from a missing file', :aggregate_failures do
+        missing_ref = call(base_args('ref' => 'no-such-ref'))
+        missing_file = call(base_args('file_path' => 'no/such.rb'))
+
+        expect(error_text(missing_ref)).to include("Ref 'no-such-ref' not found")
+        expect(Mcp::Tools::Base::Response.error_reason(missing_ref)).to eq(:not_found)
+        expect(error_text(missing_file)).to include('does not exist at ref')
+        expect(Mcp::Tools::Base::Response.error_reason(missing_file)).to eq(:not_found)
       end
 
       it 'tells the caller not to retry a missing path' do
@@ -478,6 +485,19 @@ RSpec.describe Mcp::Tools::Repositories::GetRepositoryFileService, feature_categ
         expect(result[:reason]).to eq(:unauthorized)
         expect(error_text(result))
           .to eq("Tool execution failed: Project '#{guest_project.full_path}' not found or inaccessible")
+      end
+    end
+
+    context 'when GraphQL returns errors' do
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return({ 'errors' => [{ 'message' => 'Boom' }] })
+      end
+
+      it 'surfaces the message at the default reason', :aggregate_failures do
+        result = call(base_args)
+
+        expect(error_text(result)).to include('Boom')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
       end
     end
 

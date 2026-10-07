@@ -36,7 +36,7 @@ target branches, and shows the results in the merge request.
 
 The key metrics shown in the merge request widget are:
 
-- **Checks**: The percentage pass rate of the [checks](https://k6.io/docs/using-k6/checks) configured in the k6 test.
+- **Checks**: The percentage pass rate of the [checks](https://grafana.com/docs/k6/latest/using-k6/checks/) configured in the k6 test.
 - **TTFB P90**: The 90th percentile of how long it took to start receiving responses,
   also known as [Time to First Byte](https://en.wikipedia.org/wiki/Time_to_first_byte) (TTFB).
 - **TTFB P95**: The 95th percentile for TTFB.
@@ -49,7 +49,7 @@ The key metrics shown in the merge request widget are:
 
 Use the
 [`Verify/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Load-Performance-Testing.gitlab-ci.yml)
-template included with GitLab to run [k6 load tests](https://k6.io/docs/testing-guides)
+template included with GitLab to run [k6 load tests](https://grafana.com/docs/k6/latest/testing-guides/)
 against your application.
 
 Prerequisites:
@@ -84,7 +84,7 @@ You can customize the job with CI/CD variables:
 | `K6_IMAGE`          | `grafana/k6` | Docker image to use. Does not control the version. |
 | `K6_VERSION`        | `0.54.0`     | Version of the Docker image. |
 | `K6_TEST_FILE`      | none         | Path to the k6 test file in the project repository. |
-| `K6_OPTIONS`        | none         | Additional k6 options. For more information, see [k6 options reference](https://k6.io/docs/using-k6/k6-options/reference/). |
+| `K6_OPTIONS`        | none         | Additional k6 options. For more information, see [k6 options reference](https://grafana.com/docs/k6/latest/using-k6/k6-options/reference/). |
 | `K6_DOCKER_OPTIONS` | none         | Additional options passed to `docker run`, such as `--env-file` to pass environment variables to the k6 container. |
 
 For example, to override the duration of the test:
@@ -106,7 +106,7 @@ load_performance:
 For large-scale k6 tests, ensure the GitLab Runner instance can handle the load. The
 [default shared GitLab.com runners](../runners/hosted_runners/linux.md) likely have
 insufficient specs for most large k6 tests. For details, see
-[k6's guidance on running large tests](https://k6.io/docs/testing-guides/running-large-tests#hardware-considerations).
+[k6's guidance on running large tests](https://grafana.com/docs/k6/latest/testing-guides/running-large-tests/#hardware-considerations).
 
 ### Configure load performance testing for review apps
 

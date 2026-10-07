@@ -32,7 +32,7 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Retrieve job artifacts' do
@@ -48,13 +48,16 @@ module API
         end
         params do
           requires :ref_name, type: String,
-            desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
-          requires :job,      type: String, desc: 'The name of the job.'
+            desc: 'Branch or tag name in the repository. `HEAD` or SHA references are not supported. For merge ' \
+                  'request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name.'
+          requires :job,      type: String, desc: 'Name of the job.'
           optional :job_token, type: String,
-            desc: 'To be used with triggers for multi-project pipelines, ' \
-                  'available only on Premium and Ultimate tiers.'
+            desc: 'CI/CD job token for multi-project pipelines. Premium and Ultimate only.'
           optional :search_recent_successful_pipelines, type: Boolean, default: false,
-            desc: 'Search across recent successful pipelines instead of just the latest one.'
+            desc: 'If `true`, searches across recent successful pipelines instead of just the latest one. ' \
+                  '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.7 [with a ' \
+                  'feature flag](https://docs.gitlab.com/administration/feature_flags/) named ' \
+                  '`ci_search_recent_successful_pipelines`. Disabled by default.'
           optional :download_mode, type: String, values: %w[proxy direct],
             desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
                   'object storage configuration.'
@@ -99,14 +102,17 @@ module API
         end
         params do
           requires :ref_name, type: String,
-            desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
-          requires :job, type: String, desc: 'The name of the job.'
+            desc: 'Branch or tag name in the repository. `HEAD` or SHA references are not supported. For merge ' \
+                  'request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name.'
+          requires :job, type: String, desc: 'Name of the job.'
           requires :artifact_path, type: String, desc: 'Path to a file inside the artifacts archive.'
           optional :job_token, type: String,
-            desc: 'To be used with triggers for multi-project pipelines, ' \
-                  'available only on Premium and Ultimate tiers.'
+            desc: 'CI/CD job token for multi-project pipelines. Premium and Ultimate only.'
           optional :search_recent_successful_pipelines, type: Boolean, default: false,
-            desc: 'Search across recent successful pipelines instead of just the latest one.'
+            desc: 'If `true`, searches across recent successful pipelines instead of just the latest one. ' \
+                  '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/515864) in GitLab 18.7 [with a ' \
+                  'feature flag](https://docs.gitlab.com/administration/feature_flags/) named ' \
+                  '`ci_search_recent_successful_pipelines`. Disabled by default.'
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
@@ -156,13 +162,16 @@ module API
           tags ['job_artifacts']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job'
+          requires :job_id, type: Integer, desc: 'ID of the job.'
           optional :file_type, type: String, default: 'archive',
             values: ::Enums::Ci::JobArtifact.downloadable_types,
-            desc: 'The type of artifact to download. Defaults to the job artifacts archive.'
+            desc: 'Type of artifact to download. Set a specific report type to download that report file directly ' \
+                  'instead of the full artifacts archive. `performance` and `browser_performance` share a report ' \
+                  'group. If the job uploaded both, the requested type is returned, and if it uploaded only one, ' \
+                  'that artifact is returned whichever type was requested. ' \
+                  '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/35805) in GitLab 19.4.'
           optional :job_token, type: String,
-            desc: 'To be used with triggers for multi-project pipelines, ' \
-                  'available only on Premium and Ultimate tiers.'
+            desc: 'CI/CD job token for multi-project pipelines. Premium and Ultimate only.'
           optional :download_mode, type: String, values: %w[proxy direct],
             desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
                   'object storage configuration.'
@@ -199,12 +208,12 @@ module API
           tags %w[job_artifacts]
         end
         params do
-          requires :job_id, type: Integer, desc: 'ID of a job',
+          requires :job_id, type: Integer, desc: 'ID of the job.',
             documentation: { example: 42 }
           optional :path, type: String, default: '',
-            desc: 'Path to browse in the artifacts archive. Defaults to root directory.',
+            desc: 'Path to browse in the artifacts archive. Defaults to the root directory.',
             documentation: { example: 'coverage/reports' }
-          optional :recursive, type: Boolean, default: false, desc: 'If `true`, return all entries recursively.',
+          optional :recursive, type: Boolean, default: false, desc: 'If `true`, returns all entries recursively.',
             documentation: { example: false }
           optional :job_token, type: String,
             desc: 'CI/CD job token for multi-project pipelines. ' \
@@ -244,11 +253,10 @@ module API
           tags ['job_artifacts']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job'
+          requires :job_id, type: Integer, desc: 'ID of the job.'
           requires :artifact_path, type: String, desc: 'Path to a file inside the artifacts archive.'
           optional :job_token, type: String,
-            desc: 'To be used with triggers for multi-project pipelines, ' \
-                  'available only on Premium and Ultimate tiers.'
+            desc: 'CI/CD job token for multi-project pipelines. Premium and Ultimate only.'
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
@@ -291,7 +299,7 @@ module API
           tags ['job_artifacts']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job'
+          requires :job_id, type: Integer, desc: 'ID of the job.'
         end
         route_setting :authorization, permissions: :preserve_job_artifact, boundary_type: :project
         post ':id/jobs/:job_id/artifacts/keep' do
@@ -316,7 +324,7 @@ module API
           tags ['job_artifacts']
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job'
+          requires :job_id, type: Integer, desc: 'ID of the job.'
         end
         route_setting :authorization, permissions: :delete_job_artifact, boundary_type: :project
         delete ':id/jobs/:job_id/artifacts' do

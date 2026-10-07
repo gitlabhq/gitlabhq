@@ -45,8 +45,11 @@ module Gitlab
           )
         end
 
+        # The label is the storage's Gitaly node even while the call is routed through gitway, so the series stays
+        # comparable across a rollout and lines up with the server-side fqdn. `gitaly_address` also never evaluates the
+        # routing flag, which would cost a flag lookup per recorded call.
         def node_label(storage)
-          uri = URI(::Gitlab::GitalyClient.address(storage))
+          uri = URI(::Gitlab::GitalyClient.gitaly_address(storage))
 
           uri.host.presence || storage
         rescue StandardError

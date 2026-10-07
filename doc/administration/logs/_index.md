@@ -1265,6 +1265,12 @@ The log file is located at:
 
 {{< /details >}}
 
+{{< history >}}
+
+- Logging of GitLab Duo session creation over MCP [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/630113) in GitLab 19.5.
+
+{{< /history >}}
+
 The `mcp.log` file logs information related to the
 [GitLab MCP server](../../user/gitlab_duo/model_context_protocol/mcp_server.md). Logging includes
 MCP server availability denials, with a `denial_reason` field that explains why a request was
@@ -1282,6 +1288,11 @@ Tool calls are logged with a `tool_status` field that records how the call ended
 
 When a tool raises an unexpected exception, it is reported to the error tracking service.
 `error_type` is recorded only for unknown tool names, with `not_found`.
+
+Tool calls also record a `gl_root_namespace_id` field with the ID of the top-level namespace
+of the project or group that the tool call targets. The field is empty if the tool does not target
+a project or group. The field is also empty if GitLab cannot find the project or group that the
+tool call names, for example because it does not exist or the lookup failed.
 
 When a GitLab Duo session is created through the MCP server, a line with `event_name` set to
 `duo_session_created` is logged. This line has `source_type` set to `mcp`.

@@ -932,7 +932,7 @@ Specific information applies to Linux package installations:
 
   For more information, see:
 
-  - [OpenSSH 8.8 release notes](https://www.openssh.com/txt/release-8.8).
+  - [OpenSSH 8.8 release notes](https://www.openssh.org/txt/release-8.8).
   - [An informal explanation](https://gitlab.com/gitlab-org/gitlab/-/issues/416714#note_1482388504).
   - `omnibus-gitlab` [merge request 7035](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7035), which introduces the environment variable.
 
@@ -1237,7 +1237,7 @@ Specific information applies to Linux package installations:
 - This upgrades `openssh-server` to `1:8.9p1-3`.
 
   Using `ssh-keyscan -t rsa` with older OpenSSH clients to obtain public key information is no longer viable because of
-  the deprecations listed in [OpenSSH 8.7 Release Notes](https://www.openssh.com/txt/release-8.7).
+  the deprecations listed in [OpenSSH 8.7 Release Notes](https://www.openssh.org/txt/release-8.7).
 
   Workaround is to make use of a different key type, or upgrade the client OpenSSH to a version >= 8.7.
 - [Migrate your Praefect configuration to the new structure](#praefect-configuration-structure-change)

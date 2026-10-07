@@ -78,32 +78,33 @@ module API
       def clear_requested_changes_on_review(mr); end
 
       params :positional do
-        optional :position, type: Hash, desc: 'Position when creating a note' do
-          requires :base_sha, type: String, desc: 'Base commit SHA in the source branch'
-          requires :start_sha, type: String, desc: 'SHA referencing commit in target branch'
-          requires :head_sha, type: String, desc: 'SHA referencing HEAD of this merge request'
-          requires :position_type, type: String, desc: 'Type of the position reference', values: %w[text image file]
-          optional :new_path, type: String, desc: 'File path after change'
-          optional :new_line, type: Integer, desc: 'Line number after change'
-          optional :old_path, type: String, desc: 'File path before change'
-          optional :old_line, type: Integer, desc: 'Line number before change'
-          optional :width, type: Integer, desc: 'Width of the image'
-          optional :height, type: Integer, desc: 'Height of the image'
-          optional :x, type: Integer, desc: 'X coordinate in the image'
-          optional :y, type: Integer, desc: 'Y coordinate in the image'
+        optional :position, type: Hash, desc: 'Position when creating a diff note. If omitted, creates a regular ' \
+                                          'discussion note.' do
+          requires :base_sha, type: String, desc: 'Base commit SHA of the diff.'
+          requires :start_sha, type: String, desc: 'SHA of the latest commit in the target branch.'
+          requires :head_sha, type: String, desc: 'SHA of the latest commit in the source branch.'
+          requires :position_type, type: String, desc: 'Type of the position reference.', values: %w[text image file]
+          optional :new_path, type: String, desc: 'File path after the change.'
+          optional :new_line, type: Integer, desc: 'Line number after the change.'
+          optional :old_path, type: String, desc: 'File path before the change.'
+          optional :old_line, type: Integer, desc: 'Line number before the change.'
+          optional :width, type: Integer, desc: 'Width of the image.'
+          optional :height, type: Integer, desc: 'Height of the image.'
+          optional :x, type: Integer, desc: 'X coordinate in the image.'
+          optional :y, type: Integer, desc: 'Y coordinate in the image.'
 
-          optional :line_range, type: Hash, desc: 'Line range for a multi-line note' do
-            optional :start, type: Hash, desc: 'Start line for a multi-line note' do
-              optional :line_code, type: String, desc: 'Start line code for multi-line note'
-              optional :type, type: String, desc: 'Start line type for multi-line note'
-              optional :old_line, type: Integer, desc: 'Start old_line line number'
-              optional :new_line, type: Integer, desc: 'Start new_line line number'
+          optional :line_range, type: Hash, desc: 'Line range for a multi-line note.' do
+            optional :start, type: Hash, desc: 'Start line for a multi-line note.' do
+              optional :line_code, type: String, desc: 'Start line code for a multi-line note.'
+              optional :type, type: String, desc: 'Start line type for a multi-line note.'
+              optional :old_line, type: Integer, desc: 'Line number before the change at the start of the line range.'
+              optional :new_line, type: Integer, desc: 'Line number after the change at the start of the line range.'
             end
-            optional :end, type: Hash, desc: 'End line for a multi-line note' do
-              optional :line_code, type: String, desc: 'End line code for multi-line note'
-              optional :type, type: String, desc: 'End line type for multi-line note'
-              optional :old_line, type: Integer, desc: 'End old_line line number'
-              optional :new_line, type: Integer, desc: 'End new_line line number'
+            optional :end, type: Hash, desc: 'End line for a multi-line note.' do
+              optional :line_code, type: String, desc: 'End line code for a multi-line note.'
+              optional :type, type: String, desc: 'End line type for a multi-line note.'
+              optional :old_line, type: Integer, desc: 'Line number before the change at the end of the line range.'
+              optional :new_line, type: Integer, desc: 'Line number after the change at the end of the line range.'
             end
           end
         end
@@ -131,8 +132,8 @@ module API
         tags ['draft_notes']
       end
       params do
-        requires :id,                type: String,  desc: "The ID of a project"
-        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
+        requires :id,                type: String,  desc: 'ID or URL-encoded path of the project.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
       end
       route_setting :authorization, permissions: :read_merge_request_draft_note, boundary_type: :project
       get ":id/merge_requests/:merge_request_iid/draft_notes", feature_category: :code_review_workflow do
@@ -149,9 +150,9 @@ module API
         tags ['draft_notes']
       end
       params do
-        requires :id,                type: String,  desc: "The ID of a project"
-        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
-        requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
+        requires :id,                type: String,  desc: 'ID or URL-encoded path of the project.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
+        requires :draft_note_id,     type: Integer, desc: 'ID of the draft note.'
       end
       route_setting :authorization, permissions: :read_merge_request_draft_note, boundary_type: :project
       get ":id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id", feature_category: :code_review_workflow do
@@ -174,12 +175,12 @@ module API
         tags ['draft_notes']
       end
       params do
-        requires :id,                        type: String,  desc: "The ID of a project."
-        requires :merge_request_iid,         type: Integer, desc: "The ID of a merge request."
-        requires :note,                      type: String,  desc: 'The content of a note.'
-        optional :in_reply_to_discussion_id, type: String,  desc: 'The ID of a discussion the draft note replies to.'
-        optional :commit_id,                 type: String,  desc: 'The sha of a commit to associate the draft note to.'
-        optional :resolve_discussion,        type: Boolean, desc: 'The associated discussion should be resolved.'
+        requires :id,                        type: String,  desc: 'ID or URL-encoded path of the project.'
+        requires :merge_request_iid,         type: Integer, desc: 'Internal ID of the merge request.'
+        requires :note,                      type: String,  desc: 'Content of the note.'
+        optional :in_reply_to_discussion_id, type: String,  desc: 'ID of the discussion the draft note replies to.'
+        optional :commit_id,                 type: String,  desc: 'SHA of the commit to associate the draft note with.'
+        optional :resolve_discussion,        type: Boolean, desc: 'If `true`, resolves the associated discussion.'
         use :positional
       end
       route_setting :authorization, permissions: :create_merge_request_draft_note, boundary_type: :project
@@ -208,10 +209,10 @@ module API
         tags ['draft_notes']
       end
       params do
-        requires :id,                type: String,  desc: "The ID of a project."
-        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request."
-        requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
-        optional :note,              type: String, allow_blank: false, desc: 'The content of a note.'
+        requires :id,                type: String,  desc: 'ID or URL-encoded path of the project.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
+        requires :draft_note_id,     type: Integer, desc: 'ID of the draft note.'
+        optional :note,              type: String, allow_blank: false, desc: 'Content of the note.'
         use :positional
       end
       route_setting :authorization, permissions: :update_merge_request_draft_note, boundary_type: :project
@@ -244,9 +245,9 @@ module API
         tags ['draft_notes']
       end
       params do
-        requires :id,                type: String,  desc: "The ID of a project"
-        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
-        requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
+        requires :id,                type: String,  desc: 'ID or URL-encoded path of the project.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
+        requires :draft_note_id,     type: Integer, desc: 'ID of the draft note.'
       end
       route_setting :authorization, permissions: :delete_merge_request_draft_note, boundary_type: :project
       delete(
@@ -273,9 +274,9 @@ module API
         tags ['draft_notes']
       end
       params do
-        requires :id,                type: String,  desc: "The ID of a project"
-        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
-        requires :draft_note_id,     type: Integer, desc: "The ID of a draft note"
+        requires :id,                type: String,  desc: 'ID or URL-encoded path of the project.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
+        requires :draft_note_id,     type: Integer, desc: 'ID of the draft note.'
       end
       route_setting :authorization, permissions: :publish_merge_request_draft_note, boundary_type: :project
       put(
@@ -302,13 +303,13 @@ module API
         tags ['draft_notes']
       end
       params do
-        requires :id, type: String, desc: "The ID of a project"
-        requires :merge_request_iid, type: Integer, desc: "The ID of a merge request"
+        requires :id, type: String, desc: 'ID or URL-encoded path of the project.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
         optional :reviewer_state, type: String,
-          desc: "Set reviewer review state after publishing. Does not record a formal approval",
+          desc: 'Sets the review state after publishing. Does not record a formal approval.',
           values: %w[requested_changes reviewed]
-        optional :note, type: String, desc: "Summary note body to post on the merge request"
-        optional :internal, type: Boolean, desc: "If true, the summary note is internal",
+        optional :note, type: String, desc: 'Text of the summary note to add to the merge request.'
+        optional :internal, type: Boolean, desc: 'If `true`, the summary note is internal.',
           default: false
       end
       route_setting :authorization, permissions: :publish_merge_request_draft_note, boundary_type: :project

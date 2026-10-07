@@ -14,30 +14,29 @@ module Ci
 
     def perform(pipeline_id)
       pipeline = Ci::Pipeline.find_by_id(pipeline_id)
-      return unless pipeline
+      return unless pipeline&.project
 
-      builds = pipeline.builds.includes(:project, :user, :ci_stage) # rubocop:disable CodeReuse/ActiveRecord -- Preloading to prevent N+1 queries
+      project = pipeline.project
+      hooks = project.has_active_hooks?(:job_hooks)
+      integrations = project.has_active_integrations?(:job_hooks)
+      return unless hooks || integrations
 
-      builds.each do |build|
-        execute_hooks_for_created_build(build)
+      retries_counts = pipeline.builds.retried.group(:name).count # rubocop:disable CodeReuse/ActiveRecord -- One count for the whole pipeline instead of one per build
+
+      pipeline.builds.includes(:project, :user, :ci_stage).find_each do |build| # rubocop:disable CodeReuse/ActiveRecord -- Preloading to prevent N+1 queries
+        next if build.user&.blocked?
+
+        data = build_created_hook_data(build, retries_counts.fetch(build.name, 0))
+
+        project.execute_hooks(data.dup, :job_hooks) if hooks
+        project.execute_integrations(data.dup, :job_hooks) if integrations
       end
     end
 
     private
 
-    def execute_hooks_for_created_build(build)
-      project = build.project
-      return unless project
-      return if build.user&.blocked?
-
-      data = build_created_hook_data(build)
-
-      project.execute_hooks(data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
-      project.execute_integrations(data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
-    end
-
-    def build_created_hook_data(build)
-      data = Gitlab::DataBuilder::Build.build(build)
+    def build_created_hook_data(build, retries_count)
+      data = Gitlab::DataBuilder::Build.build(build, retries_count: retries_count)
 
       data['build_status'] = 'created'
       data['build_started_at'] = nil

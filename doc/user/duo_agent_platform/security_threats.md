@@ -12,7 +12,7 @@ best practices when deploying and using agents and flows.
 
 GitLab mitigates risks through built-in safeguards and security controls with the following mechanisms:
 
-- [Composite identity](composite_identity.md#why-composite-identity-matters) to [limit GitLab Duo Agent Platform access](flows/foundational_flows/software_development.md#apis-that-the-flow-has-access-to), [improve the auditability of AI workflows](flows/foundational_flows/software_development.md#audit-log), and even [attribute resources created by long-lived remote workflows to dedicate the agent's service account](../../development/ai_features/composite_identity.md#attributing-actions-to-the-correct-actor).
+- [Composite identity](composite_identity.md#why-composite-identity-matters) to [limit GitLab Duo Agent Platform access](../../editor_extensions/software_development.md#apis-that-the-flow-has-access-to), [improve the auditability of AI workflows](../../editor_extensions/software_development.md#audit-log), and even [attribute resources created by long-lived remote workflows to dedicate the agent's service account](../../development/ai_features/composite_identity.md#attributing-actions-to-the-correct-actor).
 - [Remote execution environment sandbox](environment_sandbox.md).
 - Integrated [Visual Studio Code Dev Container](../../editor_extensions/visual_studio_code/setup.md#install-in-a-visual-studio-code-dev-container) sandbox.
 - [Tools output sanitization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/duo_workflow_service/security/TOOL_RESPONSE_SECURITY.md).

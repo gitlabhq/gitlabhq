@@ -1452,6 +1452,9 @@ production: &base
         # The host:port portion will be used as the TLS server name for SNI.
         # Example: dns+tls://1.1.1.1/gitaly.example.com:8075
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
+        # Optional and temporary, for the gitway pilot: routes this storage through gitway, but only while the route_gitaly_through_gitway
+        # feature flag is enabled. gitaly_address is still required as the fallback whenever the flag is disabled.
+        # gitway_address: tcp://gitway.example.com:8075
 
   ## Backup settings
   backup:

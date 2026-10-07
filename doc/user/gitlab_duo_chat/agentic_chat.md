@@ -140,12 +140,9 @@ Where appropriate, the following foundational flows can be triggered from an Age
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252920) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_chat_flow_commands`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/629298) in GitLab 19.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/629298) in GitLab 19.5.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 In GitLab Duo Agentic Chat, you can start a flow with a slash command. Use a flow command when a flow does not have a configured trigger, or when you want to start the flow yourself instead of waiting for a trigger.
 

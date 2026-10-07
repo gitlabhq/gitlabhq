@@ -33,22 +33,22 @@ module API
         is_array true
       end
       params do
-        requires :sha,   type: String, desc: 'Hash of the commit.', documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
-        optional :ref,   type: String, desc: 'Name of the branch or tag. Default is the default branch.', documentation: { example: 'develop' }
-        optional :stage, type: String, desc: 'Filter statuses by build stage.', documentation: { example: 'test' }
-        optional :name,  type: String, desc: 'Filter statuses by job name.', documentation: { example: 'bundler:audit' }
+        requires :sha,   type: String, desc: 'Commit SHA.', documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
+        optional :ref,   type: String, desc: 'Name of the branch or tag. Defaults to the default branch.', documentation: { example: 'develop' }
+        optional :stage, type: String, desc: 'Filter statuses by [build stage](https://docs.gitlab.com/ci/yaml/#stages). For example, `test`.', documentation: { example: 'test' }
+        optional :name,  type: String, desc: 'Filter statuses by [job name](https://docs.gitlab.com/ci/yaml/#job-keywords).', documentation: { example: 'bundler:audit' }
         optional :pipeline_id, type: Integer, desc: 'Filter statuses by pipeline ID.', documentation: { example: 1234 }
-        optional :all, type: Boolean, desc: 'Include all statuses instead of latest only. Default is `false`.', documentation: { default: false }
+        optional :all, type: Boolean, desc: 'If `true`, includes all statuses instead of only the latest.', documentation: { default: false }
         optional :order_by,
           type: String,
           values: ALLOWED_SORT_VALUES,
           default: DEFAULT_SORT_VALUE,
-          desc: 'Values for sorting statuses. Valid values are `id` and `pipeline_id`. Default is `id`.',
+          desc: 'Sort results by the specified field.',
           documentation: { default: DEFAULT_SORT_VALUE }
         optional :sort,
           type: String,
           values: ALLOWED_SORT_DIRECTIONS,
-          desc: 'Sort statuses in ascending or descending order. Valid values are `asc` and `desc`. Default is `asc`.',
+          desc: 'Sort statuses in ascending or descending order. Defaults to `asc`.',
           documentation: { default: DEFAULT_SORT_DIRECTION }
         use :pagination
       end
@@ -85,23 +85,23 @@ module API
         ]
       end
       params do
-        requires :sha,          type: String, desc: 'The commit hash',
+        requires :sha,          type: String, desc: 'Commit SHA.',
           documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
-        requires :state,        type: String, desc: 'The state of the status',
+        requires :state,        type: String, desc: 'State of the status.',
           values: %w[pending running success failed canceled skipped],
           documentation: { example: 'pending' }
-        optional :ref,          type: String, desc: 'The ref',
+        optional :ref,          type: String, desc: 'Branch or tag that the status refers to. Must be 255 characters or fewer.',
           documentation: { example: 'develop' }
-        optional :target_url,   type: String, desc: 'The target URL to associate with this status',
+        optional :target_url,   type: String, desc: 'Target URL to associate with this status. Must be 255 characters or fewer.',
           documentation: { example: 'https://gitlab.example.com/janedoe/gitlab-foss/builds/91' }
-        optional :description,  type: String, desc: 'A short description of the status'
-        optional :name,         type: String, desc: 'A string label to differentiate this status from the status of other systems',
+        optional :description,  type: String, desc: 'Short description of the status. Must be 255 characters or fewer.'
+        optional :name,         type: String, desc: 'String label to differentiate this status from the status of other systems.',
           documentation: { example: 'coverage', default: 'default' }
-        optional :context,      type: String, desc: 'A string label to differentiate this status from the status of other systems',
+        optional :context,      type: String, desc: 'String label to differentiate this status from the status of other systems.',
           documentation: { example: 'coverage', default: 'default' }
-        optional :coverage,     type: Float, desc: 'The total code coverage',
+        optional :coverage,     type: Float, desc: 'Total code coverage.',
           documentation: { example: 100.0 }
-        optional :pipeline_id,  type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
+        optional :pipeline_id,  type: Integer, desc: 'ID of the pipeline to set the status for. Use when multiple pipelines exist for the same commit SHA.'
       end
       route_setting :authorization, permissions: :create_commit_status, boundary_type: :project
       post ':id/statuses/:sha' do

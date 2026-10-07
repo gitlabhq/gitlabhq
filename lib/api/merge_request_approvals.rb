@@ -15,8 +15,8 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-      requires :merge_request_iid, type: Integer, desc: 'The IID of a merge request'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+      requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/merge_requests/:merge_request_iid' do
@@ -64,8 +64,8 @@ module API
           tags ['merge_request_approvals']
         end
         params do
-          optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
-          optional :publish_review, type: Boolean, desc: 'When `true` submits pending review comments'
+          optional :sha, type: String, desc: 'SHA at `HEAD` of the source branch of the merge request.'
+          optional :publish_review, type: Boolean, desc: 'If `true`, submits pending review comments.'
 
           use :ee_approval_params
         end

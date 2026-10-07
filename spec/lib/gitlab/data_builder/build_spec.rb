@@ -59,6 +59,16 @@ RSpec.describe Gitlab::DataBuilder::Build, feature_category: :integrations do
     it { expect(data[:project]).to eq(ci_build.project.hook_attrs(backward: false)) }
     it { expect(data[:environment]).to be_nil }
 
+    context 'when retries_count is given' do
+      let(:data) { described_class.build(ci_build, retries_count: 3) }
+
+      it 'uses the given count instead of counting retries' do
+        expect(ci_build).not_to receive(:retries_count)
+
+        expect(data[:retries_count]).to eq(3)
+      end
+    end
+
     context 'when started_at and finished_at are not present' do
       let_it_be(:ci_build) { create(:ci_build, :pending, pipeline: pipeline, runner: runner, user: user) }
 

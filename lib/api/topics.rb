@@ -23,11 +23,11 @@ module API
     end
     params do
       optional :search, type: String,
-        desc: 'Return list of topics matching the search criteria',
+        desc: 'Search topics against their `name`.',
         documentation: { example: 'search' }
-      optional :without_projects, type: Boolean, desc: 'Return list of topics without assigned projects'
+      optional :without_projects, type: Boolean, desc: 'If `true`, returns only topics that have no assigned projects.'
       optional :organization_id, type: Integer, default: -> { ::Current.organization.id },
-        desc: 'The organization id for the topics'
+        desc: 'Filter topics by organization ID.'
       use :pagination
     end
     route_setting :authorization, skip_granular_token_authorization: :public_endpoint
@@ -48,7 +48,7 @@ module API
       tags ['project_topics']
     end
     params do
-      requires :id, type: Integer, desc: 'ID of project topic'
+      requires :id, type: Integer, desc: 'ID of the project topic.'
     end
     route_setting :authorization, skip_granular_token_authorization: :public_endpoint
     get 'topics/:id' do
@@ -91,7 +91,7 @@ module API
       tags ['project_topics']
     end
     params do
-      requires :id, type: Integer, desc: 'ID of project topic'
+      requires :id, type: Integer, desc: 'ID of the project topic.'
       optional :name, type: String, desc: 'Slug (name)'
       optional :title, type: String, desc: 'Title'
       optional :description, type: String, desc: 'Description'
@@ -119,7 +119,7 @@ module API
       tags ['project_topics']
     end
     params do
-      requires :id, type: Integer, desc: 'ID of project topic'
+      requires :id, type: Integer, desc: 'ID of the project topic.'
     end
     route_setting :authorization, permissions: :delete_topic, boundary_type: :instance, assignable_when: [:admin]
     delete 'topics/:id' do
@@ -137,8 +137,8 @@ module API
       tags ['project_topics']
     end
     params do
-      requires :source_topic_id, type: Integer, desc: 'ID of source project topic'
-      requires :target_topic_id, type: Integer, desc: 'ID of target project topic'
+      requires :source_topic_id, type: Integer, desc: 'ID of the project topic to merge from.'
+      requires :target_topic_id, type: Integer, desc: 'ID of the project topic to merge into.'
     end
     route_setting :authorization, permissions: :merge_topic, boundary_type: :instance, assignable_when: [:admin]
     post 'topics/merge' do

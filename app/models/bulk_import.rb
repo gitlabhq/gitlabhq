@@ -60,9 +60,13 @@ class BulkImport < ApplicationRecord
 
     after_transition any => [:finished, :failed, :timeout] do |bulk_import|
       bulk_import.update_has_failures
-      bulk_import.send_completion_notification
       bulk_import.run_after_commit { bulk_import.schedule_configuration_purge }
     end
+
+    after_transition any => :finished, do: :send_completion_notification
+    after_transition any => :failed, do: :send_failed_notification
+    after_transition any => :timeout, do: :send_timeout_notification
+
     after_transition any => [:canceled] do |bulk_import|
       bulk_import.run_after_commit do
         bulk_import.propagate_cancel
@@ -151,12 +155,29 @@ class BulkImport < ApplicationRecord
   end
 
   def send_completion_notification
-    run_after_commit do
-      if offline?
-        Notify.bulk_import_offline_complete(user.id, id).deliver_later
+    deliver_notification do
+      if has_failures?
+        Notify.bulk_import_offline_complete_with_errors(user.id, id)
       else
-        Notify.bulk_import_complete(user.id, id).deliver_later
+        Notify.bulk_import_offline_complete(user.id, id)
       end
+    end
+  end
+
+  def send_failed_notification
+    deliver_notification { Notify.bulk_import_offline_failed(user.id, id) }
+  end
+
+  def send_timeout_notification
+    deliver_notification { Notify.bulk_import_offline_timeout(user.id, id) }
+  end
+
+  # Direct transfer sends the same email for every outcome; offline transfer
+  # sends the email built by the given block.
+  def deliver_notification(&)
+    run_after_commit do
+      email = offline? ? yield : Notify.bulk_import_complete(user.id, id)
+      email.deliver_later
     end
   end
 
