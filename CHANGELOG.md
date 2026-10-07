@@ -2,6 +2,43 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.2.8 (2026-10-07)
+
+### Fixed (7 changes)
+
+- [Tolerate malformed Content-Range in HttpIO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53f948eadeab4daa65011b6a62da5630cec3d467)
+- [Align self-managed Restricted access with User.billable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b2de397a7c9f55385ed23003c97fea4bd6a8a138) **GitLab Enterprise Edition**
+- [Sign chat agent requests from the chat feature setting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/18d2749c8a1d46aea2e0216bf148d854177d4663) **GitLab Enterprise Edition**
+- [Fix status filter dropping matching items](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3249026a66ffe77ba1066e77678c9709c9381136) **GitLab Enterprise Edition**
+- [Reuse orphaned scan result policy reads on approval rule sync](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f1c18f104746df9bd50a47c8ce2e9371451a0868) **GitLab Enterprise Edition**
+- [Truncate Jira issue keys at the 500 per-entity API limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71b1fb230a5cc9e3f4fdc9cad484f332fc46d810)
+- [Update status category when a removed status is re-added](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c5f965a7ed61626e287936ceecfcf598a2149fc) **GitLab Enterprise Edition**
+
+### Security (22 changes)
+
+- [Build merge request header URLs without the request host](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1915634a38d7b966956696721f7d45404aa8ce25) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6853))
+- [Stop direct_access from issuing a Duo Workflow Service token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9eed771f0f232841e3af0804d74d2c1e18ad93d6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6877))
+- [Remove admin compliance pipeline config from custom role](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2fe6731f574fc743c85253c22e8e260afe21229e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6869))
+- [Enforce package protection rules on npm dist-tag delete](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6fa9ac627f2366e9626ddc66afe74d7277d8de11) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6887))
+- [Enforce granular token group boundary on project label edits](https://gitlab.com/gitlab-org/security/gitlab/-/commit/57b744e3d316680b0e14d27b81ea585447cbba93) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6739))
+- [Enforce granular token boundary on import target namespaces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cb8c6aeff3b3a5da83ed95ca5b11539b4f452d62) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6725))
+- [Authorize granular token against resolved integration and work item parent](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0a8eb281a2974cc8a3f8fc80caefb63eb81a6128) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6727))
+- [Security fix workload ci pipeline vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9d7f060aba00cb28d0b778cbb69c89e71b0f04a7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6749))
+- [External authorization bypass: legacy epic content leaks via GraphQL group.workItem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/36a8b38990b4123c971ead4902f0978bee61eca6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6874))
+- [security: Anchor raw ref SHA match to start of string](https://gitlab.com/gitlab-org/security/gitlab/-/commit/54a1643c8fdb6923a56173c3d51c8f7049540997) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6843))
+- [Fix DNS rebinding SSRF across all import features](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2b8269928a1848d1683c889398fdec270e7984f1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6546))
+- [Require CI/CD admin ability to change auto_rollback_enabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7fbb912ada311bfacf9e1fd0a8c1a5c683a61c69) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6641))
+- [Delete orphaned pipeline execution schedules on project transfer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/573bcd964f1b96d8b3250a54c5707968a81c19ce) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6795))
+- [Authorize report artifacts by viewer for accessibility and codequality](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3909188178a742e66711ca4a7399280c53a70c48) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6578))
+- [Prevent commit authors from approving merge requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/976496f40cbc815c22c9c728273daa89bc1e074c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6757))
+- [Enforce a disabled package registry set through the API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7491bb92124280a046b00e24210f319363154d79) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6708))
+- [Escape note body in ConversationContextBuilder](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3602cafede9901a1dc1a931606cad6f9303399ec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6763))
+- [Audit log protected environment approval rule reassignment (19.2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1d51c9c11416fce556a436b3cfafa80b0d1b10d2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6698))
+- [Fix cascading auth skip on work item hierarchy widget](https://gitlab.com/gitlab-org/security/gitlab/-/commit/99385c6978aabe9751deed48c746714f7deac67f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6839))
+- [Fix cascading auth skip on work item notes widget discussions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dade7648f258e1aff1976e1ae6a50227759bc149) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6833))
+- [Fix cascading auth skip on merge request discussions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a42503801a262335d763ee81597f9aa81eeecdc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6836))
+- [Map rich line positions when markup is present](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2e58f981a42f456bb6c317ff981174f1295d1c1e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6818))
+
 ## 19.2.7 (2026-09-22)
 
 ### Added (1 change)
