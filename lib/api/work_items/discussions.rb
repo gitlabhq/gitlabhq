@@ -105,6 +105,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
 
@@ -128,6 +129,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
 

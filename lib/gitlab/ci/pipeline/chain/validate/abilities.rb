@@ -73,6 +73,11 @@ module Gitlab
                 user_access.can_run_pipeline_on_branch?(@command.ref)
               elsif @command.tag?
                 user_access.can_create_tag?(@command.ref)
+              elsif @command.workload?
+                # Allow only pipelines created via a workload source (e.g. duo_workflow);
+                # any other source (push, api, trigger) must be rejected to prevent
+                # bypassing branch protection via the refs/workloads/* namespace.
+                ::Enums::Ci::Pipeline.workload_sources.key?(@command.source&.to_sym)
               else
                 true # Allow it for now and we'll reject when we check ref existence
               end

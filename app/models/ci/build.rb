@@ -889,7 +889,14 @@ module Ci
     # `:read_job_artifacts` check would wrongly treat a maintainer-only report as
     # public. These are exactly the artifacts #collect_test_reports! reads.
     def test_report_readable_by?(user, authz_cache = {})
-      artifacts = job_artifacts_for_types(::Ci::JobArtifact.file_types_for_report(:test))
+      report_readable_by?(:test, user, authz_cache)
+    end
+
+    # Whether `user` may read every `report_type` report artifact on this build.
+    # Ci::JobArtifactPolicy (`:read_job_artifacts`) is the single source of truth
+    # for report-artifact access across all report types.
+    def report_readable_by?(report_type, user, authz_cache = {})
+      artifacts = job_artifacts_for_types(::Ci::JobArtifact.file_types_for_report(report_type))
       return false if artifacts.blank?
 
       artifacts.all? do |artifact|

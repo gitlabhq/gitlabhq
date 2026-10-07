@@ -11,7 +11,7 @@ module Ci
       {
         status: :parsed,
         key: key(base_pipeline, head_pipeline),
-        data: head_pipeline.terraform_reports.plans
+        data: head_pipeline.accessible_terraform_reports(current_user).plans
       }
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, project_id: project.id)

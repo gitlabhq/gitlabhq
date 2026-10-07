@@ -13,7 +13,7 @@ module Resolvers
 
       authorize!(object.diff_head_pipeline)
 
-      object.compare_codequality_reports
+      object.compare_codequality_reports(current_user)
     end
   end
 end

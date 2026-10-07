@@ -4034,7 +4034,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'resolves committer emails from the loaded diff commits' do
-        expected = subject.commits.committer_emails(with_merge_commits: true, include_author_when_signed: true)
+        expected = subject.commits.author_and_committer_emails
 
         expect(subject.send(:committer_emails_from_diff)).to match_array(expected)
       end
@@ -4059,7 +4059,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       create(:merge_request_diff_commit, merge_request_diff: cache_diff, committer: cache_diff_commit_user)
     end
 
-    let(:cache_key) { ['merge_request_diffs', mr.merge_request_diff.id, 'committer_emails'] }
+    let(:cache_key) { ['merge_request_diffs', mr.merge_request_diff.id, 'approval_identity_emails'] }
+    let(:old_cache_key) { ['merge_request_diffs', mr.merge_request_diff.id, 'committer_emails'] }
 
     # Fetch a fresh instance per example so no strong_memoize state on the
     # shared let_it_be record leaks across examples (reload would keep the same
@@ -4077,6 +4078,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       mr.clear_memoization(:committer_emails_from_diff)
 
       expect { mr.send(:committer_emails_from_diff) }.not_to exceed_query_limit(0)
+    end
+
+    it 'does not serve a committer-only value cached before the identity set changed' do
+      Rails.cache.write(old_cache_key, ['stale-committer@example.com'], expires_in: 6.hours)
+      allow(mr).to receive(:uncached_committer_emails_from_diff).and_return(['current-author@example.com'])
+
+      expect(mr.send(:committer_emails_from_diff)).to contain_exactly('current-author@example.com')
     end
 
     context 'when the diff resolves to no committer emails' do
@@ -4098,296 +4106,209 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe 'committer filtering equivalence with committers()' do
+  describe 'approval filtering identities from persisted diff commits' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:committer_user) { create(:user) }
-    let_it_be(:diff_commit_user) do
-      create(:merge_request_diff_commit_user, email: committer_user.email)
+    let_it_be(:author) { create(:user) }
+    let_it_be(:committer) { create(:user) }
+    let_it_be(:author_identity) { create(:merge_request_diff_commit_user, email: author.email) }
+    let_it_be(:committer_identity) { create(:merge_request_diff_commit_user, email: committer.email) }
+    let(:merge_request) do
+      create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
     end
 
-    let(:committers_result) do
-      subject.committers(with_merge_commits: true, include_author_when_signed: true)
-    end
+    let!(:diff) { create(:merge_request_diff, merge_request: merge_request) }
 
-    before do
-      subject.clear_memoization(:committer_ids_to_filter_from_approvers)
-      subject.clear_memoization(:committers_to_filter_from_approvers)
-    end
+    subject(:filtered_user_ids) { merge_request.reload.committer_ids_to_filter_from_approvers.pluck(:id) }
 
-    shared_examples 'committer filtering matches expected' do
-      it 'committers_to_filter_from_approvers matches expected' do
-        expect(subject.committers_to_filter_from_approvers.map(&:id))
-          .to match_array(expected_committer_ids)
+    shared_examples 'filters persisted commit authors and committers' do |sql_enabled:, read_new_table:|
+      before do
+        stub_feature_flags(approval_committer_emails_from_diff: sql_enabled)
+        stub_read_new_commits_table(read_new_table)
       end
 
-      it 'committer_ids_to_filter_from_approvers matches expected' do
-        expect(subject.committer_ids_to_filter_from_approvers.pluck(:id))
-          .to match_array(expected_committer_ids)
+      it 'includes both identities' do
+        expect(filtered_user_ids).to contain_exactly(author.id, committer.id)
       end
     end
 
-    context 'with a standard commit via metadata path' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { committers_result.map(&:id) }
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-      let_it_be(:diff_commit) do
-        create(:merge_request_diff_commit, merge_request_diff: diff, committer: diff_commit_user)
-      end
-
-      subject { merge_request.reload }
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with no merge_request_diff' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { [] }
-
-      subject { merge_request.reload }
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with a commit via direct committer_id (no metadata)' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { committers_result.map(&:id) }
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-      let_it_be(:diff_commit) do
+    context 'with commit identities stored in metadata' do
+      let!(:diff_commit) do
         create(
-          :diff_commit_without_metadata,
-          merge_request_diff: diff, committer_id: diff_commit_user.id
+          :merge_request_diff_commit,
+          merge_request_diff: diff,
+          commit_author: author_identity,
+          committer: committer_identity
         )
       end
 
-      subject { merge_request.reload }
+      it_behaves_like 'filters persisted commit authors and committers', sql_enabled: true, read_new_table: true
+      it_behaves_like 'filters persisted commit authors and committers', sql_enabled: false, read_new_table: true
+      it_behaves_like 'filters persisted commit authors and committers', sql_enabled: true, read_new_table: false
+      it_behaves_like 'filters persisted commit authors and committers', sql_enabled: false, read_new_table: false
+    end
+
+    context 'partition pruning and new-table column safety for the approval-filter query' do
+      let!(:diff_commit) do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: diff,
+          commit_author: author_identity,
+          committer: committer_identity
+        )
+      end
 
       before do
-        # Pre-backfill scenario: committer reachable only via the direct
-        # `committer_id` column on `merge_request_diff_commits`. Once
-        # `mr_diff_commits_read_new_table` is enabled the union with that
-        # path is removed, so this case is exercised with the FF off.
-        stub_read_new_commits_table(false)
-      end
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with multiple commits from different committers' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { committers_result.map(&:id) }
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-      let_it_be(:other_user) { create(:user) }
-      let_it_be(:other_diff_commit_user) do
-        create(:merge_request_diff_commit_user, email: other_user.email)
-      end
-
-      let_it_be(:diff_commit_1) do
-        create(
-          :merge_request_diff_commit,
-          merge_request_diff: diff, committer: diff_commit_user, relative_order: 0
-        )
-      end
-
-      let_it_be(:diff_commit_2) do
-        create(
-          :merge_request_diff_commit,
-          merge_request_diff: diff, committer: other_diff_commit_user, relative_order: 1
-        )
-      end
-
-      subject { merge_request.reload }
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with mixed commits: one via metadata, one via direct path' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { [committer_user.id, other_user.id] }
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-      let_it_be(:other_user) { create(:user) }
-      let_it_be(:other_diff_commit_user) do
-        create(:merge_request_diff_commit_user, email: other_user.email)
-      end
-
-      let_it_be(:metadata_commit) do
-        create(
-          :merge_request_diff_commit,
-          merge_request_diff: diff, committer: diff_commit_user, relative_order: 0
-        )
-      end
-
-      let_it_be(:direct_commit) do
-        create(
-          :diff_commit_without_metadata,
-          merge_request_diff: diff, committer_id: other_diff_commit_user.id, relative_order: 1
-        )
-      end
-
-      subject { merge_request.reload }
-
-      before do
-        # Pre-backfill mixed state: one commit via metadata, one only via the
-        # direct `committer_id` column. The union covering both paths only
-        # exists with the FF off; post-backfill the direct path is dropped.
-        stub_read_new_commits_table(false)
-      end
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with duplicate committer emails across metadata and direct paths' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { [committer_user.id] }
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-
-      let_it_be(:metadata_commit) do
-        create(
-          :merge_request_diff_commit,
-          merge_request_diff: diff, committer: diff_commit_user, relative_order: 0
-        )
-      end
-
-      let_it_be(:direct_commit) do
-        create(
-          :diff_commit_without_metadata,
-          merge_request_diff: diff, committer_id: diff_commit_user.id, relative_order: 1
-        )
-      end
-
-      subject { merge_request.reload }
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with a commit whose committer email does not match any user' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { [] }
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-      let_it_be(:unknown_committer) do
-        create(:merge_request_diff_commit_user, email: 'nobody@unknown.com')
-      end
-
-      let_it_be(:diff_commit) do
-        create(:merge_request_diff_commit, merge_request_diff: diff, committer: unknown_committer)
-      end
-
-      subject { merge_request.reload }
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with a commit whose committer has nil email in diff_commit_users' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let(:expected_committer_ids) { [] }
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-      let_it_be(:nil_email_committer) do
-        create(:merge_request_diff_commit_user, name: 'Name Only', email: nil)
-      end
-
-      let_it_be(:diff_commit) do
-        create(:merge_request_diff_commit, merge_request_diff: diff, committer: nil_email_committer)
-      end
-
-      subject { merge_request.reload }
-
-      it_behaves_like 'committer filtering matches expected'
-    end
-
-    context 'with one commit via metadata and one only via direct committer_id' do
-      let_it_be(:merge_request) do
-        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
-      end
-
-      let_it_be(:other_user) { create(:user) }
-      let_it_be(:other_diff_commit_user) do
-        create(:merge_request_diff_commit_user, email: other_user.email)
-      end
-
-      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
-
-      let_it_be(:metadata_commit) do
-        create(:merge_request_diff_commit, merge_request_diff: diff, committer: diff_commit_user, relative_order: 0)
-      end
-
-      # This commit has no metadata record - its committer is only reachable via the direct
-      # committer_id column on merge_request_diff_commits (the FF-off UNION path).
-      let_it_be(:direct_commit) do
-        create(:diff_commit_without_metadata, merge_request_diff: diff, committer_id: other_diff_commit_user.id, relative_order: 1)
-      end
-
-      subject { merge_request.reload }
-
-      before do
-        subject.clear_memoization(:committer_emails_from_diff)
-        subject.clear_memoization(:committer_ids_to_filter_from_approvers)
-        subject.clear_memoization(:committers_to_filter_from_approvers)
-        subject.clear_memoization(:committer_emails_from_diff)
-        subject.clear_memoization(:read_new_commits_table?)
-      end
-
-      it 'includes the committer reachable via metadata' do
-        expect(subject.committer_ids_to_filter_from_approvers.pluck(:id)).to include(committer_user.id)
-      end
-
-      it 'excludes the committer reachable only via the direct diff_commits path' do
-        expect(subject.committer_ids_to_filter_from_approvers.pluck(:id)).not_to include(other_user.id)
-      end
-
-      it 'does not reference columns missing from the new diff commits table' do
-        expect { subject.committer_ids_to_filter_from_approvers.load }
-          .not_to query_missing_diff_commit_columns
+        merge_request.reload
       end
 
       it 'includes a project_id filter on merge_request_diff_commits for partition pruning' do
-        expect { subject.committer_ids_to_filter_from_approvers.load }
+        expect { merge_request.committer_ids_to_filter_from_approvers.load }
           .not_to query_diff_commits_without_project_id
+      end
+
+      it 'does not reference columns missing from the new diff commits table' do
+        expect { merge_request.committer_ids_to_filter_from_approvers.load }
+          .not_to query_missing_diff_commit_columns
       end
 
       context 'when reading from the legacy commits table' do
         before do
           stub_read_new_commits_table(false)
-          subject.clear_memoization(:read_new_commits_table?)
-        end
-
-        it 'returns correct committers' do
-          expect(subject.committer_ids_to_filter_from_approvers.pluck(:id)).to include(committer_user.id)
+          merge_request.clear_memoization(:read_new_commits_table?)
         end
 
         it 'omits the project_id filter on merge_request_diff_commits' do
-          expect { subject.committer_ids_to_filter_from_approvers.load }
+          expect { merge_request.committer_ids_to_filter_from_approvers.load }
             .to query_diff_commits_without_project_id
         end
+      end
+    end
+
+    context 'with commit identities stored directly on the diff commit' do
+      let!(:diff_commit) do
+        create(
+          :diff_commit_without_metadata,
+          merge_request_diff: diff,
+          commit_author_id: author_identity.id,
+          committer_id: committer_identity.id
+        )
+      end
+
+      it_behaves_like 'filters persisted commit authors and committers', sql_enabled: true, read_new_table: false
+      it_behaves_like 'filters persisted commit authors and committers', sql_enabled: false, read_new_table: false
+    end
+
+    context 'with one commit via metadata and one only via direct committer_id' do
+      let_it_be(:other_user) { create(:user) }
+      let_it_be(:other_identity) do
+        create(:merge_request_diff_commit_user, email: other_user.email)
+      end
+
+      let!(:metadata_commit) do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: diff,
+          committer: committer_identity,
+          relative_order: 0
+        )
+      end
+
+      let!(:direct_commit) do
+        create(
+          :diff_commit_without_metadata,
+          merge_request_diff: diff,
+          committer_id: other_identity.id,
+          relative_order: 1
+        )
+      end
+
+      context 'when reading from the new commits table' do
+        before do
+          stub_feature_flags(approval_committer_emails_from_diff: true)
+          stub_read_new_commits_table(true)
+          merge_request.clear_memoization(:read_new_commits_table?)
+        end
+
+        it 'filters only the identity reachable through metadata', :aggregate_failures do
+          expect(filtered_user_ids).to include(committer.id)
+          expect(filtered_user_ids).not_to include(other_user.id)
+        end
+      end
+
+      context 'when reading from the legacy commits table' do
+        before do
+          stub_feature_flags(approval_committer_emails_from_diff: true)
+          stub_read_new_commits_table(false)
+          merge_request.clear_memoization(:read_new_commits_table?)
+        end
+
+        it 'filters identities from both storage paths' do
+          expect(filtered_user_ids).to contain_exactly(committer.id, other_user.id)
+        end
+      end
+    end
+
+    context 'when the persisted committer is an instance identity' do
+      let_it_be(:instance_identity) do
+        create(:merge_request_diff_commit_user, email: 'instance@example.test')
+      end
+
+      let!(:diff_commit) do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: diff,
+          commit_author: author_identity,
+          committer: instance_identity
+        )
+      end
+
+      before do
+        stub_feature_flags(approval_committer_emails_from_diff: false)
+      end
+
+      it 'filters the real author without loading signature data from Gitaly', :aggregate_failures do
+        persisted_commit = merge_request.reload.commits.first
+
+        expect(persisted_commit.signature).to be_nil
+        expect(filtered_user_ids).to contain_exactly(author.id)
+      end
+    end
+
+    context 'when a persisted identity has no matching user' do
+      let_it_be(:unknown_identity) do
+        create(:merge_request_diff_commit_user, email: 'nobody@unknown.com')
+      end
+
+      let!(:diff_commit) do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: diff,
+          commit_author: unknown_identity,
+          committer: unknown_identity
+        )
+      end
+
+      it 'does not filter any users' do
+        expect(filtered_user_ids).to be_empty
+      end
+    end
+
+    context 'when a persisted identity has no email' do
+      let_it_be(:nil_email_identity) do
+        create(:merge_request_diff_commit_user, name: 'Name Only', email: nil)
+      end
+
+      let!(:diff_commit) do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: diff,
+          commit_author: nil_email_identity,
+          committer: nil_email_identity
+        )
+      end
+
+      it 'does not filter any users' do
+        expect(filtered_user_ids).to be_empty
       end
     end
   end
