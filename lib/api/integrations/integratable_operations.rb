@@ -49,6 +49,7 @@ module API
         end
 
         route_setting :authorization, permissions: :read_integration,
+          boundary: -> { parent_resource },
           boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
         get(configuration[:path]) do
           integrations = parent_resource.integrations.active
@@ -78,6 +79,7 @@ module API
             end
           end
           route_setting :authorization, permissions: :update_integration,
+            boundary: -> { parent_resource },
             boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
           put("#{configuration[:path]}/#{slug}") do
             integration = find_or_initialize_integration(slug)
@@ -124,6 +126,7 @@ module API
             desc: 'The name of the integration'
         end
         route_setting :authorization, permissions: :delete_integration,
+          boundary: -> { parent_resource },
           boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
         delete("#{configuration[:path]}/:slug") do
           integration = find_or_initialize_integration(params[:slug])
@@ -169,6 +172,7 @@ module API
             desc: 'The name of the integration'
         end
         route_setting :authorization, permissions: :read_integration,
+          boundary: -> { parent_resource },
           boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
         get("#{configuration[:path]}/:slug") do
           integration = find_or_initialize_integration(params[:slug])

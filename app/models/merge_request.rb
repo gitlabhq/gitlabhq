@@ -990,7 +990,7 @@ class MergeRequest < ApplicationRecord
     if Feature.enabled?(:approval_committer_emails_from_diff, target_project)
       User.by_any_email(committer_emails_from_diff).select(:id)
     else
-      committers(with_merge_commits: true, include_author_when_signed: true).select(:id)
+      User.by_any_email(commits.author_and_committer_emails).select(:id)
     end
   end
   strong_memoize_attr :committer_ids_to_filter_from_approvers
@@ -999,7 +999,7 @@ class MergeRequest < ApplicationRecord
     if Feature.enabled?(:approval_committer_emails_from_diff, target_project)
       User.by_any_email(committer_emails_from_diff)
     else
-      committers(with_merge_commits: true, lazy: true, include_author_when_signed: true)
+      User.by_any_email(commits.author_and_committer_emails)
     end
   end
   strong_memoize_attr :committers_to_filter_from_approvers
@@ -2291,12 +2291,12 @@ class MergeRequest < ApplicationRecord
     !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
-  def compare_accessibility_reports
+  def compare_accessibility_reports(current_user = nil)
     unless has_accessibility_reports?
       return { status: :error, status_reason: _('This merge request does not have accessibility reports') }
     end
 
-    compare_reports(Ci::CompareAccessibilityReportsService)
+    compare_reports(Ci::CompareAccessibilityReportsService, current_user)
   end
 
   # TODO: this method and compare_test_reports use the same
@@ -2335,22 +2335,22 @@ class MergeRequest < ApplicationRecord
     !!pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
   end
 
-  def compare_codequality_reports
+  def compare_codequality_reports(current_user = nil)
     unless has_codequality_reports?
       return { status: :error, status_reason: _('This merge request does not have codequality reports') }
     end
 
-    compare_reports(Ci::CompareCodequalityReportsService)
+    compare_reports(Ci::CompareCodequalityReportsService, current_user)
   rescue ReactiveCaching::InvalidateReactiveCache
     { status: :parsing }
   end
 
-  def find_terraform_reports
+  def find_terraform_reports(current_user = nil)
     unless has_terraform_reports?
       return { status: :error, status_reason: 'This merge request does not have terraform reports' }
     end
 
-    compare_reports(Ci::GenerateTerraformReportsService)
+    compare_reports(Ci::GenerateTerraformReportsService, current_user)
   end
 
   def has_exposed_artifacts?
@@ -3035,12 +3035,14 @@ class MergeRequest < ApplicationRecord
       return uncached_committer_emails_from_diff
     end
 
-    # The committer set of a diff is immutable once the diff is created, so the
+    # Approval filtering includes commit authors to prevent instance-signed web
+    # commits from bypassing the restriction. Do not use this for committer-only reporting.
+    # The approval identity set of a diff is immutable once the diff is created, so the
     # result is cached keyed by the merge_request_diff id. A new push creates a
     # new diff (and id), which naturally invalidates the entry; the TTL is only
-    # a backstop. This reduces the call rate of the approval-committer filter
+    # a backstop. This reduces the call rate of the approval identity filter
     # query, which runs very frequently across the fleet.
-    cache_key = ['merge_request_diffs', merge_request_diff.id, 'committer_emails']
+    cache_key = ['merge_request_diffs', merge_request_diff.id, 'approval_identity_emails']
 
     cached = Rails.cache.read(cache_key)
     return cached if cached
@@ -3048,10 +3050,10 @@ class MergeRequest < ApplicationRecord
     emails = uncached_committer_emails_from_diff
 
     # Don't cache an empty result. A persisted diff should always resolve to at
-    # least one committer, so an empty set is almost always a transient state
+    # least one identity, so an empty set is almost always a transient state
     # (e.g. the mr_diff_commits_read_new_table read path before its backfill
     # completes) rather than the real answer. Caching it would freeze that stale
-    # value for the whole TTL and silently disable the approval-committer filter;
+    # value for the whole TTL and silently disable the approval identity filter;
     # leaving it uncached lets the next call recompute cheaply. Since empty is
     # never written, a cache miss (nil) is unambiguous.
     Rails.cache.write(cache_key, emails, expires_in: 6.hours) if emails.present?
@@ -3061,25 +3063,32 @@ class MergeRequest < ApplicationRecord
   strong_memoize_attr :committer_emails_from_diff
 
   def uncached_committer_emails_from_diff
-    committer_emails_query =
-      if read_new_commits_table?
-        committer_emails_via_metadata_query
-      else
-        Arel::Nodes::Union.new(committer_emails_via_metadata_query, committer_emails_via_direct_query)
-      end
+    # Including commit authors prevents instance-signed web commits from
+    # bypassing approval filtering.
+    identity_emails_from_diff([:commit_author_id, :committer_id], 'approval_identity_emails')
+  end
 
-    # This is a pure read used only for approval eligibility filtering, which
-    # can tolerate a few seconds of replication lag, and it is gated behind the
-    # approval_committer_emails_from_diff feature flag. We send it to a replica
-    # via select_all, which ConnectionProxy routes through the load balancer's
-    # read path; the previous select_values fell through to #method_missing and
-    # was treated as ambiguous, so it ran on the primary. The SQL is unchanged.
+  def identity_emails_from_diff(identity_columns, alias_name)
+    queries = identity_columns.map { |identity_column| committer_email_via_metadata_query(identity_column) }
+    unless read_new_commits_table?
+      queries += identity_columns.map { |identity_column| committer_email_via_direct_query(identity_column) }
+    end
+
+    union = queries.reduce { |combined, query| Arel::Nodes::Union.new(combined, query) }
+    identity_emails_query = Arel::SelectManager.new
+      .project(Arel.sql("#{alias_name}.email"))
+      .from(union.as(alias_name))
+
+    # These pure reads can tolerate a few seconds of replication lag. We send
+    # them to a replica via select_all, which ConnectionProxy routes through the
+    # load balancer's read path; the previous select_values fell through to
+    # #method_missing and was treated as ambiguous, so it ran on the primary.
     ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
-      ApplicationRecord.connection.select_all(committer_emails_query.to_sql).rows.flatten
+      ApplicationRecord.connection.select_all(identity_emails_query.to_sql).rows.flatten
     end
   end
 
-  def committer_emails_via_metadata_query
+  def committer_email_via_metadata_query(identity_column)
     dc = MergeRequestDiffCommit.arel_table
     m = MergeRequest::CommitsMetadata.arel_table
     u = MergeRequest::DiffCommitUser.arel_table
@@ -3089,7 +3098,7 @@ class MergeRequest < ApplicationRecord
         m[:id].eq(dc[:merge_request_commits_metadata_id])
         .and(m[:project_id].eq(target_project_id))
       )
-      .join(u).on(u[:id].eq(m[:committer_id]))
+      .join(u).on(u[:id].eq(m[identity_column]))
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
       .where(u[:email].not_eq(nil))
 
@@ -3098,12 +3107,12 @@ class MergeRequest < ApplicationRecord
     query
   end
 
-  def committer_emails_via_direct_query
+  def committer_email_via_direct_query(identity_column)
     dc = MergeRequestDiffCommit.arel_table
     u = MergeRequest::DiffCommitUser.arel_table
 
     dc.project(u[:email])
-      .join(u).on(u[:id].eq(dc[:committer_id]))
+      .join(u).on(u[:id].eq(dc[identity_column]))
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
       .where(dc[:merge_request_commits_metadata_id].eq(nil))
       .where(u[:email].not_eq(nil))

@@ -3,11 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketImport::Importers::RepositoryImporter, feature_category: :importers do
+  include StubRequests
+
   let_it_be_with_reload(:project) { create(:project, import_url: 'https://bitbucket.org/vim/vim.git') }
 
   subject(:importer) { described_class.new(project) }
 
   before do
+    # Resolves both the repository and the wiki URL, which share the same host.
+    stub_dns(project.import_url, ip_address: '8.8.8.9')
+
+    # Skip the wiki by default so the repository examples don't attempt a real clone.
+    # The wiki contexts below opt back in.
+    allow(project.wiki).to receive(:repository_exists?).and_return(true)
+
     allow_next_instance_of(Bitbucket::Client) do |client|
       allow(client).to receive(:repo).and_return(Bitbucket::Representation::Repo.new(
         { 'mainbranch' => { 'name' => 'develop' } }
@@ -17,10 +26,11 @@ RSpec.describe Gitlab::BitbucketImport::Importers::RepositoryImporter, feature_c
 
   describe '#execute' do
     context 'when repository is empty' do
-      it 'imports the repository' do
-        expect(project.repository).to receive(:import_repository).with(project.unsafe_import_url)
+      it 'imports the repository with the validated resolved address' do
+        expect(project.repository).to receive(:import_repository).with(project.unsafe_import_url,
+          resolved_address: '8.8.8.9')
         expect(project.repository).to receive(:fetch_as_mirror).with(project.unsafe_import_url,
-          refmap: ['+refs/pull-requests/*/to:refs/merge-requests/*/head'])
+          refmap: ['+refs/pull-requests/*/to:refs/merge-requests/*/head'], resolved_address: '8.8.8.9')
         expect(project.last_repository_updated_at).to be_present
 
         importer.execute
@@ -100,6 +110,60 @@ RSpec.describe Gitlab::BitbucketImport::Importers::RepositoryImporter, feature_c
         )
 
         expect(importer.execute).to be(true)
+      end
+    end
+  end
+
+  describe '#get_resolved_address' do
+    let(:url) { 'https://bitbucket.org/vim/vim.git' }
+
+    subject(:resolved_address) { importer.send(:get_resolved_address, url) }
+
+    context 'when the resolved host is present and the scheme is http(s)' do
+      it 'returns the validated hostname' do
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_return([URI('https://bitbucket.org/vim/vim.git'), '8.8.8.9'])
+
+        expect(resolved_address).to eq('bitbucket.org')
+      end
+    end
+
+    context 'when the resolved host is blank' do
+      it 'returns an empty string' do
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_return([URI('https://bitbucket.org/vim/vim.git'), nil])
+
+        expect(resolved_address).to eq('')
+      end
+    end
+
+    context 'when the scheme is not http(s)' do
+      it 'returns an empty string' do
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_return([URI('ssh://bitbucket.org/vim/vim.git'), '8.8.8.9'])
+
+        expect(resolved_address).to eq('')
+      end
+    end
+  end
+
+  describe '#dns_rebind_protection?' do
+    subject(:dns_rebind_protection) { importer.send(:dns_rebind_protection?) }
+
+    context 'when an http proxy is configured' do
+      it 'returns false' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+
+        expect(dns_rebind_protection).to be(false)
+      end
+    end
+
+    context 'when no http proxy is configured' do
+      it 'returns the current setting' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(false)
+        allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(true)
+
+        expect(dns_rebind_protection).to be(true)
       end
     end
   end

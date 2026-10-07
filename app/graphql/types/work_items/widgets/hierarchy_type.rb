@@ -25,15 +25,13 @@ module Types
         field :children, ::Types::WorkItemType.connection_type,
           null: true, complexity: 5, scopes: [:api, :read_api, :ai_workflows],
           description: 'Child work items.',
-          resolver: Resolvers::WorkItems::ChildrenResolver,
-          skip_type_authorization: [:read_work_item]
+          resolver: Resolvers::WorkItems::ChildrenResolver
 
         field :ancestors, ::Types::WorkItemType.connection_type,
           null: true, complexity: 5, scopes: [:api, :read_api, :ai_workflows],
           description: 'Ancestors (parents) of the work item.',
           extras: [:lookahead],
-          resolver: Resolvers::WorkItems::AncestorsResolver,
-          skip_type_authorization: [:read_work_item]
+          resolver: Resolvers::WorkItems::AncestorsResolver
 
         field :has_children, GraphQL::Types::Boolean,
           null: false,

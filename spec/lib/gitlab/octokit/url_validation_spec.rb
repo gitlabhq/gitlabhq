@@ -6,17 +6,19 @@ RSpec.describe Gitlab::Octokit::UrlValidation, feature_category: :importers do
   let(:app) { instance_double(Octokit::Response::RaiseError) }
   let(:middleware) { described_class.new(app) }
 
+  subject(:call_middleware) { middleware.call(env) }
+
   shared_examples 'Allowed URL' do
     it 'does not raise an error' do
       expect(app).to receive(:call).with(env)
 
-      expect { middleware.call(env) }.not_to raise_error
+      expect { call_middleware }.not_to raise_error
     end
   end
 
   shared_examples 'Blocked URL' do
     it 'raises an error' do
-      expect { middleware.call(env) }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
+      expect { call_middleware }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
     end
   end
 
@@ -25,6 +27,40 @@ RSpec.describe Gitlab::Octokit::UrlValidation, feature_category: :importers do
       let(:env) { { url: 'https://public-url.com' } }
 
       it_behaves_like 'Allowed URL'
+
+      context 'when DNS rebinding protection is active' do
+        before do
+          stub_application_setting(dns_rebinding_protection_enabled: true)
+        end
+
+        it 'calls validate! with dns_rebind_protection: true' do
+          expect(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(
+            'https://public-url.com',
+            hash_including(dns_rebind_protection: true)
+          ).and_call_original
+
+          expect(app).to receive(:call).with(env)
+
+          call_middleware
+        end
+      end
+
+      context 'when behind an HTTP proxy' do
+        before do
+          allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+        end
+
+        it 'disables dns_rebind_protection' do
+          expect(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(
+            'https://public-url.com',
+            hash_including(dns_rebind_protection: false)
+          ).and_call_original
+
+          expect(app).to receive(:call).with(env)
+
+          call_middleware
+        end
+      end
 
       context 'with failed address check' do
         before do
@@ -89,7 +125,7 @@ RSpec.describe Gitlab::Octokit::UrlValidation, feature_category: :importers do
       let(:env) { { url: 'ssh://172.16.0.0' } }
 
       it 'raises an error' do
-        expect { middleware.call(env) }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
+        expect { call_middleware }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
       end
     end
   end

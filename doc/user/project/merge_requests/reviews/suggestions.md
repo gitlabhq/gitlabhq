@@ -211,10 +211,10 @@ suggestions in a single commit.
 1. After you add your desired suggestions, select **Apply suggestions**.
 
    > [!warning]
-   > If you apply a batch of suggestions containing changes from multiple authors,
-   > the resulting commit credits you as the author. If you configure your project
-   > to [prevent approvals from users who add commits](../approvals/settings.md#prevent-approvals-by-users-who-add-commits), you are no longer an eligible
-   > approver for this merge request.
+   > When you apply a batch of suggestions, the resulting commit lists you as both the Git author
+   > and Git committer. If you configure your project to
+   > [prevent approvals from users who add commits](../approvals/settings.md#prevent-approvals-by-users-who-add-commits),
+   > you cannot approve the merge request.
 
 1. Optional. Provide a custom commit message for [batch suggestions](#batch-suggestions)
    to describe your change. If you don't specify one, it uses

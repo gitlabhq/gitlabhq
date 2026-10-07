@@ -72,6 +72,26 @@ even if the user is a member of multiple approver groups. [Issue 457541](https:/
 
 After a deployment job is approved, you must [run the job manually](../jobs/job_control.md#run-a-manual-job).
 
+### Approval rules when an approver becomes unavailable
+
+If you remove or unshare the sole approver on a rule, GitLab does not change
+the rule. The rule still names the same user or group, and the environment
+still requires their approval.
+Removing a project member or unsharing a group revokes only that one route of
+access to the project. It does not edit the rule.
+If the named approver still has access to the project through another route,
+for example because the project is public or they have a role in an ancestor
+group, they can still give that approval.
+To remove a former approver's ability to approve, reconfigure the rule with a
+different approver.
+
+If the user account or group that's the sole approver is permanently deleted, GitLab
+reassigns the rule automatically.
+The rule no longer names the deleted user or group.
+A user with the Maintainer role or above, for the environment's project or group,
+can then approve.
+GitLab records the reassignment as an audit event.
+
 ### Allow self-approval
 
 By default, the user who triggers a deployment pipeline can't also approve the deployment job.

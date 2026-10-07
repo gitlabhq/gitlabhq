@@ -35,6 +35,66 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
       end
     end
 
+    context 'when DNS rebinding protection resolves to a different IP' do
+      it 'passes the resolved address to fetch_remote' do
+        expect(subject).to receive(:source_wiki_exists?).and_return(true)
+        allow(subject).to receive(:get_resolved_address).and_return('93.184.216.34')
+
+        expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |repository_service|
+          expect(repository_service)
+            .to receive(:fetch_remote)
+            .with(anything, hash_including(resolved_address: '93.184.216.34'))
+            .and_return(0)
+        end
+
+        subject.run
+      end
+    end
+
+    describe '#get_resolved_address' do
+      let(:url) { 'https://gitlab.example/foo.wiki.git' }
+      let(:validated_url) { Addressable::URI.parse('https://93.184.216.34/foo.wiki.git') }
+
+      it 'returns the hostname of the validated URL when a host is resolved' do
+        allow(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .and_return([validated_url, 'gitlab.example'])
+
+        expect(subject.send(:get_resolved_address, url)).to eq('93.184.216.34')
+      end
+
+      it 'returns an empty string when no host is resolved' do
+        allow(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .and_return([validated_url, nil])
+
+        expect(subject.send(:get_resolved_address, url)).to eq('')
+      end
+
+      it 'disables DNS rebinding protection when an HTTP proxy is configured' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+
+        expect(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .with(url, hash_including(dns_rebind_protection: false))
+          .and_return([validated_url, 'gitlab.example'])
+
+        subject.send(:get_resolved_address, url)
+      end
+
+      it 'passes dns_rebind_protection: false when the setting is disabled' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(false)
+        allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(false)
+
+        expect(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .with(url, hash_including(dns_rebind_protection: false))
+          .and_return([validated_url, 'gitlab.example'])
+
+        subject.send(:get_resolved_address, url)
+      end
+    end
+
     context 'when wiki does not exist' do
       it 'does not import wiki' do
         expect(subject).to receive(:source_wiki_exists?).and_return(false)

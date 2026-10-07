@@ -11,6 +11,24 @@ RSpec.describe API::Integrations, feature_category: :integrations do
   let_it_be(:project2) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let_it_be_with_reload(:group) { create(:group, owners: user) }
 
+  shared_context 'with a project and group that share a numeric id' do
+    # The shared integration endpoints resolve both a project and a group from
+    # params[:id], so a token scoped to one must not satisfy the other.
+    let_it_be(:same_id_group) { create(:group, owners: user) }
+    let_it_be(:same_id_project) do
+      create(:project, id: same_id_group.id, creator_id: user.id, namespace: user.namespace, owners: [user])
+    end
+
+    let(:same_id) { same_id_group.id }
+
+    def granular_token_for(boundary_object, permission)
+      assignable = ::Authz::PermissionGroups::Assignable.for_permission(permission).first
+
+      create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(boundary_object),
+        permissions: [assignable.name])
+    end
+  end
+
   context "Project level integrations" do
     let_it_be(:available_integration_names) do
       excluded_integrations = [Integrations::GitlabSlackApplication.to_param, Integrations::Zentao.to_param]
@@ -49,6 +67,27 @@ RSpec.describe API::Integrations, feature_category: :integrations do
             expect(json_response.count).to eq(1)
             expect(json_response.first['slug']).to eq('confluence')
             expect(response).to match_response_schema('public_api/v4/integrations')
+          end
+        end
+
+        context 'when a project and group share the same numeric id' do
+          include_context 'with a project and group that share a numeric id'
+
+          it 'denies a group-scoped granular token', :aggregate_failures do
+            pat = granular_token_for(same_id_group, :read_integration)
+
+            get api("/projects/#{same_id}/#{endpoint}", personal_access_token: pat)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['error']).to eq('insufficient_granular_scope')
+          end
+
+          it 'grants a project-scoped granular token' do
+            pat = granular_token_for(same_id_project, :read_integration)
+
+            get api("/projects/#{same_id}/#{endpoint}", personal_access_token: pat)
+
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -420,6 +459,29 @@ RSpec.describe API::Integrations, feature_category: :integrations do
               params: { webhook: 'https://example.com', username: 'test' }
           end
         end
+
+        context 'when a project and group share the same numeric id' do
+          include_context 'with a project and group that share a numeric id'
+
+          it 'denies a group-scoped token on update', :aggregate_failures do
+            pat = granular_token_for(same_id_group, :update_integration)
+
+            put api("/projects/#{same_id}/#{endpoint}/mattermost", personal_access_token: pat),
+              params: { webhook: 'https://example.com', username: 'test' }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['error']).to eq('insufficient_granular_scope')
+          end
+
+          it 'denies a group-scoped token on delete', :aggregate_failures do
+            pat = granular_token_for(same_id_group, :delete_integration)
+
+            delete api("/projects/#{same_id}/#{endpoint}/mattermost", personal_access_token: pat)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['error']).to eq('insufficient_granular_scope')
+          end
+        end
       end
     end
   end
@@ -472,6 +534,27 @@ RSpec.describe API::Integrations, feature_category: :integrations do
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response["message"]).to eq("400 Integration not available")
+          end
+        end
+
+        context 'when a project and group share the same numeric id' do
+          include_context 'with a project and group that share a numeric id'
+
+          it 'denies a project-scoped granular token', :aggregate_failures do
+            pat = granular_token_for(same_id_project, :read_integration)
+
+            get api("/groups/#{same_id}/#{endpoint}", personal_access_token: pat)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['error']).to eq('insufficient_granular_scope')
+          end
+
+          it 'grants a group-scoped granular token' do
+            pat = granular_token_for(same_id_group, :read_integration)
+
+            get api("/groups/#{same_id}/#{endpoint}", personal_access_token: pat)
+
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -533,6 +616,29 @@ RSpec.describe API::Integrations, feature_category: :integrations do
 
       it_behaves_like 'authorizing granular token permissions', :delete_integration do
         let(:request) { delete api("/groups/#{group.id}/integrations/mattermost", personal_access_token: pat) }
+      end
+
+      context 'when a project and group share the same numeric id' do
+        include_context 'with a project and group that share a numeric id'
+
+        it 'denies a project-scoped token on update', :aggregate_failures do
+          pat = granular_token_for(same_id_project, :update_integration)
+
+          put api("/groups/#{same_id}/integrations/mattermost", personal_access_token: pat),
+            params: { webhook: 'https://example.com', username: 'test' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_granular_scope')
+        end
+
+        it 'denies a project-scoped token on delete', :aggregate_failures do
+          pat = granular_token_for(same_id_project, :delete_integration)
+
+          delete api("/groups/#{same_id}/integrations/mattermost", personal_access_token: pat)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_granular_scope')
+        end
       end
     end
   end

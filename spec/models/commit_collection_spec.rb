@@ -81,6 +81,23 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
     end
   end
 
+  describe '#author_and_committer_emails' do
+    subject(:collection) { described_class.new(project, [commit]) }
+
+    let(:author_email) { 'author@gitlab.com' }
+    let(:committer_email) { 'committer@gitlab.com' }
+
+    before do
+      allow(commit).to receive(:author_email).and_return(author_email)
+      allow(commit).to receive(:committer_email).and_return(committer_email)
+    end
+
+    it 'returns both author and committer emails' do
+      expect(collection.author_and_committer_emails)
+        .to contain_exactly(author_email, committer_email)
+    end
+  end
+
   describe '#committer_user_ids' do
     subject(:collection) { described_class.new(project, [commit]) }
 

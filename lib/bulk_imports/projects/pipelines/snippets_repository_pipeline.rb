@@ -19,7 +19,6 @@ module BulkImports
           return unless data['httpUrlToRepo'].present?
 
           oauth2_url = oauth2(data['httpUrlToRepo'])
-          validate_url(oauth2_url)
 
           matched_snippet = find_matched_snippet(data)
           # Skip snippets that we couldn't find a match. Probably because more snippets were
@@ -27,8 +26,10 @@ module BulkImports
           # has already run.
           return unless matched_snippet
 
+          resolved_address = validate_url(oauth2_url)
+
           matched_snippet.create_repository
-          matched_snippet.repository.fetch_as_mirror(oauth2_url)
+          matched_snippet.repository.fetch_as_mirror(oauth2_url, resolved_address: resolved_address)
           response = Snippets::RepositoryValidationService.new(nil, matched_snippet).execute
 
           # skips matched_snippet repository creation if repository is invalid
@@ -44,15 +45,34 @@ module BulkImports
             context.portable, data['title'], data['createdAt'])
         end
 
+        def allow_local_requests?
+          Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+        end
+
         def oauth2(url)
           url.sub("://", "://oauth2:#{context.configuration.access_token}@")
         end
 
         def validate_url(url)
-          Gitlab::HTTP_V2::UrlBlocker.validate!(
+          validated_url, resolved_host = Gitlab::HTTP_V2::UrlBlocker.validate!(
             url,
-            **Import::Framework::UrlBlockerParams.new.to_h
+            allow_local_network: allow_local_requests?,
+            allow_localhost: allow_local_requests?,
+            dns_rebind_protection: dns_rebind_protection?,
+            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+            schemes: %w[http https],
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
           )
+
+          return '' if resolved_host.blank? || !validated_url.scheme.in?(%w[http https])
+
+          validated_url.hostname.to_s
+        end
+
+        def dns_rebind_protection?
+          return false if Gitlab.http_proxy_env?
+
+          Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
         end
 
         def cleanup_snippet_repository(snippet)

@@ -1,6 +1,8 @@
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import MRMoreActionsDropdown from '~/vue_shared/components/mr_more_dropdown.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 describe('MR More actions sidebar', () => {
   let wrapper;
@@ -14,6 +16,7 @@ describe('MR More actions sidebar', () => {
   const findReopenMergeRequestOption = () => wrapper.find('[data-testid="reopen-merge-request"]');
   const findReportAbuseOption = () => wrapper.find('[data-testid="report-abuse-option"]');
   const findLockMergeRequestOption = () => wrapper.find('[data-testid="lock-merge-request"]');
+  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
 
   const createComponent = ({
     isCurrentUser = true,
@@ -122,6 +125,15 @@ describe('MR More actions sidebar', () => {
       createComponent({ isCurrentUser: false });
 
       expect(findReportAbuseOption().exists()).toBe(true);
+    });
+
+    it('reports from the current page URL rather than the server-rendered url prop', async () => {
+      createComponent({ isCurrentUser: false });
+
+      wrapper.findComponentByTestId('report-abuse-option').vm.$emit('action');
+      await nextTick();
+
+      expect(findAbuseCategorySelector().props('reportedFromUrl')).toBe(window.location.href);
     });
   });
 
