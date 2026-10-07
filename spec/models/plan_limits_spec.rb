@@ -35,8 +35,8 @@ RSpec.describe PlanLimits do
         expect(subject.errors[:plan_name_uid]).to include('is not included in the list')
       end
 
-      it 'rejects a nil uid when there is no plan to derive it from' do
-        limits = build(:plan_limits, plan: nil, plan_name_uid: nil)
+      it 'rejects a nil uid even when plan_id is set' do
+        limits = described_class.new(plan_id: plan_limits.plan_id)
 
         expect(limits).not_to be_valid
         expect(limits.errors[:plan_name_uid]).to include('is not included in the list')
@@ -353,7 +353,13 @@ RSpec.describe PlanLimits do
     end
   end
 
-  describe 'before_validation :set_plan_name_uid' do
+  describe '#plan' do
+    it 'returns the system-defined plan for plan_name_uid' do
+      expect(plan_limits.plan).to eq(::GitlabSubscriptions::SystemDefined::Plan.default)
+    end
+  end
+
+  describe 'before_save :sync_plan_id' do
     context 'when plan_name_uid changes' do
       it 'derives plan_id from the plan with that uid' do
         premium_plan = create(:plan, name: 'premium')
@@ -366,78 +372,35 @@ RSpec.describe PlanLimits do
       it 'derives plan_id from the uid on a new record' do
         premium_plan = create(:plan, name: 'premium')
 
-        limits = described_class.new(plan_name_uid: premium_plan.plan_name_uid_before_type_cast)
-        limits.valid?
+        limits = described_class.create!(plan_name_uid: premium_plan.plan_name_uid_before_type_cast)
 
         expect(limits.plan_id).to eq(premium_plan.id)
       end
 
-      it 'leaves plan_id unchanged when no plan matches the uid' do
-        original_plan_id = plan_limits.plan_id
+      it 'creates the plan with that uid when none exists' do
         opensource_uid = ::GitlabSubscriptions::SystemDefined::Plan.find_by(name: 'opensource').id
 
-        plan_limits.update!(plan_name_uid: opensource_uid)
+        limits = described_class.create!(plan_name_uid: opensource_uid)
 
-        expect(plan_limits.plan_id).to eq(original_plan_id)
+        expect(limits.plan_id).to eq(Plan.find_by!(name: 'opensource', title: 'Opensource').id)
       end
 
-      it 'takes precedence over a plan assigned in the same save' do
+      it 'does not create the plan on validation' do
+        opensource_uid = ::GitlabSubscriptions::SystemDefined::Plan.find_by(name: 'opensource').id
+
+        expect { described_class.new(plan_name_uid: opensource_uid).valid? }.not_to change { Plan.count }
+      end
+
+      it 'takes precedence over a plan_id assigned in the same save' do
         premium_plan = create(:plan, name: 'premium')
         ultimate_plan = create(:plan, name: 'ultimate')
         ultimate_uid = ultimate_plan.plan_name_uid_before_type_cast
 
-        plan_limits.assign_attributes(plan: premium_plan, plan_name_uid: ultimate_uid)
+        plan_limits.assign_attributes(plan_id: premium_plan.id, plan_name_uid: ultimate_uid)
         plan_limits.save!
 
         expect(plan_limits.reload.plan_id).to eq(ultimate_plan.id)
         expect(plan_limits.plan_name_uid).to eq(ultimate_uid)
-      end
-
-      it 'keeps the assigned plan object when it already matches the uid' do
-        premium_plan = create(:plan, name: 'premium')
-
-        limits = build(:plan_limits, plan: premium_plan)
-        limits.valid?
-
-        expect(limits.plan).to equal(premium_plan)
-      end
-    end
-
-    context 'when plan_id changes and plan_name_uid is stale' do
-      it 're-derives plan_name_uid from the new plan' do
-        premium_plan = create(:plan, name: 'premium')
-
-        plan_limits.update!(plan: premium_plan)
-
-        expect(plan_limits.plan_name_uid).to eq(premium_plan.plan_name_uid_before_type_cast)
-        expect(plan_limits.plan_id).to eq(premium_plan.id)
-      end
-
-      it 're-derives plan_name_uid when plan_id is written directly' do
-        premium_plan = create(:plan, name: 'premium')
-
-        plan_limits.update!(plan_id: premium_plan.id)
-
-        expect(plan_limits.plan_name_uid).to eq(premium_plan.plan_name_uid_before_type_cast)
-        expect(plan_limits.plan_id).to eq(premium_plan.id)
-      end
-    end
-
-    context 'when plan_name_uid is blank' do
-      it 'derives plan_name_uid from the plan on save' do
-        plan_limits.update_column(:plan_name_uid, nil)
-
-        plan_limits.reload.update!(ci_pipeline_size: 200)
-
-        expect(plan_limits.reload.plan_name_uid).to eq(plan_limits.plan.plan_name_uid_before_type_cast)
-      end
-
-      it 'stays nil when plan is also nil' do
-        limits = build(:plan_limits, plan: nil, plan_name_uid: nil)
-
-        limits.valid?
-
-        expect(limits.plan_name_uid).to be_nil
       end
     end
   end

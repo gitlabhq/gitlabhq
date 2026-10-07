@@ -336,7 +336,7 @@ RSpec.describe Ability, feature_category: :system_access do
       context 'when a user cannot read cross project and a filter is passed' do
         before do
           allow(described_class).to receive(:allowed?).and_call_original
-          expect(described_class).to receive(:allowed?).with(user, :read_cross_project) { false }
+          expect(described_class).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
         end
 
         subject(:readable_merge_requests) do
@@ -374,7 +374,7 @@ RSpec.describe Ability, feature_category: :system_access do
         project.add_developer(user)
 
         allow(described_class).to receive(:allowed?).and_call_original
-        allow(described_class).to receive(:allowed?).with(user, :read_cross_project, any_args) { false }
+        allow(described_class).to receive(:allowed?).with(user, :read_cross_project, any_args).and_return(false)
       end
 
       it 'excludes issues from other projects whithout checking separatly when passing a scope' do
@@ -453,7 +453,7 @@ RSpec.describe Ability, feature_category: :system_access do
       context 'when a user cannot read cross project and a filter is passed' do
         before do
           allow(described_class).to receive(:allowed?).and_call_original
-          expect(described_class).to receive(:allowed?).with(user, :read_cross_project) { false }
+          expect(described_class).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
         end
 
         subject(:readable_feature_flags) do

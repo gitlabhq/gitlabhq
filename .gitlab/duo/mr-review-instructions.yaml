@@ -1130,13 +1130,13 @@ instructions:
          1. If `documentation_link` is an absolute URL, say you cannot read it.
          2. If the path does not resolve, say the file was not found. Do not guess at its contents.
          3. If the page does not yet cover the feature or update, say so in one sentence. Absent documentation is not contradicting documentation, so do not flag the note's capability claims, tier, or offering as unsupported.
-      9. Compare the release note body with the documentation linked in `documentation_link`. The documentation is correct and the release note should match it. Flag the following items. Quote the documentation line you compared against so the author can check it:
+      9. Compare the release note `title` and body with the documentation linked in `documentation_link`. The documentation is correct and the release note should match it. Flag the following items. Quote the documentation line you compared against so the author can check it:
          - Differences in terminology or feature names, including setting, menu, and UI names.
          - Capability claims the documentation does not support, or that contradict its stated availability, prerequisites, or limitations.
          - A `tier` or `offering` is inconsistent with the availability details in the documentation.
          - Different wording for how the feature is used, turned on, or where it lives: a different verb for the same action, a different place for a setting, a different name for a step.
          Do not flag differences in length, tone, or detail; a release note is deliberately shorter and more promotional.
-      10. Do not repeat style findings the Documentation instructions already cover.
+      10. Do not repeat a finding the Documentation instructions have already raised on this merge request.
 
   # >>> generated: testing-rspec — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
   # distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d

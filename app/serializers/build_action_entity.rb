@@ -3,9 +3,7 @@
 class BuildActionEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :name do |build|
-    build.name
-  end
+  expose :name, &:name
 
   expose :path do |build|
     play_project_job_path(build.project, build)

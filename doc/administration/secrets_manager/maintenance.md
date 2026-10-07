@@ -31,67 +31,105 @@ generate a root token, see [recovery key management](recovery_key.md).
 
 ## Recover OpenBao authentication
 
-You might need to recover OpenBao authentication if the JWT `aud` (audience) claim and the stored
-`bound_audiences` value drift apart.
+GitLab authenticates to OpenBao with a JSON Web Token (JWT). OpenBao accepts the JWT only if its
+`iss` (issuer) and `aud` (audience) claims match the values that OpenBao stored. OpenBao stores
+these values when OpenBao is initialized, and when you turn on the secrets manager for each project
+and group. OpenBao does not update the stored values when you change your configuration later.
 
-Reconfigure authentication with a recovery key first, because it preserves stored secrets.
-Reset OpenBao data only as a last resort, because it deletes all stored secrets.
+Authentication fails in these cases:
 
-### Reconfigure authentication with a recovery key
+- JWT audience mismatch: GitLab sends a different audience than the one OpenBao stored, for example
+  after the OpenBao URL changed. To fix the mismatch,
+  [restore the JWT audience](#restore-the-jwt-audience).
+- JWT issuer mismatch: the GitLab URL changed after OpenBao was initialized. To fix the mismatch,
+  [restore the JWT issuer](#restore-the-jwt-issuer).
 
-This method preserves all stored secrets, but requires a recovery key.
+A root token cannot fix authentication, because
+`gitlab:secrets_management:openbao:root_token:generate` authenticates to OpenBao with a GitLab JWT.
 
-1. Generate a temporary root token from the recovery key. For the procedure, see
-   [Generate a root token from the recovery key](recovery_key.md#generate-a-root-token-from-the-recovery-key).
+If you cannot restore the audience or the issuer, [reset OpenBao data](#reset-openbao-data). A reset
+deletes all stored secrets.
 
-1. Read the current authentication role so you have its full configuration:
+### Find the stored JWT audience
 
-   ```shell
-   OPENBAO_POD=$(kubectl get pods -n gitlab -l app.kubernetes.io/name=openbao -o name | head -1)
-   kubectl exec -n gitlab "$OPENBAO_POD" -c openbao-server -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 BAO_TOKEN=<root_token> bao read auth/gitlab_rails_jwt/role/app"
-   ```
+The stored audience is the OpenBao URL from when OpenBao was first initialized.
 
-1. Re-apply the role with the corrected `bound_audiences` and every other field from the previous
-   step. On update, OpenBao resets omitted fields to their defaults, so the request must include the
-   full configuration. Importantly:
+To find the stored JWT audience:
 
-   - The `role_type` field defaults to `oidc`, so you must include `role_type=jwt` or the role
-     breaks.
-   - The `claim_mappings` field resets to empty if omitted, which breaks authorization. Include the
-     same mappings the previous step returned.
+1. Find the candidates. If you set `global.openbao.jwt_audience` in an earlier restore, that value is
+   the stored audience. Check that value in the next step.
 
-   `bound_claims` and `claim_mappings` are maps, so supply the configuration as JSON on standard
-   input with `bao write <path> -`. Replace `<your-domain>` with your OpenBao domain, and replace
-   the `claim_mappings` and other values with the ones the previous step returned:
+   Otherwise, list the candidates. Helm keeps the rendered configuration of recent chart revisions,
+   so list the `bound_audiences` value of each revision:
 
    ```shell
-   kubectl exec -i -n gitlab "$OPENBAO_POD" -c openbao-server -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 BAO_TOKEN=<root_token> bao write auth/gitlab_rails_jwt/role/app -" <<'JSON'
-   {
-     "role_type": "jwt",
-     "user_claim": "user_id",
-     "bound_subject": "gitlab_secrets_manager",
-     "bound_audiences": ["https://openbao.<your-domain>"],
-     "token_policies": ["secrets_manager"],
-     "bound_claims": {"secrets_manager_scope": "privileged"},
-     "claim_mappings": {
-       "user_id": "user_id",
-       "project_id": "project_id",
-       "group_id": "group_id",
-       "namespace_id": "namespace_id",
-       "correlation_id": "correlation_id"
-     }
-   }
-   JSON
+   for revision in $(helm history gitlab -n gitlab | awk 'NR > 1 { print $1 }'); do
+     echo "$revision: $(helm get manifest gitlab -n gitlab --revision "$revision" | grep -o '"bound_audiences": "[^"]*"')"
+   done
    ```
 
-1. Revoke the root token. The procedure in the first step includes the revoke command.
+   Each distinct value is a candidate. By default, Helm keeps the last 10 revisions. If OpenBao
+   was first initialized in an older revision, the list might not include the stored audience.
 
-This procedure corrects the root-level audience only. Geo failover to a secondary site with a
-different domain is not supported, because it also requires re-provisioning JWT authentication for
-every project and group. Instead, update DNS so the primary domain points to the promoted secondary.
-For more information, see [Geo deployment](_index.md#geo-deployment).
+1. Check each candidate. In the [Rails console](../operations/rails_console.md), replace
+   `<candidate_audience>` with the candidate and run:
+
+   ```ruby
+   jwt = SecretsManagement::GlobalSecretsManagerJwt.new(aud: '<candidate_audience>').encoded
+   SecretsManagement::SecretsManagerClient.new(jwt: jwt).generate_root_token_status
+   ```
+
+   If OpenBao stored this audience, the second command returns without an error. Otherwise,
+   OpenBao rejects the JWT with `invalid audience (aud) claim`. If OpenBao rejects the JWT with
+   `invalid issuer (iss) claim` instead, [restore the JWT issuer](#restore-the-jwt-issuer) first.
+
+### Restore the JWT audience
+
+Restore the JWT audience when GitLab sends a different audience than the one OpenBao stored.
+
+Prerequisites:
+
+- The audience that OpenBao stored. For more information, see
+  [Find the stored JWT audience](#find-the-stored-jwt-audience).
+
+To restore the JWT audience:
+
+1. In your Helm values file, set `global.openbao.jwt_audience` to the stored audience. For example:
+
+   ```yaml
+   global:
+     openbao:
+       jwt_audience: https://openbao.example.com
+   ```
+
+1. Redeploy GitLab:
+
+   ```shell
+   helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
+     -n gitlab -f gitlab.yaml
+   ```
+
+After the GitLab pods restart, GitLab authenticates to OpenBao again.
+
+### Restore the JWT issuer
+
+Restore the JWT issuer when the GitLab URL changed after OpenBao was initialized. OpenBao expects
+the GitLab URL from that time as the issuer, so you must change the GitLab URL back.
+
+To restore the JWT issuer:
+
+1. In your Helm values file, set the GitLab host settings back to the values from when OpenBao was
+   first initialized. For more information, see
+   [configure host settings](https://docs.gitlab.com/charts/charts/globals/#configure-host-settings).
+
+1. Redeploy GitLab:
+
+   ```shell
+   helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
+     -n gitlab -f gitlab.yaml
+   ```
+
+After the GitLab pods restart, GitLab authenticates to OpenBao again.
 
 ## Reset OpenBao data
 

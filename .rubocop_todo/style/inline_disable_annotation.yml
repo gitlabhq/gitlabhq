@@ -2076,7 +2076,6 @@ Style/InlineDisableAnnotation:
     - 'spec/support/shared_examples/db/seeds/data_seeder_shared_examples.rb'
     - 'spec/support/shared_examples/deployments/create_for_job_shared_examples.rb'
     - 'spec/support/shared_examples/environments/create_for_job_shared_examples.rb'
-    - 'spec/support/shared_examples/features/wiki/user_previews_wiki_changes_shared_examples.rb'
     - 'spec/support/shared_examples/features/wiki/user_updates_wiki_page_shared_examples.rb'
     - 'spec/support/shared_examples/features/wiki/user_views_asciidoc_page_with_includes_shared_examples.rb'
     - 'spec/support/shared_examples/features/wiki/user_views_wiki_page_shared_examples.rb'

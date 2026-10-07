@@ -150,12 +150,9 @@ module Gitlab
 
           file = downloader.perform
 
-          # for ghe imports skip file attachments
-          # in these cases the AttachmentsDownloader returns the redirect url
-          # so we return the original attachment.url
-          if web_endpoint != ::Octokit::Default.web_endpoint && file.is_a?(String) && file.starts_with?(github_file_url_regex) # rubocop:disable Layout/LineLength,Lint/RedundantCopDisableDirective -- minor infraction
-            return attachment.url
-          end
+          # AttachmentsDownloader returns the URL as a String instead of a File when a GHE
+          # server redirected it to a login page, whatever the attachment path looks like.
+          return attachment.url if file.is_a?(String)
 
           # for ghe imports check on filetype to add ext to video attachments
           file = update_ghe_video_path(file) unless web_endpoint == ::Octokit::Default.web_endpoint
@@ -219,10 +216,6 @@ module Gitlab
           new_path = "#{filepath}.#{extension}"
           FileUtils.mv(filepath, new_path)
           File.open(new_path, 'rb')
-        end
-
-        def github_file_url_regex
-          %r{#{Regexp.escape(web_endpoint)}/.*/files/}
         end
       end
     end

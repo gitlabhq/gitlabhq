@@ -54,7 +54,7 @@ module GitlabSubscriptions
       end
 
       # Cached per request: fixed items are process-wide singletons, so the cache cannot live on
-      # the instance. The fallback has no plan_id; saving it needs the uid back-fill in !251875.
+      # the instance.
       def actual_limits
         ::Gitlab::SafeRequestStore.fetch("system_defined_plan:#{id}:actual_limits") do
           ::PlanLimits.find_by(plan_name_uid: id) || ::PlanLimits.new(plan_name_uid: id)

@@ -2,10 +2,10 @@
 
 FactoryBot.define do
   factory :todo do
-    project
+    project { @overrides[:issue]&.project || association(:project) }
     author { project&.creator || user }
     user { project&.creator || user }
-    target factory: :issue
+    target { @overrides[:issue] || (project ? association(:issue, project: project) : association(:issue)) }
     action { Todo::ASSIGNED }
 
     # Add a transient attribute to control the behavior

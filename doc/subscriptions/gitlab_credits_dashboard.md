@@ -421,3 +421,42 @@ Prerequisites:
 1. Select **Export usage data**. GitLab generates the export in the background and emails you a link to download the ZIP file.
 
 For GitLab Flex subscriptions, you can start the same export from the [Flex Usage dashboard](gitlab_flex_dashboard.md).
+
+## View your GitLab Credits usage
+
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22817) in GitLab 19.5.
+
+{{< /history >}}
+
+You can track the GitLab Credits you consume in a top-level group in the **Your GitLab Credits usage** page.
+The dashboard reports only credit consumption.
+It does not show your remaining credits or a credit cap.
+
+**Your GitLab Credits usage** displays:
+
+- Your usage for the current billing period.
+- A chart of your daily credit consumption for the selected date range and products.
+- **Total usage**: Total number of credits used in the selected date range and products.
+- **Daily average**: Average number of credits used in a day for the selected date range and products.
+- **Peak day usage**: The highest number of credits consumed in a single day for the selected date range and products.
+
+Prerequisites:
+
+- You must be a member of a top-level group with a subscription that includes GitLab Credits.
+
+To view your GitLab Credits usage:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. In the left sidebar, select **GitLab Credits**.
+1. If you are a member of multiple groups, from the **Group** dropdown list, select a top-level group.
+1. Optional. From the **Date range** dropdown list, select the date range you want to view your usage for. Default is the current month.
+1. Optional. From the **Products** dropdown list, select the products you want to include.

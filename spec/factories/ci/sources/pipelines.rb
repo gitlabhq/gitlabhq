@@ -8,7 +8,7 @@ FactoryBot.define do
       source.source_project ||= source.source_pipeline&.project
     end
 
-    source_job factory: :ci_build
+    source_job { @overrides[:build] || association(:ci_build) }
 
     pipeline factory: :ci_empty_pipeline
   end

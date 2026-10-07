@@ -209,10 +209,7 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
     // A new search term shifts the underlying result set, so the language
     // buckets must be recomputed. Skipping this leaves stale counts pinned
     // to the previous term until the user reloads the page.
-    await syncZoektUrl(
-      { state, commit, dispatch },
-      { refetchAggregations: state.zoektLanguageAggregationsEnabled },
-    );
+    await syncZoektUrl({ state, commit, dispatch }, { refetchAggregations: true });
   }
 
   // Language filter is applied live (without requiring an "Apply" click) for
@@ -220,7 +217,7 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
   // and refresh the sidebar counts. Aggregation buckets are intentionally NOT
   // refetched here — they are faceted (computed against the language-stripped
   // result set) so they remain stable across language ticks.
-  if (isZoektSearch && key === LANGUAGE_FILTER_PARAM && state.zoektLanguageAggregationsEnabled) {
+  if (isZoektSearch && key === LANGUAGE_FILTER_PARAM) {
     await syncZoektUrl({ state, commit, dispatch });
   }
 
@@ -230,7 +227,7 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
   // filters DO shift bucket counts (unlike language ticks), so we re-fetch.
   const isArchivedOrForksFilter =
     key === INCLUDE_ARCHIVED_FILTER_PARAM || key === EXCLUDE_FORKS_FILTER_PARAM;
-  if (isZoektSearch && isArchivedOrForksFilter && state.zoektLanguageAggregationsEnabled) {
+  if (isZoektSearch && isArchivedOrForksFilter) {
     await syncZoektUrl({ state, commit, dispatch }, { refetchAggregations: true });
   }
 
@@ -291,8 +288,7 @@ export const fetchAllAggregation = ({ commit, state }) => {
   // the fetch so the sidebar can render a "refreshing" state (dimmed +
   // spinner) over the last-known buckets. Non-Zoekt paths (Elasticsearch)
   // keep the original loading behavior.
-  const preserveBuckets =
-    state.searchType === SEARCH_TYPE_ZOEKT && state.zoektLanguageAggregationsEnabled;
+  const preserveBuckets = state.searchType === SEARCH_TYPE_ZOEKT;
   commit(preserveBuckets ? types.REQUEST_AGGREGATIONS_LOADING : types.REQUEST_AGGREGATIONS);
 
   return axios

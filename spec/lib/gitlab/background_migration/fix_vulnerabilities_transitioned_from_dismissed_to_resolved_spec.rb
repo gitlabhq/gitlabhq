@@ -43,7 +43,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixVulnerabilitiesTransitionedFromDi
   end
 
   let(:primary_identifier) do
-    table(:vulnerability_identifiers, database: :sec).create!(
+    table(:vulnerability_identifiers, primary_key: :id, database: :sec).create!(
       project_id: project.id,
       external_id: "CVE-2018-1234",
       external_type: "CVE",

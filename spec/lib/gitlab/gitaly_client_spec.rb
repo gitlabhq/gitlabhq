@@ -716,6 +716,13 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         expect(kword_args[:metadata][:deadline_type]).to eq("limited")
       end
 
+      it 'limits the deadline to the request deadline when allowed unlimited', :aggregate_failures do
+        kword_args = described_class.request_kwargs('default', timeout: 0)
+
+        expect(kword_args[:deadline]).to eq(request_deadline)
+        expect(kword_args[:metadata][:deadline_type]).to eq("limited")
+      end
+
       it 'does not limit calls in sidekiq', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9511' do
         expect(Sidekiq).to receive(:server?).and_return(true)
 

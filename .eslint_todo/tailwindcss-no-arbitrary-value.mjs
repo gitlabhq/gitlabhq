@@ -16,7 +16,6 @@ export default {
     'app/assets/javascripts/glql/components/common/th_resizable.vue',
     'app/assets/javascripts/glql/components/presenters/list.vue',
     'app/assets/javascripts/homepage/components/quick_access_widget.vue',
-    'app/assets/javascripts/homepage/components/user_items_count_widget.vue',
     'app/assets/javascripts/members/placeholders/components/placeholders_table.vue',
     'app/assets/javascripts/merge_request_dashboard/components/app.vue',
     'app/assets/javascripts/merge_request_dashboard/components/assigned_users.vue',

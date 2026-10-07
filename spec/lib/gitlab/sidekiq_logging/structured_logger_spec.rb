@@ -6,7 +6,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger, feature_category: :shar
   before do
     # We disable a memory instrumentation feature
     # as this requires a special patched Ruby
-    allow(Gitlab::Memory::Instrumentation).to receive(:available?) { false }
+    allow(Gitlab::Memory::Instrumentation).to receive(:available?).and_return(false)
 
     # We disable Thread.current.name there could be state leak from other specs.
     allow(Thread.current).to receive(:name).and_return(nil)

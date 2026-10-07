@@ -207,7 +207,6 @@ Style/StringConcatenation:
     - 'spec/support/helpers/stub_configuration.rb'
     - 'spec/support/helpers/workhorse_helpers.rb'
     - 'spec/support/helpers/workhorse_lfs_helpers.rb'
-    - 'spec/support/shared_examples/features/wiki/user_previews_wiki_changes_shared_examples.rb'
     - 'spec/support/shared_examples/lib/banzai/reference_parser_shared_examples.rb'
     - 'spec/support/shared_examples/models/wiki_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/hooks_shared_examples.rb'

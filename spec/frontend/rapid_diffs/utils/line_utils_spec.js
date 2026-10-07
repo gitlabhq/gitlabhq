@@ -7,7 +7,7 @@ import {
   getChangeType,
   getRowPosition,
   findLineRow,
-  getNewLineRangeContent,
+  getNewLinesInRange,
 } from '~/rapid_diffs/utils/line_utils';
 
 describe('line_utils', () => {
@@ -171,182 +171,142 @@ describe('line_utils', () => {
     });
   });
 
-  describe('getNewLineRangeContent', () => {
-    it('returns text content for a range of added lines', () => {
-      setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="3"></a></td>
-              <td data-position="new" data-change="added"><pre>line three</pre></td>
-            </tr>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="4"></a></td>
-              <td data-position="new" data-change="added"><pre>line four</pre></td>
-            </tr>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="5"></a></td>
-              <td data-position="new" data-change="added"><pre>line five</pre></td>
-            </tr>
-          </tbody>
-        </table>
-      `);
-      const table = document.querySelector('table');
-      const lineRange = {
-        start: { old_line: null, new_line: 3 },
-        end: { old_line: null, new_line: 5 },
-      };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual([
-        'line three',
-        'line four',
-        'line five',
-      ]);
+  describe('getNewLinesInRange', () => {
+    const range = (start, end) => ({
+      start: { old_line: null, new_line: start },
+      end: { old_line: null, new_line: end },
+    });
+    const newRow = (line, content) =>
+      `<tr data-hunk-lines><td data-position="new"><a data-line-number="${line}"></a><pre>${content}</pre></td></tr>`;
+    const getTable = () => document.querySelector('table');
+
+    it('returns the new-side lines of the range with its first and last line', () => {
+      setHTMLFixture(
+        `<table><tbody>${newRow(3, 'line three')}${newRow(4, 'line four')}${newRow(5, 'line five')}</tbody></table>`,
+      );
+
+      expect(getNewLinesInRange(getTable(), range(3, 5))).toEqual({
+        lines: ['line three', 'line four', 'line five'],
+        start: 3,
+        end: 5,
+      });
     });
 
     it('returns content of the added side for a changed line', () => {
       setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="old" data-change="removed"><a data-line-number="3"></a><pre>old content</pre></td>
-              <td data-position="new" data-change="added"><a data-line-number="3"></a><pre>new content</pre></td>
-            </tr>
-          </tbody>
-        </table>
+        <table><tbody>
+          <tr data-hunk-lines>
+            <td data-position="old" data-change="removed"><a data-line-number="3"></a><pre>old content</pre></td>
+            <td data-position="new" data-change="added"><a data-line-number="3"></a><pre>new content</pre></td>
+          </tr>
+        </tbody></table>
       `);
-      const table = document.querySelector('table');
-      const lineRange = {
-        start: { old_line: 3, new_line: 3 },
-        end: { old_line: 3, new_line: 3 },
-      };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['new content']);
+
+      const lineRange = { start: { old_line: 3, new_line: 3 }, end: { old_line: 3, new_line: 3 } };
+      expect(getNewLinesInRange(getTable(), lineRange).lines).toEqual(['new content']);
     });
 
     it('strips CR and LF from line content', () => {
-      setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="3"></a><pre>line\r\nbreak\n</pre></td>
-            </tr>
-          </tbody>
-        </table>
-      `);
-      const table = document.querySelector('table');
-      const lineRange = {
-        start: { old_line: null, new_line: 3 },
-        end: { old_line: null, new_line: 3 },
-      };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['linebreak']);
+      setHTMLFixture(`<table><tbody>${newRow(3, 'line\r\nbreak\n')}</tbody></table>`);
+
+      expect(getNewLinesInRange(getTable(), range(3, 3)).lines).toEqual(['linebreak']);
     });
 
     it('strips new line characters for diff suggestions', () => {
-      setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="3"></a><pre>line\r\nbreak\\n</pre></td>
-            </tr>
-          </tbody>
-        </table>
-      `);
-      const table = document.querySelector('table');
-      const lineRange = {
-        start: { old_line: null, new_line: 3 },
-        end: { old_line: null, new_line: 3 },
-      };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['linebreak\uE000']);
-    });
+      setHTMLFixture(`<table><tbody>${newRow(3, 'line\r\nbreak\\n')}</tbody></table>`);
 
-    it('returns empty array when line numbers are stale', () => {
-      setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="3"></a><pre>content</pre></td>
-            </tr>
-          </tbody>
-        </table>
-      `);
-      const table = document.querySelector('table');
-      const lineRange = {
-        start: { old_line: null, new_line: 99 },
-        end: { old_line: null, new_line: 3 },
-      };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual([]);
+      expect(getNewLinesInRange(getTable(), range(3, 3)).lines).toEqual(['linebreak']);
     });
 
     it('skips non-hunk rows like discussion rows', () => {
       setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="3"></a><pre>first</pre></td>
-            </tr>
-            <tr data-discussion-row>
-              <td><div class="discussion"><pre>discussion content</pre></div></td>
-            </tr>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="4"></a><pre>second</pre></td>
-            </tr>
-          </tbody>
-        </table>
+        <table><tbody>
+          ${newRow(3, 'first')}
+          <tr data-discussion-row><td><pre>discussion content</pre></td></tr>
+          ${newRow(4, 'second')}
+        </tbody></table>
       `);
-      const table = document.querySelector('table');
-      const lineRange = {
-        start: { old_line: null, new_line: 3 },
-        end: { old_line: null, new_line: 4 },
-      };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['first', 'second']);
+
+      expect(getNewLinesInRange(getTable(), range(3, 4)).lines).toEqual(['first', 'second']);
     });
 
-    it('stops at a hunk header boundary', () => {
+    it('skips removed lines, which are not part of the new file', () => {
       setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="3"></a><pre>before</pre></td>
-            </tr>
-            <tr data-hunk-header>
-              <td>@@ -10,5 +10,5 @@</td>
-            </tr>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="10"></a><pre>after</pre></td>
-            </tr>
-          </tbody>
-        </table>
+        <table><tbody>
+          ${newRow(3, 'unchanged')}
+          <tr data-hunk-lines>
+            <td data-position="old" data-change="removed"><a data-line-number="4"></a><pre>deleted</pre></td>
+            <td data-position="new"></td>
+          </tr>
+          ${newRow(4, 'also unchanged')}
+        </tbody></table>
       `);
-      const table = document.querySelector('table');
-      const lineRange = {
-        start: { old_line: null, new_line: 3 },
-        end: { old_line: null, new_line: 10 },
-      };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['before']);
+
+      expect(getNewLinesInRange(getTable(), range(3, 4)).lines).toEqual([
+        'unchanged',
+        'also unchanged',
+      ]);
     });
 
-    it('stops at a removed line (content gap)', () => {
+    it('starts at the first new-side line when the range starts on a removed line', () => {
       setHTMLFixture(`
-        <table>
-          <tbody>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="3"></a><pre>unchanged</pre></td>
-            </tr>
-            <tr data-hunk-lines>
-              <td data-position="old" data-change="removed"><a data-line-number="4"></a><pre>deleted</pre></td>
-              <td data-position="new"></td>
-            </tr>
-            <tr data-hunk-lines>
-              <td data-position="new"><a data-line-number="4"></a><pre>also unchanged</pre></td>
-            </tr>
-          </tbody>
-        </table>
+        <table><tbody>
+          <tr data-hunk-lines>
+            <td data-position="old" data-change="removed"><a data-line-number="7"></a><pre>deleted</pre></td>
+          </tr>
+          ${newRow(8, 'added')}
+        </tbody></table>
       `);
-      const table = document.querySelector('table');
+
       const lineRange = {
-        start: { old_line: null, new_line: 3 },
-        end: { old_line: null, new_line: 4 },
+        start: { old_line: 7, new_line: null },
+        end: { old_line: null, new_line: 8 },
       };
-      expect(getNewLineRangeContent(table, lineRange, 'new')).toEqual(['unchanged']);
+      expect(getNewLinesInRange(getTable(), lineRange)).toEqual({
+        lines: ['added'],
+        start: 8,
+        end: 8,
+      });
+    });
+
+    it('returns null when the range ends on a removed line', () => {
+      setHTMLFixture(`
+        <table><tbody>
+          <tr data-hunk-lines>
+            <td data-position="old" data-change="removed"><a data-line-number="3"></a><pre>deleted</pre></td>
+          </tr>
+        </tbody></table>
+      `);
+
+      const lineRange = {
+        start: { old_line: 3, new_line: null },
+        end: { old_line: 3, new_line: null },
+      };
+      expect(getNewLinesInRange(getTable(), lineRange)).toBeNull();
+    });
+
+    it('returns null when the start line is not rendered', () => {
+      setHTMLFixture(`<table><tbody>${newRow(3, 'content')}</tbody></table>`);
+
+      expect(getNewLinesInRange(getTable(), range(99, 99))).toBeNull();
+    });
+
+    it('returns null when a hunk header splits the range', () => {
+      setHTMLFixture(`
+        <table><tbody>
+          ${newRow(3, 'before')}
+          <tr data-hunk-header><td>@@ -10,5 +10,5 @@</td></tr>
+          ${newRow(10, 'after')}
+        </tbody></table>
+      `);
+
+      expect(getNewLinesInRange(getTable(), range(3, 10))).toBeNull();
+    });
+
+    it('returns null when lines in the range are not rendered', () => {
+      setHTMLFixture(`<table><tbody>${newRow(3, 'three')}${newRow(5, 'five')}</tbody></table>`);
+
+      expect(getNewLinesInRange(getTable(), range(3, 5))).toBeNull();
     });
   });
 

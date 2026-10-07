@@ -32,14 +32,14 @@ describe('NewLineDiscussionForm', () => {
 
   let store;
 
-  const createComponent = (props = {}, provide = {}) => {
+  const createComponent = (props = {}, provide = {}, stubs = {}) => {
     const { discussion = createDiscussion() } = props;
     store.discussionForms = [discussion];
     wrapper = shallowMount(NewLineDiscussionForm, {
       pinia,
       propsData: merge({ discussion }, props),
       provide: merge({ store }, provide),
-      stubs: { LineRangeHeadline: stubComponent(LineRangeHeadline) },
+      stubs: { LineRangeHeadline: stubComponent(LineRangeHeadline), ...stubs },
     });
   };
 
@@ -120,51 +120,34 @@ describe('NewLineDiscussionForm', () => {
     expect(useDiffDiscussions().discussionForms).toHaveLength(1);
   });
 
-  describe('codeSuggestionsConfig', () => {
-    const findNoteFormConfig = () => wrapper.findComponent(NoteForm).props('codeSuggestionsConfig');
-
-    it('passes canSuggest, lines and previewParams from discussion', () => {
-      const lines = ['line 1', 'line 2'];
-      const previewParams = { preview_suggestions: true, line: 10 };
-      createComponent({
-        discussion: {
-          ...createDiscussion(),
-          lines,
-          canSuggest: true,
-          previewParams,
+  describe('code suggestions', () => {
+    const NoteFormStub = stubComponent(NoteForm, {
+      inject: { codeSuggestions: { default: null } },
+      computed: {
+        suggestions() {
+          return JSON.stringify(this.codeSuggestions?.() ?? null);
         },
-      });
-      const config = findNoteFormConfig();
-      expect(config.canSuggest).toBe(true);
-      expect(config.lines).toStrictEqual(lines);
-      expect(config.previewParams).toStrictEqual(previewParams);
+      },
+      template: '<div data-testid="note-form" :data-suggestions="suggestions"></div>',
+    });
+    const findProvidedSuggestions = () =>
+      JSON.parse(wrapper.find('[data-testid="note-form"]').attributes('data-suggestions'));
+
+    it('provides the suggestions resolved for its discussion to the comment form', () => {
+      const config = { canSuggest: true, lines: ['const a = 1;'] };
+      const resolveCodeSuggestions = jest.fn().mockReturnValue(config);
+      createComponent({}, { resolveCodeSuggestions }, { NoteForm: NoteFormStub });
+
+      expect(findProvidedSuggestions()).toEqual(config);
+      expect(resolveCodeSuggestions).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'new-line-form' }),
+      );
     });
 
-    it('passes blobRawPath from inject', () => {
-      const blobRawPath = '/namespace/project/-/raw/abc/file.rb';
-      createComponent({}, { blobRawPath });
-      expect(findNoteFormConfig().blobRawPath).toBe(blobRawPath);
-    });
+    it('provides no suggestions when the diff row offers no resolver', () => {
+      createComponent({}, {}, { NoteForm: NoteFormStub });
 
-    it('builds lineRange from position.line_range', () => {
-      createComponent({
-        discussion: {
-          ...createDiscussion(),
-          position: {
-            ...createDiscussion().position,
-            line_range: {
-              start: { old_line: null, new_line: 5 },
-              end: { old_line: null, new_line: 8 },
-            },
-          },
-        },
-      });
-      expect(findNoteFormConfig().lineRange).toStrictEqual({ start: 5, end: 8 });
-    });
-
-    it('sets lineRange to null when position has no line_range', () => {
-      createComponent();
-      expect(findNoteFormConfig().lineRange).toBeNull();
+      expect(findProvidedSuggestions()).toBeNull();
     });
   });
 

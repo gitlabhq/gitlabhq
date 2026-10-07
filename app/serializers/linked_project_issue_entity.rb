@@ -12,9 +12,7 @@ class LinkedProjectIssueEntity < LinkedIssueEntity
     end
   end
 
-  expose :link_type do |issue|
-    issue.issue_link_type
-  end
+  expose :link_type, &:issue_link_type
 
   private
 

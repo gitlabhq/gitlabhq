@@ -4,7 +4,6 @@ import {
   forgetConsoleCalls,
   getConsoleCalls,
   ignoreConsoleMessages,
-  // eslint-disable-next-line import-x/no-deprecated
   useConsoleWatcherThrowsImmediately,
 } from './console_watcher';
 
@@ -118,7 +117,6 @@ describe('__helpers__/console_watcher', () => {
     });
 
     describe('with useConsoleWatcherThrowsImmediately', () => {
-      // eslint-disable-next-line import-x/no-deprecated
       useConsoleWatcherThrowsImmediately();
 
       it('throws when non ignored message', () => {

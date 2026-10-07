@@ -14,6 +14,7 @@ import SectionHeader from '~/analytics/analytics_dashboards/components/section_h
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import { createAlert } from '~/alert';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
+import { EVENT_VIEW_DASHBOARD, trackDashboardEvent } from '~/explore/analytics_dashboards/tracking';
 import {
   mockCustomDashboard,
   mockDashboardResponse,
@@ -24,6 +25,10 @@ import {
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
+jest.mock('~/explore/analytics_dashboards/tracking', () => ({
+  ...jest.requireActual('~/explore/analytics_dashboards/tracking'),
+  trackDashboardEvent: jest.fn(),
+}));
 
 describe('ExploreAnalyticsDashboardDetails', () => {
   let wrapper;
@@ -1447,6 +1452,79 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
       expect(wrapper.findComponent(SectionHeader).exists()).toBe(false);
       expect(wrapper.findComponent(AnalyticsDashboardPanel).exists()).toBe(true);
+    });
+  });
+  describe('usage tracking', () => {
+    const configWithViews = {
+      panels: [],
+      views: [
+        { title: 'Overview', panels: [] },
+        { title: 'Work', panels: [] },
+      ],
+    };
+
+    const switchView = async (index) => {
+      findViewsTabs().vm.$emit('input', index);
+      await waitForPromises();
+    };
+
+    const createTracked = (routeParams = { slug: 'dap_impact' }) =>
+      createWithFilters(filtersLoaderStubFor(configWithViews), { routeParams });
+
+    describe('when the scope is first set', () => {
+      beforeEach(async () => {
+        await createTracked();
+        await selectScope(mockGroup, mockProject);
+      });
+
+      it('tracks a view for every selected group and project', () => {
+        expect(trackDashboardEvent.mock.calls).toEqual([
+          [
+            EVENT_VIEW_DASHBOARD,
+            [mockGroup, mockProject],
+            { label: 'dap_impact', property: 'Overview' },
+          ],
+        ]);
+      });
+
+      it('tracks a view of the new view when the user switches views', async () => {
+        await switchView(1);
+
+        expect(trackDashboardEvent).toHaveBeenLastCalledWith(
+          EVENT_VIEW_DASHBOARD,
+          [mockGroup, mockProject],
+          { label: 'dap_impact', property: 'Work' },
+        );
+      });
+
+      it('tracks a view of the new scope when the user changes it', async () => {
+        await selectScope(mockProject);
+
+        expect(trackDashboardEvent).toHaveBeenLastCalledWith(EVENT_VIEW_DASHBOARD, [mockProject], {
+          label: 'dap_impact',
+          property: 'Overview',
+        });
+      });
+
+      it('does not track another view when the date range changes', async () => {
+        await selectDateRange({ dateRangeOption: '90d' });
+
+        expect(trackDashboardEvent).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('leaves the ID and view title of custom dashboards out', async () => {
+      await createTracked({ slug: '3' });
+      await selectGroup();
+
+      expect(trackDashboardEvent.mock.calls[0][2]).toEqual({ label: 'custom', property: '' });
+    });
+
+    it('tracks nothing until a scope is selected', async () => {
+      await createTracked();
+      await switchView(1);
+
+      expect(trackDashboardEvent).not.toHaveBeenCalled();
     });
   });
 });

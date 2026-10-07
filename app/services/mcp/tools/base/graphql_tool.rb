@@ -8,9 +8,20 @@ module Mcp
         include Mcp::Tools::Concerns::Constants
 
         QUERIES_ROOT = Rails.root.join('app/graphql/queries/mcp').freeze
+        IMPORT_PATTERN = %r{^#\s*import "\./(?<path>[^"]+)"$}
 
         def self.load_graphql(relative_path)
-          File.read(QUERIES_ROOT.join(relative_path)).freeze
+          query = read_graphql_file(relative_path)
+          directory = File.dirname(relative_path)
+          fragments = query.scan(IMPORT_PATTERN).flatten.map do |path|
+            read_graphql_file(File.join(directory, path))
+          end
+
+          [query, *fragments].join("\n").freeze
+        end
+
+        def self.read_graphql_file(relative_path)
+          File.read(QUERIES_ROOT.join(relative_path))
         end
 
         attr_reader :current_user, :params

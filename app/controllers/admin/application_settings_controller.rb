@@ -164,6 +164,7 @@ module Admin
       params[:application_setting][:valid_runner_registrars]&.delete("")
       params[:application_setting][:restricted_visibility_levels]&.delete("")
       params[:application_setting][:iframe_rendering_allowlist]&.delete("")
+      params[:application_setting][:sms_cost_restricted_dial_codes]&.delete("")
 
       params[:application_setting][:package_metadata_purl_types]&.delete("")
       params[:application_setting][:package_metadata_purl_types]&.map!(&:to_i)

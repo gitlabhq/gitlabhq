@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Daemon do
     describe '#start_working' do
       context 'when start_working fails' do
         before do
-          expect(subject).to receive(:start_working) { false }
+          expect(subject).to receive(:start_working).and_return(false)
         end
 
         it 'does not start thread' do

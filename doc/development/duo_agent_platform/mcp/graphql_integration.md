@@ -157,9 +157,20 @@ module Mcp
         include Mcp::Tools::Concerns::Versionable
 
         QUERIES_ROOT = Rails.root.join('app/graphql/queries/mcp').freeze
+        IMPORT_PATTERN = %r{^#\s*import "\./(?<path>[^"]+)"$}
 
         def self.load_graphql(relative_path)
-          File.read(QUERIES_ROOT.join(relative_path)).freeze
+          query = read_graphql_file(relative_path)
+          directory = File.dirname(relative_path)
+          fragments = query.scan(IMPORT_PATTERN).flatten.map do |path|
+            read_graphql_file(File.join(directory, path))
+          end
+
+          [query, *fragments].join("\n").freeze
+        end
+
+        def self.read_graphql_file(relative_path)
+          File.read(QUERIES_ROOT.join(relative_path))
         end
 
         attr_reader :current_user, :params
@@ -298,12 +309,36 @@ register_version VERSIONS[:v0_1_0], {
 }
 ```
 
-> [!note]
-> This works only for static operations.
-> An operation composed at load time (for example, a query built from EE-overridden fragments) cannot live in a flat `.graphql` file.
-> Build it through a method and reference that method with a lambda (`graphql_operation: -> { build_query }`) so it is composed per request.
-
 The `Mcp/UseGraphqlQueryFile` RuboCop rule flags an inline string or HEREDOC passed as `graphql_operation:` and points to `load_graphql`.
+
+#### Add fields that exist only in EE
+
+Do not copy the query into `ee/` to add EE-only fields.
+Spread a fragment in the CE query and import it from a file in the same directory:
+
+```graphql
+# @feature_category: mcp_server
+#import "./merge_request_edition_fields.fragment.graphql"
+
+query getMergeRequest($fullPath: ID!, $iid: String!) {
+  project(fullPath: $fullPath) {
+    mergeRequest(iid: $iid) {
+      id
+      ...MergeRequestEditionFields
+    }
+  }
+}
+```
+
+Give the CE fragment a field the query already selects, because a fragment cannot be empty.
+Put the EE fields in a fragment file with the same name under `ee/app/graphql/queries/mcp/`.
+`load_graphql` reads the EE file in place of the CE file, so keep the direct form in `register_version`.
+For an example, see `get_merge_request.query.graphql`.
+
+`all_queries_spec.rb` resolves the import to the CE fragment.
+A spec that runs the tool in EE is the only check of the EE fragment against the schema.
+
+Use a lambda (`graphql_operation: -> { build_query }`) only for an operation built in Ruby by a class that EE prepends, such as `WorkItemsQueryBuilder`.
 
 ### Layer 2: GraphqlService Base Class
 

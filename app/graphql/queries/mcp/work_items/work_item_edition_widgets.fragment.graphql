@@ -1,0 +1,5 @@
+# @feature_category: mcp_server
+# CE has no extra widgets. EE overrides this file, and `type` is already selected by the query.
+fragment WorkItemEditionWidgets on WorkItemWidget {
+  type
+}

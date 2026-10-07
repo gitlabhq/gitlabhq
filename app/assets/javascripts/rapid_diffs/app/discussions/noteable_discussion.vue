@@ -48,6 +48,14 @@ export default {
     iid: {
       default: null,
     },
+    resolveCodeSuggestions: {
+      default: null,
+    },
+  },
+  provide() {
+    return {
+      codeSuggestions: () => this.resolveCodeSuggestions?.(this.discussion),
+    };
   },
   props: {
     discussion: {

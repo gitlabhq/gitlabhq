@@ -4,6 +4,7 @@ import {
   getDashboardIdFromGraphQLId,
   convertToDashboardGraphQLId,
   buildDocumentTitle,
+  isSystemDashboardSlug,
 } from '~/explore/analytics_dashboards/utils';
 
 const id = 3;
@@ -26,6 +27,17 @@ describe('convertToDashboardGraphQLId', () => {
 
   it('converts a string ID to a dashboard GraphQL global ID', () => {
     expect(convertToDashboardGraphQLId(String(id))).toBe(gid);
+  });
+});
+
+describe('isSystemDashboardSlug', () => {
+  it.each`
+    slug              | expected
+    ${'dap_impact'}   | ${true}
+    ${'value_stream'} | ${true}
+    ${'3'}            | ${false}
+  `('returns $expected for "$slug"', ({ slug, expected }) => {
+    expect(isSystemDashboardSlug(slug)).toBe(expected);
   });
 });
 

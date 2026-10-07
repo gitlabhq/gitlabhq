@@ -18,14 +18,8 @@ class MemberEntity < Grape::Entity
     UserEntity.represent(member.created_by, only: [:name, :web_url])
   end
 
-  expose :can_update do |member|
-    member.can_update?
-  end
-
-  expose :can_remove do |member|
-    member.can_remove?
-  end
-
+  expose :can_update, &:can_update?
+  expose :can_remove, &:can_remove?
   expose :last_owner?, as: :is_last_owner
 
   expose :is_direct_member do |member, options|
@@ -68,17 +62,13 @@ class MemberEntity < Grape::Entity
   expose :state
 
   expose :invite, if: ->(member) { member.invite? } do
-    expose :email do |member|
-      member.invite_email
-    end
+    expose :email, &:invite_email
 
     expose :avatar_url do |member|
       avatar_icon_for_email(member.invite_email, Member::AVATAR_SIZE)
     end
 
-    expose :can_resend do |member|
-      member.can_resend_invite?
-    end
+    expose :can_resend, &:can_resend_invite?
 
     expose :user_state do |member|
       member.respond_to?(:invited_user_state) ? member.invited_user_state : ""

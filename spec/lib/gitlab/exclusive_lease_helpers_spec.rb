@@ -75,7 +75,7 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
 
         context 'when lease is granted after retry' do
           it 'yields block with true' do
-            expect(lease).to receive(:try_obtain).exactly(3).times { nil }
+            expect(lease).to receive(:try_obtain).exactly(3).times.and_return(nil)
             expect(lease).to receive(:try_obtain).once { unique_key }
 
             expect { |b| class_instance.in_lock(unique_key, &b) }

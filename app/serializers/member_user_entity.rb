@@ -12,17 +12,13 @@ class MemberUserEntity < UserEntity
     user.avatar_url(size: Member::AVATAR_SIZE, only_path: false)
   end
 
-  expose :blocked do |user|
-    user.blocked?
-  end
+  expose :blocked, &:blocked?
 
-  expose :is_bot do |user|
-    user.bot?
-  end
+  expose :is_bot, &:bot?
 
-  expose :two_factor_enabled, if: ->(user) { current_user_can_manage_members? || current_user?(user) } do |user|
-    user.two_factor_enabled?
-  end
+  expose :two_factor_enabled, if: ->(user) {
+    current_user_can_manage_members? || current_user?(user)
+  }, &:two_factor_enabled?
 
   expose :status, if: ->(user) { user.status.present? } do
     expose :emoji do |user|

@@ -323,67 +323,29 @@ describe('mergeRequestDiscussions store', () => {
     });
   });
 
+  describe('canReceiveSuggestion', () => {
+    it('is true when the merge request accepts suggestions', () => {
+      expect(store.canReceiveSuggestion).toBe(true);
+    });
+
+    it.each`
+      scenario                                | noteableData
+      ${'does not accept suggestions'}        | ${{ can_receive_suggestion: false }}
+      ${'does not report suggestion support'} | ${{}}
+      ${'has no noteable data'}               | ${undefined}
+    `('is false when the merge request $scenario', ({ noteableData }) => {
+      mockNotesStore.noteableData = noteableData;
+      createTestingPinia({ stubActions: false });
+
+      expect(useMergeRequestDiscussions().canReceiveSuggestion).toBe(false);
+    });
+  });
+
   describe('addNewLineDiscussionForm', () => {
     const lineRange = {
       start: { old_line: null, new_line: 5 },
       end: { old_line: null, new_line: 5 },
     };
-
-    it('sets canSuggest to true for added lines', () => {
-      store.addNewLineDiscussionForm({
-        oldPath: 'a.rb',
-        newPath: 'a.rb',
-        lineRange,
-        lineChange: { change: 'added', position: 'new' },
-        lineCode: 'abc_0_5',
-      });
-      const form = useDiffDiscussions().discussionForms[0];
-      expect(form.canSuggest).toBe(true);
-    });
-
-    it('sets canSuggest to false for removed lines', () => {
-      store.addNewLineDiscussionForm({
-        oldPath: 'a.rb',
-        newPath: 'a.rb',
-        lineRange,
-        lineChange: { change: 'removed', position: 'old' },
-        lineCode: 'abc_5_0',
-      });
-      const form = useDiffDiscussions().discussionForms[0];
-      expect(form.canSuggest).toBe(false);
-    });
-
-    it('builds previewParams when diffRefs and newPath and newLine are present', () => {
-      store.addNewLineDiscussionForm({
-        oldPath: 'a.rb',
-        newPath: 'a.rb',
-        lineRange,
-        lineChange: { change: 'added', position: 'new' },
-        lineCode: 'abc_0_5',
-        diffRefs: { base_sha: 'start111', start_sha: 'start111', head_sha: 'head222' },
-      });
-      const form = useDiffDiscussions().discussionForms[0];
-      expect(form.previewParams).toStrictEqual({
-        preview_suggestions: true,
-        line: 5,
-        file_path: 'a.rb',
-        base_sha: 'start111',
-        start_sha: 'start111',
-        head_sha: 'head222',
-      });
-    });
-
-    it('sets previewParams to null for removed lines', () => {
-      store.addNewLineDiscussionForm({
-        oldPath: 'a.rb',
-        newPath: 'a.rb',
-        lineRange,
-        lineChange: { change: 'removed', position: 'old' },
-        lineCode: 'abc_5_0',
-      });
-      const form = useDiffDiscussions().discussionForms[0];
-      expect(form.previewParams).toBeNull();
-    });
 
     it('uses per-file diffRefs over the global version refs when provided', () => {
       const fileDiffRefs = {
@@ -401,11 +363,6 @@ describe('mergeRequestDiscussions store', () => {
       });
       const form = useDiffDiscussions().discussionForms[0];
       expect(form.position).toMatchObject(fileDiffRefs);
-      expect(form.previewParams).toMatchObject({
-        base_sha: 'file_base',
-        start_sha: 'file_start',
-        head_sha: 'file_head',
-      });
     });
 
     it('falls back to the global version refs when no per-file refs are provided', () => {
@@ -511,7 +468,6 @@ describe('mergeRequestDiscussions store', () => {
       store.commitLineRangeEditing({
         lineChange: { change: 'added', position: 'new' },
         lineCode: 'abc_0_6',
-        lines: ['l3', 'l4', 'l5', 'l6'],
       });
 
       const updated = useDiffDiscussions().discussionForms[0];
@@ -520,7 +476,6 @@ describe('mergeRequestDiscussions store', () => {
       expect(updated.position.line_range).toStrictEqual(newRange);
       expect(updated.position.new_line).toBe(6);
       expect(updated.lineCode).toBe('abc_0_6');
-      expect(updated.lines).toStrictEqual(['l3', 'l4', 'l5', 'l6']);
       expect(updated.noteBody).toBe('draft text');
       expect(updated.editingLineRange).toBe(false);
     });

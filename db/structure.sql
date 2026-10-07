@@ -28416,12 +28416,13 @@ CREATE TABLE pm_checkpoints (
     sequence integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    purl_type smallint NOT NULL,
+    purl_type smallint,
     chunk smallint NOT NULL,
     data_type smallint DEFAULT 1 NOT NULL,
     version_format smallint DEFAULT 1 NOT NULL,
     id bigint NOT NULL,
-    full_sync_target_sequence integer
+    full_sync_target_sequence integer,
+    CONSTRAINT check_pm_checkpoints_data_type_and_purl_type CHECK (((data_type = 3) OR (purl_type IS NOT NULL)))
 );
 
 CREATE SEQUENCE pm_checkpoints_id_seq
@@ -34795,7 +34796,8 @@ CREATE TABLE vulnerability_identifiers (
     external_id character varying NOT NULL,
     name character varying NOT NULL,
     url text,
-    partition_id bigint DEFAULT 1
+    partition_id bigint DEFAULT 1 NOT NULL,
+    CONSTRAINT check_e0c2cd4f3e CHECK ((partition_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_identifiers_id_seq
@@ -43246,7 +43248,7 @@ ALTER TABLE ONLY vulnerability_historical_statistics
     ADD CONSTRAINT vulnerability_historical_statistics_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_identifiers
-    ADD CONSTRAINT vulnerability_identifiers_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT vulnerability_identifiers_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY vulnerability_issue_links
     ADD CONSTRAINT vulnerability_issue_links_pkey PRIMARY KEY (id);
@@ -50942,6 +50944,8 @@ CREATE INDEX index_pm_affected_packages_on_pm_advisory_id ON pm_affected_package
 
 CREATE INDEX index_pm_affected_packages_on_purl_type_and_package_name ON pm_affected_packages USING btree (purl_type, package_name);
 
+CREATE UNIQUE INDEX index_pm_checkpoints_on_path_components ON pm_checkpoints USING btree (purl_type, data_type, version_format) NULLS NOT DISTINCT;
+
 CREATE UNIQUE INDEX index_pm_cve_enrichment_on_cve ON pm_cve_enrichment USING btree (cve);
 
 CREATE INDEX index_pm_cve_enrichment_on_updated_at_and_id ON pm_cve_enrichment USING btree (updated_at, id);
@@ -52506,8 +52510,6 @@ CREATE INDEX index_vulnerability_flags_on_workflow_id ON vulnerability_flags USI
 
 CREATE INDEX index_vulnerability_historical_statistics_on_date_and_id ON vulnerability_historical_statistics USING btree (date, id);
 
-CREATE UNIQUE INDEX index_vulnerability_identifiers_on_id_partition_id ON vulnerability_identifiers USING btree (id, partition_id);
-
 CREATE INDEX index_vulnerability_identifiers_on_id_where_external_type_cve ON vulnerability_identifiers USING btree (id) WHERE (lower((external_type)::text) = 'cve'::text);
 
 CREATE INDEX index_vulnerability_identifiers_on_name_where_cve ON vulnerability_identifiers USING btree (name) WHERE (lower((external_type)::text) = 'cve'::text);
@@ -53109,8 +53111,6 @@ CREATE UNIQUE INDEX partial_index_sop_configs_on_namespace_id ON security_orches
 CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
-
-CREATE UNIQUE INDEX pm_checkpoints_path_components ON pm_checkpoints USING btree (purl_type, data_type, version_format);
 
 CREATE INDEX project_import_export_relatio_model_id_model_type_uploader__idx ON project_import_export_relation_export_upload_uploads USING btree (model_id, model_type, uploader, created_at);
 

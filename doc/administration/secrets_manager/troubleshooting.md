@@ -199,7 +199,7 @@ Sidekiq logs.
 | `openbao-server` | `post-unseal upgrade seal keys failed: error="no recovery key found"` | The recovery key was never stored.                         | Harmless. Run `recovery_key:store`. |
 | Rails or Sidekiq | `[OpenBao] health check returned unhealthy`                   | OpenBao responded but reported an unhealthy state.                 | Check `bao status` and the OpenBao logs.                            |
 | Rails or Sidekiq | `[OpenBao] health check failed`                               | GitLab could not reach OpenBao.                                    | Check connectivity. See [GitLab cannot connect to OpenBao](#gitlab-cannot-connect-to-openbao). |
-| Rails or Sidekiq | `Failed to authenticate with OpenBao`                         | OpenBao rejected the JWT.                                          | Check the audience. See [JWT authentication fails](#jwt-authentication-fails). |
+| Rails or Sidekiq | `Failed to authenticate with OpenBao`                         | OpenBao rejected the JWT.                                          | Check the audience and issuer. See [JWT authentication fails](#jwt-authentication-fails). |
 | Rails or Sidekiq | `Failed to open TCP connection to <host>:443 (execution expired)` | Sidekiq could not reach the OpenBao URL.                       | Check DNS and the OpenBao URL from a Sidekiq pod.                   |
 | Rails or Sidekiq | `SSL_connect ... state=error: wrong version number`           | An `https` URL points at an OpenBao listener that serves `http`.   | Match the URL scheme to the listener. See [GitLab cannot connect to OpenBao](#gitlab-cannot-connect-to-openbao). |
 | Rails or Sidekiq | `Retrying failed secrets_manager maintenance task`            | A provisioning or deprovisioning task is being retried.            | Check the worker error in the same log. Retries stop after three attempts. |
@@ -289,9 +289,15 @@ with the `oak['components']['openbao']` settings. For more information, see
 
 ## JWT authentication fails
 
-GitLab authenticates to OpenBao with a JWT. The `aud` (audience) claim in the JWT must exactly match
-the `bound_audiences` value on the OpenBao authentication role. Any difference fails authentication,
-including a trailing slash, `http` compared to `https`, or a port.
+GitLab authenticates to OpenBao with a JWT. If a JWT claim does not match the value that OpenBao
+stored, OpenBao rejects the JWT with one of these errors:
+
+- `error validating token: invalid audience (aud) claim: audience claim does not match any expected audience`
+- `error validating token: invalid issuer (iss) claim`
+
+The `aud` (audience) claim in the JWT must exactly match the `bound_audiences` value on the OpenBao
+authentication role. Any difference fails authentication, including a trailing slash, `http`
+compared to `https`, or a port.
 
 OpenBao stores `bound_audiences` at initialization time, derived from the OpenBao URL. The stored
 value does not change when you later change the URL. Changing the URL therefore breaks
@@ -305,20 +311,14 @@ SecretsManagement::ProjectSecretsManager.jwt_audience
 ```
 
 The method returns the configured `jwt_audience`, or the OpenBao `url` when `jwt_audience` is not
-set. To inspect the stored value, read the authentication role with a root token and compare
-`bound_audiences` to that audience.
+set. To find the audience that OpenBao stored, see
+[Find the stored JWT audience](maintenance.md#find-the-stored-jwt-audience).
 
-> [!warning]
-> You cannot fix this without privileged access. The root token is revoked after
-> self-initialization, and the unseal key is not a substitute. The unseal secret contains only the
-> unseal key, not a root token.
+The `iss` (issuer) claim is the GitLab URL. OpenBao also stores the GitLab URL as the expected
+issuer, so changing the GitLab URL breaks authentication in the same way.
 
-To fix the mismatch without deleting stored secrets, reconfigure authentication with a recovery
-key. For the procedure, see
-[Reconfigure authentication with a recovery key](maintenance.md#reconfigure-authentication-with-a-recovery-key).
-
-If you do not have a recovery key, [reset OpenBao data](maintenance.md#reset-openbao-data). This
-deletes all stored secrets.
+To fix an audience mismatch, [restore the JWT audience](maintenance.md#restore-the-jwt-audience).
+To fix an issuer mismatch, [restore the JWT issuer](maintenance.md#restore-the-jwt-issuer).
 
 ## OpenBao pods are sealed
 

@@ -16,9 +16,7 @@ class IssueBoardEntity < Grape::Entity
   expose :project_id
   expose :relative_position
   expose :time_estimate
-  expose :closed do |issue|
-    issue.closed?
-  end
+  expose :closed, &:closed?
 
   expose :project do |issue|
     API::Entities::Project.represent issue.project, only: [:id, :path, :path_with_namespace]

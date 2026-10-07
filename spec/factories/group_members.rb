@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :group_member, parent: :member, class: 'GroupMember' do
     access_level { GroupMember::OWNER }
-    source { association(:group) }
+    source { @overrides[:group] || association(:group) }
     member_namespace_id { source.id }
     user
 

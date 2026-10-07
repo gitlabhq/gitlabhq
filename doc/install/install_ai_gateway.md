@@ -3,7 +3,7 @@ stage: AI Platform
 group: AI Core Infra
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Gateway between GitLab and large language models.
-title: Install the GitLab AI Gateway
+title: Install the AI Gateway
 ---
 
 The [AI Gateway](../administration/gitlab_duo/gateway.md)
@@ -38,7 +38,7 @@ If these keys are missing, the service cannot sign tokens and requests fail with
 
 ## Install by using Docker
 
-The GitLab AI Gateway Docker image contains all necessary code and dependencies
+The AI Gateway Docker image contains all necessary code and dependencies
 in a single container.
 
 Prerequisites:
@@ -71,7 +71,7 @@ To ensure better performance, especially under heavy usage, consider allocating
 more disk space, memory, and resources than the minimum requirements.
 Higher RAM and disk capacity can enhance the AI Gateway's efficiency during peak loads.
 
-A GPU is not needed for the GitLab AI Gateway.
+A GPU is not needed for the AI Gateway.
 
 ### AI Gateway images
 
@@ -1012,145 +1012,3 @@ The AI Gateway is available in multiple regions globally to ensure optimal perfo
 - Data sovereignty requirements compliance.
 
 You should locate your AI Gateway in the same geographic region as your GitLab instance to help provide a frictionless developer experience, particularly for latency-sensitive features like Code Suggestions.
-
-## Troubleshooting
-
-When working with the AI Gateway, you might encounter the following issues.
-
-### OpenShift permission issues
-
-When deploying the AI Gateway on OpenShift, you might encounter permission errors due to the OpenShift security model.
-
-#### Read-only filesystem at `/tmp`
-
-The AI Gateway needs to write to `/tmp`. However, based on the OpenShift environment, which is security-restricted,
-`/tmp` might be read-only.
-
-To resolve this issue, create a new `EmptyDir` volume and mount it at `/tmp`.
-You can do this in either of the following ways:
-
-- From the command line:
-
-  ```shell
-  oc set volume <object_type>/<name> --add --name=tmpVol --type=emptyDir --mountPoint=/tmp
-  ```
-
-- Added to your `values.yaml`:
-
-  ```yaml
-  volumes:
-  - name: tmp-volume
-    emptyDir: {}
-
-  volumeMounts:
-  - name: tmp-volume
-    mountPath: "/tmp"
-  ```
-
-#### HuggingFace models
-
-By default, the AI Gateway uses `/home/aigateway/.hf` for caching HuggingFace models, which may not be writable in OpenShift's
-security-restricted environment. This can result in permission errors like:
-
-```shell
-[Errno 13] Permission denied: '/home/aigateway/.hf/...'
-```
-
-To resolve this, set the `HF_HOME` environment variable to a writable location. You can use `/var/tmp/huggingface` or any other directory that is writable by the container.
-
-You can configure this in either of the following ways:
-
-- Add to your `values.yaml`:
-
-  ```yaml
-  extraEnvironmentVariables:
-    - name: HF_HOME
-      value: /var/tmp/huggingface  # Use any writable directory
-  ```
-
-- Or include in your Helm upgrade command:
-
-  ```shell
-  --set "extraEnvironmentVariables[0].name=HF_HOME" \
-  --set "extraEnvironmentVariables[0].value=/var/tmp/huggingface"  # Use any writable directory
-  ```
-
-This configuration ensures the AI Gateway can properly cache HuggingFace models while respecting the OpenShift security constraints. The exact directory you choose may depend on your specific OpenShift configuration and security policies.
-
-### Tokenizer cache shadowed by a volume mount
-
-The precached tokenizer files in the AI Gateway image
-might be shadowed by a volume mount if:
-
-- Code completion requests return a `500` error.
-- AI Gateway logs show an `OSError` from `transformers/utils/hub.py`
-  attempting to download `Salesforce/codegen2-16B` from `huggingface.co`.
-
-The self-hosted AI Gateway image (`self-hosted-vX.Y.Z-ee`) sets
-`HF_HUB_OFFLINE=true` and precaches the tokenizer at build time,
-so no network access to `huggingface.co` should occur at runtime.
-If network access occurs, an empty directory in your Helm values
-might be mounted over `/home/aigateway/.hf`, overwriting the cached files.
-
-Do not try to resolve this issue by granting egress access to `huggingface.co`.
-Instead, to diagnose the issue, run the following in the AI Gateway pod:
-
-```shell
-ls -la /home/aigateway/.hf/hub/ 2>/dev/null || echo "NO_CACHE_DIR"
-env | grep -E '^(HF_|TRANSFORMERS_)'
-```
-
-If the cache directory is missing or empty, do the following:
-
-1. Check your `values.yaml` for any `volumeMounts` that target
-   `/home/aigateway/.hf` or the path set by `HF_HOME`.
-1. Remove or remap the mount to a directory that does not overlap
-   with the image's built-in cache.
-
-### Self-signed certificate error
-
-An `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI Gateway
-when the AI Gateway tries to connect to a GitLab instance or model endpoint using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate.
-
-To resolve this, see [Connect to a GitLab instance or model endpoint with a self-signed SSL certificate](#connect-to-a-gitlab-instance-or-model-endpoint-with-a-self-signed-ssl-certificate).
-
-### Token creation failed
-
-If you encounter a `Token creation failed` error when you use features like Duo Chat,
-the `AIGW_SELF_SIGNED_JWT__SIGNING_KEY` and `AIGW_SELF_SIGNED_JWT__VALIDATION_KEY`
-environment variables might not be set on the AI Gateway.
-
-These keys are required for the AI Gateway to issue short-lived user JWTs.
-Without these keys, the AI Gateway cannot sign tokens, which causes a JWK
-deserialization failure.
-
-To resolve this issue:
-
-1. Generate the required keys:
-
-   ```shell
-   openssl genrsa -out aigw_signing.key 2048
-   openssl genrsa -out aigw_validation.key 2048
-   ```
-
-1. Add the keys to your AI Gateway container by passing them as environment variables:
-
-   ```shell
-   -e AIGW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat aigw_signing.key)" \
-   -e AIGW_SELF_SIGNED_JWT__VALIDATION_KEY="$(cat aigw_validation.key)"
-   ```
-
-1. Restart the AI Gateway container.
-
-### SSL certificate errors when loading PEM files
-
-If you get an error that says `JWKError` while loading the PEM file into the Docker container,
-you might need to resolve an SSL certificate error.
-
-To fix this issue, use the following environment variables to set the appropriate
-certificate bundle path in the Docker container:
-
-- `SSL_CERT_FILE=/path/to/ca-bundle.pem`
-- `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
-
-Replace `/path/to/ca-bundle.pem` with the path to your certificate bundle.

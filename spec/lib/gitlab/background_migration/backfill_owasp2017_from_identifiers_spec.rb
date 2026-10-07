@@ -6,7 +6,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOwasp2017FromIdentifiers, fe
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
-  let(:identifiers) { table(:vulnerability_identifiers, database: :sec) }
+  let(:identifiers) { table(:vulnerability_identifiers, primary_key: :id, database: :sec) }
   let(:vulnerability_reads) { table(:vulnerability_reads, database: :sec) }
   let(:scanners) { table(:vulnerability_scanners, database: :sec) }
   let(:findings) { table(:vulnerability_occurrences, database: :sec) }

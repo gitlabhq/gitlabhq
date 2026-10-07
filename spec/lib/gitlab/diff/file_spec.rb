@@ -258,7 +258,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when unfold required' do
       before do
-        allow(unfolder).to receive(:unfold_required?) { true }
+        allow(unfolder).to receive(:unfold_required?).and_return(true)
         allow(unfolder).to receive(:unfolded_diff_lines) { unfolded_lines }
       end
 
@@ -283,7 +283,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when unfold not required' do
       before do
-        allow(unfolder).to receive(:unfold_required?) { false }
+        allow(unfolder).to receive(:unfold_required?).and_return(false)
       end
 
       it 'does not invalidate highlighted diff lines' do

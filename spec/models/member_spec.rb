@@ -1701,7 +1701,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   describe '#refresh_member_authorized_projects' do
-    let_it_be(:member) { create(:group_member) }
+    let_it_be_with_refind(:member) { create(:group_member) }
 
     let(:service) { instance_double(UserProjectAccessChangedService) }
 

@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :custom_emoji, class: 'CustomEmoji' do
     sequence(:name) { |n| "custom_emoji#{n}" }
-    group
+    group { @overrides[:namespace] || association(:group) }
     file { 'https://gitlab.com/images/partyparrot.png' }
     creator factory: :user
   end

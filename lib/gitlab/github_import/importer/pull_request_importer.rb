@@ -132,3 +132,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GithubImport::Importer::PullRequestImporter.prepend_mod

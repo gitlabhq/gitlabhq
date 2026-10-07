@@ -7,6 +7,7 @@
 - Namespaces::FreeUserCap::UsersFinder # Reason: There is no need to have anything else besides the count
 - Groups::EnvironmentScopesFinder # Reason: There is no need to have anything else besides the simple strucutre with the scope name
 - Security::RelatedPipelinesFinder # Reason: There is no need to have anything else besides the IDs of pipelines
+- Security::ProjectsByAttributesFinder # Reason: Callers intersect the IDs in memory with explicit project_id args and pass them to Elasticsearch as a terms filter; the rows also live on the sec DB, so a ProjectToSecurityAttribute relation would be plucked at every call site and cannot be composed with main-DB queries anyway
 - Llm::ExtraResourceFinder # Reason: The finder does not deal with DB-backend resource for now.
 - WorkItems::Statuses::Finder # Reason: The finder intentionally returns a single model instance.
 - Sbom::PathFinder # Reason: we need an [[Sbom::Occurrence]]

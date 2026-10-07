@@ -294,16 +294,16 @@ export const SCAN_PROFILE_I18N = {
     'SecurityProfiles|Only a project maintainer or owner can apply or disable profiles.',
   ),
   noCreatePermission: s__(
-    "SecurityProfiles|You don't have permission to create scan profiles in this group.",
+    'SecurityProfiles|To create scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group.',
   ),
   noUpdatePermission: s__(
-    "SecurityProfiles|You don't have permission to edit scan profiles in this group.",
+    'SecurityProfiles|To edit scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group.',
   ),
   noDeletePermission: s__(
-    "SecurityProfiles|You don't have permission to delete scan profiles in this group.",
+    'SecurityProfiles|To delete scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group.',
   ),
   noManagePermission: s__(
-    "SecurityProfiles|You don't have permission to edit or delete scan profiles in this group.",
+    'SecurityProfiles|To edit or delete scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group.',
   ),
 };
 export const SCAN_PROFILE_STATUS_APPLIED = 'enabled';

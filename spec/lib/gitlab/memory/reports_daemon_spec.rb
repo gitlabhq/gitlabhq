@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
   describe '#run_thread' do
     before do
       # make sleep no-op
-      allow(daemon).to receive(:sleep) {}
+      allow(daemon).to receive(:sleep).and_return(nil)
 
       # let alive return 3 times: true, true, false
       allow(daemon).to receive(:alive).and_return(true, true, false)

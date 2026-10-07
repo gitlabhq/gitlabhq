@@ -543,7 +543,7 @@ Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Find code visible to the
 | `excludeForks` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Excludes forked projects in the search. Always false for project search. Default is true. | `true` |
 | `groupId` | [`GroupID`](scalars.md#groupid) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Group to search in. |  |
 | `includeArchived` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Includes archived projects in the search. Always true for project search. Default is false. | `false` |
-| `language` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Filter results to the given detected languages (for example, `["Ruby", "Go"]`). Requires the `zoekt_language_aggregations` feature flag. |  |
+| `language` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Filter results to the given detected languages (for example, `["Ruby", "Go"]`). |  |
 | `page` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Page number to fetch the results. | `1` |
 | `perPage` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Number of results per page. | `20` |
 | `projectId` | [`ProjectID`](scalars.md#projectid) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Project to search in. |  |

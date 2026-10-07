@@ -12,14 +12,13 @@ RSpec.describe Gitlab::RelativePositioning::Range do
   unpositioned_2 = position_struct.new(nil, :unpos2, false)
 
   before do
-    allow(item_a).to receive(:lhs_neighbour) { nil }
+    allow(item_a).to receive(:lhs_neighbour).and_return(nil)
     allow(item_a).to receive(:rhs_neighbour) { item_b }
 
     allow(item_b).to receive(:lhs_neighbour) { item_a }
-    allow(item_b).to receive(:rhs_neighbour) { nil }
+    allow(item_b).to receive(:rhs_neighbour).and_return(nil)
 
-    allow(unpositioned).to receive(:lhs_neighbour) { nil }
-    allow(unpositioned).to receive(:rhs_neighbour) { nil }
+    allow(unpositioned).to receive_messages(lhs_neighbour: nil, rhs_neighbour: nil)
   end
 
   describe 'RelativePositioning.range' do

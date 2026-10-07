@@ -6,35 +6,6 @@ module Gitlab
       module LegacyValidationHelpers
         private
 
-        def validate_duration(value, parser = nil)
-          return false unless value.is_a?(String)
-
-          if parser && parser.respond_to?(:validate_duration)
-            parser.validate_duration(value)
-          else
-            ChronicDuration.parse(value)
-          end
-        rescue ChronicDuration::DurationParseError
-          false
-        end
-
-        def validate_duration_limit(value, limit, parser = nil)
-          return false unless value.is_a?(String)
-
-          if parser && parser.respond_to?(:validate_duration_limit)
-            parser.validate_duration_limit(value, limit)
-          else
-            parsed_value = ChronicDuration.parse(value)
-            parsed_limit = ChronicDuration.parse(limit)
-
-            return false if parsed_value.nil? || parsed_limit.nil?
-
-            parsed_value.second.from_now < parsed_limit.second.from_now
-          end
-        rescue ChronicDuration::DurationParseError
-          false
-        end
-
         def validate_array_of_strings(values)
           values.is_a?(Array) && values.all? { |value| validate_string(value) }
         end

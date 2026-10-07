@@ -1,6 +1,6 @@
 ---
-stage: Tenant Scale
-group: Tenant Services
+stage: Async
+group: Async
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure an external Sidekiq instance
 description: Configure an external Sidekiq instance.

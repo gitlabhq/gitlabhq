@@ -321,6 +321,8 @@ export default [
       // Dependency rules are enfoced by `config/dependency_cruiser.mjs`
       // It is more accurate and faster than the ESLint rule.
       'import-x/no-cycle': 'off',
+      // This rule is slow, use no-restricted-imports or no-restricted-properties instead.
+      'import-x/no-deprecated': 'off',
 
       'no-underscore-dangle': [
         'error',

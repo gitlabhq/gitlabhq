@@ -212,6 +212,11 @@ To add a self-hosted model:
    - **Model family**: Select the model family the deployment belongs to. You can select either a supported or compatible model.
    - **Endpoint**: Enter the URL where the model is hosted.
    - **API key**: Optional. Add an API key if you need one to access the model.
+   - **IAM role to assume**: Optional. Enter the ARN of an IAM role
+     the AI Gateway assumes to call Amazon Bedrock.
+     The role's trust policy must require your GitLab instance ID as `sts:ExternalId`.
+     You cannot combine an IAM role with an API key.
+     For more information, see [assume an IAM role with AWS Bedrock](supported_llm_serving_platforms.md#assume-an-iam-role-with-aws-bedrock).
    - **Model identifier**: Enter the model identifier based on your deployment method. The model identifier should match the following format:
 
      | Deployment method | Format | Example |

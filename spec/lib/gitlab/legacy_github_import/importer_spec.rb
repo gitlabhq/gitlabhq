@@ -566,8 +566,8 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
 
     describe '#clean_up_restored_branches' do
       before do
-        allow(gh_pull_request).to receive(:source_branch_exists?).at_least(:once) { false }
-        allow(gh_pull_request).to receive(:target_branch_exists?).at_least(:once) { false }
+        allow(gh_pull_request).to receive(:source_branch_exists?).at_least(:once).and_return(false)
+        allow(gh_pull_request).to receive(:target_branch_exists?).at_least(:once).and_return(false)
       end
 
       context 'when pull request stills open' do

@@ -494,7 +494,7 @@ module Gitlab
       return { deadline: regular_deadline } unless Gitlab::RequestContext.instance.request_deadline
 
       limited_deadline = [regular_deadline, Gitlab::RequestContext.instance.request_deadline].compact.min
-      limited = limited_deadline < regular_deadline
+      limited = regular_deadline.nil? || limited_deadline < regular_deadline
 
       { deadline: limited_deadline, deadline_type: limited ? "limited" : "regular" }
     end

@@ -148,7 +148,6 @@ module Types
     field :mergeability_checks, [::Types::MergeRequests::MergeabilityCheckType],
       null: false,
       description: 'Status of all mergeability checks of the merge request.',
-      method: :all_mergeability_checks_results,
       experiment: { milestone: '16.5' },
       calls_gitaly: true
 
@@ -456,8 +455,20 @@ module Types
       object.merge_schedule&.merge_after
     end
 
+    def mergeability_checks
+      @mergeability_checks_results = object.all_mergeability_checks_results
+    end
+
+    # Resolved lazily so that `mergeability_checks`, which is eager, always runs
+    # first when a query selects both and its results can be reused here,
+    # whatever order the two fields appear in the document.
     def detailed_merge_status
-      ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: object).execute
+      ::Gitlab::Graphql::Lazy.new do
+        ::MergeRequests::Mergeability::DetailedMergeStatusService.new(
+          merge_request: object,
+          precomputed_results: @mergeability_checks_results
+        ).execute
+      end
     end
 
     # This is temporary to fix a bug where `committers` is already loaded and memoized

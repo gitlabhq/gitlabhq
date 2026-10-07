@@ -9,7 +9,6 @@ import {
   getLineChange,
   getLineCode,
   getLineNumbers,
-  getNewLineRangeContent,
   isRangeBoundary,
 } from '~/rapid_diffs/utils/line_utils';
 import {
@@ -117,8 +116,7 @@ export function initLineRangeEditing(appElement, store = useMergeRequestDiscussi
     const [oldLine, newLine] = getLineNumbers(endRow);
     const lineChange = getLineChange(gutterCell(endRow, side));
     const lineCode = getLineCode({ id: diffFile.id, row: endRow, oldLine, newLine });
-    const lines = getNewLineRangeContent(diffElement, lineRange, lineChange.position);
-    store.commitLineRangeEditing({ lineChange, lineCode, lines });
+    store.commitLineRangeEditing({ lineChange, lineCode });
   }
 
   function onDragStart(event) {

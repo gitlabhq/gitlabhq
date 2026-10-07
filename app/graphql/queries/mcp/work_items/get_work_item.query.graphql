@@ -1,4 +1,6 @@
 # @feature_category: mcp_server
+#import "./work_item_edition_widgets.fragment.graphql"
+
 query getWorkItem(
   $id: WorkItemID!
   $includeNotes: Boolean = false
@@ -38,6 +40,7 @@ query getWorkItem(
     }
     widgets {
       type
+      ...WorkItemEditionWidgets
       ... on WorkItemWidgetAssignees {
         assignees {
           nodes {

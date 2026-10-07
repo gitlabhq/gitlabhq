@@ -1,4 +1,6 @@
 # @feature_category: mcp_server
+#import "./merge_request_edition_fields.fragment.graphql"
+
 query getMergeRequest(
   $fullPath: ID!
   $iid: String!
@@ -60,6 +62,7 @@ query getMergeRequest(
           name
         }
       }
+      ...MergeRequestEditionFields
       diffStatsSummary @include(if: $includeDiffs) {
         additions
         deletions

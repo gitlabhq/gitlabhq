@@ -33,9 +33,7 @@ class DraftNoteEntity < Grape::Entity
       can?(current_user, :admin_note, note)
     end
 
-    expose :can_award_emoji do |note|
-      note.emoji_awardable?
-    end
+    expose :can_award_emoji, &:emoji_awardable?
 
     expose :can_resolve do |note|
       note.resolvable? && can?(current_user, :resolve_note, note)

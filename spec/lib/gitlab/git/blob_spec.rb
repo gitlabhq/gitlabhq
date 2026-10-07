@@ -556,7 +556,7 @@ RSpec.describe Gitlab::Git::Blob, feature_category: :source_code_management do
       it 'successfully splits the data' do
         data = "test\nblob"
         blob = described_class.new(name: 'test', size: data.bytesize, data: data)
-        expect(blob).to receive(:ruby_encoding) { nil }
+        expect(blob).to receive(:ruby_encoding).and_return(nil)
 
         expect(blob.lines).to eq(data.split("\n"))
       end

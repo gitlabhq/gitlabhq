@@ -5,9 +5,7 @@ class ProjectNoteEntity < NoteEntity
     note.project.team.human_max_access(note.author_id)
   end
 
-  expose :is_contributor, if: ->(note, _) { note.project.present? } do |note|
-    note.contributor?
-  end
+  expose :is_contributor, if: ->(note, _) { note.project.present? }, &:contributor?
 
   expose :project_name, if: ->(note, _) { note.project.present? } do |note|
     note.project.name

@@ -21,7 +21,7 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
       allow(client).to receive(:execute) {
         instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {})
       }
-      allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?) { true }
+      allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
     end
 
     def expect_call_details_to_match(duration_higher_than: 0)

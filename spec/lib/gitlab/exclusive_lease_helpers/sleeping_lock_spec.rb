@@ -101,8 +101,8 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers::SleepingLock, :clean_gitlab_redis_
       context 'when lease is granted after retry' do
         it 'knows that it retried' do
           expect(subject).to receive(:sleep).with(delay).exactly(3).times
-          expect(lease).to receive(:try_obtain).exactly(3).times { nil }
-          expect(lease).to receive(:try_obtain).once { 'obtained' }
+          expect(lease).to receive(:try_obtain).exactly(3).times.and_return(nil)
+          expect(lease).to receive(:try_obtain).once.and_return('obtained')
 
           subject.obtain(max_attempts)
 

@@ -66,6 +66,10 @@ RSpec.describe 'ClickHouse siphon tables', feature_category: :database do
       }
     end
 
+    # dedup_by may be a leading prefix of the PG primary key while a composite primary key swap rolls out:
+    # DELETE events emitted before the swap only carry the old key columns.
+    let(:dedup_by_pk_prefix_allowed) { %w[vulnerability_identifiers] }
+
     Dir[Rails.root.join("db/siphon/tables/*.yml")].each do |file|
       it "has correct configuration for #{File.basename(file, '.yml')}", :aggregate_failures do
         content = YAML.safe_load_file(file)
@@ -82,7 +86,9 @@ RSpec.describe 'ClickHouse siphon tables', feature_category: :database do
           "none of #{pg_table_candidates(content).join(', ')} exist in PostgreSQL"
         next unless pg_table
 
-        expect(content).to have_correct_replication_target(clickhouse_table_names, pg_table)
+        expect(content).to have_correct_replication_target(
+          clickhouse_table_names, pg_table, dedup_by_pk_prefix_allowed.include?(table)
+        )
 
         # Partitions have no db/docs entry of their own, the parent table's config covers these checks
         next unless schema_for(content) == 'public'
@@ -93,6 +99,26 @@ RSpec.describe 'ClickHouse siphon tables', feature_category: :database do
         expect(content).to ignore_sensitive_and_encrypted_columns(table_config, skip_ignore_columns[table])
         expect(content).to have_correct_reconcile_config(table_config)
       end
+    end
+  end
+
+  describe 'deduplication during a primary key transition' do
+    let(:content) { YAML.safe_load_file(Rails.root.join('db/siphon/tables/vulnerability_identifiers.yml')) }
+    let(:pg_table) { 'public.vulnerability_identifiers' }
+    let(:clickhouse_table_names) { ch_table_names.to_set }
+
+    it 'allows the old primary key when the prefix exception is enabled' do
+      expect(content).to have_correct_replication_target(clickhouse_table_names, pg_table, true)
+    end
+
+    it 'requires the complete primary key by default' do
+      expect(content).not_to have_correct_replication_target(clickhouse_table_names, pg_table)
+    end
+
+    it 'rejects columns that are not a leading prefix even when the exception is enabled' do
+      content['replication_targets'].first['dedup_by'] = ['partition_id']
+
+      expect(content).not_to have_correct_replication_target(clickhouse_table_names, pg_table, true)
     end
   end
 

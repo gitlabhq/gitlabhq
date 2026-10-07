@@ -11,6 +11,8 @@ import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
 import { DATE_RANGE_OPTION_LAST_30_DAYS, SCOPE_FILTER_QUERY_NAME } from '../components/constants';
+import { EVENT_VIEW_DASHBOARD, trackDashboardEvent } from '../tracking';
+import { isSystemDashboardSlug } from '../utils';
 import {
   dateRangeFilterFromQuery,
   dateRangeFilterToQueryParams,
@@ -111,7 +113,13 @@ export default {
       this.$nextTick(() => {
         this.switchingViews = false;
       });
+
+      if (this.hasNamespace) this.trackDashboardView();
     },
+  },
+  created() {
+    // Not reactive: only the tracking reads it.
+    this.dashboardConfig = null;
   },
   // createAlert renders into the global flash container, which outlives this page, so an alert
   // raised here would otherwise follow the user to the next dashboard.
@@ -122,6 +130,7 @@ export default {
     // Set the active tab from the `view` query param on load. Default to the
     // first view if the query param wasn't included, or has an invalid index.
     onDashboardLoaded({ config }) {
+      this.dashboardConfig = config;
       this.dashboardFilterConfig = config.filters;
       this.filters = this.initialDateRangeFilter();
 
@@ -200,6 +209,20 @@ export default {
 
       this.scopePaths = namespaces.map(({ fullPath }) => fullPath);
       this.syncScopeToUrl(this.scopePaths);
+
+      if (this.hasNamespace) this.trackDashboardView();
+    },
+    // System dashboards are routed by slug. Custom dashboards are routed by ID and their view
+    // titles are user-written, so neither is sent.
+    trackDashboardView() {
+      const slug = this.$route?.params.slug ?? '';
+      const isCustom = !isSystemDashboardSlug(slug);
+      const viewTitle = this.dashboardConfig?.views?.[this.activeViewIndex]?.title ?? '';
+
+      trackDashboardEvent(EVENT_VIEW_DASHBOARD, this.selectedNamespaces, {
+        label: isCustom ? 'custom' : slug,
+        property: isCustom ? '' : viewTitle,
+      });
     },
     pathsOfType(type) {
       return this.selectedNamespaces

@@ -8,6 +8,7 @@ import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking
 import { COMMENT_FORM } from '~/notes/i18n';
 import { createAlert } from '~/alert';
 import { getNoteFormErrorMessages } from '~/notes/utils';
+import { CODE_SUGGESTIONS_OFF } from '~/rapid_diffs/utils/code_suggestions';
 
 export default {
   name: 'NoteForm',
@@ -26,6 +27,9 @@ export default {
     },
     noteableType: {
       type: String,
+    },
+    codeSuggestions: {
+      default: null,
     },
   },
   props: {
@@ -88,11 +92,6 @@ export default {
       required: false,
       default: false,
     },
-    codeSuggestionsConfig: {
-      type: Object,
-      required: false,
-      default: () => ({ lines: [], lineType: '', canSuggest: false, showPopover: false }),
-    },
     saveNoteErrorMessages: {
       type: Object,
       required: false,
@@ -121,6 +120,9 @@ export default {
     };
   },
   computed: {
+    codeSuggestionsConfig() {
+      return this.codeSuggestions?.() ?? CODE_SUGGESTIONS_OFF;
+    },
     renderMarkdownPath() {
       const { previewParams } = this.codeSuggestionsConfig;
       if (!previewParams) return this.endpoints.previewMarkdown;

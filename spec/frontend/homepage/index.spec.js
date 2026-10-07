@@ -26,12 +26,7 @@ describe('Homepage index', () => {
     setHTMLFixture(`
       <div
         id="js-homepage-app"
-        data-review-requested-path="/review/requested"
         data-activity-path="/activity"
-        data-assigned-merge-requests-path="/assigned/merge-requests"
-        data-assigned-work-items-path="/assigned/work-items"
-        data-authored-work-items-path="/authored/work-items"
-        data-duo-code-review-bot-username="GitLabDuo"
         data-last-push-event='{"branch_name": "feature-branch", "project": {"name": "Test Project", "web_url": "/test-project"}, "created_at": "2023-01-01T00:00:00Z", "create_mr_path": "/create-mr"}'
       ></div>
     `);
@@ -50,17 +45,10 @@ describe('Homepage index', () => {
       expect(initVueApp).toHaveBeenCalledWith({
         el: mockElement,
         name: 'HomepageAppRoot',
-        provide: {
-          duoCodeReviewBotUsername: 'GitLabDuo',
-        },
         apolloProvider: expect.any(Object),
         component: HomepageApp,
         props: {
-          reviewRequestedPath: '/review/requested',
           activityPath: '/activity',
-          assignedMergeRequestsPath: '/assigned/merge-requests',
-          assignedWorkItemsPath: '/assigned/work-items',
-          authoredWorkItemsPath: '/authored/work-items',
           lastPushEvent: {
             branch_name: 'feature-branch',
             project: { name: 'Test Project', web_url: '/test-project' },

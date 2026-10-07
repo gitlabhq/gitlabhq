@@ -572,12 +572,11 @@ Instead, you can use `stub_method` to stub the method:
 
 #### Stubbing member access level
 
-When building membership records, pass the target as `source:`:
-`build_stubbed(:project_member, source: project, user: user)` or
-`build_stubbed(:group_member, source: group, user: user)`.
-The factories define a `source` association.
-Passing `project:` or `group:` does not override that factory association and can build
-an additional project or group.
+When building membership records, pass the target as `project:` or `group:`:
+`build_stubbed(:project_member, project: project, user: user)` or
+`build_stubbed(:group_member, group: group, user: user)`.
+The factories use the given record as the member's `source`.
+They do not build an additional project or group.
 
 To stub [member access level](../../user/permissions.md#roles) for factory stubs like `Project` or `Group` use
 [`stub_member_access_level`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/stub_member_access_level.rb):
@@ -2771,6 +2770,23 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
   database, keep the ID attribute.
   For this example, passing `organization_id:` skips the `organization` default
   because FactoryBot treats the names as aliases.
+- When a model exposes one relation under two names, make the default honor both names.
+  FactoryBot does not know that `namespace` is another name for `group`.
+  If the factory defines only `group { association(:group) }`,
+  `create(:custom_emoji, namespace: group)` builds an unused group and then replaces it.
+  Read the other name from `@overrides` in the default:
+
+  ```ruby
+  factory :custom_emoji do
+    group { @overrides[:namespace] || association(:group) }
+  end
+  ```
+
+- A default association can build its own parent.
+  Pass the parent from the record instead.
+  Otherwise, each call creates an unrelated project or namespace with its own owner.
+  For example, use `dependency { association(:packages_dependency, project: package.project) }`.
+  To forward a value only when the caller passed it, use `@overrides.slice(:project).compact`.
 - When you change how a factory sets up associations, check each supported build strategy and explicit overrides.
   Existing specs might exercise only `create` or the default associations.
   Verify that:

@@ -163,7 +163,10 @@ When enabled for a specific feature:
 
 ## Hardware requirements
 
-The following hardware specifications are the minimum requirements for running GitLab Duo Self-Hosted on-premise. Requirements vary significantly based on the model size and intended usage:
+The following hardware specifications are the minimum requirements for running GitLab Duo Self-Hosted.
+Requirements vary significantly based on the model size and intended usage.
+
+For the hardware requirements for the AI Gateway, see [scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).
 
 ### Base system requirements
 
@@ -227,7 +230,3 @@ With a `a2-ultragpu-8g` (8 x NVIDIA A100 80 GB - 1360 GB vRAM) machine on GCP or
 | Mixtral-8x22B-Instruct-v0.1 | 1                  | 14.39                        | 828.0                      | 57.56                                 | 14.38                       | 57.55     |
 | Mixtral-8x22B-Instruct-v0.1 | 10                 | 20.57                        | 629.7                      | 30.24                                 | 28.02                       | 224.71    |
 | Mixtral-8x22B-Instruct-v0.1 | 100                | 27.58                        | 592.49                     | 21.34                                 | 36.80                       | 1609.85   |
-
-### AI Gateway Hardware Requirements
-
-For recommendations on AI Gateway hardware, see the [AI Gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).

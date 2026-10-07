@@ -60,6 +60,12 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       expect(operation).to be_frozen
     end
 
+    it 'appends the fragments the query imports' do
+      operation = described_class.load_graphql('work_items/get_work_item.query.graphql')
+
+      expect(operation).to include('query getWorkItem(', 'fragment WorkItemEditionWidgets on WorkItemWidget')
+    end
+
     it 'raises Errno::ENOENT for a missing path' do
       expect { described_class.load_graphql('notes/does_not_exist.query.graphql') }
         .to raise_error(Errno::ENOENT)

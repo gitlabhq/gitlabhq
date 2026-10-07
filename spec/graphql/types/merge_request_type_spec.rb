@@ -365,6 +365,65 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
     end
   end
 
+  describe 'mergeability_checks and detailed_merge_status' do
+    subject(:execute_query) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:current_user) { create(:admin) }
+
+    let(:fields) do
+      %(
+        mergeabilityChecks {
+          identifier
+          status
+        }
+        detailedMergeStatus
+      )
+    end
+
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequest(iid: "#{merge_request.iid}") {
+              #{fields}
+            }
+          }
+        }
+      )
+    end
+
+    shared_examples 'a single mergeability run' do
+      it 'runs the mergeability checks once for both fields' do
+        expect_next_found_instance_of(MergeRequest) do |instance|
+          expect(instance).to receive(:execute_merge_checks).once.and_call_original
+        end
+
+        merge_request_data = execute_query.dig('data', 'project', 'mergeRequest')
+
+        expect(merge_request_data['detailedMergeStatus']).to eq('MERGEABLE')
+        expect(merge_request_data['mergeabilityChecks']).to be_present
+      end
+    end
+
+    it_behaves_like 'a single mergeability run'
+
+    context 'when detailedMergeStatus is selected first' do
+      let(:fields) do
+        %(
+          detailedMergeStatus
+          mergeabilityChecks {
+            identifier
+            status
+          }
+        )
+      end
+
+      it_behaves_like 'a single mergeability run'
+    end
+  end
+
   describe 'fields with :ai_workflows scope' do
     it 'includes :ai_workflows scope for the applicable fields' do
       state_field = described_class.fields['state']

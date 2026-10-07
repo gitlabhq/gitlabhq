@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-# Requires a context containing:
-#   wiki
-#   user
+require 'spec_helper'
 
-RSpec.shared_examples 'User previews wiki changes' do
+RSpec.describe 'Project wiki > User previews wiki changes', :js, feature_category: :wiki do
+  let_it_be(:user) { create(:user) }
+
+  let(:project) { create(:project, namespace: user.namespace, creator: user) }
+  let(:wiki) { create(:project_wiki, user: user, project: project) }
+
   let(:wiki_page) { build(:wiki_page, wiki: wiki) }
 
   before do
@@ -29,8 +32,8 @@ RSpec.shared_examples 'User previews wiki changes' do
 
     shared_examples "rewrites relative links" do
       specify do
-        expect(element).to have_link('regular link',    href: wiki.wiki_base_path + '/regular')
-        expect(element).to have_link('spaced link',     href: wiki.wiki_base_path + '/title%20with%20spaces')
+        expect(element).to have_link('regular link',    href: "#{wiki.wiki_base_path}/regular")
+        expect(element).to have_link('spaced link',     href: "#{wiki.wiki_base_path}/title%20with%20spaces")
 
         expect(element).to have_link('relative link 1', href: relative_path('../relative'))
         expect(element).to have_link('relative link 2', href: relative_path('./relative'))
@@ -59,12 +62,12 @@ RSpec.shared_examples 'User previews wiki changes' do
 
   context "when rendering a new wiki page", :js do
     before do
-      wiki_page.create # rubocop:disable Rails/SaveBang
+      wiki_page.create # rubocop:disable Rails/SaveBang -- Wiki::Page does not define create!
       visit wiki_page_path(wiki, wiki_page)
     end
 
     it_behaves_like 'relative links' do
-      let(:element) { page.find('[data-testid="wiki-page-content"]') }
+      let(:element) { find_by_testid('wiki-page-content') }
     end
   end
 
@@ -72,7 +75,7 @@ RSpec.shared_examples 'User previews wiki changes' do
     let(:preview) { page.find('.md-preview-holder') }
 
     before do
-      wiki_page.create # rubocop:disable Rails/SaveBang
+      wiki_page.create # rubocop:disable Rails/SaveBang -- Wiki::Page does not define create!
       visit wiki_page_path(wiki, wiki_page, action: :show, edit: 'true')
     end
 

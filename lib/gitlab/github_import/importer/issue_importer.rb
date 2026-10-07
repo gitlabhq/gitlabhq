@@ -97,3 +97,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GithubImport::Importer::IssueImporter.prepend_mod

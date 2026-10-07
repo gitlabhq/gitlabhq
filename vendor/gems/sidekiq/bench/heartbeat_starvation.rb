@@ -27,7 +27,7 @@
 # relative improvement and providing a reproducible harness for affected users.
 #
 # Usage:
-#   ruby test/stress/heartbeat_starvation_test.rb
+#   ruby bench/heartbeat_starvation.rb
 #
 # Requires Redis on localhost:6379 (or set REDIS_URL env var).
 # Set CONCURRENCY env var to override the default of 20.
@@ -35,7 +35,7 @@
 # See: https://gitlab.com/gitlab-org/gitlab/-/issues/594030
 # See: https://bugs.ruby-lang.org/issues/20816
 
-$LOAD_PATH.unshift File.join(__dir__, "../../lib")
+$LOAD_PATH.unshift File.join(__dir__, "../lib")
 
 require "logger"
 require "sidekiq"

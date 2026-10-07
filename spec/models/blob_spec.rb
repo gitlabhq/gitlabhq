@@ -234,7 +234,7 @@ RSpec.describe Blob, feature_category: :source_code_management do
       let(:blob) { fake_blob(path: 'anything', container: project) }
 
       it 'delegates to binary_in_repo?' do
-        expect(blob).to receive(:binary_in_repo?) { :result }
+        expect(blob).to receive(:binary_in_repo?).and_return(:result)
 
         expect(blob.binary?).to eq(:result)
       end

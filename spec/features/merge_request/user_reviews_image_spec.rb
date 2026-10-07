@@ -20,16 +20,6 @@ RSpec.describe 'Merge request > image review', :js, feature_category: :code_revi
     wait_for_requests
   end
 
-  it 'creates an image comment' do
-    click_button 'Add image comment', match: :first
-
-    find_by_testid('reply-field').set('image diff test comment')
-    click_button 'Add comment now'
-
-    expect(page).to have_testid('image-comment-badge')
-    expect(page).to have_content('image diff test comment')
-  end
-
   it 'leaves review' do
     click_button 'Add image comment', match: :first
 

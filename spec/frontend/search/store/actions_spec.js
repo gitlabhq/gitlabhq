@@ -339,7 +339,7 @@ describe('Global Search Store Actions', () => {
             payload,
             { ...state, ...getters },
             [{ type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } }],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
         });
       });
@@ -360,7 +360,7 @@ describe('Global Search Store Actions', () => {
               { type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } },
               { type: types.SET_QUERY, payload: { key: 'page', value: 1 } },
             ],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
         });
       });
@@ -378,7 +378,7 @@ describe('Global Search Store Actions', () => {
             payload,
             { ...state, ...getters },
             [{ type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } }],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
 
           expect(updateHistory).toHaveBeenCalled();
@@ -402,7 +402,7 @@ describe('Global Search Store Actions', () => {
               { type: types.SET_QUERY, payload: { key: 'search', value: 'new-search' } },
               { type: types.SET_QUERY, payload: { key: 'page', value: 1 } },
             ],
-            [{ type: 'fetchSidebarCount' }],
+            [{ type: 'fetchSidebarCount' }, { type: 'fetchAllAggregation' }],
           );
         });
       });
@@ -672,7 +672,6 @@ describe('Global Search Store Actions', () => {
       state = createState({
         query: MOCK_QUERY,
         searchType: 'zoekt',
-        zoektLanguageAggregationsEnabled: true,
       });
     });
 
@@ -707,7 +706,6 @@ describe('Global Search Store Actions', () => {
       state = createState({
         query: MOCK_QUERY,
         searchType: 'advanced',
-        zoektLanguageAggregationsEnabled: false,
       });
     });
 
@@ -728,7 +726,6 @@ describe('Global Search Store Actions', () => {
       state = createState({
         query: { ...MOCK_QUERY, search: 'foo' },
         searchType: 'zoekt',
-        zoektLanguageAggregationsEnabled: true,
       });
       setWindowLocation('https://gdk.test/search?scope=blobs&search=foo');
       urlUtils.updateHistory.mockClear();

@@ -13,6 +13,7 @@ import { createAlert } from '~/alert';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { COMMENT_FORM } from '~/notes/i18n';
 import { clearDraft } from '~/lib/utils/autosave';
+import { CODE_SUGGESTIONS_OFF } from '~/rapid_diffs/utils/code_suggestions';
 
 jest.mock('~/vue_shared/components/markdown/tracking');
 jest.mock('~/lib/utils/autosave');
@@ -38,7 +39,7 @@ describe('NoteForm', () => {
         ...defaultProps,
         ...props,
       },
-      provide: merge(defaultProvisions, provide),
+      provide: merge({}, defaultProvisions, provide),
       stubs: { GlSprintf, GlLink, ...stubs },
     });
   };
@@ -107,11 +108,32 @@ describe('NoteForm', () => {
         line: 5,
         file_path: 'app/models/user.rb',
       };
-      createComponent({ codeSuggestionsConfig: { previewParams } });
+      createComponent({}, { codeSuggestions: () => ({ ...CODE_SUGGESTIONS_OFF, previewParams }) });
       const path = findEditor().props('renderMarkdownPath');
       expect(path).toContain('preview_suggestions=true');
       expect(path).toContain('line=5');
       expect(path).toContain('file_path=app%2Fmodels%2Fuser.rb');
+    });
+  });
+
+  describe('code suggestions', () => {
+    it('passes the suggestions config provided by the thread to the editor', () => {
+      const config = { ...CODE_SUGGESTIONS_OFF, canSuggest: true, lines: ['const a = 1;'] };
+      createComponent({}, { codeSuggestions: () => config });
+
+      expect(findEditor().props('codeSuggestionsConfig')).toEqual(config);
+    });
+
+    it('turns suggestions off when no thread provides them', () => {
+      createComponent();
+
+      expect(findEditor().props('codeSuggestionsConfig')).toEqual(CODE_SUGGESTIONS_OFF);
+    });
+
+    it('turns suggestions off when the thread resolves none', () => {
+      createComponent({}, { codeSuggestions: () => undefined });
+
+      expect(findEditor().props('codeSuggestionsConfig')).toEqual(CODE_SUGGESTIONS_OFF);
     });
   });
 

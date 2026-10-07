@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.19.0
+version: 1.20.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -86,9 +86,13 @@ Rules for the file:
 - **Verb-first operation name** to match `app/graphql/queries` (`getMergeRequestNotes`,
   `createNote` — not `MergeRequestNotes`).
 - **Load with the direct `load_graphql(...)` form, not a lambda.** `-> { load_graphql(...) }`
-  rereads the file every request. The one exception is an operation *composed at load
-  time* (e.g. a query built from EE-overridden fragments) — build it in a method and
-  reference it with a lambda (`graphql_operation: -> { build_query }`).
+  rereads the file every request. The one exception is an operation *built in Ruby* by a
+  class that EE prepends (`WorkItemsQueryBuilder`) — build it in a method and reference it
+  with a lambda (`graphql_operation: -> { build_query }`).
+- **EE-only fields go in a fragment, not a copy of the query.** Spread a fragment imported
+  with `#import "./<name>.fragment.graphql"` and add a file with the same name under
+  `ee/app/graphql/queries/mcp/`; `load_graphql` reads it in place of the CE one (see
+  `merge_requests/get_merge_request.query.graphql`).
 
 ## Tool naming and consolidation conventions (!245400)
 
@@ -237,8 +241,8 @@ a convention (non-standard verb, second write tool on one resource).
   string/HEREDOC as `graphql_operation:`; use a `.graphql` file via `load_graphql`.
 - **Missing `# @feature_category:` → lint failure.** Every `.graphql` file needs it as
   the first line (`graphql_require_feature_category`).
-- **`load_graphql` in a lambda rereads the file per request.** Use the direct form; a
-  method + lambda is only for an operation composed at load time (EE fragments).
+- **`load_graphql` in a lambda rereads the file per request.** Use the direct form, EE
+  fragments included; a method + lambda is only for an operation built in Ruby.
 - **Don't hand-set `additionalProperties`.** `SchemaDefaults` applies `false`
   automatically (!243352); setting it manually is redundant and will be flagged.
 - **`readOnlyHint` changes behavior, not just docs.** The pre-approved tool list is

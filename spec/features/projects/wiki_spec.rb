@@ -17,7 +17,6 @@ RSpec.describe 'Project wikis', feature_category: :wiki do
     end
 
     it_behaves_like 'User deletes wiki page'
-    it_behaves_like 'User previews wiki changes'
     it_behaves_like 'User updates wiki page'
     it_behaves_like 'User uses wiki shortcuts'
     it_behaves_like 'User views a wiki page'

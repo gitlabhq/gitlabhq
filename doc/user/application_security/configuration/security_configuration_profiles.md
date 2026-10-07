@@ -23,6 +23,7 @@ title: Managing security configuration profiles
 - Feature flag `security_scan_profiles_feature` removed in GitLab 19.4.
 - Feature flag `security_remediation_profiles` removed in GitLab 19.4.
 - SAST scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617070) in GitLab 19.4 as an [experiment](../../../policy/development_stages_support.md), available through the GraphQL API only.
+- Dependency scanning scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/629403) in GitLab 19.5 as an [experiment](../../../policy/development_stages_support.md#experiment), available through the GraphQL API only.
 
 {{< /history >}}
 
@@ -413,6 +414,94 @@ For a SAST profile, that member is `sast`.
 
 By default, the `stripDefaults` argument removes trigger configuration values that match the
 defaults before storing the profile, so only your overrides are persisted.
+
+For the full list of arguments, see the
+[`securityScanProfileCreate` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofilecreate).
+
+## Customize a dependency scanning profile
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+Customize a dependency scanning profile to override the configuration the scanner uses when it runs.
+Each setting maps to an existing [dependency scanning CI/CD variable](../dependency_scanning/dependency_scanning_sbom/_index.md).
+
+This feature is available through the GraphQL API only.
+
+Prerequisites:
+
+- The Security Manager, Maintainer, or Owner role for the top-level group.
+
+To customize a dependency scanning profile:
+
+- In the `securityScanProfileCreate` or `securityScanProfileUpdate` mutation, set a `configuration.dependencyScanning` object on each trigger you want to customize.
+
+The `dependencyScanning` object supports the following fields:
+
+| Field | Description | Equivalent CI/CD variable |
+| ----- | ----------- | ------------------------- |
+| `secureAnalyzersPrefix` | Prefix for the container registry the analyzer image is pulled from. | `SECURE_ANALYZERS_PREFIX` |
+| `additionalCaCertBundle` | CA certificate bundle to trust. The bundle is added to the system's certificates and used by other tools during the scan. | `ADDITIONAL_CA_CERT_BUNDLE` |
+| `secureLogLevel` | Logging level used by the analyzer. Set to `FATAL`, `ERROR`, `WARN`, `INFO`, or `DEBUG`. | `SECURE_LOG_LEVEL` |
+| `excludedPaths` | Glob paths excluded from the scan. | `DS_EXCLUDED_PATHS` |
+| `includeDevDependencies` | Whether to include development and test dependencies when a supported file is scanned. | `DS_INCLUDE_DEV_DEPENDENCIES` |
+| `maxDepth` | Directory depth the analyzer scans. A value of `-1` scans all directories. | `DS_MAX_DEPTH` |
+| `pipDependencyPath` | Path used to install Python packages for analysis. | `DS_PIP_DEPENDENCY_PATH` |
+| `staticReachabilityEnabled` | Whether [static reachability](../dependency_scanning/static_reachability.md) is enabled. | `DS_STATIC_REACHABILITY_ENABLED` |
+| `enableManifestFallback` | Whether to scan manifest files when no lockfile or dependency graph export is available. For more information, see [manifest fallback](../dependency_scanning/dependency_scanning_sbom/_index.md#manifest-fallback). | `DS_ENABLE_MANIFEST_FALLBACK` |
+| `pipcompileLockfileFileNamePattern` | Glob pattern that selects which pip-compile lockfiles to process. The pattern matches filenames only, not directory paths. | `DS_PIPCOMPILE_LOCKFILE_FILE_NAME_PATTERN` |
+| `pipManifestFileNamePattern` | Glob pattern that selects which pip manifest files to process for dependency resolution and manifest scanning. The pattern matches filenames only, not directory paths. | `DS_PIP_MANIFEST_FILE_NAME_PATTERN` |
+| `enableVulnerabilityScan` | Whether vulnerability analysis of generated SBOMs is enabled. | `DS_ENABLE_VULNERABILITY_SCAN` |
+| `apiTimeout` | Vulnerability scanning API request timeout in seconds, from 5 to 300. | `DS_API_TIMEOUT` |
+| `apiScanDownloadDelay` | Vulnerability scanning API initial delay in seconds before downloading scan results, from 1 to 120. | `DS_API_SCAN_DOWNLOAD_DELAY` |
+| `mavenDependencyPluginVersion` | Version of `maven-dependency-plugin` used during resolution. | `DS_MAVEN_DEPENDENCY_PLUGIN_VERSION` |
+| `mavenArgs` | Additional arguments passed to Maven during dependency resolution. | `MAVEN_ARGS` |
+| `gradleCliOpts` | Additional command-line options passed to Gradle during dependency resolution. | `GRADLE_CLI_OPTS` |
+| `disabledResolutionJobs` | List of resolution jobs to disable. Valid values are `MAVEN`, `GRADLE`, and `PYTHON`. By default, all available resolution jobs are enabled. | `DS_DISABLED_RESOLUTION_JOBS` |
+| `mavenResolutionImage` | Image used by the Maven dependency resolution job. | `DS_MAVEN_RESOLUTION_IMAGE` |
+| `gradleResolutionImage` | Image used by the Gradle dependency resolution job. | `DS_GRADLE_RESOLUTION_IMAGE` |
+| `pythonResolutionImage` | Image used by the Python dependency resolution job. | `DS_PYTHON_RESOLUTION_IMAGE` |
+| `pipIndexUrl` | Base URL of the Python Package Index. | `PIP_INDEX_URL` |
+| `pipExtraIndexUrl` | Additional URLs of Python package indexes to use in addition to `pipIndexUrl`. | `PIP_EXTRA_INDEX_URL` |
+| `searchIgnoreHiddenDirs` | Whether to ignore hidden directories when the analyzer searches for supported files. | `SEARCH_IGNORE_HIDDEN_DIRS` |
+
+For example, to create a dependency scanning profile with a customized merge request pipeline trigger:
+
+```graphql
+mutation {
+  securityScanProfileCreate(input: {
+    namespaceId: "gid://gitlab/Group/123",
+    scanType: DEPENDENCY_SCANNING,
+    name: "Custom dependency scanning profile",
+    description: "Dependency scanning profile that excludes development dependencies and scans all directories",
+    triggers: [
+      {
+        triggerType: MERGE_REQUEST_PIPELINE,
+        configuration: {
+          dependencyScanning: {
+            includeDevDependencies: false,
+            excludedPaths: ["spec/**/*", "test/**/*"],
+            maxDepth: -1,
+            staticReachabilityEnabled: true
+          }
+        }
+      }
+    ]
+  }) {
+    scanProfile {
+      id
+      name
+    }
+    errors
+  }
+}
+```
+
+You can set only one configuration member per trigger, and it must match the profile's scan type.
+For a dependency scanning profile, that member is `dependencyScanning`.
 
 For the full list of arguments, see the
 [`securityScanProfileCreate` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofilecreate).

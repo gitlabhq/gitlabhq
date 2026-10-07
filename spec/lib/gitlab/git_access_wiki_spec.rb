@@ -85,7 +85,7 @@ RSpec.describe Gitlab::GitAccessWiki do
 
       context 'when in a read-only GitLab instance' do
         before do
-          allow(Gitlab::Database).to receive(:read_only?) { true }
+          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
         end
 
         it_behaves_like 'forbidden git access' do

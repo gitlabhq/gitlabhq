@@ -1,6 +1,5 @@
 <script>
 import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
-import { isNumeric } from '~/lib/utils/number_utils';
 import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import {
@@ -9,7 +8,12 @@ import {
   GRID_HEIGHT_COMPACT_CELL_HEIGHT,
   GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT,
 } from '../constants';
-import { assignLoadPriority, convertToDashboardGraphQLId, getUniquePanelId } from '../utils';
+import {
+  assignLoadPriority,
+  convertToDashboardGraphQLId,
+  getUniquePanelId,
+  isSystemDashboardSlug,
+} from '../utils';
 import getDashboardQuery from '../graphql/get_dashboard.query.graphql';
 import getSystemDashboardQuery from '../graphql/get_system_dashboard.query.graphql';
 
@@ -29,8 +33,7 @@ export default {
       return this.$route?.params.slug;
     },
     isSystemDashboard() {
-      // Custom dashboards are routed by their numeric ID; system dashboards by their slug.
-      return !isNumeric(this.slug);
+      return isSystemDashboardSlug(this.slug);
     },
     dashboardId() {
       return this.isSystemDashboard ? this.slug : convertToDashboardGraphQLId(this.slug);

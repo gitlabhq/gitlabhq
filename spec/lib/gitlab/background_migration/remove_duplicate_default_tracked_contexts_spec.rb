@@ -15,7 +15,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateDefaultTrackedContext
   let(:sbom_components) { table(:sbom_components, database: :sec) }
   let(:sbom_occurrences) { table(:sbom_occurrences, database: :sec) }
   let(:sbom_occurrence_refs) { table(:sbom_occurrence_refs, database: :sec) }
-  let(:identifiers) { table(:vulnerability_identifiers, database: :sec) }
+  let(:identifiers) { table(:vulnerability_identifiers, primary_key: :id, database: :sec) }
   let(:scanners) { table(:vulnerability_scanners, database: :sec) }
   let(:vulnerabilities) { table(:vulnerabilities, database: :sec) }
   let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs -- Need an instance of the model

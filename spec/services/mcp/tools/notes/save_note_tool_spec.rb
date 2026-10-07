@@ -126,11 +126,12 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
       context 'when the url is neither a merge request nor a work item url' do
         let(:params) { { url: "https://gitlab.com/#{project.full_path}/-/wikis/home", body: 'Test comment' } }
 
-        it 'raises an ArgumentError mentioning both url formats' do
+        it 'raises an ArgumentError listing the accepted url formats' do
           expect { tool.build_variables }.to raise_error(
             ArgumentError,
-            'URL must be a merge request URL (.../-/merge_requests/<iid>) or a work item URL ' \
-              '(.../-/work_items/<iid>). For issues, pass project_id and work_item_iid instead'
+            'URL must be a merge request URL (.../-/merge_requests/<iid>), a work item URL ' \
+              '(.../-/work_items/<iid>), an issue URL (.../-/issues/<iid>, project-scoped), or an epic URL ' \
+              '(.../groups/<full_path>/-/epics/<iid>, group-scoped)'
           )
         end
       end
@@ -233,6 +234,14 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
       it 'resolves the work item from a URL' do
         params.delete(:project_id)
         params[:url] = "https://gitlab.com/#{project.full_path}/-/work_items/#{work_item.iid}"
+        variables = tool.build_variables
+
+        expect(variables[:input][:noteableId]).to eq(work_item.to_global_id.to_s)
+      end
+
+      it 'resolves the issue from a URL' do
+        params.delete(:project_id)
+        params[:url] = "https://gitlab.com/#{project.full_path}/-/issues/#{work_item.iid}"
         variables = tool.build_variables
 
         expect(variables[:input][:noteableId]).to eq(work_item.to_global_id.to_s)

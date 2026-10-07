@@ -1,0 +1,5 @@
+# @feature_category: mcp_server
+# CE has no extra fields. EE overrides this file, and `id` is already selected by the query.
+fragment MergeRequestEditionFields on MergeRequest {
+  id
+}

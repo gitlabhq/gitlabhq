@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_me
 
     context 'when feature is unavailable' do
       before do
-        allow(described_class).to receive(:available?) { false }
+        allow(described_class).to receive(:available?).and_return(false)
       end
 
       it 'a nil is returned' do
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_me
 
     context 'when feature is unavailable' do
       before do
-        allow(described_class).to receive(:available?) { false }
+        allow(described_class).to receive(:available?).and_return(false)
       end
 
       it 'a nil is returned' do

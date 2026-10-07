@@ -49,12 +49,11 @@ module Mcp
         def resolve_noteable_from_url(url)
           return resolve_merge_request!(params).to_global_id.to_s if ::MergeRequest.link_reference_pattern.match(url)
 
-          unless extract_path_from_url(url).match?(WORK_ITEM_URL_PATTERN)
-            raise ArgumentError, 'URL must be a merge request URL (.../-/merge_requests/<iid>) or a work item ' \
-              'URL (.../-/work_items/<iid>). For issues, pass project_id and work_item_iid instead'
-          end
+          return resolve_work_item_from_url(url) if extract_path_from_url(url).match?(WORK_ITEM_URL_PATTERN)
 
-          resolve_work_item_from_url(url)
+          raise ArgumentError, 'URL must be a merge request URL (.../-/merge_requests/<iid>), a work item URL ' \
+            '(.../-/work_items/<iid>), an issue URL (.../-/issues/<iid>, project-scoped), or an epic URL ' \
+            '(.../groups/<full_path>/-/epics/<iid>, group-scoped)'
         end
 
         def resolve_work_item_from_params

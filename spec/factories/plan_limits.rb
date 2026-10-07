@@ -2,14 +2,14 @@
 
 FactoryBot.define do
   factory :plan_limits do
-    plan
+    transient { plan { association :plan } }
     plan_name_uid { plan&.plan_name_uid_before_type_cast }
 
     dast_profile_schedules { 50 }
 
     Plan.all_plans.each do |plan_name|
       trait :"#{plan_name}_plan" do
-        plan factory: :"#{plan_name}_plan"
+        transient { plan { association :"#{plan_name}_plan" } }
       end
     end
 

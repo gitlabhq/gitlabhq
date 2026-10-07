@@ -45,8 +45,11 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteService, feature_category: :mcp_server
         properties: {
           url: {
             type: 'string',
-            description: 'GitLab URL of the merge request or work item. The URL determines the target ' \
-              'type, so no other identifier is needed'
+            description: 'GitLab URL of a merge request or work item, including issues and epics ' \
+              '(.../-/merge_requests/<iid>, .../-/work_items/<iid>, .../-/issues/<iid>, or ' \
+              '.../groups/<full_path>/-/epics/<iid>). Issue URLs are project-scoped; epic URLs are group-scoped ' \
+              'and must include the groups/ prefix. ' \
+              'The URL determines the target type, so no other identifier is needed'
           },
           project_id: {
             type: 'string',

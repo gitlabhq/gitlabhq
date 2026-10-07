@@ -608,7 +608,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
     context 'when receive_max_input_size has been updated' do
       it 'returns custom git config' do
-        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
+        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size).and_return(1)
 
         expect(subject[:GitConfigOptions]).to be_present
       end
@@ -616,7 +616,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
     context 'when receive_max_input_size is empty' do
       it 'returns an empty git config' do
-        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { nil }
+        allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size).and_return(nil)
 
         expect(subject[:GitConfigOptions]).to be_empty
       end

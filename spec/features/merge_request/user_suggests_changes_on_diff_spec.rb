@@ -58,15 +58,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       click_diff_line(line_holder)
     end
 
-    it 'hides suggestion popover', skip: 'Rapid Diffs: suggestion onboarding popover not wired on the new-line comment form; ' \
-                                     'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254149' do
-      expect(page).to have_selector('.diff-suggest-popover')
-
-      find_by_testid('dismiss-suggestion-popover-button').click
-
-      expect(page).not_to have_selector('.diff-suggest-popover')
-    end
-
     it 'suggestion is presented' do
       next_discussion_row(line_holder).fill_in('note[note]', with: "```suggestion\n# change to a comment\n```")
       click_button('Add comment now')
@@ -91,8 +82,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       end
     end
 
-    it 'allows suggestions in replies', skip: 'Rapid Diffs: thread reply forms get no code suggestions config; ' \
-                                          'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254150' do
+    it 'allows suggestions in replies' do
       next_discussion_row(line_holder).fill_in('note[note]', with: "```suggestion\n# change to a comment\n```")
       click_button('Add comment now')
 
@@ -106,6 +96,21 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       reply_field = find_field('note[note]')
       expect(reply_field.value).to include("url = https://github.com/gitlabhq/gitlab-shell.git")
+    end
+
+    it 'allows suggestions when editing a comment' do
+      next_discussion_row(line_holder).fill_in('note[note]', with: 'Please change this line')
+      click_button('Add comment now')
+
+      within(next_discussion_row(line_holder)) do
+        expect(page).to have_content('Please change this line')
+
+        click_button('Edit comment')
+        click_button('Insert suggestion')
+      end
+
+      edit_field = find_field('note[note]')
+      expect(edit_field.value).to include("url = https://github.com/gitlabhq/gitlab-shell.git")
     end
 
     it 'suggestion is appliable' do

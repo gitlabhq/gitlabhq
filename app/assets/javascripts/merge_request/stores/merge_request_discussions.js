@@ -196,34 +196,13 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
   }
 
   function addNewLineDiscussionForm(params) {
-    const { lineChange, lineRange, newPath, extraOptions = {} } = params;
     const { commitId } = versions;
     const diffRefs = params.diffRefs ?? versions.diffRefs;
-    const newLine = lineRange?.end?.new_line;
-    const canSuggest =
-      notes.noteableData?.can_receive_suggestion && lineChange?.change !== 'removed';
-    const previewParams =
-      canSuggest && diffRefs && newPath && newLine
-        ? {
-            preview_suggestions: true,
-            line: newLine,
-            file_path: newPath,
-            base_sha: diffRefs.base_sha,
-            start_sha: diffRefs.start_sha,
-            head_sha: diffRefs.head_sha,
-          }
-        : null;
     return diffDiscussions.addNewLineDiscussionForm({
       ...params,
       diffRefs,
       positionExtras: diffRefs,
-      extraOptions: {
-        ...extraOptions,
-        canSuggest,
-        previewParams,
-        commitId,
-        editingLineRange: false,
-      },
+      extraOptions: { commitId, editingLineRange: false },
     });
   }
 
@@ -244,7 +223,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
     lineRangeEditing.value = null;
   }
 
-  function commitLineRangeEditing({ lineChange, lineCode, lines }) {
+  function commitLineRangeEditing({ lineChange, lineCode }) {
     const editing = lineRangeEditing.value;
     if (!editing) return;
     const { discussion, lineRange } = editing;
@@ -267,7 +246,6 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
         baseSha || headSha || startSha
           ? { base_sha: baseSha, head_sha: headSha, start_sha: startSha }
           : undefined,
-      extraOptions: { lines },
       noteBody: discussion.noteBody,
     });
   }
@@ -395,6 +373,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
   });
 
   return {
+    canReceiveSuggestion: computed(() => Boolean(notes.noteableData?.can_receive_suggestion)),
     allVisibleDiscussionsExpanded,
     toggleAllVisibleDiscussions,
     fetchNotes,

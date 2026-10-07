@@ -330,6 +330,32 @@ August 20, 2026 due date, or use the
 after exporting from Bitbucket. For wikis, clone the Bitbucket wiki repository
 locally before the due date.
 
+### GraphQL `secretPermissionUpdate` and `secretPermissionDelete` mutations
+
+- Announced in GitLab 19.5
+- Removal in GitLab 19.5 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/630579).
+
+As part of moving the GitLab Secrets Manager from Beta to Generally Available, GitLab removes the
+`secretPermissionUpdate` and `secretPermissionDelete` GraphQL mutations in GitLab 19.5.
+Use `projectSecretsPermissionUpdate` and `projectSecretsPermissionDelete` instead. The replacement mutations
+call the same services as the old mutations.
+
+The new mutations take an `actions` argument in place of the old `permissions` argument,
+which took lowercase string values. The new `actions` argument takes a `SecretsManagementAction` enum. Each
+value in this enum is upper case. Map each old value to a new value:
+
+- `"read"` maps to `READ`.
+- `"create"` on its own maps to `CREATE`.
+- `"update"`, with or without `"create"`, maps to `WRITE`.
+- `"delete"` maps to `DELETE`.
+
+The response shape also changes. Update your code to match these changes:
+
+- The payload field changes name from `secretPermission` to `secretsPermission`.
+- The payload type changes name from `SecretPermission` to `ProjectSecretsPermission`.
+- The new type has no `permissions` field. Read the `actions` field instead.
+
 ## GitLab 19.3
 
 ### REST API returns 400 for non-numeric IDs on integer path parameters

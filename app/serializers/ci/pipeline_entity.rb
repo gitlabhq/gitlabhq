@@ -51,9 +51,7 @@ class Ci::PipelineEntity < Grape::Entity
   end
 
   expose :ref do
-    expose :name do |pipeline|
-      pipeline.ref
-    end
+    expose :name, &:ref
 
     expose :path do |pipeline|
       if pipeline.ref

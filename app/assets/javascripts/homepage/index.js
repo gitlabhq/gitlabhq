@@ -13,15 +13,7 @@ export default () => {
     return false;
   }
 
-  const {
-    reviewRequestedPath,
-    activityPath,
-    assignedMergeRequestsPath,
-    assignedWorkItemsPath,
-    authoredWorkItemsPath,
-    duoCodeReviewBotUsername,
-    lastPushEvent,
-  } = el.dataset;
+  const { activityPath, lastPushEvent } = el.dataset;
 
   // Parse lastPushEvent - it's already JSON string from backend
   const parsedLastPushEvent = lastPushEvent ? JSON.parse(lastPushEvent) : null;
@@ -29,19 +21,12 @@ export default () => {
   return initVueApp({
     el,
     name: 'HomepageAppRoot',
-    provide: {
-      duoCodeReviewBotUsername,
-    },
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     component: HomepageApp,
     props: {
-      reviewRequestedPath,
       activityPath,
-      assignedMergeRequestsPath,
-      assignedWorkItemsPath,
-      authoredWorkItemsPath,
       lastPushEvent: parsedLastPushEvent,
     },
   });

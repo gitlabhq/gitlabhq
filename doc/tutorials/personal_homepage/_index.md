@@ -50,7 +50,7 @@ You can access your personal homepage from anywhere in GitLab:
 Near the top, select your avatar to set your status.
 If you have set a status, your avatar displays a status badge and emoji, and you can hover to view your status text.
 
-Below your avatar, view the number of merge requests and issues that you're involved with.
+On the right side of the homepage, the **Merge requests** widget shows your open merge requests: those you authored or are assigned to, and those waiting for your review.
 
 The **Items that need your attention** list shows all work items across GitLab that need your input.
 
@@ -66,7 +66,7 @@ work for the day:
 
 1. Use the filter in the **Items that need your attention** list to view the events that are most important to you.
    For example, to see merge requests that are blocked because of failed pipelines, select **Failed builds** from the filter dropdown list.
-1. Near the top of the homepage, select **Merge requests waiting for your review** to view the merge requests that need your review, so you can unblock others.
+1. On the **Merge requests** widget, select the **Review requested** tab to view the merge requests that need your review, so you can unblock others.
 
 You can also keep track of what you have been working on, for example:
 

@@ -1529,6 +1529,8 @@
   - 1
 - - work_items_rolledup_dates_update_rolledup_dates_event_handler
   - 1
+- - work_items_statuses_backfill_converted_status_ids
+  - 1
 - - work_items_update_namespace_traversal_ids
   - 1
 - - work_items_update_parent_objectives_progress

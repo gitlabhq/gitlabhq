@@ -20,11 +20,7 @@ RSpec.describe HomepageData, feature_category: :notifications do
     allow(controller).to receive(:helpers).and_return(helpers_proxy)
 
     # Mock the routing helper methods that the concern uses
-    allow(controller).to receive_messages(
-      merge_requests_dashboard_path: '/merge_requests',
-      activity_dashboard_path: '/activity',
-      issues_dashboard_path: '/issues'
-    )
+    allow(controller).to receive_messages(activity_dashboard_path: '/activity')
   end
 
   describe '#homepage_app_data' do
@@ -103,6 +99,10 @@ RSpec.describe HomepageData, feature_category: :notifications do
       it 'does not include last push widget data' do
         event_data = Gitlab::Json.parse(homepage_data[:last_push_event])
         expect(event_data).to be_nil
+      end
+
+      it 'returns only the activity path' do
+        expect(homepage_data).to eq(activity_path: '/activity', last_push_event: nil)
       end
     end
   end

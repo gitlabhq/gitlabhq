@@ -2,6 +2,7 @@
 
 class PlanLimits < ApplicationRecord
   include SafelyChangeColumnDefault
+  include ActiveRecord::FixedItemsModel::HasOne
 
   columns_changing_default :active_versioned_pages_deployments_limit_by_namespace, :ai_flow_schedules
 
@@ -18,9 +19,10 @@ class PlanLimits < ApplicationRecord
 
   LimitUndefinedError = Class.new(StandardError)
 
-  belongs_to :plan
+  belongs_to_fixed_items :plan, fixed_items_class: ::GitlabSubscriptions::SystemDefined::Plan,
+    foreign_key: 'plan_name_uid'
 
-  before_validation :set_plan_name_uid
+  before_save :sync_plan_id
 
   validates :plan_name_uid, inclusion: { in: ::GitlabSubscriptions::SystemDefined::Plan.all.map(&:id) }
   validates :notification_limit, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -88,15 +90,18 @@ class PlanLimits < ApplicationRecord
 
   private
 
-  def set_plan_name_uid
-    if plan_name_uid_changed? && plan_name_uid.present?
-      # plan_name_uid is the authoritative write input; plan stays in sync only for
-      # fk_rails_69f8b6184f until plan_id is dropped (https://gitlab.com/gitlab-org/gitlab/-/work_items/600314).
-      plan_for_uid = Plan.find_by(plan_name_uid: plan_name_uid)
-      self.plan = plan_for_uid if plan_for_uid && plan_for_uid.id != plan_id
-    elsif plan_name_uid.blank? || plan_id_changed?
-      self.plan_name_uid = plan&.plan_name_uid_before_type_cast
+  def sync_plan_id
+    return unless plan_name_uid_changed?
+
+    # plan_name_uid is the authoritative write input; plan_id stays in sync only for
+    # fk_rails_69f8b6184f until plan_id is dropped (https://gitlab.com/gitlab-org/gitlab/-/work_items/600314).
+    # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- creates the missing plans row
+    plan_for_uid = Plan.safe_find_or_create_by(plan_name_uid: plan_name_uid) do |new_plan|
+      new_plan.name = plan.name
+      new_plan.title = plan.title
     end
+    # rubocop:enable Performance/ActiveRecordSubtransactionMethods
+    self.plan_id = plan_for_uid.id if plan_for_uid && plan_for_uid.id != plan_id
   end
 end
 

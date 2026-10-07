@@ -664,9 +664,6 @@ To change the limit, change the `default` plan's limit with the following
 [GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session) command:
 
 ```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
 Plan.default.actual_limits.update!(ci_pipeline_deployments: 500)
 ```
 

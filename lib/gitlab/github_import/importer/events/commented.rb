@@ -17,10 +17,19 @@ module Gitlab
               imported_from: imported_from
             )
 
-            NoteImporter.new(note, project, client).execute
+            importer = NoteImporter.new(note, project, client)
+            result = importer.execute
+            after_note_import(issue_event, importer)
+            result
           end
+
+          private
+
+          def after_note_import(issue_event, importer); end
         end
       end
     end
   end
 end
+
+Gitlab::GithubImport::Importer::Events::Commented.prepend_mod

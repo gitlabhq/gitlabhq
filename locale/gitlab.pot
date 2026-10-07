@@ -2616,6 +2616,9 @@ msgstr ""
 msgid "AICatalog|Agent '%{name}' is not visible to flows in this project"
 msgstr ""
 
+msgid "AICatalog|Agent '%{name}' must be at least as visible as the flow that references it"
+msgstr ""
+
 msgid "AICatalog|Agent configuration"
 msgstr ""
 
@@ -3706,6 +3709,9 @@ msgid "AICatalog|Visibility"
 msgstr ""
 
 msgid "AICatalog|Visibility & access"
+msgstr ""
+
+msgid "AICatalog|Visibility cannot be blank"
 msgstr ""
 
 msgid "AICatalog|Visibility: %{label}"
@@ -6433,6 +6439,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Endpoint"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Enter a valid role ARN (for example, arn:aws:iam::123456789012:role/role-name)."
+msgstr ""
+
 msgid "AdminSelfHostedModels|GitLab-managed model"
 msgstr ""
 
@@ -6440,6 +6449,9 @@ msgid "AdminSelfHostedModels|GitLab-managed models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Google Vertex AI"
+msgstr ""
+
+msgid "AdminSelfHostedModels|IAM role to assume"
 msgstr ""
 
 msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
@@ -6482,6 +6494,9 @@ msgid "AdminSelfHostedModels|No self-hosted models yet. %{newModelLinkStart}Add 
 msgstr ""
 
 msgid "AdminSelfHostedModels|Once the model is no longer in use, you can return here to delete it."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Optional. Enter the ARN of an IAM role the AI Gateway assumes through AWS Security Token Service (STS) %{codeStart}AssumeRole%{codeEnd} to call Amazon Bedrock. The role's trust policy must require your GitLab instance ID, %{instanceId}, as %{codeStart}sts:ExternalId%{codeEnd}. %{linkStart}How do I configure LLM platforms%{linkEnd}?"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Platform"
@@ -13661,6 +13676,9 @@ msgid "ArtifactRegistry|Push an image:"
 msgstr ""
 
 msgid "ArtifactRegistry|Push your first manifest to get started."
+msgstr ""
+
+msgid "ArtifactRegistry|Raw text search not supported"
 msgstr ""
 
 msgid "ArtifactRegistry|Referenced by"
@@ -44014,12 +44032,6 @@ msgstr ""
 msgid "HomePageMergeRequestsWidget|No merge requests to review."
 msgstr ""
 
-msgid "HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard."
-msgstr ""
-
-msgid "HomePageMergeRequestsWidget|Waiting for your review"
-msgstr ""
-
 msgid "HomePagePipelinesWidget|Pipelines for your merge requests will appear here."
 msgstr ""
 
@@ -44036,18 +44048,6 @@ msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available
 msgstr ""
 
 msgid "HomePageTodosWidget|Your to-do items are not available. Please refresh the page to try again."
-msgstr ""
-
-msgid "HomePageWorkItemsWidget|Assigned to you"
-msgstr ""
-
-msgid "HomePageWorkItemsWidget|Authored by you"
-msgstr ""
-
-msgid "HomePageWorkItemsWidget|The number of work items is not available. Please refresh the page to try again, or visit the work items list."
-msgstr ""
-
-msgid "HomePageWorkItemsWidget|Work items"
 msgstr ""
 
 msgid "Homepage"
@@ -44622,10 +44622,19 @@ msgstr ""
 msgid "IdentityVerification|Confirm your email address"
 msgstr ""
 
+msgid "IdentityVerification|Country"
+msgstr ""
+
+msgid "IdentityVerification|Country code"
+msgstr ""
+
 msgid "IdentityVerification|Country or region"
 msgstr ""
 
 msgid "IdentityVerification|Credit card Verification"
+msgstr ""
+
+msgid "IdentityVerification|Dial code"
 msgstr ""
 
 msgid "IdentityVerification|Didn't get the code? %{buttonStart}Resend code%{buttonEnd}."
@@ -44694,6 +44703,9 @@ msgstr ""
 msgid "IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again."
 msgstr ""
 
+msgid "IdentityVerification|No supported country"
+msgstr ""
+
 msgid "IdentityVerification|Phone Number Verification"
 msgstr ""
 
@@ -44710,6 +44722,9 @@ msgid "IdentityVerification|Phone number must contain only digits."
 msgstr ""
 
 msgid "IdentityVerification|Phone number verification is unavailable at this time. Please verify with a credit card instead."
+msgstr ""
+
+msgid "IdentityVerification|Phone verification dial code restrictions"
 msgstr ""
 
 msgid "IdentityVerification|Please enter a valid code"
@@ -44752,6 +44767,9 @@ msgid "IdentityVerification|To stop using this email with your GitLab account, r
 msgstr ""
 
 msgid "IdentityVerification|To stop using this email with your GitLab account, remove it in your account settings (%{account_settings_link})."
+msgstr ""
+
+msgid "IdentityVerification|Users who enter a phone number with a selected dial code must verify a payment method to continue."
 msgstr ""
 
 msgid "IdentityVerification|Verification code"
@@ -48917,9 +48935,6 @@ msgid "June"
 msgstr ""
 
 msgid "Just me"
-msgstr ""
-
-msgid "Just now"
 msgstr ""
 
 msgid "KEY"
@@ -59385,6 +59400,9 @@ msgid "Orbit|Security"
 msgstr ""
 
 msgid "Orbit|SecurityScan"
+msgstr ""
+
+msgid "Orbit|Select a billing namespace for Orbit to attribute usage."
 msgstr ""
 
 msgid "Orbit|Select a top-level group"
@@ -74084,6 +74102,9 @@ msgstr ""
 msgid "SecretsManager|Contact your subscription owner or visit the %{linkStart}Customer Portal%{linkEnd} to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing. After your subscription owner has completed this task, you can enable GitLab Secrets Manager with GitLab Credits."
 msgstr ""
 
+msgid "SecretsManager|Contact your subscription owner to purchase a license and enable GitLab Secrets Manager."
+msgstr ""
+
 msgid "SecretsManager|Couldn't verify the current billing status. Please try again later."
 msgstr ""
 
@@ -78137,6 +78158,18 @@ msgstr ""
 msgid "SecurityProfiles|The job link failed to load. Please try again."
 msgstr ""
 
+msgid "SecurityProfiles|To create scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group."
+msgstr ""
+
+msgid "SecurityProfiles|To delete scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group."
+msgstr ""
+
+msgid "SecurityProfiles|To edit or delete scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group."
+msgstr ""
+
+msgid "SecurityProfiles|To edit scan profiles, you need the Security Manager, Maintainer, or Owner role in the top-level group."
+msgstr ""
+
 msgid "SecurityProfiles|Troubleshoot failure"
 msgstr ""
 
@@ -78168,18 +78201,6 @@ msgid "SecurityProfiles|What is secret push protection?"
 msgstr ""
 
 msgid "SecurityProfiles|You are about to disable the %{profileName} profile for this project. Are you sure you want to proceed?"
-msgstr ""
-
-msgid "SecurityProfiles|You don't have permission to create scan profiles in this group."
-msgstr ""
-
-msgid "SecurityProfiles|You don't have permission to delete scan profiles in this group."
-msgstr ""
-
-msgid "SecurityProfiles|You don't have permission to edit or delete scan profiles in this group."
-msgstr ""
-
-msgid "SecurityProfiles|You don't have permission to edit scan profiles in this group."
 msgstr ""
 
 msgid "SecurityProfiles|failure"

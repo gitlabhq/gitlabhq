@@ -332,6 +332,118 @@ For Kubernetes clusters other than Amazon EKS, you can use Kubernetes secrets to
        value: us-east-1
    ```
 
+#### Assume an IAM role with AWS Bedrock
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259000) in GitLab 19.5.
+
+{{< /history >}}
+
+By default, the AI Gateway calls Bedrock with the credentials it already has
+(for example, the IRSA role or environment variables).
+To call Bedrock with a different role (for example, a role in another AWS account),
+provide an IAM role for each self-hosted model.
+The AI Gateway uses its own credentials to assume that role through the
+AWS Security Token Service (STS) [`AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html) action.
+The AI Gateway then uses the temporary credentials to call Bedrock.
+
+Prerequisites:
+
+- Administrator access.
+- [The AI Gateway authenticated with AWS](#configure-authentication-with-aws-bedrock).
+  The AWS identity the AI Gateway runs as can call `sts:AssumeRole` on the role.
+
+To assume an IAM role when you call Bedrock:
+
+1. In the target AWS account, create an IAM role with the following
+   trust relationship policy. Replace:
+
+   - `AI_GATEWAY_PRINCIPAL_ARN` with the ARN of the AWS identity the AI Gateway runs as
+     (for example, the `arn:aws:iam::AI_GATEWAY_ACCOUNT_ID:role/eks-ai-gateway-bedrock` IRSA role).
+   - `GITLAB_INSTANCE_ID` with the ID of your GitLab instance as it appears
+     in the **IAM role to assume** text box.
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {
+           "AWS": "AI_GATEWAY_PRINCIPAL_ARN"
+         },
+         "Action": "sts:AssumeRole",
+         "Condition": {
+           "StringEquals": {
+             "sts:ExternalId": "GITLAB_INSTANCE_ID"
+           }
+         }
+       }
+     ]
+   }
+   ```
+
+   The AI Gateway sends the instance ID as the STS external ID when it assumes the role.
+   The condition prevents another AI Gateway customer who knows the role ARN from using
+   the AI Gateway's identity to assume your role (the confused deputy problem).
+   The instance ID is not a secret.
+
+1. To invoke Bedrock models, attach a permission policy to the role.
+   You can scope `Resource` to specific models:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "bedrock:InvokeModel",
+           "bedrock:InvokeModelWithResponseStream"
+         ],
+         "Resource": "arn:aws:bedrock:*::foundation-model/*"
+       }
+     ]
+   }
+   ```
+
+1. If the AI Gateway runs in a different account than the role, also allow the AI Gateway
+   identity to call `sts:AssumeRole` on the role with an identity-based policy:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": "sts:AssumeRole",
+         "Resource": "arn:aws:iam::ROLE_ACCOUNT_ID:role/YOUR_ROLE_NAME"
+       }
+     ]
+   }
+   ```
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Configure models for GitLab Duo**.
+1. For the **Amazon Bedrock** platform, add or edit a self-hosted model.
+1. Optional. In the **IAM role to assume** text box, enter the ARN of the role
+   (for example, `arn:aws:iam::123456789012:role/YOUR_ROLE_NAME`).
+   When you leave it empty, the AI Gateway uses its own credentials.
+1. Optional. Select **Test connection**.
+1. Select **Add self-hosted model**.
+
+An IAM role and an API key (bearer token) are mutually exclusive.
+GitLab does not accept an IAM role for a model that has an API key,
+and the AI Gateway rejects a request that contains both.
+
+> [!note]
+> To send the STS external ID, the AI Gateway version must include
+> [support for `AssumeRole` for Amazon Bedrock models](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7210).
+> With an earlier AI Gateway version, the AI Gateway does not send the STS external ID,
+> and role assumption fails if the trust policy requires `sts:ExternalId`.
+
 #### AWS Bedrock API keys
 
 To use AWS Bedrock API keys as an alternative to IAM credentials:

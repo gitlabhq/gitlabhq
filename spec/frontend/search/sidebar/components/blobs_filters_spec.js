@@ -41,27 +41,19 @@ describe('GlobalSearch BlobsFilters', () => {
   });
 
   describe.each`
-    searchType    | zoektLanguageAggregationsEnabled | isShown
-    ${'basic'}    | ${false}                         | ${false}
-    ${'basic'}    | ${true}                          | ${false}
-    ${'advanced'} | ${false}                         | ${true}
-    ${'advanced'} | ${true}                          | ${true}
-    ${'zoekt'}    | ${false}                         | ${false}
-    ${'zoekt'}    | ${true}                          | ${true}
-  `(
-    'sidebar blobs language filter:',
-    ({ searchType, zoektLanguageAggregationsEnabled, isShown }) => {
-      beforeEach(() => {
-        createComponent({ searchType, zoektLanguageAggregationsEnabled });
-      });
+    searchType    | isShown
+    ${'basic'}    | ${false}
+    ${'advanced'} | ${true}
+    ${'zoekt'}    | ${true}
+  `('sidebar blobs language filter:', ({ searchType, isShown }) => {
+    beforeEach(() => {
+      createComponent({ searchType });
+    });
 
-      it(`does ${
-        isShown ? '' : 'not '
-      }render LanguageFilter when searchType=${searchType} and zoektLanguageAggregationsEnabled=${zoektLanguageAggregationsEnabled}`, () => {
-        expect(findLanguageFilter().exists()).toBe(isShown);
-      });
-    },
-  );
+    it(`does ${isShown ? '' : 'not '}render LanguageFilter when searchType=${searchType}`, () => {
+      expect(findLanguageFilter().exists()).toBe(isShown);
+    });
+  });
 
   describe.each`
     searchType    | hasProjectContent | isShown
