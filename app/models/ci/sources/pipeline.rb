@@ -10,7 +10,7 @@ module Ci
       self.table_name = "ci_sources_pipelines"
 
       ignore_column :id_convert_to_bigint, :project_id_convert_to_bigint, :source_project_id_convert_to_bigint,
-        remove_with: '19.5', remove_after: '2026-10-21'
+        remove_with: '19.6', remove_after: '2026-10-21'
 
       belongs_to :project, class_name: "::Project"
       belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :source_pipeline

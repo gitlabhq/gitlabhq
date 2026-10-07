@@ -141,7 +141,7 @@ Unused credits do not roll over to the next month.
 ## On-demand credits
 
 On-demand credits cover usage incurred after you have used all included credits
-and the credits in the Monthly Committed Pool.
+and the credits in the monthly commitment pool.
 On-demand credits are billed monthly, at the list price of $1 per credit used.
 
 To use on-demand credits, you must accept the usage billing terms.
@@ -166,12 +166,12 @@ For details, contact your account team.
 ## Usage billing terms
 
 When you buy a monthly commitment pool, you accept the usage billing terms, including on-demand credit usage.
-By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
-in the current monthly billing period, and any On-Demand charges incurred going forward.
+By accepting usage billing terms, you agree to pay for all on-demand credit charges already accrued
+in the current monthly billing period, and incurred going forward.
 
 You can accept the usage billing terms when you purchase a monthly commitment pool, or directly in the GitLab Credits dashboard in Customers Portal.
 
-After you accept the terms, On-Demand billing stays active for the rest of your subscription and subsequent self-serve renewals,
+After you accept the usage billing terms, they stay active for the rest of your subscription and subsequent self-serve renewals,
 and you cannot opt out.
 
 If you don't accept the usage billing terms, you can keep using credit-based features until you consume your

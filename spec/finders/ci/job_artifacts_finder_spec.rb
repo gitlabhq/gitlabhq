@@ -16,7 +16,7 @@ RSpec.describe Ci::JobArtifactsFinder do
       let(:params) { {} }
 
       it 'returns all artifacts belonging to the project' do
-        expect(subject).to contain_exactly(*project.job_artifacts)
+        expect(subject).to match_array(project.job_artifacts)
       end
     end
 

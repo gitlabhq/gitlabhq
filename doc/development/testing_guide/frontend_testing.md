@@ -1322,10 +1322,9 @@ Frontend integration tests are EE-only. All specs and the shared harness live un
 ```plaintext
 ee/spec/frontend/integration/
 ├── handlers.js           # Aggregates the per-feature GraphQL handlers
-├── polyfills.js          # Environment polyfills (loaded by jest.config.integration.js)
 ├── server.js             # MSW server setup
 ├── test_setup.js         # Global Jest setup and teardown; wires helpers into scope
-├── core/                 # Shared harness: fixture loading, variants, request assertions
+├── core/                 # Re-exports of the shared harness from @gitlab/frontend-tests
 │   ├── constants.js
 │   ├── fixture_utils.js
 │   ├── fixture_variant_schema.js
@@ -1343,12 +1342,12 @@ ee/spec/frontend/integration/
 The shared files are configured automatically through
 `jest.config.integration.js`.
 
-`polyfills.js` exists because `msw/node` reads globals such as
-`fetch`, `Request`, `Response`, `Headers`, the stream classes,
-`BroadcastChannel`, and `TextEncoder`/`TextDecoder` while its
-module body evaluates, which is before Jest's
-`setupFilesAfterEnv` runs. These globals are assigned in a Jest
-`setupFiles` entry instead.
+The shared harness (fixture loading, variants, request assertions) and the
+polyfills MSW needs come from the `@gitlab/frontend-tests` package.
+`jest.config.integration.js` wraps the config with
+`createFrontendIntegrationConfig`, which adds the polyfills as Jest `setupFiles`
+so they load before `msw/node` evaluates. The `core/` files re-export the
+package so existing import paths keep working.
 
 All helper utilities exported from `helpers/test_helpers.js` are auto-imported globally
 through `Object.assign(global, testHelpers)` in `test_setup.js`. To add a new

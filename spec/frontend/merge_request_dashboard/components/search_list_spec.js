@@ -370,6 +370,30 @@ describe('Merge request dashboard search list', () => {
       );
     });
 
+    it('merges the approvals into the list', async () => {
+      approvalsQueryHandler.mockResolvedValue({
+        data: {
+          mergeRequests: {
+            nodes: [
+              {
+                __typename: 'MergeRequest',
+                id: mockMergeRequest.id,
+                approved: true,
+                approvalsRequired: 1,
+                approvalsLeft: 0,
+                approvedBy: { nodes: [{ __typename: 'UserCore', id: 'gid://gitlab/User/2' }] },
+              },
+            ],
+          },
+        },
+      });
+      await filterBy([assigneeToken('jane')]);
+
+      expect(findIssuableList().props('issuables')).toEqual([
+        expect.objectContaining({ id: mockMergeRequest.id, approved: true }),
+      ]);
+    });
+
     it('still renders the list when the approvals query times out', async () => {
       approvalsQueryHandler.mockRejectedValue({ statusCode: 503 });
       findIssuableList().vm.$emit('filter', [

@@ -9,7 +9,6 @@ export default {
     'app/assets/javascripts/repository/components/header_area.vue',
     'app/assets/javascripts/repository/components/header_area/breadcrumbs.vue',
     'app/assets/javascripts/work_items/pages/planning_view.vue',
-    'ee/app/assets/javascripts/admin/subscriptions/show/components/app.vue',
     'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_item_actions.vue',
     'ee/app/assets/javascripts/analytics/group_analytics/components/group_activity_card.vue',
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/pages/container/registries_and_upstreams.vue',

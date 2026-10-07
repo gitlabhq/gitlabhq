@@ -275,6 +275,7 @@
   },
   "devDependencies": {
     "@gitlab/eslint-plugin": "^24.1.0",
+    "@gitlab/frontend-tests": "0.1.2",
     "@gitlab/jest-metrics-exporter": "^0.2.0",
     "@gitlab/noop": "^1.0.1",
     "@gitlab/stylelint-config": "6.3.0",

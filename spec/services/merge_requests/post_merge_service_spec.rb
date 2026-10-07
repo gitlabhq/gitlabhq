@@ -356,18 +356,6 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
 
       expect(abort_note.all_references(user).merge_requests).to include(merged_merge_request)
     end
-
-    context 'when auto_merge_abort_uses_target_project is disabled' do
-      before do
-        stub_feature_flags(auto_merge_abort_uses_target_project: false)
-      end
-
-      it 'does not persist the abort note' do
-        post_merge
-
-        expect(abort_note).to be_nil
-      end
-    end
   end
 
   context 'when event source is given' do

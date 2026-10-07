@@ -19,7 +19,8 @@ module Gitlab
 
       def perform
         each_sub_batch do |sub_batch|
-          matching = sub_batch
+          matching = sub_batch.model
+            .where(id: sub_batch.select(:id))
             .where(action: RESOLVABLE_ACTIONS, state: 'pending', target_type: 'MergeRequest')
             .joins('INNER JOIN merge_requests ON merge_requests.id = todos.target_id')
             .where(merge_requests: { state_id: FINALIZED_MR_STATES })

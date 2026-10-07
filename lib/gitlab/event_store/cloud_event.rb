@@ -22,6 +22,7 @@ module Gitlab
         datacontenttype
         dataschema
         gitlab_composite_actor_id
+        gitlab_duo_workflow_id
         gitlab_organization_id
         gitlab_user_id
         gitlab_user_username
@@ -69,6 +70,8 @@ module Gitlab
           composite_identity = ::Gitlab::Auth::Identity.currently_linked
           if composite_identity&.link_context == :authentication
             attrs[:gitlab_composite_actor_id] = composite_identity.primary_user.id
+            duo_workflow_id = current_duo_workflow_id
+            attrs[:gitlab_duo_workflow_id] = duo_workflow_id if duo_workflow_id
           end
 
           attrs[:gitlab_organization_id] = organization.id if organization
@@ -107,6 +110,15 @@ module Gitlab
         end
 
         private
+
+        # Set from the client-supplied `X-Gitlab-Duo-Workflow-Id` header, so consumers must authorize it.
+        def current_duo_workflow_id
+          value = ::Gitlab::ApplicationContext.current_context_attribute(:duo_workflow_id)
+          workflow_id = Integer(value.to_s, 10, exception: false)
+
+          # `ce_integer` in the protobuf representation is an int32.
+          workflow_id if workflow_id&.between?(1, ::Gitlab::Database::MAX_INT_VALUE)
+        end
 
         def build_data(proto)
           # Merge attributes first so the explicit spec fields win: a malformed
@@ -208,6 +220,7 @@ module Gitlab
             'gitlab_user_id' => { 'type' => 'number' },
             'gitlab_user_username' => { 'type' => 'string' },
             'gitlab_composite_actor_id' => { 'type' => 'number' },
+            'gitlab_duo_workflow_id' => { 'type' => 'number' },
             'gitlab_organization_id' => { 'type' => 'number' },
             'time' => { 'type' => 'string', 'format' => 'date-time' },
             'datacontenttype' => { 'type' => 'string' },

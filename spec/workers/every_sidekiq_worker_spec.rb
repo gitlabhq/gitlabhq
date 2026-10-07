@@ -50,6 +50,19 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
     end
   end
 
+  # SkipJobs looks up the connection by gitlab_schema; an unknown schema (for example
+  # a connection name like :main) raises before the job runs.
+  it 'uses a valid gitlab_schema for defer_on_database_health_signal', :aggregate_failures do
+    valid_schemas = Gitlab::Database.schemas_to_base_models.keys.map(&:to_sym)
+
+    workers_without_defaults.map(&:klass).select(&:defer_on_database_health_signal?).each do |worker|
+      schema = worker.database_health_check_attrs[:gitlab_schema]
+
+      expect(valid_schemas).to include(schema.to_s.to_sym),
+        "expected #{worker} to defer on a valid gitlab_schema, but got #{schema.inspect}"
+    end
+  end
+
   describe "feature category declarations" do
     let(:feature_categories) do
       Gitlab::FeatureCategories.default.categories.map(&:to_sym).to_set

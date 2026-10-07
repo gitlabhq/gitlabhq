@@ -389,12 +389,12 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
           page.find('.discussion-next-btn').click
         end
 
-        page.all('.note-discussion').first do
-          expect(page.find('.discussion-with-resolve-btn')).to have_selector('.btn', text: 'Resolve thread')
+        page.within(first('.note-discussion')) do
+          expect(page).to have_selector('.btn', text: 'Resolve thread')
         end
 
-        page.all('.note-discussion').last do
-          expect(page.find('.discussion-with-resolve-btn')).not_to have_selector('.btn', text: 'Resolve thread')
+        page.within(page.all('.note-discussion', count: 2).last) do
+          expect(page).to have_no_selector('.btn', text: 'Resolve thread')
         end
       end
     end

@@ -95,7 +95,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
           let!(:projects) { create_list(:project, 5, :public) }
           let(:params) { { id_after: projects.first.id, id_before: projects.last.id } }
 
-          it { is_expected.to contain_exactly(*projects[1..-2]) }
+          it { is_expected.to match_array(projects[1..-2]) }
         end
       end
 

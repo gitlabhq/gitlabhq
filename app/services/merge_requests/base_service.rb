@@ -267,14 +267,7 @@ module MergeRequests
       # RefreshService and UnlinkForkService run with the source project, but the abort
       # system note has to be filed against the project that owns the merge request or
       # Note's noteable/project validation silently rejects it.
-      auto_merge_project =
-        if Feature.enabled?(:auto_merge_abort_uses_target_project, merge_request.target_project)
-          merge_request.target_project
-        else
-          project
-        end
-
-      AutoMergeService.new(auto_merge_project, current_user).abort(merge_request, reason)
+      AutoMergeService.new(merge_request.target_project, current_user).abort(merge_request, reason)
     end
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.

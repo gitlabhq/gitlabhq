@@ -1359,13 +1359,6 @@ Returns [`[Project!]`](#project).
 
 ### `Query.duoWorkflowWorkflows`
 
-{{< details >}}
-
-- Introduced in GitLab 17.2.
-- Status: Experiment.
-
-{{< /details >}}
-
 List the workflows owned by the current user.
 
 Returns [`DuoWorkflowConnection!`](#duoworkflowconnection).

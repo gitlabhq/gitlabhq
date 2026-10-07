@@ -93,25 +93,20 @@ different domain is not supported, because it also requires re-provisioning JWT 
 every project and group. Instead, update DNS so the primary domain points to the promoted secondary.
 For more information, see [Geo deployment](_index.md#geo-deployment).
 
-### Reset OpenBao data
+## Reset OpenBao data
 
 > [!warning]
-> This procedure permanently deletes all secrets stored in OpenBao. Re-create all Secrets Manager
-> secrets after you finish.
+> This procedure permanently deletes all secrets and secrets permissions stored in OpenBao, and
+> turns off the secrets manager for every project and group.
 
-Reset OpenBao data when you do not have a recovery key and `bound_audiences` is out of sync with the
-JWT `aud` claim, and authentication fails. A mismatch can happen when OpenBao was initialized with
-the wrong URL. The reset wipes the OpenBao database so that OpenBao self-initializes with the correct
-configuration.
+Resetting OpenBao data wipes the OpenBao database so that OpenBao self-initializes with the
+configuration in your Helm values.
 
-If you have a recovery key, [reconfigure authentication with a recovery key](#reconfigure-authentication-with-a-recovery-key)
-instead. That method preserves stored secrets.
+Prerequisites:
 
-Before you start, set the correct audience in your configuration:
-
-- For GitLab 18.10 and later, set `global.openbao.jwt_audience` to the audience you want.
-- For earlier versions, set the OpenBao external URL. OpenBao derives `bound_audiences` from this
-  URL during self-initialization.
+- The correct OpenBao URL in your configuration. OpenBao derives `bound_audiences` from this URL
+  during self-initialization.
+- `global.openbao.jwt_audience` set to the same URL, or not set.
 
 To reset OpenBao data:
 
@@ -119,7 +114,7 @@ To reset OpenBao data:
 
    ```shell
    kubectl -n gitlab scale deployment gitlab-openbao --replicas=0
-   kubectl -n gitlab rollout status deployment gitlab-openbao --timeout=60s
+   kubectl -n gitlab wait --for=delete pod -l app.kubernetes.io/name=openbao --timeout=120s
    ```
 
 1. Get the toolbox pod name:
@@ -138,33 +133,63 @@ To reset OpenBao data:
      -c "TRUNCATE TABLE openbao_kv_store; TRUNCATE TABLE openbao_ha_locks;"
    ```
 
-1. Redeploy OpenBao with the corrected configuration:
+1. Delete the secrets manager records and the stored recovery key from the GitLab database. The old
+   recovery key no longer works, and you cannot create a new key while the old one is stored.
+   In the [Rails console](../operations/rails_console.md), run:
+
+   ```ruby
+   ApplicationRecord.connection.execute(<<~SQL)
+     TRUNCATE TABLE project_secrets_managers, project_secrets_manager_maintenance_tasks,
+       group_secrets_managers, group_secrets_manager_maintenance_tasks,
+       secret_rotation_infos, group_secret_rotation_infos, namespace_secret_counts
+   SQL
+   SecretsManagement::RecoveryKey.active.destroy_all
+   ```
+
+   Use `TRUNCATE` instead of turning off each secrets manager. Turning off a secrets manager calls
+   OpenBao to delete data that the previous step already deleted.
+
+1. Redeploy OpenBao with autoscaling set for a single OpenBao replica. The `openbao.autoscaling`
+   settings stop the Horizontal Pod Autoscaler from adding a second replica before initialization
+   completes:
+
+   ```shell
+   helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
+     -n gitlab -f gitlab.yaml \
+     --set openbao.autoscaling.minReplicas=1 --set openbao.autoscaling.maxReplicas=1
+   ```
+
+1. Scale OpenBao up to one replica. A chart redeploy does not restore a deployment that you scaled
+   down manually:
+
+   ```shell
+   kubectl -n gitlab scale deployment gitlab-openbao --replicas=1
+   kubectl -n gitlab rollout status deployment gitlab-openbao --timeout=120s
+   ```
+
+1. Verify that OpenBao is initialized and unsealed. Replace `https://openbao.example.com` with your
+   OpenBao URL:
+
+   ```shell
+   curl "https://openbao.example.com/v1/sys/health"
+   ```
+
+   The response includes `"initialized":true` and `"sealed":false`.
+
+1. Redeploy without the single-replica settings, then scale OpenBao up to your usual number of
+   replicas. Replace `<replica_count>` with the value of `openbao.autoscaling.minReplicas`, which is
+   `2` by default:
 
    ```shell
    helm upgrade --install --version <chart-version> gitlab gitlab/gitlab \
      -n gitlab -f gitlab.yaml
-   ```
-
-1. Scale OpenBao back up. A chart redeploy does not restore a deployment that you scaled down
-   manually:
-
-   ```shell
-   kubectl -n gitlab scale deployment gitlab-openbao --replicas=2
+   kubectl -n gitlab scale deployment gitlab-openbao --replicas=<replica_count>
    kubectl -n gitlab rollout status deployment gitlab-openbao --timeout=120s
    ```
 
-1. Verify that OpenBao is initialized, unsealed, and uses the correct audience:
+1. Create a new [recovery key](recovery_key.md).
 
-   ```shell
-   OPENBAO_POD=$(kubectl -n gitlab get pods -l app.kubernetes.io/name=openbao \
-     -l openbao-active=true -o jsonpath='{.items[0].metadata.name}')
-   kubectl -n gitlab exec -ti "$OPENBAO_POD" -c openbao-server -- \
-     sh -c "BAO_ADDR=http://127.0.0.1:8200 bao status"
-   kubectl -n gitlab get configmap gitlab-openbao-config -o yaml | grep bound_audiences
-   ```
-
-   The status shows `Initialized   true` and `Sealed   false`, and the `bound_audiences` value
-   matches the audience GitLab sends.
+After the reset, turn on the secrets manager again for each project and group that needs it.
 
 ## Enable secrets access from external requests
 

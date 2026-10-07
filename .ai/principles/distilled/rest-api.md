@@ -1,6 +1,6 @@
 ---
-source_checksum: 312e3df0c59cb322
-distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
+source_checksum: afb67ed4ba6de458
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -20,7 +20,7 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Include a valid `type` for every exposed field in an entity
 - Define field types as strings inside the `documentation` hash (e.g., `documentation: { type: 'Integer', example: 1 }`)
 - Use the `using:` option when exposing a field that references another entity; pass only an `API::Entities::*` constant
-- DO NOT add new `expose` calls to high-impact entities (`UserBasic`, `ProjectIdentity`, `Commit`, etc.); create a feature-bounded entity instead (enforced by the `API/EntityExposureGrowth` RuboCop cop)
+- Before expanding a high-impact entity (`UserBasic`, `ProjectIdentity`, `Commit`, etc.), consider a new endpoint with its own entity, then an opt-in field guarded by `if:` and an explicit request parameter; use a feature-bounded entity when neither option fits. Respect the `API/EntityExposureGrowth` cop and its allowlist approval process.
 - Name feature-bounded entities after their domain context (e.g., `Ci::JobOwner`), not after the fields they contain (e.g., `UserWithNotificationEmail`)
 - DO NOT manually edit `api_entity_exposure_baseline.yml` to allowlist new fields; open a discussion with the API Platform team if a field genuinely belongs on a high-impact entity
 
@@ -54,6 +54,15 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - Define Array types with a `coerce_with` block in Grape v1.3+
 - Use the `coerce_nil_params_to_array!` helper in `before` blocks to preserve empty-array behavior for nil Array params
 
+### Passing Options to Grape Methods
+
+- Pass options to `present`, `declared`, and route methods (`get`, `post`, `put`, `patch`, `delete`) as keyword arguments; if you have a Hash variable, splat it (`**options`) — DO NOT pass a plain Hash, as Grape silently ignores it (entity not applied, `feature_category`/`urgency` lost)
+
+### Helpers and Route Formats
+
+- DO NOT call `.helpers` with no arguments on an API class to reuse helpers (raises `NoMethodError` in Grape 3.x); put shared helpers in a named module under `lib/api/helpers/` and include it with `helpers ::API::Helpers::FooHelpers`
+- Add a matching `requirements:` constraint next to every `format:` option on a route, using the shared constants `::API::JSON_FORMAT_SUFFIX_REQUIREMENT`, `::API::XML_FORMAT_SUFFIX_REQUIREMENT`, or `::API::TXT_FORMAT_SUFFIX_REQUIREMENT`; if writing the regex manually, keep it unanchored (enforced by `spec/lib/api/every_api_endpoint_spec.rb`)
+
 ### HTTP Verbs and Status Codes
 
 - Use `PATCH` when updating some attributes of a resource; use `PUT` when replacing all attributes
@@ -65,8 +74,8 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 - DO NOT remove or rename fields, arguments, or enum values in REST API v4
 - DO NOT add new required arguments to existing endpoints
 - DO NOT change the type of existing response fields
-- DO NOT change authentication, authorization, or header requirements
-- DO NOT change any status code other than `500`
+- DO NOT change existing authentication, authorization, or header requirements; adding an authentication method is non-breaking only if requests without the new credential type are unaffected.
+- DO NOT change any status code other than `500`, except for changes resulting from an additional authentication method when requests without the new credential type remain unaffected.
 - DO NOT add new redirects without verifying client redirect-following behavior
 - When a feature is removed, return a sensible static value or empty response (silent degradation) unless the feature was the endpoint's primary purpose, in which case return `404 Not Found`
 - Document intended deprecations ahead of time following the v4 deprecation guide
@@ -91,7 +100,8 @@ distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ### Custom Validators
 
 - Use existing custom validators (`FilePath`, `Git SHA`, `Absence`, `IntegerNoneAny`, `ArrayNoneAny`, `EmailOrEmailList`) for parameter validation before passing values downstream
-- Add new custom validators in `lib/api/validations/validators/` inheriting from `Grape::Validations::Validators::Base` and register them with `Grape::Validations.register_validator`
+- Add new custom validators in `lib/api/validations/validators/` inheriting from `Grape::Validations::Validators::Base`; add the class to `config/initializers/grape_validators.rb` so it is loaded in every environment (Grape registers it automatically on load)
+- DO NOT modify `@options` in a validator instance or memoize values into instance variables — Grape shares and freezes validator instances across requests, causing `FrozenError` at request time; read options from `@options` and use local variables for any derived values
 - Add RSpec tests for new validators in `spec/lib/api/validations/validators/`
 
 ### Testing

@@ -119,10 +119,14 @@ module WebpackHelper
   end
 
   def rspack_enabled?
-    # Actor is the request, not current_user: a nil actor never matches a
-    # percentage_of_actors gate, which would exclude all anonymous traffic from the rollout.
+    # The rollout flag's actor is the request: a nil current_user never matches a percentage_of_actors
+    # gate, which would exclude anonymous traffic. The opt-in flag takes current_user so individuals
+    # can be enabled with --user without skewing the rollout percentage.
     default = Gitlab.config.webpack.bundler == 'rspack' ||
-      (Rails.env.production? && Feature.enabled?(:rspack_production_assets, Feature.current_request))
+      (Rails.env.production? && (
+        Feature.enabled?(:rspack_production_assets, Feature.current_request) ||
+        Feature.enabled?(:rspack_production_assets_opt_in, current_user)
+      ))
 
     Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: default)
   end

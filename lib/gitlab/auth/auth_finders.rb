@@ -44,6 +44,7 @@ module Gitlab
       JOB_TOKEN_PARAM = :job_token
       DEPLOY_TOKEN_HEADER = 'HTTP_DEPLOY_TOKEN'
       RUNNER_TOKEN_PARAM = :token
+      RUNNER_TOKEN_HEADER = 'HTTP_RUNNER_TOKEN'
       RUNNER_JOB_TOKEN_PARAM = :token
 
       PARAM_TOKEN_KEYS = [
@@ -191,7 +192,8 @@ module Gitlab
       def find_runner_from_token
         return unless api_request?
 
-        token = current_request.params[RUNNER_TOKEN_PARAM].presence
+        token = current_request.params[RUNNER_TOKEN_PARAM].presence ||
+          current_request.env[RUNNER_TOKEN_HEADER].presence
         return unless token
 
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)

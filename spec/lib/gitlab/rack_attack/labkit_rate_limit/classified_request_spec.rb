@@ -114,6 +114,13 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
 
         expect(request.labkit_facts).to include(runner_id: '1', requester_id: nil)
       end
+
+      it 'resolves the runner from the Runner-Token header router discovery sends' do
+        runner = create(:ci_runner)
+
+        expect(facts_for('/api/v4/runners/router/discovery', 'HTTP_RUNNER_TOKEN' => runner.token))
+          .to include(runner_id: runner.id.to_s, requester_id: nil)
+      end
     end
 
     # runner_jobs mirrors runner_jobs_request?: the path plus the auth method. The

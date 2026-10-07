@@ -788,6 +788,26 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
       expect(request_authenticator.runner).to be_blank
     end
+
+    context 'with a Runner-Token header, as router discovery sends' do
+      let_it_be(:runner) { create(:ci_runner) }
+
+      before do
+        env['SCRIPT_NAME'] = '/api/v4/runners/router/discovery'
+      end
+
+      it 'returns the runner' do
+        env['HTTP_RUNNER_TOKEN'] = runner.token
+
+        expect(request_authenticator.runner).to eq(runner)
+      end
+
+      it 'returns nil for an unknown token' do
+        env['HTTP_RUNNER_TOKEN'] = 'unknown'
+
+        expect(request_authenticator.runner).to be_nil
+      end
+    end
   end
 
   describe '#job_from_token' do

@@ -16,7 +16,7 @@ RSpec.describe Repositories::BranchNamesFinder, feature_category: :source_code_m
       expect(offset_names).not_to include(*starting_names)
 
       all_names = create_branch_names_finder(0, 100, 'snippet/*').execute
-      expect(all_names).to contain_exactly(*starting_names, *offset_names)
+      expect(all_names).to match_array(starting_names + offset_names)
     end
 
     it 'returns all filtered branch names sorted alphabetically with no matching default branch' do

@@ -65,6 +65,8 @@ Agentic Chat can:
 For an overview, see [GitLab Duo Chat (agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->
 
+Share your feedback in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
+
 ## Use GitLab Duo Chat
 
 You can use GitLab Duo Chat in:
@@ -589,17 +591,6 @@ All approvals reset when you start a new conversation.
 | Approve tools for a session |                        No |                                                            Yes, IDEs only                                                                                                          |
 
 [^not-in-ide-chat]: Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.
-
-## Troubleshooting
-
-When working with GitLab Duo Chat, you might encounter issues.
-
-For information on resolving these issues, see [Troubleshooting](troubleshooting.md).
-
-## Feedback
-
-Your feedback is valuable in helping us improve this feature.
-Share your experience in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
 
 ## Related topics
 

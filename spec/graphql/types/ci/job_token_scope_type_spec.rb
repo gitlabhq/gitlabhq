@@ -109,9 +109,9 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
               outbound_paths = [project.path, outbound_allowlist_project.path, both_allowlists_project.path]
               inbound_paths = [project.path, inbound_allowlist_project.path, both_allowlists_project.path]
 
-              expect(returned_project_paths).to contain_exactly(*outbound_paths)
-              expect(returned_outbound_paths).to contain_exactly(*outbound_paths)
-              expect(returned_inbound_paths).to contain_exactly(*inbound_paths)
+              expect(returned_project_paths).to match_array(outbound_paths)
+              expect(returned_outbound_paths).to match_array(outbound_paths)
+              expect(returned_inbound_paths).to match_array(inbound_paths)
             end
           end
 

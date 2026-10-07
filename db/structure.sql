@@ -13318,8 +13318,10 @@ CREATE TABLE ai_self_hosted_models (
     encrypted_api_token_iv bytea,
     identifier text,
     provider smallint DEFAULT 0 NOT NULL,
+    iam_role text,
     CONSTRAINT check_a28005edb2 CHECK ((char_length(endpoint) <= 2048)),
     CONSTRAINT check_cccb37e0de CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_cf16972fab CHECK ((char_length(iam_role) <= 2048)),
     CONSTRAINT check_d1e593d04d CHECK ((char_length(identifier) <= 255))
 );
 
@@ -25410,6 +25412,8 @@ CREATE TABLE namespace_ai_settings (
     denied_domains text[] DEFAULT '{}'::text[] NOT NULL,
     ai_catalog_restricted_to_group_hierarchy boolean DEFAULT false NOT NULL,
     web_search_enabled boolean DEFAULT false NOT NULL,
+    configured_at jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_namespace_ai_settings_configured_at_is_hash CHECK ((jsonb_typeof(configured_at) = 'object'::text)),
     CONSTRAINT check_namespace_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
 );
 

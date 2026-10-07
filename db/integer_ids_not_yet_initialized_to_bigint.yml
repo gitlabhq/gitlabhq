@@ -137,10 +137,6 @@ ci_runner_projects:
 ci_runners:
 - allowed_plan_ids
 - id
-ci_sources_pipelines:
-- id
-- project_id
-- source_project_id
 ci_triggers:
 - id
 - owner_id

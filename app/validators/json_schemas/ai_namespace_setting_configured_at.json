@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "AI Namespace Setting configuration provenance: setting name to time of last explicit submission",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "duo_workflow_mcp_enabled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ai_usage_data_collection_enabled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ai_catalog_restricted_to_group_hierarchy": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "web_search_enabled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "prompt_injection_protection_level": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

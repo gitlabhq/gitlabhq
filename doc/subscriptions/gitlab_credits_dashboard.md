@@ -49,9 +49,9 @@ The dashboard displays summary cards of key metrics:
 
 - Current month usage: Total GitLab Credits used in the current month (if you have a monthly commitment)
 - Included credits: Total credits included with your subscription (if you have a monthly commitment)
-- Committed credits: Credits from your Monthly Committed Pool (if applicable)
+- Committed credits: Credits from your monthly commitment pool (if applicable)
 - Monthly waivers: Remaining credits from waivers (if applicable)
-- On-Demand usage: Credits consumed beyond your included and committed amounts.
+- On-demand usage: Credits consumed beyond your included and committed amounts.
   If you have enough waiver credits to offset all on-demand credits, the GitLab Credits Dashboard hides
   the **On-Demand** card and displays the **Monthly Waiver** card instead.
 - Usage control status: Whether individual users have been blocked from
@@ -180,7 +180,7 @@ The following cap types are available:
 
 | Cap type | Applies to | Credit sources counted | Managed through |
 |---|---|---|---|
-| Subscription cap | All users on the subscription | On-Demand only | Customers Portal |
+| Subscription cap | All users on the subscription | On-demand only | Customers Portal |
 | Flat user cap | Individual users (default limit) | All | User interface, GraphQL API |
 | Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | User interface, GraphQL API |
 

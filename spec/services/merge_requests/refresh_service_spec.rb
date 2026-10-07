@@ -1261,17 +1261,5 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       expect(merge_request.auto_merge_enabled?).to be_falsey
       expect(merge_request.merge_user).to be_nil
     end
-
-    context 'when auto_merge_abort_uses_target_project is disabled' do
-      before do
-        stub_feature_flags(auto_merge_abort_uses_target_project: false)
-      end
-
-      it 'does not persist the abort note' do
-        refresh
-
-        expect(abort_note).to be_nil
-      end
-    end
   end
 end

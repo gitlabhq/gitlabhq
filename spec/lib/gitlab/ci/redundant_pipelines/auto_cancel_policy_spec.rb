@@ -107,6 +107,26 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::AutoCancelPolicy, feature_categor
         expect(policy.cancel_mode).to be_nil
       end
     end
+
+    context 'when only the cache protects the pipeline', :clean_gitlab_redis_shared_state do
+      before do
+        Gitlab::Ci::RedundantPipelines::CandidateCache
+          .for(project_id: project.id, ref: pipeline.ref)
+          .protect(Gitlab::Ci::RedundantPipelines::PipelineKey.of(pipeline))
+      end
+
+      it 'cancels nothing' do
+        expect(policy.cancel_mode).to be_nil
+      end
+
+      context 'when the pipeline only cancels interruptible jobs' do
+        let(:auto_cancel_on_new_commit) { 'interruptible' }
+
+        it 'still cancels its interruptible jobs' do
+          expect(policy.cancel_mode).to eq(:interruptible)
+        end
+      end
+    end
   end
 
   describe '#cancelable_by_newer_pipeline?' do

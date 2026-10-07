@@ -225,19 +225,30 @@ To diagnose:
    curl "https://openbao.example.com/v1/sys/health"
    ```
 
-A maintenance worker retries a stale task up to three times, then stops. After that, the record
-stays in `provisioning` with no automated recovery, and the retries log `Retrying failed
-secrets_manager maintenance task`.
+The `ProjectSecretsManagerMaintenanceTasksCronWorker` and
+`GroupSecretsManagerMaintenanceTasksCronWorker` workers retry a stale task up to three times.
+Each retry logs `Retrying failed secrets_manager maintenance task`.
+After the third retry, the `ProjectSecretsManagerReapOrphanTasksCronWorker` and
+`GroupSecretsManagerReapOrphanTasksCronWorker` workers remove the stuck secrets manager.
+The removal needs a working connection to OpenBao and can take up to 45 minutes after the third
+retry.
 
-After you fix the connectivity, disable and re-enable the Secrets Manager to provision it again.
+After you fix the connectivity and the stuck secrets manager is removed, turn on the Secrets Manager
+again. If you get `Secrets manager deprovision is in progress`, wait and try again.
 
 ### Authentication mount missing after self-initialization
 
 On a fresh installation with multiple OpenBao pods, a self-initialization race can leave OpenBao
-unsealed but without the `gitlab_rails_jwt/` authentication mount. The pods look healthy, but secret
-operations fail with permission denied. Run `bao auth list` with a root token to confirm the mount
-exists. To prevent the race, start a fresh installation with a single replica, confirm
-initialization completes, then scale up.
+unsealed but without the `gitlab_rails_jwt/` authentication mount. The pods look healthy, but
+secrets managers stay in `provisioning` and the provisioning worker logs `permission denied`.
+An OpenBao pod logs `initializing node did not win leadership election`.
+
+To resolve this issue, [reset OpenBao data](maintenance.md#reset-openbao-data).
+
+To prevent this issue during installation, set `openbao.autoscaling.minReplicas` and
+`openbao.autoscaling.maxReplicas` to `1` when you install OpenBao. After you
+[confirm that OpenBao is initialized](#check-openbao-status), set both values back to your usual
+number of replicas and redeploy.
 
 ## GitLab cannot connect to OpenBao
 

@@ -33387,6 +33387,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|Remove schedule"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Request GitLab Duo"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Requested"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Review a merge request"
 msgstr ""
 
@@ -33532,6 +33538,9 @@ msgid "DuoAgentsPlatform|Target is required."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Tell the agent what to change and it will generate an updated plan for your review."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Thank you for your interest in this feature, we've recorded your request. If you need access to GitLab Credits sooner, ask your group Owner."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The service account has the %{linkStart}%{role} role%{linkEnd} on this project."

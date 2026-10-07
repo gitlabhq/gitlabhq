@@ -1896,11 +1896,53 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
         expect { find_runner_from_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
+
+      context 'with a Runner-Token header' do
+        let_it_be(:other_runner, freeze: true) { create(:ci_runner) }
+
+        it 'returns the runner if the header token is valid' do
+          set_header(described_class::RUNNER_TOKEN_HEADER, runner.token)
+
+          expect(find_runner_from_token).to eq(runner)
+        end
+
+        it 'returns nil if the header is blank' do
+          set_header(described_class::RUNNER_TOKEN_HEADER, '')
+
+          expect(find_runner_from_token).to be_nil
+        end
+
+        it 'returns exception if the header token is invalid' do
+          set_header(described_class::RUNNER_TOKEN_HEADER, 'invalid_token')
+
+          expect { find_runner_from_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+
+        it 'prefers the token param' do
+          set_param(:token, runner.token)
+          set_header(described_class::RUNNER_TOKEN_HEADER, other_runner.token)
+
+          expect(find_runner_from_token).to eq(runner)
+        end
+
+        it 'falls back to the header when the token param is blank' do
+          set_param(:token, '')
+          set_header(described_class::RUNNER_TOKEN_HEADER, runner.token)
+
+          expect(find_runner_from_token).to eq(runner)
+        end
+      end
     end
 
     context 'without API requests' do
       before do
         set_header('SCRIPT_NAME', 'url.ics')
+      end
+
+      it 'returns nil if the header token is valid' do
+        set_header(described_class::RUNNER_TOKEN_HEADER, runner.token)
+
+        expect(find_runner_from_token).to be_nil
       end
 
       it 'returns nil if token is valid' do

@@ -9,8 +9,9 @@ module Gitlab
         ONLY_INTERRUPTIBLE_JOBS = 'interruptible'
         CONSERVATIVE = 'conservative'
 
-        def initialize(pipeline)
+        def initialize(pipeline, cache: CandidateCache.for(project_id: pipeline.project_id, ref: pipeline.ref))
           @pipeline = pipeline
+          @cache = cache
         end
 
         # Whether auto-cancel applies to this pipeline on its own. We exclude child
@@ -40,7 +41,7 @@ module Gitlab
 
         private
 
-        attr_reader :pipeline
+        attr_reader :pipeline, :cache
 
         delegate :project, :auto_cancel_on_new_commit, to: :pipeline, private: true
 
@@ -56,8 +57,11 @@ module Gitlab
           auto_cancel_on_new_commit == CONSERVATIVE
         end
 
+        # The cache holds the protection until the worker writes the column.
         def protected?
-          !interruptible_only? && pipeline.interruptible_protected?
+          return false if interruptible_only?
+
+          pipeline.interruptible_protected? || cache.protected?(PipelineKey.of(pipeline))
         end
 
         def enabled?

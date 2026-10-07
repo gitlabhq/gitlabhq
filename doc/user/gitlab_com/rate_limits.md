@@ -54,12 +54,15 @@ each hour from an IP address:
 - Git over HTTPS requests
 - Sign-in requests, including [SAML SSO](../group/saml_sso/_index.md) and sign-in with a
   third-party provider such as Google or GitHub
-- [OAuth 2.0](../../api/oauth2.md) authorization, access token, and device authorization requests
+- [OAuth 2.0](../../api/oauth2.md) authorization, access token, device authorization, and dynamic client
+  registration requests
 - [OpenID Connect](../../integration/openid_connect_provider.md) discovery requests, such as the ones
   cloud providers make to verify [CI/CD ID tokens](../../ci/secrets/id_token_authentication.md)
+- OAuth discovery requests that [MCP clients](../model_context_protocol/mcp_server.md) make before they sign in
 - Terraform service discovery requests, made before installing modules from the
   [Terraform module registry](../packages/terraform_module_registry/_index.md)
 - [Feature flag](../../operations/feature_flags.md) polling from Unleash clients
+- Requests that register a runner with a registration token
 - [SCIM](../group/saml_sso/scim_setup.md) provisioning requests from an identity provider
 - Requests that Jira Cloud sends to the [GitLab for Jira Cloud app](../../integration/jira/connect-app.md),
   such as searching for and linking repositories

@@ -1,3 +1,6 @@
+const {
+  createFrontendIntegrationConfig,
+} = require('@gitlab/frontend-tests/integration/jest-config');
 const baseConfig = require('./jest.config.base');
 const IS_JH = require('./config/helpers/is_jh_env');
 
@@ -19,16 +22,8 @@ const config = baseConfig('spec/frontend/integration', {
   ],
 });
 
-// `msw` dependencies that ship ESM only, so Jest has to transform them.
-const MSW_ESM_DEPENDENCIES = ['rettime', 'until-async', '@open-draft/.*'];
-
-module.exports = {
+module.exports = createFrontendIntegrationConfig({
   ...config,
-  transformIgnorePatterns: config.transformIgnorePatterns.map((pattern) =>
-    pattern.replace('node_modules/(?!(', `node_modules/(?!(${MSW_ESM_DEPENDENCIES.join('|')}|`),
-  ),
-  testPathIgnorePatterns: [],
-  setupFiles: ['<rootDir>/ee/spec/frontend/integration/polyfills.js'],
   setupFilesAfterEnv: [
     ...(USE_VUE_3 ? ['<rootDir>/spec/frontend/vue_compat_test_setup.js'] : []),
     '<rootDir>/spec/frontend/__helpers__/shared_test_setup.js',
@@ -36,8 +31,4 @@ module.exports = {
       entry.endsWith('/spec/frontend/integration/test_setup.js') ? INTEGRATION_SETUP : entry,
     ),
   ],
-  fakeTimers: {
-    enableGlobally: false,
-  },
-  testTimeout: process.env.CI ? 20000 : 7000,
-};
+});

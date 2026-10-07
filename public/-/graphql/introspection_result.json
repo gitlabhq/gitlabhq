@@ -368157,7 +368157,7 @@
             },
             {
               "name": "duoWorkflowWorkflows",
-              "description": "List the workflows owned by the current user. Introduced in GitLab 17.2: Status: Experiment.",
+              "description": "List the workflows owned by the current user.",
               "args": [
                 {
                   "name": "projectPath",
@@ -368385,8 +368385,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 17.2."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "echo",
