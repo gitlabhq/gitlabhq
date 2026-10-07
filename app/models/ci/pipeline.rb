@@ -1592,6 +1592,21 @@ module Ci
       end
     end
 
+    # Accessibility report limited to the artifacts `user` may read. `user` may be
+    # nil for an anonymous request (public artifacts only). Mirrors
+    # #accessible_test_reports.
+    def accessible_accessibility_reports(user)
+      authz_cache = {}
+
+      Gitlab::Ci::Reports::AccessibilityReports.new.tap do |accessibility_reports|
+        latest_report_builds(Ci::JobArtifact.of_report_type(:accessibility)).each do |build|
+          next unless build.report_readable_by?(:accessibility, user, authz_cache)
+
+          build.collect_accessibility_reports!(accessibility_reports)
+        end
+      end
+    end
+
     def codequality_reports
       Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
         latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
@@ -1600,9 +1615,35 @@ module Ci
       end
     end
 
+    # Codequality report limited to the artifacts `user` may read. `user` may be
+    # nil for an anonymous request (public artifacts only).
+    def accessible_codequality_reports(user)
+      authz_cache = {}
+
+      Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+        latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
+          next unless build.report_readable_by?(:codequality, user, authz_cache)
+
+          build.collect_codequality_reports!(codequality_reports)
+        end
+      end
+    end
+
     def terraform_reports
       ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
         latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+          build.collect_terraform_reports!(terraform_reports)
+        end
+      end
+    end
+
+    def accessible_terraform_reports(user)
+      authz_cache = {}
+
+      ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+        latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+          next unless build.report_readable_by?(:terraform, user, authz_cache)
+
           build.collect_terraform_reports!(terraform_reports)
         end
       end

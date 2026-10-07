@@ -46,6 +46,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
             job_token_policies: :read_work_items
           get ':work_item_iid/children' do
@@ -73,6 +74,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           post ':work_item_iid/children/:child_id' do
             resource_parent = resolve_namespace_resource_parent!(params[:id])

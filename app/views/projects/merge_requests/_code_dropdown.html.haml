@@ -21,7 +21,7 @@
                   = _('Open in Web IDE')
           - if Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
             %li.gl-dropdown-item
-              = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", target: '_blank', class: 'dropdown-item' do
+              = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{Gitlab::UrlBuilder.build(merge_request)}", target: '_blank', class: 'dropdown-item' do
                 .gl-dropdown-item-text-wrapper
                   = _('Open in Ona')
           = render_if_exists 'projects/merge_requests/code_dropdown_open_in_workspace'

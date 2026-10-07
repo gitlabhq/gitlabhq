@@ -81,7 +81,7 @@ module Packages
     scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
     scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
     scope :including_project_route, -> { includes(project: :route) }
-    scope :including_project_namespace_route, -> { includes(project: { namespace: :route }) }
+    scope :including_project_namespace_route, -> { includes(project: [:project_feature, { namespace: :route }]) }
     scope :including_tags, -> { includes(:tags) }
     scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
     scope :has_version, -> { where.not(version: nil) }

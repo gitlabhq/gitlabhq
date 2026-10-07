@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, feature_category: :importers do
+  include StubRequests
+
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:bulk_import) { create(:bulk_import, user: user) }
@@ -139,11 +141,15 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
           pipeline.run
         end
 
-        it 'fetches snippet repo from url' do
+        it 'fetches snippet repo from url with the validated resolved address' do
+          url = "https://oauth2:#{bulk_import_configuration.access_token}@example.com/foo/bar/snippets/42.git"
+
+          stub_dns(http_url_to_repo, ip_address: '8.8.8.9')
+
           expect_next_instance_of(Repository) do |repository|
             expect(repository)
               .to receive(:fetch_as_mirror)
-              .with("https://oauth2:#{bulk_import_configuration.access_token}@example.com/foo/bar/snippets/42.git")
+              .with(url, resolved_address: '8.8.8.9')
           end
 
           pipeline.run
@@ -193,6 +199,27 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
         end
 
         it_behaves_like 'skippable snippet'
+      end
+    end
+  end
+
+  describe '#dns_rebind_protection?' do
+    subject(:dns_rebind_protection) { pipeline.send(:dns_rebind_protection?) }
+
+    context 'when an http proxy is configured' do
+      it 'returns false' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+
+        expect(dns_rebind_protection).to be(false)
+      end
+    end
+
+    context 'when no http proxy is configured' do
+      it 'returns the current setting' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(false)
+        allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(true)
+
+        expect(dns_rebind_protection).to be(true)
       end
     end
   end

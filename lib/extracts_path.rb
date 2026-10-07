@@ -154,7 +154,10 @@ module ExtractsPath
 
   def ref_extractor
     @ref_extractor ||=
-      ExtractsRef::RefExtractor.new(repository_container, params.permit(:id, :ref, :path, :ref_type)).tap(&:extract!)
+      ExtractsRef::RefExtractor.new(
+        repository_container,
+        params.permit(:id, :ref, :path).merge(ref_type: request.query_parameters[:ref_type])
+      ).tap(&:extract!)
   end
 end
 # rubocop:enable Gitlab/ModuleWithInstanceVariables
