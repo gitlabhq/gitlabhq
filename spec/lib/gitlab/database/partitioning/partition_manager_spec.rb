@@ -1076,6 +1076,24 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       it_behaves_like 'run only once analyze within interval'
     end
 
+    context 'when only the partitions have been analyzed' do
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:parent_table_has_loose_foreign_key?).and_return(false)
+        end
+
+        allow(connection).to receive(:select_value).and_call_original
+        # vacuumdb --analyze-in-stages, run by a major upgrade, analyzes partitions but not their parent
+        connection.execute("ANALYZE #{analyze_partition}")
+      end
+
+      it 'analyzes the partitioned table' do
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
+
+        expect(control.occurrences).to include(analyze_regex)
+      end
+    end
+
     context 'when a partition is created within the analyze interval' do
       let(:created_partition_identifier) { "gitlab_partitions_dynamic.#{analyze_table}_2" }
       let(:created_partition_analyze_regex) do

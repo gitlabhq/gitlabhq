@@ -22,7 +22,8 @@ RSpec.describe Gitlab::Ci::Reports::Security::Scan, feature_category: :vulnerabi
           type: 'dependency-scanning',
           start_time: 'placeholer',
           end_time: 'placholder',
-          partial_scan_mode: nil
+          partial_scan_mode: nil,
+          git_strategy: nil
         )
       end
     end
@@ -44,6 +45,32 @@ RSpec.describe Gitlab::Ci::Reports::Security::Scan, feature_category: :vulnerabi
         expect(subject).to have_attributes(
           partial_scan_mode: 'differential'
         )
+      end
+    end
+
+    context 'when the observability events report a git strategy' do
+      let(:params) do
+        {
+          type: 'secret_detection',
+          observability: {
+            events: [
+              { event: 'collect_secrets_analyzer_ruleset_adoption_metrics_from_pipeline', custom_ruleset: false },
+              { event: 'collect_secrets_analyzer_scan_metrics_from_pipeline', git_strategy: 'FetchRange' }
+            ]
+          }
+        }
+      end
+
+      it 'sets git_strategy from the event that has one' do
+        expect(subject.git_strategy).to eq('FetchRange')
+      end
+    end
+
+    context 'when the observability events are malformed' do
+      let(:params) { { type: 'secret_detection', observability: { events: 'unexpected' } } }
+
+      it 'does not set git_strategy' do
+        expect(subject.git_strategy).to be_nil
       end
     end
 

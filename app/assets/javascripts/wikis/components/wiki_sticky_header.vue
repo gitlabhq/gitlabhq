@@ -52,17 +52,21 @@ export default {
     <div
       v-if="isStickyHeaderShowing"
       data-testid="wiki-sticky-header"
-      class="gl-duration-200 gl-border-b gl-fixed gl-left-0 gl-right-0 gl-top-0 gl-z-3 gl-bg-default gl-py-2 gl-transition-all print:gl-hidden"
+      class="wiki-sticky-header gl-duration-200 gl-border-b gl-fixed gl-left-0 gl-right-0 gl-top-0 gl-z-3 gl-bg-default gl-py-2 gl-transition-all print:gl-hidden"
     >
-      <div class="gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 gl-py-1 @xl/panel:gl-px-6">
-        <wiki-sidebar-toggle class="gl-mr-2" action="open" />
-        <gl-link
-          href="#top"
-          class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong"
-          :title="pageHeading"
-        >
-          {{ pageHeading }}
-        </gl-link>
+      <div class="gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 gl-py-1">
+        <div class="gl-flex gl-grow gl-items-center">
+          <div class="toggle-with-hide-transition">
+            <wiki-sidebar-toggle action="open" />
+          </div>
+          <gl-link
+            href="#top"
+            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong"
+            :title="pageHeading"
+          >
+            {{ pageHeading }}
+          </gl-link>
+        </div>
 
         <gl-button
           v-if="showEditButton"

@@ -319,7 +319,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
 
       it 'does not transition from other statuses' do
-        source_user = create(:import_source_user, :reassignment_in_progress)
+        source_user = build_stubbed(:import_source_user, :reassignment_in_progress)
 
         expect(source_user.revoke).to be(false)
       end
@@ -354,6 +354,8 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
 
       context 'and admins bypass placeholder user confirmation is not allowed' do
+        subject(:source_user) { build_stubbed(:import_source_user, :pending_reassignment, namespace: namespace) }
+
         before do
           expect_next_instance_of(Import::UserMapping::AdminBypassAuthorizer, reassigned_by_user) do |authorizer|
             allow(authorizer).to receive(:allowed?).and_return(false)
@@ -387,6 +389,8 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
 
       context 'when project bot bypass is not allowed' do
+        subject(:source_user) { build_stubbed(:import_source_user, :pending_reassignment, namespace: namespace) }
+
         before do
           expect_next_instance_of(Import::UserMapping::ProjectBotBypassAuthorizer, namespace,
             reassign_to_user, reassigned_by_user) do |authorizer|

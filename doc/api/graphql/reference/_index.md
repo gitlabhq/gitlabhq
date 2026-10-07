@@ -35938,6 +35938,18 @@ Fields:
 | <a id="aigovernancetoolcall-count"></a>`count` | [`Int!`](#int) | Number of tool invocations in the selected timeframe. |
 | <a id="aigovernancetoolcall-toolname"></a>`toolName` | [`String!`](#string) | Name of the tool. |
 
+### `AiGovernanceToolCallsByRisk`
+
+AI agent tool calls grouped by risk level.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancetoolcallsbyrisk-approximate"></a>`approximate` | [`Boolean!`](#boolean) | Whether the counts leave out some tools because the namespace used more distinct tools than are read. |
+| <a id="aigovernancetoolcallsbyrisk-slices"></a>`slices` | [`[AiGovernanceToolCallsRiskSlice!]!`](#aigovernancetoolcallsriskslice) | Tool calls per risk level, in the order READ, WRITE, DESTROY, UNCLASSIFIED. Risk levels with no calls have a count of zero. |
+| <a id="aigovernancetoolcallsbyrisk-total"></a>`total` | [`Int!`](#int) | Total number of tool invocations in the selected timeframe. |
+
 ### `AiGovernanceToolCallsReport`
 
 Top tools invoked by AI agents, with a flag marking approximate counts.
@@ -35947,7 +35959,19 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aigovernancetoolcallsreport-approximate"></a>`approximate` | [`Boolean!`](#boolean) | Indicates whether counts were capped and are approximate. |
+| <a id="aigovernancetoolcallsreport-byrisk"></a>`byRisk` {{< icon name="warning-solid" >}} | [`AiGovernanceToolCallsByRisk`](#aigovernancetoolcallsbyrisk) | Introduced in GitLab 19.5. Status: Experiment. Tool calls grouped by risk level. Computed only when selected. |
 | <a id="aigovernancetoolcallsreport-nodes"></a>`nodes` | [`[AiGovernanceToolCall!]!`](#aigovernancetoolcall) | Tools invoked in the selected timeframe, ordered by invocation count. |
+
+### `AiGovernanceToolCallsRiskSlice`
+
+Number of AI agent tool calls at one risk level.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancetoolcallsriskslice-count"></a>`count` | [`Int!`](#int) | Number of tool invocations at the risk level in the selected timeframe. |
+| <a id="aigovernancetoolcallsriskslice-risk"></a>`risk` | [`AiGovernanceToolRisk!`](#aigovernancetoolrisk) | Risk level of the tools. |
 
 ### `AiGovernanceUserActivity`
 
@@ -69552,6 +69576,17 @@ Source that recorded an AI governance session.
 | <a id="aigovernancesessionsource-claude_code_glab"></a>`CLAUDE_CODE_GLAB` | Claude Code session reported through the GitLab CLI. |
 | <a id="aigovernancesessionsource-gitlab_duo"></a>`GITLAB_DUO` | Session run on the GitLab Duo Agent Platform. |
 | <a id="aigovernancesessionsource-mcp"></a>`MCP` | Session inferred from tool calls made through the GitLab MCP server. |
+
+### `AiGovernanceToolRisk`
+
+Risk level of a tool, taken from its action type in the tool registry.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aigovernancetoolrisk-destroy"></a>`DESTROY` | Tools that can make destructive changes, such as running commands or Git. |
+| <a id="aigovernancetoolrisk-read"></a>`READ` | Tools that only read data. |
+| <a id="aigovernancetoolrisk-unclassified"></a>`UNCLASSIFIED` | Tools not found in the tool registry. |
+| <a id="aigovernancetoolrisk-write"></a>`WRITE` | Tools that create or change data. |
 
 ### `AiMessageRole`
 

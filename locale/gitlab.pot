@@ -8709,6 +8709,9 @@ msgstr ""
 msgid "AiGovernance|Destroy"
 msgstr ""
 
+msgid "AiGovernance|Destructive"
+msgstr ""
+
 msgid "AiGovernance|Developers by AI agent"
 msgstr ""
 
@@ -8734,6 +8737,9 @@ msgid "AiGovernance|Failed to load project exposure."
 msgstr ""
 
 msgid "AiGovernance|Failed to load session distribution."
+msgstr ""
+
+msgid "AiGovernance|Failed to load tool calls by risk."
 msgstr ""
 
 msgid "AiGovernance|Failed to load tool calls."
@@ -8883,6 +8889,12 @@ msgstr ""
 msgid "AiGovernance|This tool can invoke shell commands including git, curl, and file operations. It may bypass restrictions set on other tools."
 msgstr ""
 
+msgid "AiGovernance|Tool calls by risk"
+msgstr ""
+
+msgid "AiGovernance|Tool calls by risk level"
+msgstr ""
+
 msgid "AiGovernance|Tool management"
 msgstr ""
 
@@ -8902,6 +8914,9 @@ msgid "AiGovernance|Total number of tool calls"
 msgstr ""
 
 msgid "AiGovernance|Type"
+msgstr ""
+
+msgid "AiGovernance|Unclassified"
 msgstr ""
 
 msgid "AiGovernance|Usage rankings are always based on the last 30 days."
@@ -8931,6 +8946,9 @@ msgstr ""
 msgid "AiGovernance|View tool management"
 msgstr ""
 
+msgid "AiGovernance|View tool registry"
+msgstr ""
+
 msgid "AiGovernance|Which AI agents developers are using"
 msgstr ""
 
@@ -8947,6 +8965,11 @@ msgstr ""
 
 msgid "AiGovernance|suspicious"
 msgstr ""
+
+msgid "AiGovernance|tool call"
+msgid_plural "AiGovernance|tool calls"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "AiImpactAnalytics|%{duoCount}/%{allCount} pipelines"
 msgstr ""
@@ -11678,9 +11701,6 @@ msgid "AnalyticsDashboards|Scope"
 msgstr ""
 
 msgid "AnalyticsDashboards|Search groups and projects"
-msgstr ""
-
-msgid "AnalyticsDashboards|Searching"
 msgstr ""
 
 msgid "AnalyticsDashboards|Select a group or project"
@@ -32411,6 +32431,9 @@ msgid "DuoAgentPlatform|Model"
 msgstr ""
 
 msgid "DuoAgentPlatform|No GitLab Credits remain for this billing period. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "DuoAgentPlatform|No agent sessions"
 msgstr ""
 
 msgid "DuoAgentPlatform|Not set up yet. To get started, turn on GitLab Duo."
@@ -75584,9 +75607,6 @@ msgstr ""
 msgid "SecurityInventory|Infrastructure as code scanning (IaC)"
 msgstr ""
 
-msgid "SecurityInventory|Load more"
-msgstr ""
-
 msgid "SecurityInventory|Manage security configuration"
 msgstr ""
 
@@ -81522,6 +81542,9 @@ msgid "Snippets|%{spammable_titlecase} was submitted to Akismet successfully."
 msgstr ""
 
 msgid "Snippets|Add another file %{num}/%{total}"
+msgstr ""
+
+msgid "Snippets|Could not load the snippet. Refresh the page and try again."
 msgstr ""
 
 msgid "Snippets|Delete file"

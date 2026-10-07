@@ -59,7 +59,8 @@ When you exceed a rate limit, GitLab returns a `429 Too Many Requests` response 
 ## OAuth 2.0 tokens
 
 You can use an [OAuth 2.0 token](../oauth2.md) to authenticate with the API by passing it in either
-the `access_token` parameter or the `Authorization` header.
+the `access_token` parameter or the `Authorization` header, but not both. Requests that include the
+token in both places return `400 Bad Request`.
 
 Example of using the OAuth 2.0 token in a parameter:
 

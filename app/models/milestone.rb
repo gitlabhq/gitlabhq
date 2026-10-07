@@ -58,6 +58,11 @@ class Milestone < ApplicationRecord
   end
 
   scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :of_groups, ->(ids) { where(group_id: ids) }
+  scope :with_group, -> { preload(:group) }
+  # Pair with `of_groups`: the `group_id` leading key lets
+  # `index_milestones_on_group_id` supply the order instead of a pkey walk.
+  scope :order_by_group_and_id, -> { order(:group_id, :id) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
   scope :for_projects_and_groups, ->(projects, groups) do
     projects = projects.compact if projects.is_a? Array
@@ -73,9 +78,12 @@ class Milestone < ApplicationRecord
   scope :reorder_by_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
   scope :with_api_entity_associations, -> { preload(project: [:project_feature, :route, { namespace: :route }]) }
   scope :preload_for_indexing, -> do
-    includes(project: [
-      :project_feature, { namespace: %i[namespace_settings namespace_settings_with_ancestors_inherited_settings] }
-    ])
+    includes(
+      project: [
+        :project_feature, { namespace: %i[namespace_settings namespace_settings_with_ancestors_inherited_settings] }
+      ],
+      group: %i[namespace_settings namespace_settings_with_ancestors_inherited_settings]
+    )
   end
   scope :order_by_dates_and_title, -> { order(due_date: :asc, start_date: :asc, title: :asc) }
   scope :with_ids_or_title, ->(ids:, title:) { id_in(ids).or(with_title(title)) }

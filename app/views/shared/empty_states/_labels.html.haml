@@ -4,8 +4,8 @@
   - c.with_description do
     = _("You can also star a label to make it a priority label.")
     .gl-mt-5.gl-flex.gl-gap-3.gl-flex-wrap.gl-justify-center
-      - if can?(current_user, :admin_label, @project)
+      - if can?(current_user, :create_label, @project)
         = link_button_to _('New label'), new_project_label_path(@project), title: _('New label'), id: 'new_label_link', variant: :confirm
         = link_button_to _('Generate a default set of labels'), generate_project_labels_path(@project), method: :post, title: _('Generate a default set of labels'), id: 'generate_labels_link', variant: :confirm, category: :secondary
-      - if can?(current_user, :admin_label, @group)
+      - if can?(current_user, :create_label, @group)
         = link_button_to _('New label'), new_group_label_path(@group), title: _('New label'), id: 'new_label_link', variant: :confirm

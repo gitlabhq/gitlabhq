@@ -187,12 +187,12 @@ export default {
     <div id="top"></div>
     <gl-intersection-observer @appear="hideStickyHeader" @disappear="showStickyHeader">
       <div
-        class="js-wiki-page-header wiki-page-header has-sidebar-toggle detail-page-header gl-flex gl-flex-wrap gl-border-b-0 gl-px-3 !gl-pt-0"
+        class="js-wiki-page-header wiki-page-header has-sidebar-toggle detail-page-header gl-flex gl-flex-wrap gl-border-b-0 gl-px-5 !gl-pt-0"
       >
         <page-heading class="gl-wrap-break-word gl-w-full">
           <template #heading>
             <span class="gl-flex gl-items-center">
-              <div class="toggle-with-hide-transition -gl-mr-2 gl-mb-1">
+              <div class="toggle-with-hide-transition gl-mb-2">
                 <wiki-sidebar-toggle action="open" />
               </div>
               <span>{{ pageHeading }}</span>

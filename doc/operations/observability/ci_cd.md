@@ -209,8 +209,8 @@ The pipeline span carries the following attributes:
 | `pipeline.sha` | The commit SHA the pipeline ran against. |
 | `pipeline.status` | The pipeline status, for example `success` or `failed`. |
 | `pipeline.detailed_status` | The detailed status text shown in the UI. |
-| `pipeline.duration` | The pipeline duration in milliseconds. |
-| `pipeline.queued_duration` | The time the pipeline spent queued, in milliseconds. |
+| `pipeline.duration` | The pipeline duration in seconds. |
+| `pipeline.queued_duration` | The time the pipeline spent queued, in seconds. |
 | `pipeline.protected_ref` | Whether the pipeline ran on a protected branch or tag. |
 | `pipeline.url` | The URL of the pipeline. |
 | `pipeline.tag` | Whether the pipeline ran on a tag, if this information is available. |
@@ -237,8 +237,8 @@ The pipeline span carries the following attributes:
 | `vcs.change.state` | The state of the associated merge request. See [Attribute value mapping](#attribute-value-mapping). |
 | `vcs.ref.base.name` | The target branch of the associated merge request, if the pipeline ran for one. |
 | `gitlab.vcs.ref.head.revision.message` | The message of the commit associated with the pipeline, if available. |
-| `gitlab.cicd.pipeline.run.duration` | The pipeline duration in milliseconds. |
-| `gitlab.cicd.pipeline.run.queued_duration` | The time the pipeline spent queued, in milliseconds. |
+| `gitlab.cicd.pipeline.run.duration` | The pipeline duration in seconds. |
+| `gitlab.cicd.pipeline.run.queued_duration` | The time the pipeline spent queued, in seconds. |
 | `gitlab.cicd.pipeline.source_pipeline.id` | The ID of the parent pipeline, for child or multi-project pipelines. |
 | `gitlab.cicd.pipeline.stages` | An array of the pipeline's stage names, if available. |
 | `gitlab.cicd.pipeline.trigger.type` | The event that triggered the pipeline, for example `push` or `schedule`. |
@@ -254,8 +254,8 @@ The job span carries the following attributes for each job or bridge:
 | `job.name` | The name of the job. |
 | `job.stage` | The stage the job belongs to. |
 | `job.status` | The job status, for example `success` or `failed`. |
-| `job.duration` | The job duration in milliseconds. |
-| `job.queued_duration` | The time the job spent queued, in milliseconds. |
+| `job.duration` | The job duration in seconds. |
+| `job.queued_duration` | The time the job spent queued, in seconds. |
 | `job.manual` | Whether the job requires manual action to run. |
 | `job.allow_failure` | Whether the job is allowed to fail without affecting the pipeline result. |
 | `job.failure_reason` | The reason the job failed, if it failed. |
@@ -284,9 +284,9 @@ The job span carries the following attributes for each job or bridge:
 | `gitlab.cicd.pipeline.task.allow_failure` | Whether the job is allowed to fail without affecting the pipeline result. |
 | `gitlab.cicd.pipeline.task.kind` | The value `bridge` for jobs that trigger downstream pipelines. |
 | `gitlab.cicd.pipeline.task.run.created_at` | The time the job was created, in Unix nanoseconds. |
-| `gitlab.cicd.pipeline.task.run.duration` | The job duration in milliseconds. |
+| `gitlab.cicd.pipeline.task.run.duration` | The job duration in seconds. |
 | `gitlab.cicd.pipeline.task.run.failure_reason` | The reason the job failed, if it failed. |
-| `gitlab.cicd.pipeline.task.run.queued_duration` | The time the job spent queued, in milliseconds. |
+| `gitlab.cicd.pipeline.task.run.queued_duration` | The time the job spent queued, in seconds. |
 | `gitlab.cicd.pipeline.task.run.when` | The `rules` or `when` keyword value that determined whether the job ran, if available. |
 | `gitlab.cicd.pipeline.task.trigger.type` | The event that triggered the pipeline, for example `push` or `schedule`. |
 | `gitlab.cicd.pipeline.task.artifacts.filename` | The filename of the job's artifacts archive, if the job produced one. |
@@ -308,6 +308,12 @@ triggering job's span.
 The parent and child pipelines then appear as a single connected trace.
 
 ### Metrics
+
+{{< history >}}
+
+- Duration metric values [corrected](https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/176) to seconds in GitLab 19.5. Previously, duration gauge values were 1000 times smaller than the actual duration, and histogram data points were placed in the wrong buckets.
+
+{{< /history >}}
 
 GitLab exports the following metrics for each pipeline:
 

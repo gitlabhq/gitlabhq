@@ -1,5 +1,5 @@
 - page_title _('Labels')
-- can_admin_label = can?(current_user, :admin_label, @group)
+- can_create_label = can?(current_user, :create_label, @group)
 - search = params[:search]
 - subscribed = params[:subscribed]
 - archived = params[:archived]
@@ -8,7 +8,7 @@
 
 %h1.gl-sr-only= page_title
 
-= render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
+= render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_create_label: can_create_label
 
 - if labels_or_filters
   #js-promote-label-modal

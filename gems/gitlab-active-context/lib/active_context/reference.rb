@@ -6,6 +6,7 @@ module ActiveContext
     extend Concerns::Preprocessor
     include Preprocessors::ContentFetcher
     include Preprocessors::Embeddings
+    include Preprocessors::EmbeddedSkipper
 
     DELIMITER = '|'
 

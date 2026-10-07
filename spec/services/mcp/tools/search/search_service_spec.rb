@@ -37,6 +37,8 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
         properties: {
           scope: {
             type: 'string',
+            enum: %w[projects groups work_items merge_requests milestones users snippet_titles
+              blobs wiki_blobs commits notes],
             description: 'Specify the type of content to search for. Available content types vary by search ' \
               "context:\n" \
               "\n" \
@@ -115,7 +117,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     let(:mock_response) { { content: [{ type: 'text', text: 'Success' }], isError: false } }
 
     context 'with global search arguments' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
 
       it 'selects the global search tool' do
         expect(mock_tool_global).to receive(:execute).with(request: request, params: params).and_return(mock_response)
@@ -127,7 +129,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'with group search arguments' do
-      let(:arguments) { { scope: 'issues', search: 'test query', group_id: 'test-group' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query', group_id: 'test-group' } }
       let(:transformed_params) { { arguments: arguments.merge(id: 'test-group') } }
 
       it 'selects the group search tool and transforms arguments' do
@@ -141,7 +143,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'with project search arguments' do
-      let(:arguments) { { scope: 'issues', search: 'test query', project_id: 'test-project' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query', project_id: 'test-project' } }
       let(:transformed_params) { { arguments: arguments.merge(id: 'test-project') } }
 
       it 'selects the project search tool and transforms arguments' do
@@ -155,7 +157,10 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'with both group_id and project_id' do
-      let(:arguments) { { scope: 'issues', search: 'test query', group_id: 'test-group', project_id: 'test-project' } }
+      let(:arguments) do
+        { scope: 'work_items', search: 'test query', group_id: 'test-group', project_id: 'test-project' }
+      end
+
       let(:transformed_params) { { arguments: arguments.merge(id: 'test-project') } }
 
       it 'prioritizes project search over group search' do
@@ -169,7 +174,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'when tool is not found' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
       let(:service_with_empty_tools) { described_class.new(tools: []) }
 
       it 'returns error response' do
@@ -195,7 +200,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'when tool execution fails' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
 
       before do
         allow(mock_tool_global).to receive(:execute).and_raise(StandardError, 'Tool failed')
@@ -210,7 +215,7 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
     end
 
     context 'when search_level is not supported' do
-      let(:arguments) { { scope: 'issues', search: 'test query' } }
+      let(:arguments) { { scope: 'work_items', search: 'test query' } }
 
       it 'raises an ArgumentError' do
         mock_level = instance_double(Search::Level, as_sym: :unsupported_value)

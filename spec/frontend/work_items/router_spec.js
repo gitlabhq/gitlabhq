@@ -64,7 +64,7 @@ describe('Work items router', () => {
       router,
       provide: {
         getWorkItemTypeConfiguration: jest.fn(),
-        canAdminLabel: true,
+        canCreateLabel: true,
         duoRemoteFlowsAvailability: false,
         fullPath: 'full-path',
         groupPath: '',

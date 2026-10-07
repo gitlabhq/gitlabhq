@@ -10,8 +10,6 @@ attributes:
   - redacted_description_html
   app/models/supply_chain/slsa/provenance_statement.rb:
   - invocation_id
-  ee/app/models/iteration.rb:
-  - skip_future_date_validation
   ee/app/services/epics/transfer_service.rb:
   - epic_created_events
 constants:
@@ -492,7 +490,6 @@ methods:
   - send_confirmation_instructions
   ee/app/models/ee/user_preference.rb:
   - distinct_eligible_duo_add_on_assignments
-  - no_eligible_duo_add_on_assignments?
   ee/app/models/geo/base_registry.rb:
   - self.has_create_events?
   ee/app/models/geo/container_repository_registry.rb:

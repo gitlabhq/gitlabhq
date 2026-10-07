@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
         { key: 'pipeline.id', value: { intValue: 123 } },
         { key: 'pipeline.name', value: { stringValue: 'test-pipeline' } },
         { key: 'pipeline.status', value: { stringValue: 'success' } },
-        { key: 'pipeline.duration', value: { intValue: 300000 } }
+        { key: 'pipeline.duration', value: { intValue: 300 } }
       )
     end
 
@@ -379,13 +379,13 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
 
         it 'includes gitlab.cicd.pipeline.run.duration' do
           expect(pipeline_log[:attributes]).to include(
-            { key: 'gitlab.cicd.pipeline.run.duration', value: { intValue: 300000 } }
+            { key: 'gitlab.cicd.pipeline.run.duration', value: { intValue: 300 } }
           )
         end
 
         it 'includes gitlab.cicd.pipeline.run.queued_duration' do
           expect(pipeline_log[:attributes]).to include(
-            { key: 'gitlab.cicd.pipeline.run.queued_duration', value: { intValue: 30000 } }
+            { key: 'gitlab.cicd.pipeline.run.queued_duration', value: { intValue: 30 } }
           )
         end
 
@@ -617,19 +617,19 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
 
         it 'includes gitlab.cicd.pipeline.task.run.queued_duration' do
           expect(job_log[:attributes]).to include(
-            { key: 'gitlab.cicd.pipeline.task.run.queued_duration', value: { intValue: 5000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.queued_duration', value: { intValue: 5 } }
           )
           expect(failed_job_log[:attributes]).to include(
-            { key: 'gitlab.cicd.pipeline.task.run.queued_duration', value: { intValue: 2000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.queued_duration', value: { intValue: 2 } }
           )
         end
 
         it 'includes gitlab.cicd.pipeline.task.run.duration' do
           expect(job_log[:attributes]).to include(
-            { key: 'gitlab.cicd.pipeline.task.run.duration', value: { intValue: 120000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.duration', value: { intValue: 120 } }
           )
           expect(failed_job_log[:attributes]).to include(
-            { key: 'gitlab.cicd.pipeline.task.run.duration', value: { intValue: 60000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.duration', value: { intValue: 60 } }
           )
         end
       end
@@ -691,8 +691,8 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
           status: 'success',
           started_at: Time.zone.parse('2023-01-01T10:04:00Z'),
           finished_at: Time.zone.parse('2023-01-01T10:04:30Z'),
-          duration: 30000,
-          queued_duration: 1000,
+          duration: 30,
+          queued_duration: 1,
           manual: false,
           allow_failure: false,
           bridge: true

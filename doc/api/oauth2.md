@@ -224,6 +224,10 @@ be used as a CSRF token.
    RestClient.post 'https://gitlab.example.com/oauth/token', parameters
    ```
 
+   You can send `client_id` and `client_secret` as request parameters, as shown, or in an
+   `Authorization: Basic` header, but not both. Requests that include the secret in both places
+   return `400 Bad Request`.
+
    Example response:
 
    ```json
@@ -394,16 +398,20 @@ A sample application that implements the client side device flow can be found at
 ## Access GitLab API with `access token`
 
 The `access token` allows you to make requests to the API on behalf of a user.
-You can pass the token either as GET parameter:
+You can pass the token either as a GET parameter or in the `Authorization` header, but not both.
+Requests that include the token in both places return `400 Bad Request`.
+
+As a GET parameter:
 
 ```plaintext
 GET https://gitlab.example.com/api/v4/user?access_token=<OAUTH-TOKEN>
 ```
 
-or you can put the token to the Authorization header:
+In the `Authorization` header:
 
 ```shell
-curl --header "Authorization: Bearer <OAUTH-TOKEN>" \
+curl --request GET \
+  --header "Authorization: Bearer <OAUTH-TOKEN>" \
   --url "https://gitlab.example.com/api/v4/user"
 ```
 
@@ -438,7 +446,8 @@ You must supply the access token, either:
 - In the Authorization header:
 
   ```shell
-  curl --header "Authorization: Bearer <OAUTH-TOKEN>" \
+  curl --request GET \
+    --header "Authorization: Bearer <OAUTH-TOKEN>" \
     --url "https://gitlab.example.com/oauth/token/info"
   ```
 

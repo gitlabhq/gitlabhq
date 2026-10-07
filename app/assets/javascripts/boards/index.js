@@ -67,7 +67,7 @@ function mountBoardApp(el) {
     rootPath,
     wiHasScopedLabelsFeature,
     wiGroupPath,
-    wiCanAdminLabel,
+    wiCanCreateLabel,
     hasCustomFieldsFeature,
   } = el.dataset;
 
@@ -113,7 +113,7 @@ function mountBoardApp(el) {
       canAdminBoard: parseBoolean(el.dataset.canAdminBoard),
       allowLabelCreate: parseBoolean(el.dataset.canUpdate),
       isSignedIn: isLoggedIn(),
-      canAdminLabel: parseBoolean(wiCanAdminLabel),
+      canCreateLabel: parseBoolean(wiCanCreateLabel),
       // Features
       epicFeatureAvailable: parseBoolean(el.dataset.epicFeatureAvailable),
       iterationFeatureAvailable: parseBoolean(el.dataset.iterationFeatureAvailable),

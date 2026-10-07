@@ -61,6 +61,27 @@ in a repository with no commits.
 To fix this issue, push an initial commit to the project before you run a flow.
 For example, add a `README.md` file.
 
+## Error: `Workflow could not use your token to connect to your GitLab instance`
+
+When you use the GitLab Duo Agent Platform in the GitLab Duo CLI or your IDE, you might get the error:
+`Workflow could not use your token to connect to your GitLab instance.`
+
+This issue can occur when:
+
+- You are using a GitLab Duo Agent Platform trial.
+- You selected a frontier model that is not included in trials.
+- You are using an earlier version of the GitLab Duo CLI or your editor extension.
+
+To resolve this issue, either:
+
+- Select another available model. For more information, see
+  [model selection](model_selection.md#select-a-model-for-a-feature).
+- [Buy GitLab Credits](../../subscriptions/gitlab_credits.md#buy-gitlab-credits).
+
+To get a more detailed error message, update the GitLab Duo CLI or your editor extension to the latest version.
+
+For more information, see [GitLab Duo Agent Platform trials](../../subscriptions/free_trials.md#gitlab-duo-agent-platform-trials).
+
 ## Session is stuck in created state
 
 If a session for your flow does not start:

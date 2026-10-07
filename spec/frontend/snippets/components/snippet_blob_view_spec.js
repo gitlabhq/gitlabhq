@@ -319,6 +319,30 @@ describe('Blob Embeddable', () => {
   });
 
   describe('GetBlobContent query', () => {
+    it('renders empty content when the response contains no snippet', async () => {
+      const handler = jest.fn().mockResolvedValue({
+        data: { snippets: { __typename: 'SnippetConnection', id: '1', nodes: [] } },
+      });
+      createComponent({ handler });
+      await waitForPromises();
+
+      expect(findBlobContent().props('content')).toBe('');
+    });
+
+    it('renders empty content when the response contains no matching blob', async () => {
+      createComponent({ handler: mockDefaultHandler({ nodes: [] }) });
+      await waitForPromises();
+
+      expect(findBlobContent().props('content')).toBe('');
+    });
+
+    it('renders empty content when the query fails', async () => {
+      createComponent({ handler: jest.fn().mockRejectedValue(new Error('GraphQL error')) });
+      await waitForPromises();
+
+      expect(findBlobContent().props('content')).toBe('');
+    });
+
     it('passes projectId when snippet has a project', async () => {
       const handler = mockDefaultHandler();
       createComponent({ handler });

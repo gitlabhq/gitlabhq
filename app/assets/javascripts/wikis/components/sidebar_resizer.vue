@@ -1,17 +1,24 @@
 <script>
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import {
+  WIKI_SIDEBAR_WIDTH_CSS_VAR,
+  WIKI_SIDEBAR_WIDTH_STORAGE_KEY,
+  WIKI_SIDEBAR_DEFAULT_WIDTH,
+} from '~/wikis/constants';
+import { getWikiOverviewEl } from '~/wikis/utils/sidebar_toggle';
 
 export default {
   name: 'SidebarResizer',
+  storageKey: WIKI_SIDEBAR_WIDTH_STORAGE_KEY,
   components: {
     PanelResizer,
     LocalStorageSync,
   },
   data() {
     return {
-      defaultWidth: 220,
-      sidebarWidth: 220,
+      defaultWidth: WIKI_SIDEBAR_DEFAULT_WIDTH,
+      sidebarWidth: WIKI_SIDEBAR_DEFAULT_WIDTH,
       minWidth: 200,
       maxWidth: 600,
     };
@@ -35,7 +42,7 @@ export default {
       this.getSidebar().classList.add('transition-enabled');
     },
     applySidebarWidth() {
-      this.getSidebarContainer().style.width = `${this.sidebarWidth}px`;
+      getWikiOverviewEl()?.style.setProperty(WIKI_SIDEBAR_WIDTH_CSS_VAR, `${this.sidebarWidth}px`);
     },
     updateWidth(width) {
       this.removeTransitions();
@@ -59,7 +66,7 @@ export default {
   >
     <local-storage-sync
       v-model="sidebarWidth"
-      storage-key="wiki_sidebar_width"
+      :storage-key="$options.storageKey"
       @input="updateWidth"
     />
     <panel-resizer

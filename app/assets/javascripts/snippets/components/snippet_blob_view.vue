@@ -1,5 +1,6 @@
 <script>
 import GetBlobContent from 'shared_queries/snippet/snippet_blob_content.query.graphql';
+import { ERROR_POLICY_NONE } from '~/lib/graphql';
 
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
@@ -20,6 +21,7 @@ export default {
   apollo: {
     blobContent: {
       query: GetBlobContent,
+      errorPolicy: ERROR_POLICY_NONE,
       variables() {
         return {
           ids: [this.snippet.id],
@@ -82,11 +84,9 @@ export default {
     },
     onContentUpdate(data) {
       const { path: blobPath } = this.blob;
-      const {
-        blobs: { nodes: dataBlobs },
-      } = data.snippets.nodes[0];
+      const dataBlobs = data.snippets.nodes[0]?.blobs?.nodes || [];
       const updatedBlobData = dataBlobs.find((blob) => blob.path === blobPath);
-      return updatedBlobData.richData || updatedBlobData.plainData;
+      return updatedBlobData?.richData || updatedBlobData?.plainData || '';
     },
   },
   BLOB_RENDER_EVENT_LOAD,

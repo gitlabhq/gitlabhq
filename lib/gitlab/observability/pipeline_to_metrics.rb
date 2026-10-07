@@ -85,14 +85,14 @@ module Gitlab
             dataPoints: [
               {
                 timeUnixNano: current_time_nanoseconds,
-                asDouble: pipeline[:duration] / 1000.0,
+                asDouble: pipeline[:duration].to_f,
                 attributes: [
                   { key: 'pipeline.status', value: { stringValue: pipeline[:status] } },
                   { key: 'pipeline.ref', value: { stringValue: pipeline[:ref] } }
                 ],
                 exemplars: [{
                   timeUnixNano: current_time_nanoseconds,
-                  asDouble: pipeline[:duration] / 1000.0,
+                  asDouble: pipeline[:duration].to_f,
                   traceId: pipeline_trace_id,
                   spanId: pipeline_span_id
                 }]
@@ -103,7 +103,7 @@ module Gitlab
       end
 
       def build_pipeline_run_duration_histogram
-        duration_seconds = pipeline[:duration] / 1000.0
+        duration_seconds = pipeline[:duration].to_f
 
         {
           name: 'cicd.pipeline.run.duration',
@@ -282,7 +282,7 @@ module Gitlab
             dataPoints: [
               {
                 timeUnixNano: current_time_nanoseconds,
-                asDouble: pipeline[:queued_duration] / 1000.0,
+                asDouble: pipeline[:queued_duration].to_f,
                 attributes: [
                   { key: 'pipeline.status', value: { stringValue: pipeline[:status] } },
                   { key: 'pipeline.ref', value: { stringValue: pipeline[:ref] } }
@@ -302,7 +302,7 @@ module Gitlab
             dataPoints: [
               {
                 timeUnixNano: current_time_nanoseconds,
-                asDouble: pipeline[:queued_duration] / 1000.0,
+                asDouble: pipeline[:queued_duration].to_f,
                 attributes: semconv_pipeline_attributes
               }
             ]
@@ -349,7 +349,7 @@ module Gitlab
         buckets = Array.new(bounds.length + 1, 0)
 
         durations.each do |duration|
-          bucket_index = bounds.find_index { |bound| duration <= bound * 1000 }
+          bucket_index = bounds.find_index { |bound| duration <= bound }
           bucket_index = bounds.length if bucket_index.nil?
           buckets[bucket_index] += 1
         end

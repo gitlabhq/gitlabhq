@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import SnippetApp from '~/snippets/components/show.vue';
 import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
@@ -12,6 +13,9 @@ import SnippetDescription from '~/snippets/components/snippet_description.vue';
 import { createGQLSnippet, createGQLSnippetsQueryResponse } from '../test_utils';
 
 Vue.use(VueApollo);
+
+jest.mock('~/lib/logger');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const createGQLBlobViewer = (type, fileType) => ({
   __typename: 'SnippetBlobViewer',
@@ -59,9 +63,17 @@ describe('Snippet view app', () => {
       },
     ]);
 
-  function createComponent({ props = defaultProps, snippet = {} } = {}) {
+  function createComponent({
+    props = defaultProps,
+    snippet = {},
+    queryResponse,
+    queryHandler,
+  } = {}) {
     const apolloProvider = createMockApollo([
-      [GetSnippetQuery, jest.fn().mockResolvedValue(createQueryResponse(snippet))],
+      [
+        GetSnippetQuery,
+        queryHandler ?? jest.fn().mockResolvedValue(queryResponse ?? createQueryResponse(snippet)),
+      ],
     ]);
 
     wrapper = shallowMount(SnippetApp, {
@@ -106,6 +118,41 @@ describe('Snippet view app', () => {
     expect(blobs).toHaveLength(2);
     expect(blobs.at(0).props('blob')).toEqual(TEXT_BLOB);
     expect(blobs.at(1).props('blob')).toEqual(BINARY_BLOB);
+  });
+
+  describe('when the query fails', () => {
+    beforeEach(async () => {
+      createComponent({ queryHandler: jest.fn().mockRejectedValue(new Error('GraphQL error')) });
+      await waitForPromises();
+    });
+
+    it('renders the error alert instead of the snippet', () => {
+      expect(wrapper.findComponent(GlAlert).text()).toBe(
+        'Could not load the snippet. Refresh the page and try again.',
+      );
+      expect(wrapper.findComponent(SnippetHeader).exists()).toBe(false);
+    });
+
+    it('reports the error to Sentry', () => {
+      expect(captureException).toHaveBeenCalledWith(expect.any(Error), {
+        tags: { vue_component: 'GetSnippetMixin' },
+      });
+    });
+  });
+
+  describe('when the query returns no snippet', () => {
+    beforeEach(async () => {
+      createComponent({ queryResponse: createGQLSnippetsQueryResponse([]) });
+      await waitForPromises();
+    });
+
+    it('renders an error alert instead of the snippet', () => {
+      expect(wrapper.findComponent(GlAlert).text()).toBe(
+        'Could not load the snippet. Refresh the page and try again.',
+      );
+      expect(wrapper.findComponent(SnippetHeader).exists()).toBe(false);
+      expect(wrapper.findComponent(SnippetDescription).exists()).toBe(false);
+    });
   });
 
   describe('hasUnretrievableBlobs alert rendering', () => {

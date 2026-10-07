@@ -220,6 +220,67 @@ func TestExecuteWorkflow(t *testing.T) {
 		require.Len(t, capturedClientName, 255)
 		require.Equal(t, strings.Repeat("a", 255), capturedClientName)
 	})
+
+	t.Run("client name in config headers, sends it exactly once", func(t *testing.T) {
+		for _, headerKey := range []string{"x-gitlab-client-name", "X-Gitlab-Client-Name"} {
+			t.Run(headerKey, func(t *testing.T) {
+				headers := map[string]string{
+					headerKey:              "chrome",
+					"x-gitlab-client-type": "browser",
+				}
+				config := &api.DuoWorkflowServiceConfig{
+					URI:     server.Addr,
+					Headers: headers,
+					Secure:  false,
+				}
+				client, err := NewClient(config, "test-agent/1.0", "request-client")
+				require.NoError(t, err)
+				t.Cleanup(func() { _ = client.Close() })
+
+				var capturedClientNames, capturedClientTypes []string
+				server.execWorkflowHandler = func(stream pb.DuoWorkflow_ExecuteWorkflowServer) error {
+					md, ok := metadata.FromIncomingContext(stream.Context())
+					require.True(t, ok)
+					capturedClientNames = md.Get("x-gitlab-client-name")
+					capturedClientTypes = md.Get("x-gitlab-client-type")
+					return nil
+				}
+
+				workflowStream, err := client.ExecuteWorkflow(ctx)
+				require.NoError(t, err)
+				_, _ = workflowStream.Recv()
+
+				require.Equal(t, []string{"chrome"}, capturedClientNames)
+				require.Equal(t, []string{"browser"}, capturedClientTypes)
+				require.Equal(t, "chrome", headers[headerKey], "config headers must not be mutated")
+			})
+		}
+	})
+
+	t.Run("empty client name in config headers, falls back to request client name", func(t *testing.T) {
+		config := &api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{"x-gitlab-client-name": ""},
+			Secure:  false,
+		}
+		client, err := NewClient(config, "test-agent/1.0", "request-client")
+		require.NoError(t, err)
+		t.Cleanup(func() { _ = client.Close() })
+
+		var capturedClientNames []string
+		server.execWorkflowHandler = func(stream pb.DuoWorkflow_ExecuteWorkflowServer) error {
+			md, ok := metadata.FromIncomingContext(stream.Context())
+			require.True(t, ok)
+			capturedClientNames = md.Get("x-gitlab-client-name")
+			return nil
+		}
+
+		workflowStream, err := client.ExecuteWorkflow(ctx)
+		require.NoError(t, err)
+		_, _ = workflowStream.Recv()
+
+		require.Equal(t, []string{"request-client"}, capturedClientNames)
+	})
 }
 
 func TestExecuteWorkflowErrorPreservesGRPCStatus(t *testing.T) {

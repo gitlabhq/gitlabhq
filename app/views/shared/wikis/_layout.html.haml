@@ -2,7 +2,7 @@
 - @noteable_type = 'Wiki'
 - @gfm_form = true
 
-.wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
+.wiki-overview.js-wiki-overview{ class: fluid_layout ? 'layout-fluid' : 'layout-limited-width' }
   = render 'shared/wikis/sidebar'
   .wiki-page-details
     = yield

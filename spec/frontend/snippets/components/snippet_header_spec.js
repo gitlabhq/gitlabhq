@@ -334,6 +334,25 @@ describe('Snippet header component', () => {
     });
   });
 
+  describe('when the snippet has no userPermissions', () => {
+    beforeEach(() => {
+      createComponent({
+        permissions: null,
+        snippetProps: { userPermissions: undefined },
+        provide: {
+          reportAbusePath: null,
+          canReportSpam: false,
+        },
+      });
+    });
+
+    it('renders without action buttons instead of throwing', () => {
+      expect(findTitle().text()).toBe(title);
+      expect(findEditButton().exists()).toBe(false);
+      expect(findDropdown().exists()).toBe(false);
+    });
+  });
+
   it('renders modal for deletion of a snippet', () => {
     createComponent();
     expect(wrapper.findComponent(GlModal).exists()).toBe(true);

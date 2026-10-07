@@ -31,8 +31,8 @@ class IssuableSidebarBasicEntity < Grape::Entity
       issuable.can_move?(current_user)
     end
 
-    expose :can_admin_label do |issuable|
-      can?(current_user, :admin_label, issuable.project)
+    expose :can_create_label do |issuable|
+      can?(current_user, :create_label, issuable.project)
     end
 
     expose :can_create_timelogs do |issuable|

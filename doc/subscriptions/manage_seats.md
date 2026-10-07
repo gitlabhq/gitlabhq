@@ -203,6 +203,7 @@ You cannot turn off restricted access when your subscription does not allow over
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a feature flag](../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/594044) in GitLab 19.5. Feature flag `bso_minimal_access_fallback` removed.
 
 {{< /history >}}
 
@@ -220,7 +221,7 @@ You can view seat usage and manage users with Minimal Access.
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of seats can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the Minimal Access fallback feature is enabled, users are assigned Minimal Access instead of being blocked.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. Users are assigned Minimal Access instead of being blocked.
   - Multiple users with the Owner role or administrator access add members simultaneously.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your

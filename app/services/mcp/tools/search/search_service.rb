@@ -52,12 +52,14 @@ module Mcp
             Only applies to work_items and merge_requests scopes.
           DESC
 
+          scopes = %i[global group project].index_with { |context| available_search_scopes(context) }
+
           scope_description = <<~DESC.strip
             Specify the type of content to search for. Available content types vary by search context:
 
-            - GitLab instance: #{available_search_scopes(:global).join(', ')}
-            - Group: #{available_search_scopes(:group).join(', ')}
-            - Project: #{available_search_scopes(:project).join(', ')}
+            - GitLab instance: #{scopes[:global].join(', ')}
+            - Group: #{scopes[:group].join(', ')}
+            - Project: #{scopes[:project].join(', ')}
 
             Examples:
             - Use "work_items" to search for issues, tasks, epics, and other work items
@@ -84,6 +86,7 @@ module Mcp
           properties_hash = {
             scope: {
               type: 'string',
+              enum: scopes.values.flatten.uniq,
               description: scope_description
             },
             search: {

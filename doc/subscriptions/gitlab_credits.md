@@ -300,6 +300,7 @@ for premium models with optimized integration:
 
 | Model                                                            | Calls with one credit |
 |------------------------------------------------------------------|-----------------------|
+| `claude-haiku-5.5`                                               | 8.0                   |
 | `gpt-5.6-luna`                                                   | 8.0                   |
 | `gpt-6-luna`                                                     | 8.0                   |
 | `minimax-m3`                                                     | 8.0                   |

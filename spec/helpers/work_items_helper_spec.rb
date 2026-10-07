@@ -63,7 +63,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
         expect(helper.work_items_data(project, current_user)).to include(
           {
             autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-            can_admin_label: 'true',
+            can_create_label: 'true',
             can_bulk_update: 'true',
             full_path: project.full_path,
             group_path: nil,
@@ -286,7 +286,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       it 'does not include properties provided by GraphQL' do
         data = helper.work_item_views_only_data(project)
         # These are now provided by GraphQL metadata provider, not server
-        expect(data).not_to have_key(:can_admin_label)
+        expect(data).not_to have_key(:can_create_label)
         expect(data).not_to have_key(:can_create_projects)
         expect(data).not_to have_key(:labels_manage_path)
         expect(data).not_to have_key(:register_path)

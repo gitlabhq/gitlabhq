@@ -16,7 +16,7 @@
           "properties" : {
             "can_edit": { "type": "boolean" },
             "can_move": { "type": "boolean" },
-            "can_admin_label": { "type": "boolean" }
+            "can_create_label": { "type": "boolean" }
           }
         }
       ]

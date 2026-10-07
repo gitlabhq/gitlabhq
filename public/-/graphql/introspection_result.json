@@ -25156,6 +25156,73 @@
         },
         {
           "kind": "OBJECT",
+          "name": "AiGovernanceToolCallsByRisk",
+          "description": "AI agent tool calls grouped by risk level.",
+          "fields": [
+            {
+              "name": "approximate",
+              "description": "Whether the counts leave out some tools because the namespace used more distinct tools than are read.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "slices",
+              "description": "Tool calls per risk level, in the order READ, WRITE, DESTROY, UNCLASSIFIED. Risk levels with no calls have a count of zero.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "AiGovernanceToolCallsRiskSlice",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "total",
+              "description": "Total number of tool invocations in the selected timeframe.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "AiGovernanceToolCallsReport",
           "description": "Top tools invoked by AI agents, with a flag marking approximate counts.",
           "fields": [
@@ -25174,6 +25241,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "byRisk",
+              "description": "Tool calls grouped by risk level. Computed only when selected. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceToolCallsByRisk",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "nodes",
@@ -25203,6 +25282,84 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceToolCallsRiskSlice",
+          "description": "Number of AI agent tool calls at one risk level.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of tool invocations at the risk level in the selected timeframe.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "risk",
+              "description": "Risk level of the tools.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AiGovernanceToolRisk",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiGovernanceToolRisk",
+          "description": "Risk level of a tool, taken from its action type in the tool registry.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "READ",
+              "description": "Tools that only read data.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WRITE",
+              "description": "Tools that create or change data.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DESTROY",
+              "description": "Tools that can make destructive changes, such as running commands or Git.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNCLASSIFIED",
+              "description": "Tools not found in the tool registry.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

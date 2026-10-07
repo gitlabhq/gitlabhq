@@ -1545,21 +1545,21 @@ lib/gitlab/checks/
 /app/controllers/concerns/authenticates_with_two_factor_for_admin_mode.rb
 /app/controllers/concerns/enforces_admin_authentication.rb
 /app/controllers/concerns/enforces_two_factor_authentication.rb
-/app/controllers/concerns/oauth_applications.rb
+/app/controllers/concerns/oauth_applications.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/controllers/concerns/render_access_tokens.rb
 /app/controllers/concerns/renders_ldap_servers.rb
-/app/controllers/concerns/sessionless_authentication.rb
+/app/controllers/concerns/sessionless_authentication.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/controllers/groups/settings/access_tokens_controller.rb
 /app/controllers/ldap/
-/app/controllers/oauth/applications_controller.rb
-/app/controllers/oauth/token_info_controller.rb
-/app/controllers/oauth/tokens_controller.rb
+/app/controllers/oauth/applications_controller.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/app/controllers/oauth/token_info_controller.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/app/controllers/oauth/tokens_controller.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/controllers/omniauth_callbacks_controller.rb
 /app/controllers/passwords_controller.rb
 /app/controllers/profiles/two_factor_auths_controller.rb
 /app/controllers/projects/settings/access_tokens_controller.rb
 /app/controllers/user_settings/passwords_controller.rb
-/app/controllers/user_settings/personal_access_tokens_controller.rb
+/app/controllers/user_settings/personal_access_tokens_controller.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/finders/personal_access_tokens_finder.rb
 /app/helpers/access_tokens_helper.rb
 /app/helpers/auth_helper.rb
@@ -1569,17 +1569,19 @@ lib/gitlab/checks/
 /app/mailers/previews/devise_mailer_preview.rb
 /app/models/authentication_event.rb
 /app/models/authn/
+/app/models/authn/oauth_application.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/app/models/authn/oauth_consent.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/models/concerns/admin_changed_password_notifier.rb
 /app/models/concerns/async_devise_email.rb
 /app/models/concerns/encrypted_user_password.rb
 /app/models/concerns/token_authenticatable.rb
-/app/models/doorkeeper/access_grant.rb
-/app/models/doorkeeper/access_token.rb
+/app/models/doorkeeper/access_grant.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/app/models/doorkeeper/access_token.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/models/doorkeeper/openid_connect/
 /app/models/namespaces/ldap_setting.rb
-/app/models/oauth_access_grant.rb
-/app/models/oauth_access_token.rb
-/app/models/personal_access_token.rb
+/app/models/oauth_access_grant.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/app/models/oauth_access_token.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/app/models/personal_access_token.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/models/webauthn_registration.rb
 /app/serializers/access_token_entity_base.rb
 /app/serializers/group_access_token_entity.rb
@@ -1588,9 +1590,9 @@ lib/gitlab/checks/
 /app/serializers/impersonation_access_token_serializer.rb
 /app/serializers/project_access_token_entity.rb
 /app/serializers/project_access_token_serializer.rb
-/app/services/access_token_validation_service.rb
+/app/services/access_token_validation_service.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/services/group_access_tokens/
-/app/services/personal_access_tokens/
+/app/services/personal_access_tokens/ @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/services/project_access_tokens/
 /app/services/resource_access_tokens/
 /app/services/users/email_verification/generate_token_service.rb
@@ -1641,7 +1643,7 @@ lib/gitlab/checks/
 /config/initializers/8_devise.rb
 /config/initializers/devise_dynamic_password_length_validation.rb
 /config/initializers/devise_password_length.rb.example
-/config/initializers/doorkeeper.rb
+/config/initializers/doorkeeper.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/doorkeeper_openid_connect.rb
 /config/initializers/gitlab_shell_secret_token.rb
 /config/initializers/omniauth.rb
@@ -1758,11 +1760,11 @@ lib/gitlab/checks/
 /lib/api/entities/personal_access_token_with_token.rb
 /lib/api/entities/resource_access_token.rb
 /lib/api/entities/resource_access_token_with_token.rb
-/lib/api/helpers/authentication.rb
+/lib/api/helpers/authentication.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/api/helpers/packages/basic_auth_helpers.rb
-/lib/api/helpers/personal_access_tokens_helpers.rb
+/lib/api/helpers/personal_access_tokens_helpers.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/api/personal_access_tokens/
-/lib/api/personal_access_tokens.rb
+/lib/api/personal_access_tokens.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/api/resource_access_tokens/
 /lib/api/resource_access_tokens.rb
 /lib/api/support/token_with_expiration.rb
@@ -1775,25 +1777,25 @@ lib/gitlab/checks/
 /lib/bitbucket/app_password_connection.rb
 /lib/bitbucket/oauth_connection.rb
 /lib/gitlab/api_authentication/
-/lib/gitlab/auth.rb
+/lib/gitlab/auth.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/gitlab/auth/activity.rb
 /lib/gitlab/auth/atlassian/
-/lib/gitlab/auth/auth_finders.rb
+/lib/gitlab/auth/auth_finders.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/gitlab/auth/blocked_user_tracker.rb
 /lib/gitlab/auth/crowd/
 /lib/gitlab/auth/current_user_mode.rb
 /lib/gitlab/auth/database/
 /lib/gitlab/auth/devise/
 /lib/gitlab/auth/external_username_sanitizer.rb
-/lib/gitlab/auth/identity.rb
+/lib/gitlab/auth/identity.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/gitlab/auth/ip_blocked.rb
 /lib/gitlab/auth/key_status_checker.rb
 /lib/gitlab/auth/ldap/
 /lib/gitlab/auth/o_auth/
 /lib/gitlab/auth/omniauth_identity_linker_base.rb
 /lib/gitlab/auth/otp/
-/lib/gitlab/auth/request_authenticator.rb
-/lib/gitlab/auth/result.rb
+/lib/gitlab/auth/request_authenticator.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/lib/gitlab/auth/result.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/gitlab/auth/saml/
 /lib/gitlab/auth/too_many_ips.rb
 /lib/gitlab/auth/two_factor_auth_verifier.rb
@@ -1802,7 +1804,7 @@ lib/gitlab/checks/
 /lib/gitlab/background_migration/backfill_personal_access_token_seven_days_notification_sent.rb
 /lib/gitlab/background_migration/expire_o_auth_tokens.rb
 /lib/gitlab/background_migration/update_users_set_external_if_service_account.rb
-/lib/gitlab/base_doorkeeper_controller.rb
+/lib/gitlab/base_doorkeeper_controller.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /lib/gitlab/cleanup/personal_access_tokens.rb
 /lib/gitlab/data_builder/resource_access_token_payload.rb
 /lib/gitlab/devise_failure.rb

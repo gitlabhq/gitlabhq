@@ -327,14 +327,9 @@ module Gitlab
         end
 
         def last_analyzed_at_within_interval?
-          table_to_query = first_model_partition.identifier
-
           primary_transaction do
-            # We don't need to get the last_analyze_time from partitioned table,
-            # because it's not supported and always returns NULL for PG version below 14
-            # Therefore, we can always get the last_analyze_time from the first partition
             last_analyzed_at = connection.select_value(
-              "SELECT pg_stat_get_last_analyze_time('#{table_to_query}'::regclass)"
+              "SELECT pg_stat_get_last_analyze_time(#{connection.quote(model.table_name)}::regclass)"
             )
             last_analyzed_at.present? && last_analyzed_at >= ::Time.current - analyze_interval
           end

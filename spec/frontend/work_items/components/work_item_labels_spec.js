@@ -86,7 +86,7 @@ describe('WorkItemLabels component', () => {
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),
       provide: {
-        canAdminLabel: true,
+        canCreateLabel: true,
         issuesListPath: `${fullPath}/issues`,
         epicsListPath: 'groups/some-group/-/epics',
         labelsManagePath: `${fullPath}/labels`,

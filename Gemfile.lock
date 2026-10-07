@@ -789,7 +789,7 @@ GEM
       fog-json
       ipaddress (~> 0.8)
       xml-simple (~> 1.1)
-    fog-aws (3.33.3)
+    fog-aws (3.33.4)
       base64 (>= 0.2, < 0.4)
       fog-core (~> 2.6)
       fog-json (~> 1.1)
@@ -1269,7 +1269,7 @@ GEM
       opentracing (~> 0.3)
       thrift
     jaro_winkler (1.6.1)
-    jira-ruby (3.2.0)
+    jira-ruby (3.2.2)
       activesupport
       cgi
       jwt (>= 2.1)
@@ -3030,7 +3030,7 @@ CHECKSUMS
   flipper-active_record (1.3.6) sha256=0c172224e4024637abd47fbd1429ded2cd2042693757f3caa7b80f4bb06b2abe
   flipper-active_support_cache_store (1.3.6) sha256=c03c2d231e7f1f39b94b772fb856b4e5274697f87268497822cb117150cd1037
   fog-aliyun (0.4.1) sha256=88c8bf8dbf6c01ada34ec6241e44a18cd80696cdb455acf4618a17936313c803
-  fog-aws (3.33.3) sha256=7b13b0572f9388ebca3211b0fe56fc15bbb497f15d70978cb5e4b5cde70eecca
+  fog-aws (3.33.4) sha256=2177b4eff210644e64ba4c1934ed653c4cc920bad0c8e108a033f1776305ba80
   fog-core (2.6.0) sha256=3fe08aa83a23cddce42f4ba412040c08f890d7ff04c175c0ee59119371245be6
   fog-google (1.29.4) sha256=5185b727cedbdd7710d0703cd513b4b80c2aa356d3616839f6a2b841fd467ce3
   fog-json (1.2.0) sha256=dd4f5ab362dbc72b687240bba9d2dd841d5dfe888a285797533f85c03ea548fe
@@ -3205,7 +3205,7 @@ CHECKSUMS
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jaeger-client (1.1.0) sha256=cb5e9b9bbee6ee8d6a82d03d947a5b04543d8c0a949c22e484254f18d8a458a8
   jaro_winkler (1.6.1) sha256=c056b61bbf7f1fc0151bde7c8f589a2d666d42d0cdb889395b9b73b328e1b393
-  jira-ruby (3.2.0) sha256=3da8fbb2e5ea9787a45bd8a27c455532a0371c808bc7ec1e5303ec3c1bf58ee9
+  jira-ruby (3.2.2) sha256=38c27ed40b75c12921f963f3614390559f8538185a00d489ba0aedde6bc3945f
   jmespath (1.6.2) sha256=238d774a58723d6c090494c8879b5e9918c19485f7e840f2c1c7532cf84ebcb1
   js-routes (2.3.7) sha256=56e97bb300f34f2c569268bf28358b7ed82f455a32975c7c7d38befa76b722ed
   js_regex (3.14.0) sha256=49547691c75cf201769f7e432fde3e2071cbd3e0c4ef42bd341e260b683350a3

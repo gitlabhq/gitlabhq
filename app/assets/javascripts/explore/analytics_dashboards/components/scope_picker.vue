@@ -1,6 +1,6 @@
 <script>
-import { GlButton, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
-import { debounce, xor } from 'lodash-es';
+import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
+import { debounce, uniq, xor } from 'lodash-es';
 import { n__, s__, sprintf } from '~/locale';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -29,8 +29,6 @@ const ITEM_TYPE_BY_TYPENAME = {
 // Keeps a placeholder row's value from colliding with a real namespace path.
 const EMPTY_ITEM_SUFFIX = '::empty';
 const LOAD_MORE_ITEM_SUFFIX = '::load-more';
-const SEARCHING_ITEM_VALUE = '::searching';
-const NO_RESULTS_ITEM_VALUE = '::no-results';
 
 const SCOPE_NAMESPACE_BATCH_KEY = 'analyticsDashboardScopeNamespace';
 
@@ -39,7 +37,6 @@ export default {
   components: {
     GlButton,
     GlCollapsibleListbox,
-    GlLoadingIcon,
     ScopePickerItem,
   },
   props: {
@@ -160,17 +157,15 @@ export default {
       return this.$apollo.queries.searchResults.loading;
     },
     // Replaces the listbox's own count, which would include the pinned picks and status rows.
+    // Silent while searching, as the listbox announces that itself.
     searchSummary() {
-      if (this.isLoading) return '';
-      if (this.isSearching) return s__('AnalyticsDashboards|Searching');
+      if (this.isLoading || this.isSearching) return '';
 
       const listItems = this.hasSearch ? this.searchItems : this.groupItems;
       const count = listItems.filter(
         ({ itemType, placeholder }) =>
           !placeholder && itemType !== SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
       ).length;
-
-      if (this.hasSearch && !count) return s__('AnalyticsDashboards|No groups or projects found');
 
       return n__('%d result', '%d results', count);
     },
@@ -219,41 +214,21 @@ export default {
       );
     },
     items() {
-      let listItems = this.hasSearch ? this.searchItems : this.groupItems;
-      if (this.isSearching) {
-        listItems = [
-          {
-            value: SEARCHING_ITEM_VALUE,
-            text: s__('AnalyticsDashboards|Searching'),
-            placeholder: true,
-            loading: true,
-            disabled: true,
-          },
-        ];
-      } else if (this.hasSearch && !listItems.length) {
-        listItems = [
-          {
-            value: NO_RESULTS_ITEM_VALUE,
-            text: s__('AnalyticsDashboards|No groups or projects found'),
-            placeholder: true,
-            disabled: true,
-          },
-        ];
-      }
+      if (this.hasSearch) return this.searchItems;
 
       // Just show the groups/projects list when nothing is selected.
-      if (!this.selectedItems.length) return listItems;
+      if (!this.selectedItems.length) return this.groupItems;
 
       return [
         {
           text: s__('AnalyticsDashboards|Selected'),
           options: this.selectedItems,
         },
-        ...(listItems.length
+        ...(this.groupItems.length
           ? [
               {
                 text: s__('AnalyticsDashboards|Groups and projects'),
-                options: listItems,
+                options: this.groupItems,
               },
             ]
           : []),
@@ -296,12 +271,14 @@ export default {
       return items;
     },
     // Rows locked by a selected ancestor render checked, so the options behind them must count as
-    // selected too or they lose aria-selected.
+    // selected too or they lose aria-selected. Picks count even while a search hides their rows,
+    // or the listbox takes the toggle for an empty picker and greys the name it shows.
     listboxSelectedPaths() {
-      return this.items
-        .flatMap((item) => item.options ?? item)
-        .filter(({ selected }) => selected)
-        .map(({ value }) => value);
+      return uniq(
+        [...this.selectedItems, ...this.items.flatMap((item) => item.options ?? item)]
+          .filter(({ selected }) => selected)
+          .map(({ value }) => value),
+      );
     },
   },
   beforeDestroy() {
@@ -657,6 +634,7 @@ export default {
     :toggle-text="toggleText"
     :header-text="s__('AnalyticsDashboards|Scope')"
     :loading="isLoading"
+    :searching="isSearching"
     searchable
     :search-placeholder="s__('AnalyticsDashboards|Search groups and projects')"
     :no-results-text="s__('AnalyticsDashboards|No groups or projects found')"
@@ -672,7 +650,6 @@ export default {
       >
         <!-- Reserve the chevron's width so the text lines up with the projects it stands in for. -->
         <span class="gl-w-6 gl-shrink-0"></span>
-        <gl-loading-icon v-if="item.loading" size="sm" />
         {{ item.text }}
       </span>
 

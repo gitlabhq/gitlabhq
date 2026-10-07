@@ -656,6 +656,14 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     it 'returns short stats from the Gitaly commit' do
       expect(commit.short_stats).to eq(short_stats)
     end
+
+    context 'when the commit data comes from a Hash' do
+      let(:commit) { described_class.new(repository, sample_commit_hash) }
+
+      it 'returns nil' do
+        expect(commit.short_stats).to be_nil
+      end
+    end
   end
 
   describe '#gitaly_commit?' do

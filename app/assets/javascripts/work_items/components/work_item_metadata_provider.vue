@@ -40,7 +40,7 @@ export default normalizeRender({
       emailsHelpPagePath: computed(() => this.metadata.emailsHelpPagePath),
       markdownHelpPath: computed(() => this.metadata.markdownHelpPath),
       quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
-      canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
+      canCreateLabel: computed(() => Boolean(this.metadata?.adminLabel)),
       canCreateProjects: computed(() => Boolean(this.metadata?.createProjects)),
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
       calendarPath: computed(() => this.metadata.calendarPath),

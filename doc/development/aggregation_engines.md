@@ -205,7 +205,7 @@ SELECT
     `ch_aggregation_inner_query`.`aeq_mean_duration_secondary` = 1
   ) AS aeq_mean_duration,
   countIf(`ch_aggregation_inner_query`.`aeq_completion_rate` = 1) / COUNT(*) AS aeq_completion_rate,
-  quantile(0.5)(`ch_aggregation_inner_query`.`aeq_duration_quantile`) AS aeq_duration_quantile
+  quantileExactInclusive(0.5)(`ch_aggregation_inner_query`.`aeq_duration_quantile`) AS aeq_duration_quantile
 FROM (
   SELECT
     `sessions`.`flow_type` AS aeq_flow_type,
@@ -415,7 +415,7 @@ sum(credits_used) / nullIf(sum(length(created_merge_request_ids)), 0)
 
 #### `quantile` metric
 
-Calculates percentiles using ClickHouse's `quantile()` function. **Supports parameters.**
+Calculates percentiles using ClickHouse's `quantileExactInclusive()` function, which is exact and interpolates linearly between neighboring values. It keeps every value of the group in memory, unlike the sampled `quantile()`, so results are stable between runs. **Supports parameters.**
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|

@@ -60,11 +60,16 @@ This table lists the default model for each feature in the Agent Platform.
 - GPT-6.1 Sol [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7169) as a supported model for GitLab Duo Agentic Chat and all other agents on September 29, 2026.
 - Claude Sonnet 4.6 and Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7077) as supported models for Business Logic Security Scan on October 2, 2026.
 - Claude Sonnet 5.5 and Claude Sonnet 5.5 Gemini Enterprise Agent Platform [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7238) as supported models for Code Review Flow on October 5, 2026.
+- Claude Haiku 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7364) as a supported model for GitLab Duo Agentic Chat and all other agents on October 7, 2026.
 
 {{< /history >}}
 
 This table lists the models you can select for features
 in the Agent Platform.
+
+Model availability can vary by subscription and trial status.
+For information about model availability during trials, see
+[GitLab Duo Agent Platform trials](../../subscriptions/free_trials.md#gitlab-duo-agent-platform-trials).
 
 | Model                       | GitLab Duo<br> Agentic Chat | Code Review Flow[^supported-models-earlier-code-review] | Security Review Flow | Business Logic Security Scan[^bl-security-experiment] | Recommend Reviewers Flow | All other agents |
 |-----------------------------|-------------------------|------------------|----------------------|------------------------------|--------------------------|------------------|
@@ -75,6 +80,7 @@ in the Agent Platform.
 | Claude Sonnet 5             | {{< yes >}}             | {{< yes >}}      | {{< no >}}           | {{< yes >}}                  | {{< yes >}}              | {{< yes >}}      |
 | Claude Sonnet 5.5           | {{< yes >}}             | {{< yes >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}              | {{< yes >}}      |
 | Claude Haiku 4.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}              | {{< yes >}}      |
+| Claude Haiku 5.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | Claude Opus 4.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | Claude Opus 4.6             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | Claude Opus 4.7             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
@@ -226,6 +232,17 @@ When selecting models other than the default, you might encounter the following 
 If you are using the default GitLab model for a GitLab Duo AI-native feature, GitLab might change the default model without notifying the user to maintain optimal performance and reliability.
 
 If you have selected a specific model for a GitLab Duo AI-native feature, and that model is not available, there is no automatic fallback. The feature that uses this model is unavailable.
+
+### Frontier models are not available during a trial
+
+If you are using a GitLab Duo Agent Platform trial, you cannot use some frontier models because they are not included in trials.
+
+To resolve this, either:
+
+- [Buy GitLab Credits](../../subscriptions/gitlab_credits.md#buy-gitlab-credits).
+- [Select another available model](#select-a-model-for-a-feature).
+
+For more information, see [GitLab Duo Agent Platform trials](../../subscriptions/free_trials.md#gitlab-duo-agent-platform-trials).
 
 ### No default GitLab Duo namespace
 

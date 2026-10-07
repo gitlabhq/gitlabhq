@@ -110,3 +110,8 @@ The job performance section displays metrics for each job in your pipelines for 
 
 By default, the table sorts by mean duration (longest running jobs first). The table shows 10 jobs per page with pagination controls.
 You can select any column header to sort by that metric, or use the search bar to find specific jobs by name.
+
+## Related topics
+
+- [Operations Dashboard](../operations_dashboard/_index.md)
+- [Environments Dashboard](../../ci/environments/environments_dashboard.md)

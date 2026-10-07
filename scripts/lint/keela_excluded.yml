@@ -8,6 +8,9 @@
 # See: https://github.com/kerrizor/keela#exclusion-file
 #
 ---
+attributes:
+  ee/app/models/iteration.rb:
+    - skip_future_date_validation: "Read by the future_date validation (validate :future_date, unless: :skip_future_date_validation) and set via a factory trait across the iteration specs"
 delegations:
   app/models/project.rb:
     - push_pipelines_for_job_token_allowed: Required by the ci_cd_settings delegation shared example; used by the feature implementation in !243735

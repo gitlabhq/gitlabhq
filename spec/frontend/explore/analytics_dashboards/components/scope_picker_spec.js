@@ -1340,10 +1340,11 @@ describe('ScopePicker', () => {
       });
 
       // Otherwise the listbox takes the toggle for an empty picker and greys the name it shows.
-      it('holds the selection pinned above the results, none of which carry it', () => {
-        expect(findSelectedNames()).toEqual([mockDeepProject.name]);
-        expect(findListValues()).toEqual([mockUnrelatedProject.fullPath]);
-        expect(findListbox().props('selected')).toEqual(findPinnedValues());
+      it('keeps the hidden selection selected, none of the results carrying it', () => {
+        expect(findSelectedNames()).toEqual([]);
+        expect(findItemValues()).toEqual([mockUnrelatedProject.fullPath]);
+        expect(findListbox().props('selected')).toHaveLength(1);
+        expect(findListbox().props('selected')).not.toContain(mockUnrelatedProject.fullPath);
       });
 
       it('still names it once the search is cleared and browsing resumes', async () => {
@@ -1360,16 +1361,15 @@ describe('ScopePicker', () => {
         await search('design');
       });
 
-      // The listbox's own spinners would hide every row, pinned picks included.
-      it('reports it in a row of its own, leaving the listbox spinners alone', () => {
-        expect(findEmptyItem().text()).toBe('Searching');
-        expect(findEmptyItem().findComponent(GlLoadingIcon).exists()).toBe(true);
-        expect(findListbox().props('searching')).toBe(false);
+      it('hands the searching state to the listbox', () => {
+        expect(findListbox().props('searching')).toBe(true);
         expect(findListbox().props('loading')).toBe(false);
+        expect(findEmptyItem().exists()).toBe(false);
       });
 
-      it('announces it to screen readers while focus stays in the search box', () => {
-        expect(findSearchSummary().text()).toBe('Searching');
+      // The listbox announces the search itself, so a summary would only repeat it.
+      it('leaves the search summary silent', () => {
+        expect(findSearchSummary().text()).toBe('');
       });
     });
 
@@ -1382,18 +1382,14 @@ describe('ScopePicker', () => {
         await search('nothing');
       });
 
-      it('says so in a row of its own', () => {
-        expect(findItems()).toHaveLength(0);
-        expect(findEmptyItem().text()).toBe('No groups or projects found');
-      });
-
-      // The listbox would count the status row and announce "1 result".
-      it('announces that nothing was found rather than counting the status row', () => {
-        expect(findSearchSummary().text()).toBe('No groups or projects found');
+      it('leaves the listbox empty, so it shows its own no-results text', () => {
+        expect(findSections()).toEqual([]);
+        expect(findListbox().props('searching')).toBe(false);
+        expect(findListbox().props('noResultsText')).toBe('No groups or projects found');
       });
     });
 
-    describe('with a pick pinned above the results', () => {
+    describe('with a pick made before searching', () => {
       const pickThenSearch = async (globalSearchHandler) => {
         createWrapper({ globalSearchHandler });
         await waitForPromises();
@@ -1401,30 +1397,42 @@ describe('ScopePicker', () => {
         await search('design');
       };
 
-      it('keeps the pick on screen above a searching row while the search is in flight', async () => {
+      it('hides the pick while the search is in flight', async () => {
         await pickThenSearch(jest.fn().mockReturnValue(new Promise(() => {})));
 
-        expect(findSelectedNames()).toEqual([mockAcme.name]);
-        expect(findListValues()).toHaveLength(1);
-        expect(findEmptyItem().text()).toBe('Searching');
+        expectFlatList();
+        expect(findSelectedNames()).toEqual([]);
+        expect(findListbox().props('searching')).toBe(true);
       });
 
-      it('lists the results below the pick once they arrive', async () => {
+      it('lists only the results once they arrive', async () => {
         await pickThenSearch(respondWithGlobalSearch());
 
-        expect(findSelectedNames()).toEqual([mockAcme.name]);
-        expect(findListValues()).toEqual([mockDeepSubgroup.fullPath, mockDeepProject.fullPath]);
+        expectFlatList();
+        expect(findItemValues()).toEqual([mockDeepSubgroup.fullPath, mockDeepProject.fullPath]);
         expect(findEmptyItem().exists()).toBe(false);
         expect(findSearchSummary().text()).toBe('2 results');
       });
 
-      it('says there is nothing below the pick when the search returns nothing', async () => {
+      it('leaves the listbox empty when the search returns nothing', async () => {
         await pickThenSearch(respondWithGlobalSearch({ groups: [], projects: [] }));
 
+        expect(findSections()).toEqual([]);
+      });
+
+      it('keeps the pick while hidden, adding a result alongside it', async () => {
+        await pickThenSearch(respondWithGlobalSearch());
+        await toggleSelected(mockDeepProject);
+        await search('');
+
+        expect(findSelectedNames()).toEqual([mockAcme.name, mockDeepProject.name]);
+      });
+
+      it('pins the pick again once the search is cleared', async () => {
+        await pickThenSearch(respondWithGlobalSearch());
+        await search('');
+
         expect(findSelectedNames()).toEqual([mockAcme.name]);
-        expect(findListValues()).toHaveLength(1);
-        expect(findEmptyItem().text()).toBe('No groups or projects found');
-        expect(findSearchSummary().text()).toBe('No groups or projects found');
       });
     });
 

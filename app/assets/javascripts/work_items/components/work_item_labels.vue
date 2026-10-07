@@ -34,7 +34,7 @@ export default {
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: {
-    canAdminLabel: 'canAdminLabel',
+    canCreateLabel: 'canCreateLabel',
     issuesListPath: 'issuesListPath',
     labelsManagePath: 'labelsManagePath',
     epicsListPath: { default: '' },
@@ -376,7 +376,7 @@ export default {
     </template>
     <template #footer>
       <gl-button
-        v-if="canAdminLabel"
+        v-if="canCreateLabel"
         class="!gl-justify-start"
         block
         category="tertiary"

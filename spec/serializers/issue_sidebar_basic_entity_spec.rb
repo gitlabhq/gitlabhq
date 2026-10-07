@@ -82,7 +82,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
     it 'contains attributes related to the current user' do
       expect(entity[:current_user]).to include(
         :id, :name, :username, :state, :avatar_url, :web_url,
-        :can_edit, :can_move, :can_admin_label
+        :can_edit, :can_move, :can_create_label
       )
     end
 
