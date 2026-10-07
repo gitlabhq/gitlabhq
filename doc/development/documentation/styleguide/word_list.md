@@ -1353,7 +1353,7 @@ In marketing materials, like release posts or blogs, use
 For example:
 
 - [Blog: Unlocking AI for every GitLab Premium and Ultimate customer](https://about.gitlab.com/blog/gitlab-premium-with-duo/)
-- [Release post: Group and project controls for Premium and Ultimate with GitLab Duo](https://about.gitlab.com/releases/2025/07/17/gitlab-18-2-released/#group-and-project-controls-for-premium-and-ultimate-with-gitlab-duo)
+- [Release post: Group and project controls for Premium and Ultimate with GitLab Duo](../../../releases/18/gitlab-18-2-released.md#group-and-project-controls-for-premium-and-ultimate-with-gitlab-duo)
 
 ## GitLab Duo CLI
 

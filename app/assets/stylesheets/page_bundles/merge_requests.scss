@@ -1032,7 +1032,9 @@ $diff-file-header-top: 11px;
   top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
 }
 
-.merge-request-review-drawer .rte-text-box{
+.merge-request-review-drawer .rte-text-box,
+.pending-review-item .note-text,
+.pending-review-item .note-textarea {
   line-height: 1.5;
 }
 

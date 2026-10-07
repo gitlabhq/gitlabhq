@@ -61,26 +61,6 @@ RSpec.describe MergeRequestMergeabilityCheckWorker, feature_category: :code_revi
         expect(merge_request.reload).to be_can_be_merged
       end
 
-      context 'when the mark_mergeability_checking_in_worker feature flag is disabled' do
-        before do
-          stub_feature_flags(mark_mergeability_checking_in_worker: false)
-        end
-
-        it 'does not change the merge status before running the check' do
-          merge_request.mark_as_unchecked!
-
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService, merge_request) do |service|
-            expect(service).to receive(:execute) do
-              expect(merge_request.reload).to be_unchecked
-
-              double(error?: false)
-            end
-          end
-
-          subject.perform(merge_request.id)
-        end
-      end
-
       it 'structurally logs a failed mergeability check' do
         expect_next_instance_of(MergeRequests::MergeabilityCheckService, merge_request) do |service|
           expect(service).to receive(:execute).and_return(double(error?: true, message: "solar flares"))

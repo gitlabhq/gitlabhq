@@ -21,9 +21,9 @@ Show your support for our active candidates or add a new nomination! 🙌
 Phawin Khongkhasawan is a Tech Lead at [Jitta](https://www.jitta.com/) and started contributing
 to GitLab in February of 2024.
 In just a few months, Phawin has merged over 20 contributions and his contributions have also been
-featured in [16.11](https://about.gitlab.com/releases/2024/04/18/gitlab-16-11-released/#test-project-hooks-with-the-rest-api),
-[17.0](https://about.gitlab.com/releases/2024/05/16/gitlab-17-0-released/#customize-avatars-for-users),
-and [17.1](https://about.gitlab.com/releases/2024/06/20/gitlab-17-1-released/#require-confirmation-for-manual-jobs).
+featured in [16.11](../16/gitlab-16-11-released.md#test-project-hooks-with-the-rest-api),
+[17.0](gitlab-17-0-released.md#customize-avatars-for-users),
+and [17.1](gitlab-17-1-released.md#require-confirmation-for-manual-jobs).
 
 Phawin was first nominated by [Magdalena Frankiewicz](https://gitlab.com/m_frankiewicz), Product Manager at GitLab,
 for improving Webhook related features like the request to [Allow triggering of project test webhooks via the API](https://gitlab.com/gitlab-org/gitlab/-/issues/455589).
@@ -87,7 +87,7 @@ consent via a GitLab Support ticket.
 
 {{< /details >}}
 
-When you perform a review, you can complete it by choosing whether to `approve`, `comment`, or `request changes` ([released in GitLab 16.9](https://about.gitlab.com/releases/2024/02/15/gitlab-16-9-released/#request-changes-on-merge-requests)). While reviewing, you might find changes that should prevent a merge request from merging until they’re resolved, and so you complete your review with `request changes`.
+When you perform a review, you can complete it by choosing whether to `approve`, `comment`, or `request changes` ([released in GitLab 16.9](../16/gitlab-16-9-released.md#request-changes-on-merge-requests)). While reviewing, you might find changes that should prevent a merge request from merging until they’re resolved, and so you complete your review with `request changes`.
 
 When requesting changes, GitLab now adds a merge check that prevents merging until the request for changes has been resolved. The request for changes can be resolved when the original user who requested changes re-reviews the merge request and subsequently approves the merge request. If the user who originally requested changes is unable to approve, the request for changes can be **Bypassed** by anyone with merge permissions, so development can continue.
 

@@ -9,7 +9,6 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
 import NoteForm from '~/notes/components/note_form.vue';
-import NoteHeader from '~/notes/components/note_header.vue';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { updateNoteErrorMessage } from '~/notes/utils';
 import LineRangeHeadline from '~/rapid_diffs/app/discussions/line_range_headline.vue';
@@ -22,7 +21,6 @@ export default {
     GlButton,
     LineRangeHeadline,
     NoteForm,
-    NoteHeader,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -155,10 +153,17 @@ export default {
       ></div>
     </div>
     <div class="file-holder gl-min-w-0 gl-grow gl-overflow-hidden gl-border-section">
-      <div v-if="filePath" class="file-title file-title-flex-parent">
+      <div
+        class="gl-border-b gl-flex gl-items-center gl-gap-3 gl-border-section"
+        :class="{
+          'file-title file-title-flex-parent !gl-flex-nowrap': filePath,
+          'gl-bg-section gl-px-5 gl-py-3': !filePath,
+        }"
+      >
         <gl-button
+          v-if="filePath"
           variant="link"
-          class="gl-max-w-full !gl-justify-start !gl-text-default"
+          class="gl-min-w-0 !gl-justify-start !gl-text-default"
           button-text-classes="!gl-whitespace-normal gl-text-left"
           data-testid="preview-item-header"
           @click="$emit('click', draft)"
@@ -169,6 +174,58 @@ export default {
             >{{ filePath }}</strong
           >
         </gl-button>
+        <gl-button
+          v-else-if="discussion"
+          variant="link"
+          class="gl-min-w-0 !gl-text-subtle"
+          button-text-classes="!gl-whitespace-normal gl-text-left"
+          data-testid="preview-item-header"
+          @click="$emit('click', draft)"
+        >
+          <span data-testid="review-preview-item-header-text">{{ threadTitle }}</span>
+        </gl-button>
+        <span v-else class="gl-text-subtle" data-testid="review-preview-item-header-text">
+          {{ __('Direct comment') }}
+        </span>
+        <div class="gl-ml-auto gl-flex gl-shrink-0 gl-items-center gl-gap-2">
+          <gl-badge
+            v-if="draft.internal"
+            v-gl-tooltip
+            variant="warning"
+            data-testid="internal-note-indicator"
+            :title="s__('Notes|This internal note will always remain confidential')"
+          >
+            {{ __('Internal note') }}
+          </gl-badge>
+          <template v-if="draft.current_user.can_edit">
+            <gl-button
+              ref="editButton"
+              v-gl-tooltip
+              :title="__('Edit comment')"
+              :aria-label="__('Edit comment')"
+              icon="pencil"
+              category="tertiary"
+              size="small"
+              class="note-action-button"
+              :disabled="isEditing"
+              data-testid="preview-item-edit"
+              @click="isEditing = true"
+            />
+            <gl-button
+              v-gl-tooltip
+              :title="__('Delete comment')"
+              :aria-label="__('Delete comment')"
+              icon="remove"
+              category="tertiary"
+              size="small"
+              class="note-action-button"
+              :loading="isDeleting"
+              :disabled="isEditing"
+              data-testid="preview-item-delete"
+              @click="onDelete"
+            />
+          </template>
+        </div>
       </div>
       <div
         v-if="showLinePosition && imagePositionText"
@@ -182,54 +239,10 @@ export default {
         :line-range="position.line_range"
         class="gl-border-b gl-border-section gl-bg-section gl-px-5 gl-py-3 gl-text-subtle"
       />
-      <div
-        v-else-if="discussion"
-        class="gl-border-b gl-border-section gl-bg-section gl-px-5 gl-py-3"
-      >
-        <gl-button
-          variant="link"
-          class="!gl-text-subtle"
-          data-testid="preview-item-header"
-          @click="$emit('click', draft)"
-        >
-          <span data-testid="review-preview-item-header-text">{{ threadTitle }}</span>
-        </gl-button>
-      </div>
       <div class="gl-bg-section gl-px-3 gl-py-2">
-        <div class="note-header gl-min-h-8 !gl-items-center">
-          <note-header
-            :author="draft.author"
-            :is-internal-note="draft.internal"
-            :show-spinner="false"
-          />
-          <div v-if="draft.current_user.can_edit && !isEditing" class="note-actions">
-            <gl-button
-              ref="editButton"
-              v-gl-tooltip
-              :title="__('Edit comment')"
-              :aria-label="__('Edit comment')"
-              icon="pencil"
-              category="tertiary"
-              class="note-action-button"
-              data-testid="preview-item-edit"
-              @click="isEditing = true"
-            />
-            <gl-button
-              v-gl-tooltip
-              :title="__('Delete comment')"
-              :aria-label="__('Delete comment')"
-              icon="remove"
-              category="tertiary"
-              class="note-action-button"
-              :loading="isDeleting"
-              data-testid="preview-item-delete"
-              @click="onDelete"
-            />
-          </div>
-        </div>
         <note-form
           v-if="isEditing"
-          class="gl-px-3 gl-pb-3"
+          class="gl-p-3"
           :note-body="draft.note"
           :note-id="draft.id"
           :note="draft"
@@ -240,7 +253,7 @@ export default {
           @handle-form-update="onFormUpdate"
           @cancel-form="onFormCancel"
         />
-        <div v-show="!isEditing" ref="noteBody" class="gl-px-3 gl-pb-3">
+        <div v-show="!isEditing" ref="noteBody" class="gl-px-3 gl-py-3">
           <div
             v-safe-html:[$options.safeHtmlConfig]="draft.note_html"
             class="note-text md"

@@ -476,7 +476,7 @@ Use the default Alt+D keyboard shortcut (or set your own) to open Duo Chat quick
 
 {{< /details >}}
 
-Following the release of [group comment templates in GitLab 16.11](https://about.gitlab.com/releases/2024/04/18/gitlab-16-11-released/#group-comment-templates), we’re bringing these to projects in GitLab 17.0.
+Following the release of [group comment templates in GitLab 16.11](../16/gitlab-16-11-released.md#group-comment-templates), we’re bringing these to projects in GitLab 17.0.
 
 Across an organization, it can be helpful to have the same templated response in issues, epics, and merge requests. These responses might include standard questions that need to be answered, responses to common problems, or good structure for merge request review comments. Project-level comment templates give you an additional way to scope the availability of templates, bringing organizations more control and flexibility in sharing these across users.
 

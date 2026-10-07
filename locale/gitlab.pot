@@ -31552,6 +31552,9 @@ msgstr ""
 msgid "Direct"
 msgstr ""
 
+msgid "Direct comment"
+msgstr ""
+
 msgid "Direct members"
 msgstr ""
 
@@ -74252,10 +74255,13 @@ msgstr ""
 msgid "SecretsManager|The GitLab Secrets Manager trial has been enabled for all groups and projects within this namespace. %{linkStart}Manage group permissions.%{linkEnd}"
 msgstr ""
 
-msgid "SecretsManager|The name should be unique within this group and can contain only letters, digits, and '_'."
+msgid "SecretsManager|The name can only contain letters, digits, and '_'."
 msgstr ""
 
-msgid "SecretsManager|The name should be unique within this project and can contain only letters, digits, and '_'."
+msgid "SecretsManager|The name must be %{max} characters or fewer."
+msgstr ""
+
+msgid "SecretsManager|The secret name cannot be changed after form submission."
 msgstr ""
 
 msgid "SecretsManager|The trial has started, but the instance failed to enable the secrets manager. Please try again with the toggle below."

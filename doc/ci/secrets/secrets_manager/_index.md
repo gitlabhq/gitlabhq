@@ -132,7 +132,8 @@ and workflows.
 1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Secrets manager**.
 1. Select **Add secret** and fill in the details:
-   - **Name**: Must be unique in the project.
+   - **Name**: Must be unique in the project or group where it's created, 255 characters or fewer, and contain only letters,
+     digits, and underscores (`_`). You cannot change the name after you create the secret.
    - **Value**: Must be 10 KB (10,000 bytes) or less.
    - **Description**: Maximum of 200 characters.
    - **Environments**: Can be:

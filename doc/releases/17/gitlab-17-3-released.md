@@ -265,7 +265,7 @@ Thanks to [Phawin](https://gitlab.com/lifez) for [this community contribution](h
 
 {{< /details >}}
 
-In 17.2, we added the ability to [search for project settings by using the command palette](https://about.gitlab.com/releases/2024/07/18/gitlab-17-2-released/#find-project-settings-by-using-the-command-palette). This change made it easier to quickly find the settings you need.
+In 17.2, we added the ability to [search for project settings by using the command palette](gitlab-17-2-released.md#find-project-settings-by-using-the-command-palette). This change made it easier to quickly find the settings you need.
 
 With 17.3, you can now search for group settings from the command palette as well. Try it out by visiting a group, selecting **Search or go to**, entering command mode with `>`, and typing the name of a settings section, like **Merge request approvals**. Select a result to jump right to the setting itself.
 

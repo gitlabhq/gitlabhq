@@ -26,7 +26,7 @@ contributor to project maintainer.
 
 Patrick’s impact extends beyond code contributions to community building and coaching,
 helping new contributors get started and grow in the project.
-Patrick previously nominated and supported Heidi Berry who won the [17.11 Notable Contributor award](https://about.gitlab.com/releases/2025/04/17/gitlab-17-11-released/#notable-contributor).
+Patrick previously nominated and supported Heidi Berry who won the [17.11 Notable Contributor award](../17/gitlab-17-11-released.md#this-months-notable-contributor-heidi-berry).
 He also shared insights with the [GitLab for Education](https://about.gitlab.com/solutions/education/)
 team on working with students learning GitLab to help us grow the next generation of developers.
 

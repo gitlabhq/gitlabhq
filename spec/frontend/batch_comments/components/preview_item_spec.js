@@ -6,7 +6,6 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useDiscussions } from '~/notes/store/discussions';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
-import NoteHeader from '~/notes/components/note_header.vue';
 import LineRangeHeadline from '~/rapid_diffs/app/discussions/line_range_headline.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -73,6 +72,7 @@ describe('Batch comments draft preview item component', () => {
   const findEditButton = () => wrapper.findComponentByTestId('preview-item-edit');
   const findDeleteButton = () => wrapper.findComponentByTestId('preview-item-delete');
   const findNoteForm = () => wrapper.findComponent(NoteFormStub);
+  const findInternalNoteBadge = () => wrapper.findByTestId('internal-note-indicator');
 
   const startEditing = async () => {
     createComponent();
@@ -87,14 +87,30 @@ describe('Batch comments draft preview item component', () => {
     expect(renderGFM).toHaveBeenCalledWith(findContent().element.parentElement);
   });
 
-  it('renders the note header with the draft author', () => {
-    createComponent({ internal: true });
+  it.each`
+    internal | rendered
+    ${true}  | ${true}
+    ${false} | ${false}
+  `(
+    'when internal is $internal, the internal note badge is rendered: $rendered',
+    ({ internal, rendered }) => {
+      createComponent({ internal });
 
-    expect(wrapper.findComponent(NoteHeader).props()).toMatchObject({
-      author: draft.author,
-      isInternalNote: true,
-      showSpinner: false,
-    });
+      expect(findInternalNoteBadge().exists()).toBe(rendered);
+    },
+  );
+
+  it.each`
+    type                | extra
+    ${'new diff draft'} | ${{ file_path: 'index.js', file_hash: 'abc', position: { line_range: lineRange } }}
+    ${'thread reply'}   | ${{ discussion_id: '1' }}
+    ${'new comment'}    | ${{}}
+  `('renders the edit and delete buttons for a $type', ({ extra }) => {
+    setDiscussion();
+    createComponent(extra);
+
+    expect(findEditButton().exists()).toBe(true);
+    expect(findDeleteButton().exists()).toBe(true);
   });
 
   it('does not render the edit and delete buttons when the user cannot edit the draft', () => {
@@ -114,7 +130,13 @@ describe('Batch comments draft preview item component', () => {
         isDraft: true,
       });
       expect(findContent().isVisible()).toBe(false);
-      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('disables the edit and delete buttons while editing', async () => {
+      await startEditing();
+
+      expect(findEditButton().props('disabled')).toBe(true);
+      expect(findDeleteButton().props('disabled')).toBe(true);
     });
 
     it('updates the draft, closes the form and focuses the edit button on save', async () => {
@@ -235,9 +257,10 @@ describe('Batch comments draft preview item component', () => {
     expect(wrapper.emitted('click')).toEqual([[draft]]);
   });
 
-  it('does not render a header link for a new comment', () => {
+  it('renders a direct comment lead instead of a header link for a new comment', () => {
     createComponent();
 
     expect(findHeaderButton().exists()).toBe(false);
+    expect(findTitle().text()).toBe('Direct comment');
   });
 });

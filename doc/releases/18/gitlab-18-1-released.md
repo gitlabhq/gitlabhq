@@ -18,7 +18,7 @@ In addition, we want to thank all of our contributors, including this month's no
 Chaitanya Sonwane drives GitLab’s security capabilities through consistent authentication
 improvements.
 [With 13 merged contributions in 2025](https://contributors.gitlab.com/users/chaitanyason9?fromDate=2025-01-01&toDate=2025-12-31), his work enhanced credential inventory filtering, service account management, and work items usability.
-He previously delivered a [key feature in GitLab 17.11](https://about.gitlab.com/releases/2025/04/17/gitlab-17-11-released/#token-statistics-for-service-account-management) with token statistics for service accounts, which provides “at a glance” information that makes it easier to manage service accounts.
+He previously delivered a [key feature in GitLab 17.11](../17/gitlab-17-11-released.md#token-statistics-for-service-account-management) with token statistics for service accounts, which provides “at a glance” information that makes it easier to manage service accounts.
 Chaitanya is now [improving work item list sort settings to be context specific](https://gitlab.com/gitlab-org/gitlab/-/issues/503587), further enhancing the user experience in GitLab’s Product Planning.
 
 Chaitanya’s work directly strengthens security for GitLab organizations and

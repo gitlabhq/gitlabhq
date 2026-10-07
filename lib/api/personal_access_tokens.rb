@@ -41,8 +41,7 @@ module API
         paginated_tokens = paginate(tokens)
 
         present paginated_tokens, with: Entities::PersonalAccessToken,
-          with_granular_scopes: true,
-          project_ids_by_namespace_id: project_ids_by_namespace_id_for(paginated_tokens)
+          **granular_scopes_options_for(paginated_tokens)
       end
 
       desc 'Retrieve a personal access token' do
@@ -66,8 +65,7 @@ module API
 
         if allowed
           present token, with: Entities::PersonalAccessToken,
-            with_granular_scopes: true,
-            project_ids_by_namespace_id: project_ids_by_namespace_id_for([token])
+            **granular_scopes_options_for([token])
         else
           # Only admins should be informed if the token doesn't exist
           current_user.can_admin_all_resources? ? not_found! : unauthorized!
@@ -95,13 +93,8 @@ module API
         if Ability.allowed?(current_user, :rotate_personal_access_token, token&.user)
           new_token = rotate_token(token, declared_params)
 
-          ActiveRecord::Associations::Preloader.new(
-            records: [new_token], associations: { granular_scopes: :namespace }
-          ).call
-
           present new_token, with: Entities::PersonalAccessTokenWithToken,
-            with_granular_scopes: true,
-            project_ids_by_namespace_id: project_ids_by_namespace_id_for([new_token])
+            **granular_scopes_options_for([new_token])
         else
           # Only admins should be informed if the token doesn't exist
           current_user.can_admin_all_resources? ? not_found! : unauthorized!

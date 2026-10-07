@@ -535,7 +535,7 @@ GitLab SAST includes [many security analyzers](../../user/application_security/s
 If you [include the GitLab-managed SAST template](../../user/application_security/sast/_index.md) ([`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)) and run GitLab 16.0 or higher, you automatically receive these updates.
 To remain on a specific version of any analyzer and prevent automatic updates, you can [pin its version](../../user/application_security/sast/_index.md).
 
-For previous changes, see [last month’s updates](https://about.gitlab.com/releases/2023/05/22/gitlab-16-0-released/#sast-analyzer-updates).
+For previous changes, see [last month’s updates](gitlab-16-0-released.md#sast-analyzer-updates).
 
 ### Automatic response to leaked Google Cloud secrets
 

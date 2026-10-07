@@ -25,12 +25,9 @@ workflow. Use the summary below to choose the method that fits your project.
 {{< history >}}
 
 - Matching against malware advisories [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249853) in GitLab 19.4 [with a flag](../../../administration/feature_flags/_index.md) named `sbom_scan_malware_findings`. Enabled by default.
+- Matching against malware advisories [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/629305) in GitLab 19.5. Feature flag `sbom_scan_malware_findings` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of malware advisory matching is controlled by a feature flag.
-> For more information, see the history.
 
 Scans the CycloneDX SBOM artifacts produced in your pipeline by the Dependency
 Scanning analyzer against the [GitLab advisory database](../gitlab_advisory_database/_index.md) and

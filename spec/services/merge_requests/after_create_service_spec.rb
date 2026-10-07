@@ -135,25 +135,6 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         execute_service
       end
 
-      context 'when the mark_mergeability_checking_in_worker feature flag is disabled' do
-        before do
-          stub_feature_flags(mark_mergeability_checking_in_worker: false)
-        end
-
-        it 'executes hooks and integrations with the checking merge_status' do
-          expected_payload = hash_including(
-            object_attributes: hash_including(
-              merge_status: 'checking'
-            )
-          )
-
-          expect(project).to receive(:execute_hooks).with(expected_payload, :merge_request_hooks)
-          expect(project).to receive(:execute_integrations).with(expected_payload, :merge_request_hooks)
-
-          execute_service
-        end
-      end
-
       context 'when preparing for mergeability fails' do
         before do
           # This is only one of the possible cases that can fail. This is to

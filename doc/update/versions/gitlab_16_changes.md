@@ -617,7 +617,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
+- [Object storage verification](../../releases/16/gitlab-16-4-released.md#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -809,7 +809,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
+- [Object storage verification](../../releases/16/gitlab-16-4-released.md#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -917,7 +917,7 @@ Specific information applies to installations using Geo:
 
 Specific information applies to Linux package installations:
 
-- In GitLab 16.0, we [announced](https://about.gitlab.com/releases/2023/05/22/gitlab-16-0-released/#omnibus-improvements) an upgraded base Docker image,
+- In GitLab 16.0, we [announced](../../releases/16/gitlab-16-0-released.md#omnibus-improvements) an upgraded base Docker image,
   which has a new version of OpenSSH Server. An unintended consequence of the new version is that it disables accepting SSH RSA SHA-1 signatures by default. This issue should only
   impact users using very outdated SSH clients.
 

@@ -98,6 +98,32 @@ module API
         ::Project.ids_by_project_namespace_id(project_namespace_ids)
       end
 
+      # Returns the options API::Entities::PersonalAccessToken, and every entity that inherits from it,
+      # needs to expose the granular scopes of the given tokens, after preloading those scopes with their
+      # namespaces. Only a granular token has scopes to present, so a token that is not granular is left
+      # out of the preload, and tokens with none among them get no options and run no query. Scopes that
+      # are already loaded, such as through PersonalAccessToken.preload_granular_scopes, are not reloaded.
+      #
+      # The namespaces are preloaded on the scopes each token holds, in a second step. Preloading
+      # { granular_scopes: :namespace } in one step would load them onto other copies of the scopes,
+      # read through the join rows, whenever a token already holds its scopes without their namespaces,
+      # as a token that CreateGranularService returns does, and the entity would then load the namespace
+      # of each scope it presents.
+      def granular_scopes_options_for(tokens)
+        granular_tokens = Array(tokens).select(&:granular?)
+        return {} if granular_tokens.empty?
+
+        ActiveRecord::Associations::Preloader.new(records: granular_tokens, associations: :granular_scopes).call
+        ActiveRecord::Associations::Preloader.new(
+          records: granular_tokens.flat_map(&:granular_scopes), associations: :namespace
+        ).call
+
+        {
+          with_granular_scopes: true,
+          project_ids_by_namespace_id: project_ids_by_namespace_id_for(granular_tokens)
+        }
+      end
+
       def build_granular_scopes(current_user, inputs)
         inputs.flat_map { |input| granular_scope_attrs(current_user, input) }.map { |attrs| ::Authz::GranularScope.new(attrs) }
       end

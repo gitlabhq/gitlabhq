@@ -101,7 +101,7 @@ Long-running issues with many threads can be challenging to read and track. You 
 
 {{< /details >}}
 
-In 16.4, we released [Fast-forward merge trains](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#fast-forward-merge-support-for-merge-trains), and as a continuation, we want to ensure we support all [merge methods](../../user/project/merge_requests/methods/_index.md). Now, if you want to ensure your semi-linear commit history is maintained you can use semi-linear fast-forward merge trains.
+In 16.4, we released [Fast-forward merge trains](gitlab-16-4-released.md#fast-forward-merge-support-for-merge-trains), and as a continuation, we want to ensure we support all [merge methods](../../user/project/merge_requests/methods/_index.md). Now, if you want to ensure your semi-linear commit history is maintained you can use semi-linear fast-forward merge trains.
 
 ## Scale and Deployments
 

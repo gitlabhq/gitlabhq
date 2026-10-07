@@ -499,7 +499,7 @@ GitLab SAST includes [many security analyzers](../../user/application_security/s
 If you [include the GitLab-managed SAST template](../../user/application_security/sast/_index.md) ([`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)) and run GitLab 16.0 or higher, you automatically receive these updates.
 To remain on a specific version of any analyzer and prevent automatic updates, you can [pin its version](../../user/application_security/sast/_index.md).
 
-For previous changes, see [last month’s updates](https://about.gitlab.com/releases/2023/07/22/gitlab-16-2-released/#sast-analyzer-updates).
+For previous changes, see [last month’s updates](gitlab-16-2-released.md#sast-analyzer-updates).
 
 ### Dependency and License Scanning support for Java v21
 
@@ -550,7 +550,7 @@ We’ve released two improvements in GitLab 16.3:
   - JavaScript, in the NodeJS-Scan-based analyzer.
 1. Better tracking: We’ve improved the tracking algorithm to handle anonymous functions in JavaScript.
 
-This builds on previous expansions and improvements [released in GitLab 16.2](https://about.gitlab.com/releases/2023/07/22/gitlab-16-2-released/#improved-sast-vulnerability-tracking).
+This builds on previous expansions and improvements [released in GitLab 16.2](gitlab-16-2-released.md#improved-sast-vulnerability-tracking).
 We’re tracking further improvements, including expansion to more languages, better handling of more language constructs, and improved tracking for Python and Ruby, in [epic 5144](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 
 These changes are included in [updated versions](https://docs.gitlab.com/#sast-analyzer-updates) of GitLab SAST [analyzers](../../user/application_security/sast/analyzers.md).

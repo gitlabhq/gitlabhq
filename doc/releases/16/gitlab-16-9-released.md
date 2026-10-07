@@ -380,7 +380,7 @@ In this milestone, we’ve made some improvements which will make reporting more
 
 {{< /details >}}
 
-In GitLab 16.2, [we released](https://about.gitlab.com/releases/2023/07/22/gitlab-16-2-released/) the rich text editor as an alternative to the plain text editor. The rich text editor provides a “what you see is what you get” editing interface, and an extensible foundation for additional development. Until this release, however, the rich text editor was available only in issues, epics, and merge requests.
+In GitLab 16.2, [we released](gitlab-16-2-released.md) the rich text editor as an alternative to the plain text editor. The rich text editor provides a “what you see is what you get” editing interface, and an extensible foundation for additional development. Until this release, however, the rich text editor was available only in issues, epics, and merge requests.
 
 With GitLab 16.9, the rich text editor is now available in:
 

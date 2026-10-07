@@ -48,7 +48,8 @@ module API
         end
         route_setting :authorization, permissions: :read_personal_access_token, boundary_type: :user
         get 'self' do
-          present access_token, with: Entities::PersonalAccessToken
+          present access_token, with: Entities::PersonalAccessToken,
+            **granular_scopes_options_for([access_token])
         end
 
         desc 'List all token associations' do
