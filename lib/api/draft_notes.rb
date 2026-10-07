@@ -223,7 +223,11 @@ module API
         if draft_note
           authorize_admin_draft!(draft_note)
 
-          draft_note.update!(note: params[:note], position: params[:position])
+          draft_note.note = params[:note]
+          # Leaving out position keeps the existing one, so text-only updates don't turn a diff note into a general one.
+          draft_note.position = params[:position] if params[:position].present?
+
+          draft_note.save!
           present draft_note, with: Entities::DraftNote
         else
           not_found!("Draft Note")

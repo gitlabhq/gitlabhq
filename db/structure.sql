@@ -5962,17 +5962,6 @@ CREATE TABLE ai_audit_events (
 )
 PARTITION BY RANGE (created_at);
 
-CREATE TABLE ai_events_counts (
-    id bigint NOT NULL,
-    events_date date NOT NULL,
-    namespace_id bigint,
-    user_id bigint NOT NULL,
-    organization_id bigint NOT NULL,
-    event smallint NOT NULL,
-    total_occurrences integer DEFAULT 0 NOT NULL
-)
-PARTITION BY RANGE (events_date);
-
 CREATE TABLE ai_usage_events (
     id bigint NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
@@ -7113,6 +7102,26 @@ CREATE TABLE security_findings (
     CONSTRAINT check_9c3ba4d6f2 CHECK ((project_id IS NOT NULL))
 )
 PARTITION BY LIST (partition_number);
+
+CREATE TABLE trial_usages (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    trial_starts_on date NOT NULL,
+    trial_ends_on date NOT NULL,
+    compute_minutes_month date NOT NULL,
+    max_seats_used integer DEFAULT 0 NOT NULL,
+    compute_minutes_used integer DEFAULT 0 NOT NULL,
+    credits_used numeric(14,4),
+    trial_type text,
+    CONSTRAINT check_d41680de84 CHECK ((char_length(trial_type) <= 255)),
+    CONSTRAINT check_trial_usages_compute_minutes_used_non_negative CHECK ((compute_minutes_used >= 0)),
+    CONSTRAINT check_trial_usages_credits_used_non_negative CHECK ((credits_used >= (0)::numeric)),
+    CONSTRAINT check_trial_usages_max_seats_used_non_negative CHECK ((max_seats_used >= 0)),
+    CONSTRAINT check_trial_usages_trial_ends_on_after_starts_on CHECK ((trial_ends_on > trial_starts_on))
+)
+PARTITION BY RANGE (trial_ends_on);
 
 CREATE TABLE user_audit_events (
     id bigint DEFAULT nextval('audit_events_id_seq'::regclass) NOT NULL,
@@ -13106,6 +13115,17 @@ CREATE SEQUENCE ai_conversation_threads_id_seq
 
 ALTER SEQUENCE ai_conversation_threads_id_seq OWNED BY ai_conversation_threads.id;
 
+CREATE TABLE ai_events_counts (
+    id bigint NOT NULL,
+    events_date date NOT NULL,
+    namespace_id bigint,
+    user_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    event smallint NOT NULL,
+    total_occurrences integer DEFAULT 0 NOT NULL
+)
+PARTITION BY RANGE (events_date);
+
 CREATE SEQUENCE ai_events_counts_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -13314,7 +13334,6 @@ ALTER SEQUENCE ai_self_hosted_models_id_seq OWNED BY ai_self_hosted_models.id;
 
 CREATE TABLE ai_settings (
     id bigint NOT NULL,
-    ai_gateway_url text,
     singleton boolean DEFAULT true NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
@@ -13324,17 +13343,13 @@ CREATE TABLE ai_settings (
     amazon_q_role_arn text,
     duo_workflow_service_account_user_id bigint,
     duo_workflow_oauth_application_id bigint,
-    enabled_instance_verbose_ai_logs boolean,
     duo_core_features_enabled boolean,
-    duo_agent_platform_service_url text,
     foundational_agents_default_enabled boolean DEFAULT true,
-    ai_gateway_timeout_seconds integer DEFAULT 60,
     minimum_access_level_execute smallint,
     minimum_access_level_manage smallint,
     minimum_access_level_enable_on_projects smallint,
     minimum_access_level_execute_async smallint,
     feature_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
-    self_hosted_duo_agent_platform_service_secure boolean DEFAULT true NOT NULL,
     include_recommended_allowed boolean DEFAULT false NOT NULL,
     allow_all_unix_sockets boolean DEFAULT false NOT NULL,
     enforce_on_local_clients boolean DEFAULT false NOT NULL,
@@ -13342,9 +13357,7 @@ CREATE TABLE ai_settings (
     allowed_domains text[] DEFAULT '{}'::text[] NOT NULL,
     denied_domains text[] DEFAULT '{}'::text[] NOT NULL,
     organization_id bigint,
-    CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
     CONSTRAINT check_6e16f4d23e CHECK ((organization_id IS NOT NULL)),
-    CONSTRAINT check_900d7a89b3 CHECK ((char_length(duo_agent_platform_service_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
     CONSTRAINT check_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
 );
@@ -33183,26 +33196,6 @@ CREATE SEQUENCE topics_id_seq
     CACHE 1;
 
 ALTER SEQUENCE topics_id_seq OWNED BY topics.id;
-
-CREATE TABLE trial_usages (
-    id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    trial_starts_on date NOT NULL,
-    trial_ends_on date NOT NULL,
-    compute_minutes_month date NOT NULL,
-    max_seats_used integer DEFAULT 0 NOT NULL,
-    compute_minutes_used integer DEFAULT 0 NOT NULL,
-    credits_used numeric(14,4),
-    trial_type text,
-    CONSTRAINT check_d41680de84 CHECK ((char_length(trial_type) <= 255)),
-    CONSTRAINT check_trial_usages_compute_minutes_used_non_negative CHECK ((compute_minutes_used >= 0)),
-    CONSTRAINT check_trial_usages_credits_used_non_negative CHECK ((credits_used >= (0)::numeric)),
-    CONSTRAINT check_trial_usages_max_seats_used_non_negative CHECK ((max_seats_used >= 0)),
-    CONSTRAINT check_trial_usages_trial_ends_on_after_starts_on CHECK ((trial_ends_on > trial_starts_on))
-)
-PARTITION BY RANGE (trial_ends_on);
 
 CREATE SEQUENCE trial_usages_id_seq
     START WITH 1

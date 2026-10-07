@@ -228,6 +228,15 @@ instead of the authenticated web request rate limit.
 
 - **Default rate limit**: Disabled. When enabled, defaults to 1,000 requests per 15 seconds per user.
 
+### MCP server rate limit
+
+Authenticated requests to the
+[GitLab MCP server](../user/model_context_protocol/mcp_server.md) (`POST /api/v4/mcp`) can use a
+[dedicated rate limit](settings/user_and_ip_rate_limits.md#enable-authenticated-mcp-server-request-rate-limit)
+in addition to the authenticated API request rate limit.
+
+- **Default rate limit**: Disabled. When enabled, defaults to 600 requests per 60 seconds per user.
+
 ## Gitaly concurrency limit
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in the Gitaly configuration file.

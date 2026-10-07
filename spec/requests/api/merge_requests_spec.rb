@@ -5483,11 +5483,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         properties: {
           'id' => {
             type: 'string',
-            description: 'The ID or URL-encoded path of the project.'
+            description: 'ID or URL-encoded path of the project.'
           },
           'merge_request_iid' => {
             type: 'integer',
-            description: 'The internal ID of the merge request.'
+            description: 'Internal ID of the merge request.'
           },
           'per_page' => {
             type: 'integer',
@@ -5509,11 +5509,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         properties: {
           'id' => {
             type: 'string',
-            description: 'The ID or URL-encoded path of the project.'
+            description: 'ID or URL-encoded path of the project.'
           },
           'merge_request_iid' => {
             type: 'integer',
-            description: 'The internal ID of the merge request.'
+            description: 'Internal ID of the merge request.'
           },
           'per_page' => {
             type: 'integer',
@@ -5535,11 +5535,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         properties: {
           'id' => {
             type: 'string',
-            description: 'The ID or URL-encoded path of the project.'
+            description: 'ID or URL-encoded path of the project.'
           },
           'merge_request_iid' => {
             type: 'integer',
-            description: 'The internal ID of the merge request.'
+            description: 'Internal ID of the merge request.'
           }
         },
         required: %w[id merge_request_iid],

@@ -1,12 +1,12 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlFormSelect, GlLoadingIcon } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { getDatesInRange, toISODateFormat } from '~/lib/utils/datetime_utility';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
 import { xAxisLabelFormatter } from '../utils';
@@ -15,6 +15,20 @@ import ContributorAreaChart from './contributor_area_chart.vue';
 import IndividualChart from './individual_chart.vue';
 
 const GRAPHS_PATH_REGEX = /^(.*?)\/-\/graphs/g;
+const CONTRIBUTION_METRIC_COMMITS = 'commits';
+const CONTRIBUTION_METRIC_ADDITIONS = 'additions';
+const CONTRIBUTION_METRIC_DELETIONS = 'deletions';
+const CONTRIBUTION_METRIC_DATA_KEYS = {
+  [CONTRIBUTION_METRIC_COMMITS]: { totalByDate: 'total', authorChartData: 'commitDates' },
+  [CONTRIBUTION_METRIC_ADDITIONS]: {
+    totalByDate: 'additionsTotal',
+    authorChartData: 'additionsDates',
+  },
+  [CONTRIBUTION_METRIC_DELETIONS]: {
+    totalByDate: 'deletionsTotal',
+    authorChartData: 'deletionsDates',
+  },
+};
 
 export default {
   name: 'ContributorsChart',
@@ -28,6 +42,7 @@ export default {
   },
   components: {
     GlButton,
+    GlFormSelect,
     GlLoadingIcon,
     ContributorAreaChart,
     IndividualChart,
@@ -57,29 +72,62 @@ export default {
       masterChart: null,
       individualChartZoom: {},
       selectedBranch: this.branch,
+      selectedMetric: CONTRIBUTION_METRIC_COMMITS,
     };
   },
   computed: {
-    ...mapState(['loading']),
+    ...mapState(['loading', 'statsLoading', 'statsLoaded']),
     ...mapGetters(['showChart', 'parsedData']),
+    contributionMetricOptions() {
+      return [
+        { value: CONTRIBUTION_METRIC_COMMITS, text: s__('ContributionAnalytics|Commits') },
+        { value: CONTRIBUTION_METRIC_ADDITIONS, text: s__('ContributionAnalytics|Additions') },
+        { value: CONTRIBUTION_METRIC_DELETIONS, text: s__('ContributionAnalytics|Deletions') },
+      ];
+    },
+    selectedMetricLabel() {
+      return this.contributionMetricOptions.find(({ value }) => value === this.selectedMetric).text;
+    },
+    selectedMetricYAxisName() {
+      if (this.selectedMetric === CONTRIBUTION_METRIC_COMMITS) {
+        return s__('ContributionAnalytics|Number of commits');
+      }
+
+      if (this.selectedMetric === CONTRIBUTION_METRIC_ADDITIONS) {
+        return s__('ContributionAnalytics|Lines added');
+      }
+
+      return s__('ContributionAnalytics|Lines deleted');
+    },
+    selectedMetricYAxis() {
+      return {
+        name: this.selectedMetricYAxisName,
+      };
+    },
+    selectedMetricDataKeys() {
+      return CONTRIBUTION_METRIC_DATA_KEYS[this.selectedMetric];
+    },
+    selectedMetricTotalByDate() {
+      return this.parsedData[this.selectedMetricDataKeys.totalByDate];
+    },
+    selectedMetricRequiresStats() {
+      return this.selectedMetric !== CONTRIBUTION_METRIC_COMMITS;
+    },
+    selectedMetricStatsLoading() {
+      return this.selectedMetricRequiresStats && this.statsLoading;
+    },
     masterChartData() {
-      const data = {};
-      this.xAxisRange.forEach((date) => {
-        data[date] = this.parsedData.total[date] || 0;
-      });
       return [
         {
-          name: __('Commits'),
-          data: Object.entries(data),
+          name: this.selectedMetricLabel,
+          data: this.datesToChartData(this.selectedMetricTotalByDate),
         },
       ];
     },
     masterChartOptions() {
       return {
         ...this.getCommonChartOptions(true),
-        yAxis: {
-          name: __('Number of commits'),
-        },
+        yAxis: this.selectedMetricYAxis,
         grid: {
           bottom: 64,
           left: 64,
@@ -94,14 +142,24 @@ export default {
       return Object.keys(this.parsedData.byAuthorEmail)
         .map((email) => {
           const author = this.parsedData.byAuthorEmail[email];
+          const commitDates = this.datesToChartData(author.dates);
+          const additionsDates = this.datesToChartData(author.additionsByDate);
+          const deletionsDates = this.datesToChartData(author.deletionsByDate);
+          const chartData = { commitDates, additionsDates, deletionsDates };
+
           return {
             name: author.name,
             email,
             commits: author.commits,
+            additions: author.additions,
+            deletions: author.deletions,
+            commitDates,
+            additionsDates,
+            deletionsDates,
             dates: [
               {
-                name: __('Commits'),
-                data: this.xAxisRange.map((date) => [date, author.dates[date] || 0]),
+                name: this.selectedMetricLabel,
+                data: chartData[this.selectedMetricDataKeys.authorChartData],
               },
             ],
           };
@@ -113,7 +171,7 @@ export default {
       return {
         ...this.getCommonChartOptions(false),
         yAxis: {
-          name: __('Commits'),
+          ...this.selectedMetricYAxis,
           max: this.individualChartYAxisMax,
         },
         grid: {
@@ -125,9 +183,9 @@ export default {
       };
     },
     individualChartYAxisMax() {
-      return this.individualChartsData.reduce((acc, item) => {
-        const values = item.dates[0].data.map((value) => value[1]);
-        return Math.max(acc, ...values);
+      return this.individualChartsData.reduce((chartMax, { dates }) => {
+        const [{ data }] = dates;
+        return data.reduce((dataMax, [, count]) => Math.max(dataMax, count), chartMax);
       }, 0);
     },
     xAxisRange() {
@@ -145,11 +203,30 @@ export default {
       return this.xAxisRange[this.xAxisRange.length - 1];
     },
   },
+  watch: {
+    selectedMetric() {
+      this.fetchStatsForSelectedMetric();
+    },
+  },
   mounted() {
     this.fetchChartData(this.endpoint);
   },
   methods: {
-    ...mapActions(['fetchChartData']),
+    ...mapActions(['fetchChartData', 'fetchChartStats']),
+    datesToChartData(dates) {
+      return this.xAxisRange.map((date) => [date, dates[date] || 0]);
+    },
+    async fetchStatsForSelectedMetric() {
+      if (!this.selectedMetricRequiresStats || this.statsLoaded || this.statsLoading) {
+        return;
+      }
+
+      const statsLoaded = await this.fetchChartStats(this.endpoint);
+
+      if (!statsLoaded && this.selectedMetricRequiresStats) {
+        this.selectedMetric = CONTRIBUTION_METRIC_COMMITS;
+      }
+    },
     getCommonChartOptions(isMasterChart) {
       return {
         xAxis: {
@@ -173,7 +250,7 @@ export default {
     onMasterChartCreated(chart) {
       this.masterChart = chart;
       this.masterChart.setOption({
-        dataZoom: [{ type: 'slider' }],
+        dataZoom: [{ type: 'slider', ...this.individualChartZoom }],
       });
 
       this.masterChart.on(
@@ -218,21 +295,42 @@ export default {
       <h4 class="gl-mb-2 gl-mt-5">
         {{ __('Commits to') }} <code>{{ branch }}</code>
       </h4>
-      <span>{{ __('Excluding merge commits. Limited to 6,000 commits.') }}</span>
+      <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+        <span>{{
+          s__('ContributionAnalytics|Excluding merge commits. Limited to 6,000 commits.')
+        }}</span>
+        <div class="gl-ml-auto gl-flex gl-items-center gl-gap-3">
+          <label for="contributors-metric" class="gl-mb-0">{{
+            s__('ContributionAnalytics|Contributions')
+          }}</label>
+          <gl-form-select
+            id="contributors-metric"
+            v-model="selectedMetric"
+            :options="contributionMetricOptions"
+            data-testid="metric-selector"
+          />
+        </div>
+      </div>
       <contributor-area-chart
+        v-if="!selectedMetricStatsLoading"
+        :key="selectedMetric"
         class="gl-mb-5"
         :data="masterChartData"
         :option="masterChartOptions"
         :height="$options.MASTER_CHART_HEIGHT"
         @created="onMasterChartCreated"
       />
+      <div v-else class="gl-py-8 gl-text-center">
+        <gl-loading-icon :inline="true" size="lg" data-testid="loading-stats-icon" />
+      </div>
 
-      <div class="row">
+      <div v-if="!selectedMetricStatsLoading" class="row">
         <individual-chart
           v-for="(contributor, index) in individualChartsData"
-          :key="index"
+          :key="`${selectedMetric}-${index}`"
           :contributor="contributor"
           :chart-options="individualChartOptions"
+          :show-line-changes="selectedMetricRequiresStats"
           :zoom="individualChartZoom"
         />
       </div>

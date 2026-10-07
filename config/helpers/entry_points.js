@@ -7,6 +7,7 @@ const baseEntryPoints = {
   performance_bar: './entrypoints/performance_bar.js',
   jira_connect_app: './jira_connect/subscriptions/index.js',
   sandboxed_mermaid_v11: './lib/mermaid_v11.js',
+  sandboxed_mermaid_v12: './lib/mermaid_v12.js',
   redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
   sandboxed_swagger: './lib/swagger.js',
   super_sidebar: './entrypoints/super_sidebar.js',

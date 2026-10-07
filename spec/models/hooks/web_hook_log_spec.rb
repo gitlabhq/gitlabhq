@@ -421,6 +421,17 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
 
       it { expect(web_hook_log.url_current?).to be_falsey }
     end
+
+    context 'with a url hash salted with the previous db_key_base key' do
+      include DbKeyBaseHelpers
+
+      it 'is current' do
+        web_hook_log
+        stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+
+        expect(web_hook_log.url_current?).to be_truthy
+      end
+    end
   end
 
   describe 'Scopes' do

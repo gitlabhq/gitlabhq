@@ -11,13 +11,13 @@ RSpec.describe Projects::GraphsController, feature_category: :source_code_manage
   end
 
   describe '#show' do
-    subject { get(:show, params: params) }
+    subject(:get_graph) { get(:show, params: params) }
 
     let(:params) { { namespace_id: project.namespace.path, project_id: project.path, id: 'master' } }
 
     describe 'ref_type' do
       it 'assigns ref_type' do
-        subject
+        get_graph
 
         expect(assigns[:languages]).to be_nil
       end
@@ -28,7 +28,7 @@ RSpec.describe Projects::GraphsController, feature_category: :source_code_manage
         end
 
         it 'assigns ref_type' do
-          subject
+          get_graph
 
           expect(assigns[:ref_type]).to eq('heads')
         end
@@ -43,15 +43,110 @@ RSpec.describe Projects::GraphsController, feature_category: :source_code_manage
         stub_const('Projects::GraphsController::MAX_COMMITS', stubbed_limit)
       end
 
-      it 'renders json' do
-        subject
+      it 'renders json without commit stats by default', :aggregate_failures do
+        expect(Gitlab::Git::CommitStats).not_to receive(:new)
+
+        get_graph
 
         expect(json_response.size).to eq(stubbed_limit)
-        %w[author_name author_email date].each do |key|
+        %w[id author_name author_email date].each do |key|
           expect(json_response[0]).to have_key(key)
+        end
+        expect(json_response[0]).not_to have_key('additions')
+        expect(json_response[0]).not_to have_key('deletions')
+      end
+
+      context 'when commit stats are requested' do
+        before do
+          params[:with_stats] = 'true'
+        end
+
+        it 'renders json with commit stats', :aggregate_failures do
+          expect(Gitlab::Git::CommitStats).not_to receive(:new)
+
+          get_graph
+
+          expect(json_response.size).to eq(stubbed_limit)
+          %w[id author_name author_email date additions deletions].each do |key|
+            expect(json_response[0]).to have_key(key)
+          end
+          expect(json_response[0]['additions']).to eq(1)
+          expect(json_response[0]['deletions']).to eq(0)
+        end
+
+        context 'with multiple commits' do
+          let_it_be(:project) { create(:project, :repository, maintainers: user) }
+
+          it 'does not make a Gitaly request per commit for commit stats', :request_store, :aggregate_failures do
+            gitaly_request_count_for_commit_limit(1)
+
+            multiple_commits_request_count = gitaly_request_count_for_commit_limit(10)
+            expect(json_response.size).to eq(10)
+
+            single_commit_request_count = gitaly_request_count_for_commit_limit(1)
+            expect(json_response.size).to eq(1)
+
+            expect(multiple_commits_request_count - single_commit_request_count).to be <= 1
+          end
+        end
+
+        context 'when serializing short stats' do
+          using RSpec::Parameterized::TableSyntax
+
+          let(:repository) { project.repository }
+          let(:present_stats) { Gitaly::CommitStatInfo.new(additions: 5, deletions: 3) }
+
+          where(:short_stats, :additions, :deletions) do
+            ref(:present_stats) | 5 | 3
+            nil                 | 0 | 0
+          end
+
+          with_them do
+            let(:commit) do
+              instance_double(
+                Gitlab::Git::Commit,
+                id: '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+                author_name: 'Author',
+                author_email: 'author@example.com',
+                committed_date: Time.zone.parse('2024-01-01'),
+                short_stats: short_stats
+              )
+            end
+
+            before do
+              allow(repository).to receive(:commits).and_return([commit])
+
+              allow_next_found_instance_of(Project) do |found_project|
+                allow(found_project).to receive(:repository).and_return(repository)
+              end
+            end
+
+            it 'renders the expected counts', :aggregate_failures do
+              get_graph
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response).to contain_exactly(
+                'id' => commit.id,
+                'author_name' => 'Author',
+                'author_email' => 'author@example.com',
+                'date' => '2024-01-01',
+                'additions' => additions,
+                'deletions' => deletions
+              )
+            end
+          end
         end
       end
     end
+  end
+
+  def gitaly_request_count_for_commit_limit(limit)
+    stub_const('Projects::GraphsController::MAX_COMMITS', limit)
+    Gitlab::GitalyClient.reset_counts
+
+    get(:show, params: params)
+
+    Gitlab::GitalyClient.get_request_count
   end
 
   describe 'GET languages' do

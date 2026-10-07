@@ -761,7 +761,7 @@ A rate limit on the GitLab API endpoint behind a tool is reported differently. F
 
 On GitLab Self-Managed and GitLab Dedicated, an administrator sets a single MCP server limit for
 the instance. For more information, see
-[user and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md).
+[authenticated MCP server request rate limit](../../administration/settings/user_and_ip_rate_limits.md#enable-authenticated-mcp-server-request-rate-limit).
 
 ## Supported MCP protocol versions
 

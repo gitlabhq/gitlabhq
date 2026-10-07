@@ -356,6 +356,32 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         end
       end
 
+      context "when the draft note is on a diff" do
+        let_it_be(:diff_draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+
+        def update_diff_draft_note(params)
+          put api("#{base_url}/#{diff_draft_note.id}", user), params: params
+        end
+
+        it "keeps the existing position when only the note is updated" do
+          expect { update_diff_draft_note(basic_update_params) }
+            .not_to change { diff_draft_note.reload.position.to_h }
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response["note"]).to eq(basic_update_params[:note])
+          expect(json_response.dig("position", "new_path")).to eq(diff_draft_note.position.new_path)
+        end
+
+        it "updates the position when one is provided" do
+          position = diff_draft_note.position.to_h.merge(position_type: 'file').except(:ignore_whitespace_change)
+
+          update_diff_draft_note(basic_update_params.merge(position: position))
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(diff_draft_note.reload.position.position_type).to eq('file')
+        end
+      end
+
       context "when updating a non-existent draft note" do
         it "returns a 404 Not Found" do
           put api("#{base_url}/#{non_existing_record_id}", user), params: basic_update_params

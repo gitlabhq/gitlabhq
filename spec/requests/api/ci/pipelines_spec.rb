@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   include Ci::PipelineVariableHelpers
+  include ExclusiveLeaseHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
@@ -1632,6 +1633,26 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
         expect(json_response['message']).to eq(_('This endpoint has been requested too many times. Try again later.'))
+      end
+    end
+
+    context 'when another retry of the pipeline is in progress' do
+      let_it_be(:pipeline) do
+        create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+      end
+
+      before do
+        stub_exclusive_lease_taken(
+          "ci:retry_pipeline_service:lock:#{pipeline.id}",
+          timeout: ::Ci::RetryPipelineService::LOCK_TIMEOUT
+        )
+      end
+
+      it 'returns 409', :aggregate_failures do
+        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
+
+        expect(response).to have_gitlab_http_status(:conflict)
+        expect(json_response['message']).to eq('Pipeline is already being retried')
       end
     end
   end

@@ -9,7 +9,7 @@ module DependencyProxy
     end
 
     def execute
-      JSONWebToken::HMACToken.decode(token, ::Auth::ContainerProxyAuthenticationService.secret).first
+      JSONWebToken::HMACToken.decode(token, ::Auth::ContainerProxyAuthenticationService.secrets).first
     end
 
     # TODO: Rename to make it obvious how it's used in Gitlab::Auth::RequestAuthenticator

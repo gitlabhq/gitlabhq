@@ -1202,7 +1202,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_and_security_orchestration_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat merge_request_event
-          external_pull_request_event security_orchestration_policy])
+          external_pull_request_event security_orchestration_policy pipeline_execution_policy_schedule])
     end
   end
 

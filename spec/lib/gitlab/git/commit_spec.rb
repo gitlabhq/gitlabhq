@@ -648,6 +648,16 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
     end
   end
 
+  describe '#short_stats' do
+    let(:short_stats) { Gitaly::CommitStatInfo.new(additions: 5, deletions: 3, changed_files: 2) }
+    let(:gitaly_commit) { build(:gitaly_commit, short_stats: short_stats) }
+    let(:commit) { described_class.new(repository, gitaly_commit) }
+
+    it 'returns short stats from the Gitaly commit' do
+      expect(commit.short_stats).to eq(short_stats)
+    end
+  end
+
   describe '#gitaly_commit?' do
     context 'when the commit data comes from gitaly' do
       it { expect(commit.gitaly_commit?).to be(true) }

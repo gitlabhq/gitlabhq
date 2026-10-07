@@ -92,7 +92,6 @@ Gitlab/JsonSafeParse:
     - 'ee/lib/gitlab/llm/ai_gateway/completions/categorize_question.rb'
     - 'ee/lib/gitlab/package_metadata/connector/ndjson_data_file.rb'
     - 'ee/lib/gitlab/search/zoekt/client.rb'
-    - 'ee/lib/secrets_management/secrets_manager_client.rb'
     - 'ee/lib/tasks/gitlab/duo_chat/seed_failed_ci_jobs.rake'
     - 'ee/spec/controllers/ee/projects/pipelines_controller_spec.rb'
     - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'

@@ -5039,6 +5039,11 @@
     "acceptsFormat": true
   },
   {
+    "template": "/-/sandbox/mermaid_v12",
+    "example": "/-/sandbox/mermaid_v12",
+    "acceptsFormat": true
+  },
+  {
     "template": "/-/sandbox/swagger",
     "example": "/-/sandbox/swagger",
     "acceptsFormat": true
@@ -24147,6 +24152,12 @@
     "example": "/o/foo/-/sandbox/mermaid_v11",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/-/sandbox/mermaid_v11"
+  },
+  {
+    "template": "/o/:organization_path/-/sandbox/mermaid_v12",
+    "example": "/o/foo/-/sandbox/mermaid_v12",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/-/sandbox/mermaid_v12"
   },
   {
     "template": "/o/:organization_path/-/sandbox/swagger",

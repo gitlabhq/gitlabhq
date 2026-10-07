@@ -107,6 +107,8 @@ class Groups::ApplicationController < ApplicationController
     push_namespace_setting(:math_rendering_limits_enabled, @group)
     push_force_frontend_feature_flag(:allow_iframes_in_markdown,
       @group&.allow_iframes_in_markdown_feature_flag_enabled? == true)
+    push_force_frontend_feature_flag(:use_mermaid_v12,
+      @group&.use_mermaid_v12_feature_flag_enabled? == true)
   end
 
   def group_finder_params

@@ -61,6 +61,26 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
       end
     end
 
+    context 'with a recent push', :use_clean_rails_memory_store_caching do
+      before do
+        event = create(:push_event, project: project, author: user)
+        create(:push_event_payload, event: event, ref: 'feature', action: :created)
+
+        Users::LastPushEventService.new(user).cache_last_push_event(event)
+      end
+
+      it 'opens the new merge request page from the push banner' do
+        visit project_tree_path(project, 'master')
+
+        expect(page).to have_content 'You pushed to feature'
+
+        click_link 'Create merge request'
+
+        expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
+        expect(page).to have_content 'From feature into master'
+      end
+    end
+
     context 'to a forked project' do
       let(:forked_project) { fork_project(project, user, namespace: user.namespace, repository: true) }
 

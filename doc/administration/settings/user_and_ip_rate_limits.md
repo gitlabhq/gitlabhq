@@ -126,6 +126,29 @@ authenticated web request rate limit.
 > traffic that previously shared a budget with web traffic gets its own budget of the same size.
 > If the authenticated web request rate limit is disabled, this limit remains disabled.
 
+## Enable authenticated MCP server request rate limit
+
+Authenticated requests to the
+[GitLab MCP server](../../user/model_context_protocol/mcp_server.md) count against the
+[authenticated API request rate limit](#enable-authenticated-api-request-rate-limit).
+
+To add restrictions to MCP server traffic, enable a rate limit for the `POST /api/v4/mcp` endpoint.
+This limit applies in addition to the authenticated API rate limit. Requests are refused if either limits are
+exceeded. It counts every request to the endpoint,
+not only tool calls. This limit applies only to authenticated requests and is disabled by default.
+
+To enable the authenticated MCP server rate limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Network**.
+1. Expand **GitLab MCP server rate limits**.
+1. Select **Enable authenticated MCP server request rate limit**.
+
+   - Optional. Update the **Max authenticated MCP server requests per period per user** value.
+     Defaults to `600`.
+   - Optional. Update the **Authenticated MCP server rate limit period in seconds** value.
+     Defaults to `60`.
+
 ## Use a custom rate limit response
 
 A request that exceeds a rate limit returns a `429` response code and a

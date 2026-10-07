@@ -15,7 +15,7 @@ module Gitlab
       def db_key_base_lockbox_previous_versions(context)
         current_secret = db_key_base_key_provider.encryption_key.secret
 
-        db_key_base_key_provider.decryption_keys.map(&:secret).reverse.filter_map do |secret|
+        db_key_base_key_provider.decryption_keys_current_first.map(&:secret).filter_map do |secret|
           next if secret == current_secret
 
           { key: derive_db_key_base_lockbox_key(secret, context) }

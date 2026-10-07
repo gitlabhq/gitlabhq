@@ -838,6 +838,31 @@ export const sandboxMermaidV11Path = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
+ * - href: `/-/sandbox/mermaid_v12(.:format)`
+ * - Path helper: `sandbox_mermaid_v12_path`
+ * - URL helper: `sandbox_mermaid_v12_url`
+ * - controller#action: `sandbox#mermaid_v12`
+ *
+ * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
+ * @returns {string} route path
+ */
+export const sandboxMermaidV12Path = /*#__PURE__*/ (...args) => {
+  const _organizationSandboxMermaidV12Path = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"sandbox"],[2,[7,"/"],[2,[6,"mermaid_v12"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+  const _sandboxMermaidV12Path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"sandbox"],[2,[7,"/"],[2,[6,"mermaid_v12"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _organizationSandboxMermaidV12Path(organizationPath, ...routeArgs);
+  }
+
+  return _sandboxMermaidV12Path(...routeArgs);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/-/sandbox/swagger(.:format)`
  * - Path helper: `sandbox_swagger_path`
  * - URL helper: `sandbox_swagger_url`

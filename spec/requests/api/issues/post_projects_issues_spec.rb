@@ -959,26 +959,28 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         properties: {
           'id' => {
             type: 'string',
-            description: 'The ID or URL-encoded path of the project'
+            description: 'ID or URL-encoded path of the project.'
           },
           'title' => {
             type: 'string',
-            description: 'The title of an issue'
+            description: 'Title of the issue.'
           },
           'description' => {
             type: 'string',
-            description: 'The description of an issue'
+            description: 'Description of the issue. Limited to 1,048,576 characters.'
           },
           'assignee_ids' => {
             type: 'array',
             items: {
               type: 'integer'
             },
-            description: 'The array of user IDs to assign issue'
+            description: 'IDs of the users to assign to the issue. Set to `0` or leave empty to unassign all ' \
+              'assignees. Assigning more than one user is Premium and Ultimate only.'
           },
           'milestone_id' => {
             type: 'integer',
-            description: 'The ID of a milestone to assign issue'
+            description: 'Global ID of a milestone to assign to the issue. Set to `0` or leave empty to unassign the ' \
+              'milestone.'
           },
           'milestone' => {
             type: 'string',
@@ -986,11 +988,14 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
           },
           'labels' => {
             type: 'string',
-            description: 'Comma-separated list of label names'
+            description: 'Comma-separated list of label names. `None` means no labels are assigned. `Any` means at ' \
+              'least one label is assigned. `No+Label` (deprecated) means no labels are assigned. Set to an empty ' \
+              'string to unassign all labels. If a label does not already exist, this creates a new project label ' \
+              'and assigns it to the issue. Predefined names are case-insensitive.'
           },
           'confidential' => {
             type: 'boolean',
-            description: 'Boolean parameter if the issue should be confidential'
+            description: 'If `true`, the issue is confidential.'
           }
         },
         required: %w[id title],

@@ -33,7 +33,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     shared_examples 'user group finder searching by name or path' do
       let(:search_arguments) { { search: 'maintainer' } }
 
-      specify do
+      it 'returns matching groups' do
         is_expected.to contain_exactly(
           public_maintainer_group,
           private_maintainer_group
@@ -43,7 +43,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
       context 'when searching for a full path (including parent)' do
         let(:search_arguments) { { search: 'root-group/b-private-maintainer' } }
 
-        specify do
+        it 'returns the group matching the full path' do
           is_expected.to contain_exactly(private_maintainer_group)
         end
       end
@@ -51,7 +51,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
       context 'when search keywords include the parent route' do
         let(:search_arguments) { { search: 'root public' } }
 
-        specify do
+        it 'returns groups matching the keywords' do
           is_expected.to match(keyword_search_expected_groups)
         end
       end
@@ -274,7 +274,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     context 'when permission is :create_projects' do
       let(:arguments) { { permission_scope: :create_projects } }
 
-      specify do
+      it 'returns groups where the user can create projects' do
         is_expected.to contain_exactly(
           public_maintainer_group,
           public_owner_group,
@@ -296,7 +296,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     context 'when permission is :import_projects' do
       let(:arguments) { { permission_scope: :import_projects } }
 
-      specify do
+      it 'returns groups where the user can import projects' do
         is_expected.to contain_exactly(
           public_maintainer_group,
           public_owner_group,
@@ -314,7 +314,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     context 'when permission is :transfer_projects' do
       let(:arguments) { { permission_scope: :transfer_projects } }
 
-      specify do
+      it 'returns groups where the user can transfer projects' do
         is_expected.to contain_exactly(
           public_maintainer_group,
           public_owner_group,

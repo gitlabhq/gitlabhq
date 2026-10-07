@@ -12,8 +12,8 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-        desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
-      requires :issue_iid, type: Integer, desc: 'The internal ID of a project’s issue'
+        desc: 'ID or URL-encoded path of the project.'
+      requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
     end
     resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'List all issue links' do
@@ -53,8 +53,8 @@ module API
       end
       params do
         requires :target_project_id, types: [String, Integer],
-          desc: 'The ID or URL-encoded path of a target project'
-        requires :target_issue_iid, types: [String, Integer], desc: 'The internal ID of a target project’s issue'
+          desc: 'ID or URL-encoded path of the target project.'
+        requires :target_issue_iid, types: [String, Integer], desc: 'Internal ID of the issue in the target project.'
         optional :link_type, type: String, values: IssueLink.available_link_types,
           default: IssueLink::TYPE_RELATES_TO,
           desc: 'The type of the relation.'
@@ -87,7 +87,7 @@ module API
         tags ISSUE_LINKS_TAGS
       end
       params do
-        requires :issue_link_id, types: [String, Integer], desc: 'ID of an issue relationship'
+        requires :issue_link_id, types: [String, Integer], desc: 'ID of the issue relationship.'
       end
       route_setting :authorization, permissions: :read_issue_link, boundary_type: :project
       get ':id/issues/:issue_iid/links/:issue_link_id' do
@@ -110,7 +110,7 @@ module API
         tags ISSUE_LINKS_TAGS
       end
       params do
-        requires :issue_link_id, types: [String, Integer], desc: 'The ID of an issue relationship'
+        requires :issue_link_id, types: [String, Integer], desc: 'ID of the issue relationship.'
       end
       route_setting :authorization, permissions: :delete_issue_link, boundary_type: :project
       delete ':id/issues/:issue_iid/links/:issue_link_id' do

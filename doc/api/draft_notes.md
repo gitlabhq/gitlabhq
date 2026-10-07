@@ -157,7 +157,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 | `draft_note_id`           | integer           | yes      | The ID of a draft note. |
 | `merge_request_iid`       | integer           | yes      | The IID of a project merge request. |
 | `note`                    | string            | no       | The content of a note. |
-| `position`                | hash              | no       | Position when creating a diff note. |
+| `position`                | hash              | no       | New position of a diff note. If omitted, the existing position is kept. |
 | `position[base_sha]`      | string            | yes (if `position` is provided) | Base commit SHA in the source branch. |
 | `position[head_sha]`      | string            | yes (if `position` is provided) | SHA referencing HEAD of this merge request. |
 | `position[start_sha]`     | string            | yes (if `position` is provided) | SHA referencing commit in target branch. |

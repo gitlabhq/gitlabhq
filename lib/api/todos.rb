@@ -18,7 +18,7 @@ module API
     }.freeze
 
     params do
-      requires :id, type: String, desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       ISSUABLE_TYPES.each do |type, finder|
@@ -51,12 +51,12 @@ module API
     resource :todos do
       helpers do
         params :todo_filters do
-          optional :action, type: String, values: Todo.action_names.values.map(&:to_s), desc: 'The action to be filtered'
-          optional :author_id, type: Integer, desc: 'The ID of an author'
-          optional :project_id, type: Integer, desc: 'The ID of a project'
-          optional :group_id, type: Integer, desc: 'The ID of a group'
-          optional :state, type: String, values: Todo.state_machine.states.map(&:name).map(&:to_s), desc: 'The state of the to-do item'
-          optional :type, type: String, values: TodosFinder.todo_types.map(&:to_s), desc: 'The type of to-do item'
+          optional :action, type: String, values: Todo.action_names.values.map(&:to_s), desc: 'Filter to-do items by action.'
+          optional :author_id, type: Integer, desc: 'Filter to-do items by author ID.'
+          optional :project_id, type: Integer, desc: 'Filter to-do items by project ID.'
+          optional :group_id, type: Integer, desc: 'Filter to-do items by group ID.'
+          optional :state, type: String, values: Todo.state_machine.states.map(&:name).map(&:to_s), desc: 'Filter to-do items by state.'
+          optional :type, type: String, values: TodosFinder.todo_types.map(&:to_s), desc: 'Filter to-do items by type.'
         end
 
         def find_todos
@@ -127,7 +127,7 @@ module API
         tags %w[to-dos]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of to-do item'
+        requires :id, type: Integer, desc: 'ID of the to-do item.'
       end
       route_setting :authorization, permissions: :update_todo, boundary_type: :user
       post ':id/mark_as_done' do

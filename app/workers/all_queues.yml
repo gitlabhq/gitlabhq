@@ -2790,7 +2790,7 @@
   :urgency: :high
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_default
 - :name: pipeline_default:pipeline_metrics

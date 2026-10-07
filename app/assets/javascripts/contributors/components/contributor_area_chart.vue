@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       tooltipTitle: '',
-      tooltipValue: [],
+      tooltipValues: [],
     };
   },
   computed: {
@@ -36,9 +36,12 @@ export default {
   },
   methods: {
     formatTooltipText({ seriesData }) {
-      const [dateTime, value] = seriesData[0].data;
+      const [dateTime] = seriesData[0].data;
       this.tooltipTitle = localeDateFormat.asDate.format(newDate(dateTime));
-      this.tooltipValue = value;
+      this.tooltipValues = seriesData.map(({ seriesName, data }) => ({
+        label: seriesName || this.tooltipLabel,
+        value: data[1],
+      }));
     },
   },
 };
@@ -59,9 +62,13 @@ export default {
     </template>
 
     <template #tooltip-content>
-      <div class="gl-flex gl-justify-between gl-gap-6">
-        <span data-testid="tooltip-label">{{ tooltipLabel }}</span>
-        <span data-testid="tooltip-value">{{ tooltipValue }}</span>
+      <div
+        v-for="({ label, value }, index) in tooltipValues"
+        :key="`${label}-${index}`"
+        class="gl-flex gl-justify-between gl-gap-6"
+      >
+        <span data-testid="tooltip-label">{{ label }}</span>
+        <span data-testid="tooltip-value">{{ value }}</span>
       </div>
     </template>
   </gl-area-chart>

@@ -293,7 +293,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      with_encrypted_tokens(encode(query)).or(fuzzy_search(query, [:description]))
+      with_encrypted_tokens(encode_candidates(query)).or(fuzzy_search(query, [:description]))
     end
 
     def self.online_contact_time_deadline

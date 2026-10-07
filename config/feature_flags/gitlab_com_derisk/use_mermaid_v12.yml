@@ -1,0 +1,10 @@
+---
+name: use_mermaid_v12
+description: Use Mermaid 12 instead of 11
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631203
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258347
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631204
+milestone: '19.5'
+group: group::planner intelligence
+type: gitlab_com_derisk
+default_enabled: false

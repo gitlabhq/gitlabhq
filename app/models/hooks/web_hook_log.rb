@@ -105,7 +105,7 @@ class WebHookLog < ApplicationRecord
     # compare to.
     return true if url_hash.nil?
 
-    Gitlab::CryptoHelper.sha256(web_hook.interpolated_url) == url_hash
+    Gitlab::CryptoHelper.sha256_candidates(web_hook.interpolated_url).include?(url_hash)
   end
 
   def prepare_for_storage

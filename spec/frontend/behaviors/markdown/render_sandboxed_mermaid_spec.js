@@ -169,6 +169,36 @@ describe('Mermaid diagrams renderer', () => {
     });
   });
 
+  describe('sandbox version', () => {
+    const findIframePath = () => new URL(findIframe().src).pathname;
+
+    beforeEach(() => {
+      setHTMLFixture('<pre><code class="js-render-mermaid">graph LR</code></pre>');
+    });
+
+    describe('when useMermaidV12 is enabled', () => {
+      beforeEach(() => {
+        window.gon.features.useMermaidV12 = true;
+        renderDiagrams();
+      });
+
+      it('uses the Mermaid 12 sandbox', () => {
+        expect(findIframePath()).toBe('/-/sandbox/mermaid_v12');
+      });
+    });
+
+    describe('when useMermaidV12 is disabled', () => {
+      beforeEach(() => {
+        window.gon.features.useMermaidV12 = false;
+        renderDiagrams();
+      });
+
+      it('uses the Mermaid 11 sandbox', () => {
+        expect(findIframePath()).toBe('/-/sandbox/mermaid_v11');
+      });
+    });
+  });
+
   describe('does not render mermaid diagrams without a parent element', () => {
     it('does not render when code element has no pre parent', () => {
       const orphanedCode = document.createElement('code');

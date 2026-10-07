@@ -8,7 +8,7 @@ module Gitlab
 
     class << self
       def decode(jwt)
-        payload = super(jwt, secret).first
+        payload = super(jwt, secrets).first
 
         new.tap do |jwt_token|
           jwt_token.id = payload.delete('jti')
@@ -27,11 +27,19 @@ module Gitlab
       end
 
       def secret
-        OpenSSL::HMAC.hexdigest(
-          HMAC_ALGORITHM,
-          ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
-          HMAC_KEY
-        )
+        derive_secret(::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret)
+      end
+
+      # Current key first, so tokens signed before a db_key_base rotation still verify
+      def secrets
+        ::Gitlab::Encryption::KeyProvider[:db_key_base].decryption_keys_current_first
+          .map { |key| derive_secret(key.secret) }
+      end
+
+      private
+
+      def derive_secret(db_key_base)
+        OpenSSL::HMAC.hexdigest(HMAC_ALGORITHM, db_key_base, HMAC_KEY)
       end
     end
 

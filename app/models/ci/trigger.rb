@@ -47,7 +47,7 @@ module Ci
 
     scope :with_token, ->(tokens) {
       tokens = Array.wrap(tokens).reject(&:blank?)
-      encrypted_tokens = tokens.map { |token| Ci::Trigger.encode(token) }
+      encrypted_tokens = tokens.flat_map { |token| Ci::Trigger.encode_candidates(token) }
       where(token_encrypted: encrypted_tokens)
     }
 

@@ -23,11 +23,11 @@ module API
           failure [[400, 'Bad Request'], [403, 'Forbidden'], [410, 'Gone']]
         end
         params do
-          requires :token, type: String, desc: 'Registration token'
-          optional :description, type: String, desc: 'Description of the runner'
-          optional :maintainer_note, type: String, desc: 'Deprecated: see `maintenance_note`'
+          requires :token, type: String, desc: 'Registration token.'
+          optional :description, type: String, desc: 'Description of the runner.'
+          optional :maintainer_note, type: String, desc: 'Free-form maintenance notes for the runner. Deprecated. Use `maintenance_note` instead.'
           optional :maintenance_note, type: String,
-            desc: 'Free-form maintenance notes for the runner (1024 characters)'
+            desc: 'Free-form maintenance notes for the runner (1024 characters).'
           optional :info, type: Hash, desc: "Runner's metadata" do
             optional :name, type: String, desc: "Runner's name"
             optional :version, type: String, desc: "Runner's version"
@@ -36,18 +36,16 @@ module API
             optional :architecture, type: String, desc: "Runner's architecture"
           end
           optional :active, type: Boolean,
-            desc: 'Deprecated: Use `paused` instead. Specifies if the runner is allowed ' \
-                  'to receive new jobs'
-          optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs'
-          optional :locked, type: Boolean, desc: 'Specifies if the runner should be locked for the current project'
+            desc: 'If `true`, the runner is allowed to receive new jobs. Deprecated. Use `paused` instead.'
+          optional :paused, type: Boolean, desc: 'If `true`, the runner ignores new jobs.'
+          optional :locked, type: Boolean, desc: 'If `true`, the runner is locked for the current project.'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
-            desc: 'The access level of the runner'
-          optional :run_untagged, type: Boolean, desc: 'Specifies if the runner should handle untagged jobs'
+            desc: 'Access level of the runner.'
+          optional :run_untagged, type: Boolean, desc: 'If `true`, the runner handles untagged jobs.'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-            desc: 'A list of runner tags'
+            desc: 'List of runner tags.'
           optional :maximum_timeout, type: Integer,
-            desc: 'Maximum timeout that limits the amount of time (in seconds) ' \
-                  'that runners can run jobs'
+            desc: 'Maximum time, in seconds, that runners can spend running a job.'
           mutually_exclusive :maintainer_note, :maintenance_note
           mutually_exclusive :active, :paused
         end
@@ -90,7 +88,7 @@ module API
           tags ['ci_runners']
         end
         params do
-          requires :token, type: String, desc: "The runner's authentication token"
+          requires :token, type: String, desc: 'Authentication token of the runner.'
         end
         route_setting :authorization, skip_granular_token_authorization: :runner_token_auth
         delete '/', urgency: :low, feature_category: :runner_core do
@@ -108,8 +106,8 @@ module API
           tags ['ci_runners']
         end
         params do
-          requires :token, type: String, desc: "The runner's authentication token"
-          requires :system_id, type: String, desc: "The runner's system identifier."
+          requires :token, type: String, desc: 'Authentication token of the runner.'
+          requires :system_id, type: String, desc: 'System identifier of the runner.'
         end
         route_setting :authorization, skip_granular_token_authorization: :runner_token_auth
         delete '/managers', urgency: :low, feature_category: :fleet_visibility do
@@ -134,8 +132,8 @@ module API
           tags ['ci_runners']
         end
         params do
-          requires :token, type: String, desc: "The runner's authentication token"
-          optional :system_id, type: String, desc: "The runner's system identifier"
+          requires :token, type: String, desc: 'Authentication token of the runner.'
+          optional :system_id, type: String, desc: 'System identifier of the runner. Must be provided if `token` starts with `glrt-`.'
         end
         route_setting :authorization, skip_granular_token_authorization: :runner_token_auth
         post '/verify', urgency: :low, feature_category: :runner_core do
@@ -152,7 +150,7 @@ module API
           tags ['ci_runners']
         end
         params do
-          requires :token, type: String, desc: 'The current authentication token of the runner'
+          requires :token, type: String, desc: 'Authentication token of the runner.'
         end
         route_setting :authorization, skip_granular_token_authorization: :runner_token_auth
         post '/reset_authentication_token', urgency: :low, feature_category: :runner_core do
@@ -252,16 +250,16 @@ module API
           tags ['jobs']
         end
         params do
-          requires :token, type: String, desc: "Job's authentication token"
-          requires :id, type: Integer, desc: "Job's ID"
-          optional :state, type: String, desc: "Job's status: running, success, failed"
-          optional :checksum, type: String, desc: "Job's trace CRC32 checksum"
-          optional :failure_reason, type: String, desc: "Job's failure_reason"
-          optional :output, type: Hash, desc: 'Build log state' do
-            optional :checksum, type: String, desc: "Job's trace CRC32 checksum"
-            optional :bytesize, type: Integer, desc: "Job's trace size in bytes"
+          requires :token, type: String, desc: 'Authentication token of the job.'
+          requires :id, type: Integer, desc: 'ID of the job.'
+          optional :state, type: String, desc: 'Status of the job: `running`, `success`, or `failed`.'
+          optional :checksum, type: String, desc: 'CRC32 checksum of the job trace.'
+          optional :failure_reason, type: String, desc: 'Failure reason of the job.'
+          optional :output, type: Hash, desc: 'Build log state.' do
+            optional :checksum, type: String, desc: 'CRC32 checksum of the job trace.'
+            optional :bytesize, type: Integer, desc: "Size of the job's trace output, in bytes."
           end
-          optional :exit_code, type: Integer, desc: "Job's exit code"
+          optional :exit_code, type: Integer, desc: 'Exit code of the job.'
           optional :runtime_environment_key, type: String, limit: ::Ci::RuntimeEnvironment::ENVIRONMENT_KEY_MAX_LENGTH,
             desc: "Runtime environment key emitted by the runner on job suspension"
         end
@@ -294,8 +292,8 @@ module API
           tags ['jobs']
         end
         params do
-          requires :id, type: Integer, desc: "Job's ID"
-          optional :token, type: String, desc: "Job's authentication token" # token can also be present in header
+          requires :id, type: Integer, desc: 'ID of the job.'
+          optional :token, type: String, desc: 'Authentication token of the job.' # token can also be present in header
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         get '/:id/runtime_environment_key', urgency: :low, feature_category: :runner_core do
@@ -321,9 +319,9 @@ module API
           tags ['jobs']
         end
         params do
-          requires :id, type: Integer, desc: "Job's ID"
-          optional :token, type: String, desc: "Job's authentication token" # token can also be present in header
-          optional :debug_trace, type: Boolean, desc: 'Enable or disable the debug trace'
+          requires :id, type: Integer, desc: 'ID of the job.'
+          optional :token, type: String, desc: 'Authentication token of the job.' # token can also be present in header
+          optional :debug_trace, type: Boolean, desc: 'If `true`, enables debug tracing for the job.'
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         patch '/:id/trace', urgency: :low, feature_category: :continuous_integration do
@@ -365,16 +363,16 @@ module API
           tags ['jobs']
         end
         params do
-          requires :id, type: Integer, desc: "Job's ID"
-          optional :token, type: String, desc: "Job's authentication token" # token can also be present in header
+          requires :id, type: Integer, desc: 'ID of the job.'
+          optional :token, type: String, desc: 'Authentication token of the job.' # token can also be present in header
 
           # NOTE:
           # In current runner, filesize parameter would be empty here. This is because archive is streamed by runner,
           # so the archive size is not known ahead of time. Streaming is done to not use additional I/O on
           # Runner to first save, and then send via Network.
-          optional :filesize, type: Integer, desc: 'Size of artifact file'
+          optional :filesize, type: Integer, desc: 'Size of the artifact file.'
 
-          optional :artifact_type, type: String, desc: 'The type of artifact',
+          optional :artifact_type, type: String, desc: 'Type of artifact.',
             default: 'archive', values: ::Ci::JobArtifact.file_types.keys
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
@@ -408,11 +406,11 @@ module API
           tags ['jobs']
         end
         params do
-          requires :id, type: Integer, desc: "Job's ID"
+          requires :id, type: Integer, desc: 'ID of the job.'
           requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: "The artifact file to store (generated by Multipart middleware)", documentation: { type: 'file' }
-          optional :token, type: String, desc: "Job's authentication token" # token can also be present in header
+          optional :token, type: String, desc: 'Authentication token of the job.' # token can also be present in header
           optional :expire_in, type: String, desc: 'Specify when artifact should expire'
-          optional :artifact_type, type: String, desc: 'The type of artifact',
+          optional :artifact_type, type: String, desc: 'Type of artifact.',
             default: 'archive', values: ::Ci::JobArtifact.file_types.keys
           optional :artifact_format, type: String, desc: 'The format of artifact',
             default: 'zip', values: ::Ci::JobArtifact.file_formats.keys
@@ -457,9 +455,9 @@ module API
           tags ['jobs']
         end
         params do
-          requires :id, type: Integer, desc: "Job's ID"
-          optional :token, type: String, desc: "Job's authentication token" # token can also be present in header
-          optional :direct_download, default: false, type: Boolean, desc: 'Perform direct download from remote storage instead of proxying artifacts'
+          requires :id, type: Integer, desc: 'ID of the job.'
+          optional :token, type: String, desc: 'Authentication token of the job.' # token can also be present in header
+          optional :direct_download, default: false, type: Boolean, desc: 'If `true`, performs a direct download of artifacts from remote storage instead of proxying them.'
           optional :download_mode, type: String, values: %w[proxy direct],
             desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
               'object storage configuration.'

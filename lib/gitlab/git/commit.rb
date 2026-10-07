@@ -316,6 +316,10 @@ module Gitlab
         Gitlab::Git::CommitStats.new(@repository, self)
       end
 
+      def short_stats
+        raw_commit.short_stats if gitaly_commit?
+      end
+
       # Get ref names collection
       #
       # Ex.

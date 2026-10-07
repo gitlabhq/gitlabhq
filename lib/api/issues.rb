@@ -27,98 +27,98 @@ module API
 
     helpers do
       params :negatable_issue_filter_params do
-        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
-        optional :milestone, type: String, desc: 'Milestone title'
+        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names.'
+        optional :milestone, type: String, desc: 'Milestone title.'
         optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
-          desc: 'Return issues assigned to milestones without the specified timebox value ("Any", "None", "Upcoming" or "Started")'
+          desc: 'Return issues assigned to milestones without the specified timebox value.'
         mutually_exclusive :milestone_id, :milestone
 
-        optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
+        optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Internal IDs of issues to exclude.'
 
-        optional :author_id, type: Integer, desc: 'Return issues which are not authored by the user with the given ID'
-        optional :author_username, type: String, desc: 'Return issues which are not authored by the user with the given username'
+        optional :author_id, type: Integer, desc: 'Return issues not authored by the user with the given ID.'
+        optional :author_username, type: String, desc: 'Return issues not authored by the user with the given username.'
         mutually_exclusive :author_id, :author_username
 
-        optional :assignee_id, type: Integer, desc: 'Return issues which are not assigned to the user with the given ID'
+        optional :assignee_id, type: Integer, desc: 'Return issues not assigned to the user with the given ID.'
         optional :assignee_username, type: Array[String], check_assignees_count: true,
           coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
-          desc: 'Return issues which are not assigned to the user with the given username'
+          desc: 'Return issues not assigned to the user with the given username.'
         mutually_exclusive :assignee_id, :assignee_username
 
         use :negatable_issue_filter_params_ee
       end
 
       params :issues_stats_params do
-        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
-        optional :milestone, type: String, desc: 'Milestone title'
+        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names. `None` means no labels are assigned. `Any` means at least one label is assigned. `No+Label` (deprecated) means no labels are assigned. Set to an empty string to unassign all labels. If a label does not already exist, this creates a new project label and assigns it to the issue. Predefined names are case-insensitive.'
+        optional :milestone, type: String, desc: 'Milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone. Support for `None` and `Any` is [planned for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/336044). Use the `milestone_id` attribute instead.'
         # 'milestone_id' only accepts wildcard values 'Any', 'None', 'Upcoming', 'Started'
         # the param has '_id' in the name to keep consistency (ex. assignee_id accepts id and wildcard values).
         optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
-          desc: 'Return issues assigned to milestones with the specified timebox value ("Any", "None", "Upcoming" or "Started")'
-        optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
-        optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
-        optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
+          desc: 'Return issues assigned to milestones with a given timebox value. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone. `Upcoming` lists all issues assigned to milestones due in the future. `Started` lists all issues assigned to open, started milestones. The logic for `Upcoming` and `Started` differs from the logic used in the [GraphQL API](https://docs.gitlab.com/user/project/milestones/#special-milestone-filters).'
+        optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Return only the issues having the given `iid`.'
+        optional :search, type: String, desc: 'Search issues against their `title` and `description`.'
+        optional :in, type: String, desc: 'Modify the scope of the `search` attribute to `title`, `description`, or `title,description`. If omitted, defaults to `title,description`.'
         mutually_exclusive :milestone_id, :milestone
 
-        optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
-        optional :author_username, type: String, desc: 'Return issues which are authored by the user with the given username'
+        optional :author_id, type: Integer, desc: 'Return issues created by the given user ID. Combine with `scope=all` or `scope=assigned_to_me`.'
+        optional :author_username, type: String, desc: 'Return issues created by the given `username`.'
         mutually_exclusive :author_id, :author_username
 
         optional :assignee_id, types: [Integer, String], integer_none_any: true,
-          desc: 'Return issues which are assigned to the user with the given ID'
+          desc: 'Return issues assigned to the given user `id`. `None` returns unassigned issues and `Any` returns issues with an assignee.'
         optional :assignee_username, type: Array[String], check_assignees_count: true,
           coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
-          desc: 'Return issues which are assigned to the user with the given username'
+          desc: 'Return issues assigned to the given username. In GitLab Community Edition, only a single value is accepted. Otherwise, an invalid parameter error is returned. When multiple usernames are given, only issues assigned to all of them are returned.'
         mutually_exclusive :assignee_id, :assignee_username
 
-        optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
-        optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
-        optional :updated_after, type: DateTime, desc: 'Return issues updated after the specified time'
-        optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
+        optional :created_after, type: DateTime, desc: 'Return issues created on or after the specified time.'
+        optional :created_before, type: DateTime, desc: 'Return issues created on or before the specified time.'
+        optional :updated_after, type: DateTime, desc: 'Return issues updated on or after the specified time.'
+        optional :updated_before, type: DateTime, desc: 'Return issues updated on or before the specified time.'
 
-        optional :not, type: Hash, desc: 'Filters by the specified parameters' do
+        optional :not, type: Hash, desc: 'Return issues that do not match the specified parameters.' do
           use :negatable_issue_filter_params
         end
 
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
-          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
-        optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
-        optional :confidential, type: Boolean, desc: 'Filter confidential or public issues'
+          desc: 'Return issues for the given scope.'
+        optional :my_reaction_emoji, type: String, desc: 'Return issues reacted to by the authenticated user with the given `emoji`. `None` returns issues with no reaction and `Any` returns issues with at least one reaction.'
+        optional :confidential, type: Boolean, desc: 'If `true`, returns only confidential issues. If `false`, returns only public issues.'
 
         use :issues_stats_params_ee
       end
 
       params :issues_params do
-        optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
+        optional :with_labels_details, type: Boolean, desc: 'If `true`, the response returns more details for each label in the labels field: `name`, `color`, `description`, `description_html`, `text_color`.', default: false
         optional :state, type: String, values: %w[opened closed all], default: 'all',
-          desc: 'Return opened, closed, or all issues'
-        optional :closed_by_id, type: Integer, desc: 'Return issues which were closed by the user with the given ID.'
+          desc: 'Filter issues by state.'
+        optional :closed_by_id, type: Integer, desc: 'Return issues closed by the user with the given ID.'
         optional :order_by, type: String, values: Helpers::IssuesHelpers.sort_options, default: 'created_at',
-          desc: 'Return issues ordered by `created_at`, `due_date`, `label_priority`, `milestone_due`, `popularity`, `priority`, `relative_position`, `title`, or `updated_at` fields.'
+          desc: 'Sort results by the specified field.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return issues sorted in `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order.'
         optional :due_date, type: String, values: %w[0 any today tomorrow overdue week month next_month_and_previous_two_weeks] << '',
-          desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
+          desc: 'Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month.'
         optional :issue_type, type: String, values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.join(', ')}"
         use :issues_stats_params
         use :pagination
       end
 
       params :issue_params do
-        optional :description, type: String, desc: 'The description of an issue'
-        optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The array of user IDs to assign issue'
-        optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
-        optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
+        optional :description, type: String, desc: 'Description of the issue. Limited to 1,048,576 characters.'
+        optional :assignee_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'IDs of the users to assign to the issue. Set to `0` or leave empty to unassign all assignees. Assigning more than one user is Premium and Ultimate only.'
+        optional :assignee_id,  type: Integer, desc: 'ID of the user to assign the issue to. Available only on GitLab Free. Deprecated. Use `assignee_ids` instead.'
+        optional :milestone_id, type: Integer, desc: 'Global ID of a milestone to assign to the issue. Set to `0` or leave empty to unassign the milestone.'
         optional :milestone, type: String, limit: 255,
           desc: 'The title of a project or ancestor-group milestone to assign the issue to.'
         mutually_exclusive :milestone_id, :milestone
-        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
-        optional :add_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
-        optional :remove_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
-        optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
-        optional :start_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
-        optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential', allow_blank: false
-        optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
+        optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names. `None` means no labels are assigned. `Any` means at least one label is assigned. `No+Label` (deprecated) means no labels are assigned. Set to an empty string to unassign all labels. If a label does not already exist, this creates a new project label and assigns it to the issue. Predefined names are case-insensitive.'
+        optional :add_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated label names to add to the issue. If a label does not already exist, this creates a new project label and assigns it to the issue.'
+        optional :remove_labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated label names to remove from the issue.'
+        optional :due_date, type: String, desc: 'Due date, in the format `YYYY-MM-DD`, for example `2016-03-11`.'
+        optional :start_date, type: String, desc: 'Start date, in the format `YYYY-MM-DD`, for example `2016-03-11`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238041) in GitLab 19.1.'
+        optional :confidential, type: Boolean, desc: 'If `true`, the issue is confidential.', allow_blank: false
+        optional :discussion_locked, type: Boolean, desc: "If `true`, locks the issue's discussion so only project members can add or edit comments."
         optional :issue_type, type: String, values: ::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues, desc: "The type of the issue. Accepts: #{::WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.join(', ')}"
         optional :severity, type: String, values: IssuableSeverity.severities.keys, desc: "The severity of the issue. Only applies to incidents. Accepts: #{IssuableSeverity.severities.keys.join(', ')}"
 
@@ -135,7 +135,7 @@ module API
     params do
       use :issues_stats_params
       optional :scope, type: String, values: %w[created_by_me assigned_to_me all], default: 'created_by_me',
-        desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+        desc: 'Return issues for the given scope.'
     end
     route_setting :authorization, permissions: :read_issue_statistic, boundary_type: :user
     get '/issues_statistics' do
@@ -155,9 +155,9 @@ module API
       params do
         use :issues_params
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
-          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+          desc: 'Return issues for the given scope.'
         optional :non_archived, type: Boolean, default: true,
-          desc: 'Return issues from non archived projects'
+          desc: 'If `true`, returns only issues from non-archived projects. If `false`, returns issues from both archived and non-archived projects.'
       end
       route_setting :authorization, permissions: :read_issue, boundary_type: :user
       get do
@@ -187,7 +187,7 @@ module API
         tags ['issues']
       end
       params do
-        requires :id, type: String, desc: 'The ID of the Issue'
+        requires :id, type: String, desc: 'ID of the issue.'
       end
       route_setting :authorization, permissions: :read_issue, boundary_type: :instance, assignable_when: [:admin]
       get ":id" do
@@ -199,7 +199,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all issues for a group' do
@@ -210,7 +210,7 @@ module API
       end
       params do
         use :issues_params
-        optional :non_archived, type: Boolean, desc: 'Return issues from non archived projects', default: true
+        optional :non_archived, type: Boolean, desc: 'If `true`, returns only issues from non-archived projects. If `false`, returns issues from both archived and non-archived projects.', default: true
       end
       route_setting :authorization, permissions: :read_issue, boundary_type: :group
       get ":id/issues" do
@@ -245,7 +245,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       include TimeTrackingEndpoints
@@ -258,7 +258,7 @@ module API
       end
       params do
         use :issues_params
-        optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
+        optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization,
@@ -310,7 +310,7 @@ module API
         tags ['projects']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
       end
       # Unlisted pending removal: superseded by get_work_item (https://gitlab.com/gitlab-org/gitlab/-/work_items/628333).
       route_setting :mcp, tool_name: :get_issue, toolset: :work_items, params: [:id, :issue_iid],
@@ -328,15 +328,15 @@ module API
         tags ['projects']
       end
       params do
-        requires :title, type: String, desc: 'The title of an issue'
+        requires :title, type: String, desc: 'Title of the issue.'
         optional :created_at, type: DateTime,
-          desc: 'Date time when the issue was created. Available only for admins and project owners.'
+          desc: 'Date and time the issue was created. Requires administrator or project/group owner rights.'
         optional :merge_request_to_resolve_discussions_of, type: Integer,
-          desc: 'The IID of a merge request for which to resolve discussions'
+          desc: 'Internal ID of a merge request for which to resolve discussions. This fills the issue with a default description and marks all discussions as resolved, unless a title or description is provided.'
         optional :discussion_to_resolve, type: String,
-          desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
+          desc: 'ID of a discussion to resolve. Use in combination with `merge_request_to_resolve_discussions_of`.'
         optional :iid, type: Integer,
-          desc: 'The internal ID of a project issue. Available only for admins and project owners.'
+          desc: 'Internal ID to assign to the new issue. Administrators or project owners only.'
 
         use :issue_params
       end
@@ -389,12 +389,12 @@ module API
         tags ['projects']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
-        optional :title, type: String, desc: 'The title of an issue'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
+        optional :title, type: String, desc: 'Title of the issue.'
         optional :updated_at, type: DateTime,
           allow_blank: false,
-          desc: 'Date time when the issue was updated. Available only for admins and project owners.'
-        optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
+          desc: 'Date and time the issue was updated. Administrators or project owners only. Empty or null values are not accepted.'
+        optional :state_event, type: String, values: %w[reopen close], desc: 'Event to change the state of the issue.'
         use :issue_params
 
         at_least_one_of(*Helpers::IssuesHelpers.update_params_at_least_one_of)
@@ -439,9 +439,9 @@ module API
         tags ['projects']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
-        optional :move_after_id, type: Integer, desc: 'The ID of the issue we want to be after'
-        optional :move_before_id, type: Integer, desc: 'The ID of the issue we want to be before'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
+        optional :move_after_id, type: Integer, desc: 'Global ID of the project issue to place this issue after.'
+        optional :move_before_id, type: Integer, desc: 'Global ID of the project issue to place this issue before.'
         at_least_one_of :move_after_id, :move_before_id
       end
       route_setting :authorization, permissions: :reorder_issue, boundary_type: :project
@@ -469,8 +469,8 @@ module API
         tags ['projects']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
-        requires :to_project_id, type: Integer, desc: 'The ID of the new project'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
+        requires :to_project_id, type: Integer, desc: 'ID of the new project.'
       end
       route_setting :authorization, permissions: :move_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
@@ -504,9 +504,9 @@ module API
         tags ['projects']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
-        requires :to_project_id, type: Integer, desc: 'The ID of the new project'
-        optional :with_notes, type: Boolean, desc: 'Clone issue with notes', default: false
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
+        requires :to_project_id, type: Integer, desc: 'ID of the new project.'
+        optional :with_notes, type: Boolean, desc: 'If `true`, clones the issue with its [notes](https://docs.gitlab.com/api/notes/).', default: false
       end
       route_setting :authorization, permissions: :clone_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
@@ -539,7 +539,7 @@ module API
         tags ['projects']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
       end
       route_setting :authorization, permissions: :delete_issue, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
@@ -563,7 +563,7 @@ module API
         tags ['issues']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
       end
       route_setting :authorization, permissions: :read_issue_merge_request, boundary_type: :project
       get ':id/issues/:issue_iid/related_merge_requests' do
@@ -588,7 +588,7 @@ module API
         tags ['projects']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
       end
       route_setting :authorization, permissions: :read_issue_closing_merge_request, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
@@ -610,7 +610,7 @@ module API
         tags ['issues']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
       end
       route_setting :authorization, permissions: :read_issue_participant, boundary_type: :project
       get ':id/issues/:issue_iid/participants' do
@@ -626,7 +626,7 @@ module API
         tags ['issues']
       end
       params do
-        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'Internal ID of the issue.'
       end
       route_setting :authorization, permissions: :read_issue_user_agent_detail, boundary_type: :project,
         assignable_when: [:admin]

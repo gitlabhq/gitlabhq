@@ -54,6 +54,10 @@ module Authn
         Authn::TokenField::EncryptionHelper.encrypt_token(token)
       end
 
+      def encode_candidates(token)
+        Authn::TokenField::EncryptionHelper.encrypt_token_candidates(token)
+      end
+
       def set_token(token_owner_record, token)
         raise ArgumentError unless token.present?
 

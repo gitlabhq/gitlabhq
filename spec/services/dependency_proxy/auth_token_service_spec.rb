@@ -241,4 +241,26 @@ RSpec.describe DependencyProxy::AuthTokenService, feature_category: :virtual_reg
       it { is_expected.to be_nil }
     end
   end
+
+  describe 'with several db_key_base keys' do
+    include DbKeyBaseHelpers
+
+    let(:old_key) { Settings.db_key_base_keys.last }
+
+    it 'decodes a token signed with the previous key' do
+      old_secret = OpenSSL::HMAC.hexdigest('sha256', old_key, ::Auth::ContainerProxyAuthenticationService::HMAC_KEY)
+      jwt = JSONWebToken::HMACToken.new(old_secret).tap { |token| token['user_id'] = user.id }
+      stub_db_key_base_keys(old_key, SecureRandom.hex(64))
+
+      expect(described_class.new(jwt.encoded).execute['user_id']).to eq(user.id)
+    end
+
+    it 'rejects a token signed with a key that is no longer configured' do
+      old_secret = OpenSSL::HMAC.hexdigest('sha256', old_key, ::Auth::ContainerProxyAuthenticationService::HMAC_KEY)
+      jwt = JSONWebToken::HMACToken.new(old_secret).tap { |token| token['user_id'] = user.id }
+      stub_db_key_base_keys(SecureRandom.hex(64))
+
+      expect { described_class.new(jwt.encoded).execute }.to raise_error(JWT::VerificationError)
+    end
+  end
 end

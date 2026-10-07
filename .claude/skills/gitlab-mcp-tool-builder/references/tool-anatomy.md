@@ -6,7 +6,7 @@ spine; this file is the field-level detail for each class, plus the mutation del
 ## The Tool class — `app/services/mcp/tools/<area>/<name>_tool.rb`
 
 Holds the **operation reference** and the **variable mapping**. Subclass of
-`GraphqlTool` directly (`class <Name>Tool < Mcp::Tools::GraphqlTool`).
+`Base::GraphqlTool` directly (`class <Name>Tool < Mcp::Tools::Base::GraphqlTool`).
 
 - **No `Concerns::Constants` include needed** — `GraphqlTool` already includes
   both `Versionable` and `Constants`, so `VERSIONS` is in scope on any subclass.
@@ -22,7 +22,7 @@ Holds the **operation reference** and the **variable mapping**. Subclass of
 - **URL parsing — two patterns depending on what the `url` points at:**
   - **Specific-resource URL** (e.g. a MR URL like `.../merge_requests/42`): use
     `::MergeRequest.link_reference_pattern.match(url)` directly — extracts `namespace`,
-    `project`, and `merge_request` named captures. See `get_merge_request_notes_tool.rb`.
+    `project`, and `merge_request` named captures. See `get_merge_request_tool.rb`.
   - **Project-or-group URL** (e.g. `.../namespace/project` or `.../groups/namespace/group`):
     include `Mcp::Tools::Concerns::UrlParser` alongside `ResourceFinder` and call
     `parse_parent_url(url)` → `{ type: :project/:group, path: 'full/path' }`. Handles
@@ -52,7 +52,7 @@ Holds the **operation reference** and the **variable mapping**. Subclass of
   same rule: `1.0.0` → `v1_0_0`.
 - optional `process_result` → reshape `GitlabSchema.execute` output. Call `super`
   first, bail on `processed_result[:isError]`, dig into `structuredContent`, and
-  return `::Mcp::Tools::Response.success(content, data)` / `.error(msg)`.
+  return `::Mcp::Tools::Base::Response.success(content, data)` / `.error(msg)`.
 
 ## The Service class — `app/services/mcp/tools/<area>/<name>_service.rb`
 
@@ -63,7 +63,7 @@ moved under `Mcp::Tools::Base`; write `class <Name>Service < Base::GraphqlServic
   - `input_schema` = JSON Schema of the arguments the **agent sends** (this is the
     contract the LLM sees — names, types, required[]).
   - **Do not add `additionalProperties: false` by hand.** It is applied
-    automatically to every tool schema by `Mcp::Tools::SchemaDefaults` (!243352),
+    automatically to every tool schema by `Mcp::Tools::Base::SchemaDefaults` (!243352),
     so unknown arguments are rejected consistently. Only set `additionalProperties`
     explicitly if you deliberately want `true` (a passthrough tool) — an explicit
     value is never overwritten. (Composition schemas using `oneOf`/`anyOf`/`allOf`/
@@ -82,8 +82,8 @@ Name the service and tool after the operation, without a `Graphql` prefix (only 
 base classes `Base::GraphqlService`/`GraphqlTool` keep it — every subclass already
 inherits one, and there is no separate `graphql/` folder, so the prefix adds
 nothing). Both classes live in a domain module:
-`Mcp::Tools::MergeRequests::GetMergeRequestNotesService` / `..._tool.rb` under
-`app/services/mcp/tools/merge_requests/`. The reorganize-by-domain + drop-prefix +
+`Mcp::Tools::Commits::GetCommitService` / `..._tool.rb` under
+`app/services/mcp/tools/commits/`. The reorganize-by-domain + drop-prefix +
 move-base-classes-to `Base::` work is tracked in `gitlab-org/gitlab#603096` (stack:
 base services merged; tool classes to `Mcp::Tools::Base` in !243272). The
 `tool_name` keys in `Manager` are a public, append-only contract — renaming a Ruby
@@ -161,7 +161,7 @@ Same two-class shape; a mutation just changes a few specifics:
 - **Check the payload `errors`.** Mutations return validation failures *in-band*
   under `data.<root>.errors`, not as a thrown exception — select `errors` in the
   query and inspect it in `process_result`, returning
-  `::Mcp::Tools::Response.error(msg, reason: Response::Reason::BAD_REQUEST)` when present. Otherwise the
+  `::Mcp::Tools::Base::Response.error(msg, reason: Response::Reason::BAD_REQUEST)` when present. Otherwise the
   tool reports "success" on a no-op.
 - **Specs:** in the CE `list_tools_spec`, add the tool to the **`write_tools`** list
   (not `read_only_tools`); the EE entry's annotations must match the Service.

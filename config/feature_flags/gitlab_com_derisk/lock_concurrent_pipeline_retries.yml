@@ -1,0 +1,9 @@
+---
+name: lock_concurrent_pipeline_retries
+description: Rejects a pipeline retry with 409 Conflict while another retry of the same pipeline is in progress
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632226
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258575
+milestone: '19.5'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

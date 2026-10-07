@@ -6664,6 +6664,12 @@ msgstr ""
 msgid "AdminSettings|Audit events API rate limits"
 msgstr ""
 
+msgid "AdminSettings|Authenticated MCP server rate limit period in seconds"
+msgstr ""
+
+msgid "AdminSettings|Authenticated MCP server request rate limit"
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
@@ -6766,6 +6772,9 @@ msgstr ""
 msgid "AdminSettings|Enable Service Ping. When disabled, Service Ping data will not be automatically sent"
 msgstr ""
 
+msgid "AdminSettings|Enable authenticated MCP server request rate limit"
+msgstr ""
+
 msgid "AdminSettings|Enable automatic generation of Service Ping data. When disabled, Service Ping data will not be automatically generated."
 msgstr ""
 
@@ -6842,6 +6851,9 @@ msgid "AdminSettings|For more information, see %{link_start}the documentation%{l
 msgstr ""
 
 msgid "AdminSettings|Git abuse rate limit"
+msgstr ""
+
+msgid "AdminSettings|GitLab MCP server rate limits"
 msgstr ""
 
 msgid "AdminSettings|GitLab prevents namespace reclamation authentication bypass attacks by blocking JWT generation in projects that were moved or renamed to a previously existing project path. Only allow JWT generation for reclaimed project paths if you understand and accept the insider-threat risk. The restriction is enabled by default and should remain enabled on most instances."
@@ -6929,6 +6941,9 @@ msgid "AdminSettings|Manage projects that should have VAC enabled"
 msgstr ""
 
 msgid "AdminSettings|Manage which integrations can be enabled on this instance."
+msgstr ""
+
+msgid "AdminSettings|Max authenticated MCP server requests per period per user"
 msgstr ""
 
 msgid "AdminSettings|Maximum allowable lifetime for OAuth access tokens"
@@ -7124,6 +7139,9 @@ msgid "AdminSettings|Session duration for Git operations when 2FA is enabled (mi
 msgstr ""
 
 msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Set an additional per-user limit for MCP server requests. These requests also count against the general user and IP rate limits."
 msgstr ""
 
 msgid "AdminSettings|Set options for cost factors of forks"
@@ -25679,6 +25697,21 @@ msgstr ""
 msgid "Contribution type"
 msgstr ""
 
+msgid "ContributionAnalytics|%{count} addition"
+msgid_plural "ContributionAnalytics|%{count} additions"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ContributionAnalytics|%{count} commit"
+msgid_plural "ContributionAnalytics|%{count} commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ContributionAnalytics|%{count} deletion"
+msgid_plural "ContributionAnalytics|%{count} deletions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ContributionAnalytics|%{createdCount} created, %{closedCount} closed."
 msgstr ""
 
@@ -25686,6 +25719,12 @@ msgid "ContributionAnalytics|%{createdCount} created, %{mergedCount} merged, %{c
 msgstr ""
 
 msgid "ContributionAnalytics|%{pushCount} by %{authorCount}."
+msgstr ""
+
+msgid "ContributionAnalytics|Additions"
+msgstr ""
+
+msgid "ContributionAnalytics|An error occurred while loading chart data"
 msgstr ""
 
 msgid "ContributionAnalytics|Approved MRs"
@@ -25697,10 +25736,22 @@ msgstr ""
 msgid "ContributionAnalytics|Closed issues"
 msgstr ""
 
+msgid "ContributionAnalytics|Commits"
+msgstr ""
+
 msgid "ContributionAnalytics|Contribution analytics for issues, merge requests and push events since %{start_date}"
 msgstr ""
 
+msgid "ContributionAnalytics|Contributions"
+msgstr ""
+
 msgid "ContributionAnalytics|Contributions per group member"
+msgstr ""
+
+msgid "ContributionAnalytics|Deletions"
+msgstr ""
+
+msgid "ContributionAnalytics|Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
 msgid "ContributionAnalytics|Failed to load the contribution stats"
@@ -25716,6 +25767,12 @@ msgid "ContributionAnalytics|Last month"
 msgstr ""
 
 msgid "ContributionAnalytics|Last week"
+msgstr ""
+
+msgid "ContributionAnalytics|Lines added"
+msgstr ""
+
+msgid "ContributionAnalytics|Lines deleted"
 msgstr ""
 
 msgid "ContributionAnalytics|Loading contribution stats for group members"
@@ -25737,6 +25794,9 @@ msgid "ContributionAnalytics|No merge requests for the selected time period."
 msgstr ""
 
 msgid "ContributionAnalytics|No pushes for the selected time period."
+msgstr ""
+
+msgid "ContributionAnalytics|Number of commits"
 msgstr ""
 
 msgid "ContributionAnalytics|Opened MRs"
@@ -36944,9 +37004,6 @@ msgid "Excluding USB security keys, you should include the browser name together
 msgstr ""
 
 msgid "Excluding merge commits. Limited to %{limit} commits."
-msgstr ""
-
-msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
 msgid "Exclusions"
@@ -56483,9 +56540,6 @@ msgid "Number of Reports"
 msgstr ""
 
 msgid "Number of accepted suggestions."
-msgstr ""
-
-msgid "Number of commits"
 msgstr ""
 
 msgid "Number of commits per MR"

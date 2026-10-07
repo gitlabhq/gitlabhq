@@ -243,7 +243,7 @@ module API
         use :optional_scope_param
         optional :non_archived, type: Boolean,
           default: false,
-          desc: 'Returns merge requests from non archived projects only.'
+          desc: 'If `true`, returns merge requests from non-archived projects only.'
       end
       route_setting :authorization, permissions: :read_merge_request, boundary_type: :user
       get feature_category: :code_review_workflow, urgency: :low do
@@ -262,7 +262,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID or URL-encoded path of the group owned by the authenticated user.'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all group merge requests' do
@@ -280,7 +280,7 @@ module API
         use :merge_requests_params
         optional :non_archived, type: Boolean,
           default: true,
-          desc: 'Returns merge requests from non archived projects only.'
+          desc: 'If `true`, returns merge requests from non-archived projects only.'
       end
       route_setting :authorization, permissions: :read_merge_request, boundary_type: :group
       get ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
@@ -307,7 +307,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project.'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -315,37 +315,37 @@ module API
 
       helpers do
         params :optional_params do
-          optional :assignee_id, type: Integer, desc: 'Assignee user ID.'
+          optional :assignee_id, type: Integer, desc: 'ID of the user to assign to the merge request. Set to `0` or leave empty to unassign all assignees.'
           optional :assignee_ids, type: Array[Integer],
             coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-            desc: 'The IDs of the users to assign the merge request to, as a comma-separated list. Set to 0 or provide an empty value to unassign all assignees.',
+            desc: 'IDs of the users to assign to the merge request, as a comma-separated list. Set to `0` or leave empty to unassign all assignees.',
             documentation: { is_array: true }
           optional :reviewer_ids, type: Array[Integer],
             coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-            desc: 'The IDs of the users to review the merge request, as a comma-separated list. Set to 0 or provide an empty value to unassign all reviewers.',
+            desc: 'IDs of the users to set as reviewers of the merge request, as a comma-separated list. If set to `0` or left empty, no reviewers are set.',
             documentation: { is_array: true }
           optional :description, type: String, desc: 'Description of the merge request. Limited to 1,048,576 characters.'
           optional :labels, type: Array[String],
             coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-            desc: 'Comma-separated label names for a merge request. Set to an empty string to unassign all labels.',
+            desc: 'Comma-separated label names for the merge request. If a label does not already exist, this creates a new project label and assigns it to the merge request. Set to an empty string to unassign all labels.',
             documentation: { is_array: true }
           optional :add_labels, type: Array[String],
             coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-            desc: 'Comma-separated label names to add to a merge request.',
+            desc: 'Comma-separated label names to add to the merge request. If a label does not already exist, this creates a new project label and assigns it to the merge request.',
             documentation: { is_array: true }
           optional :remove_labels, type: Array[String],
             coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-            desc: 'Comma-separated label names to remove from a merge request.',
+            desc: 'Comma-separated label names to remove from the merge request.',
             documentation: { is_array: true }
-          optional :milestone_id, type: Integer, desc: 'The global ID of a milestone to assign the merge request to.'
+          optional :milestone_id, type: Integer, desc: 'Global ID of a milestone to assign to the merge request. Set to `0` or leave empty to unassign the milestone.'
           optional :milestone, type: String, limit: 255,
             desc: 'The title of a project or ancestor-group milestone to assign the merge request to.'
           mutually_exclusive :milestone_id, :milestone
-          optional :remove_source_branch, type: Boolean, desc: 'Flag indicating if a merge request should remove the source branch when merging.'
-          optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch.'
-          optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
-          optional :squash, type: Grape::API::Boolean, desc: 'Squash commits into a single commit when merging.'
-          optional :merge_after, type: String, desc: 'Date after which the merge request can be merged.'
+          optional :remove_source_branch, type: Boolean, desc: 'If `true`, the source branch is removed when the merge request merges.'
+          optional :allow_collaboration, type: Boolean, desc: 'If `true`, allows commits from members who can merge to the target branch.'
+          optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: 'If `true`, allows commits from members who can merge to the target branch. Deprecated. Use `allow_collaboration` instead.'
+          optional :squash, type: Grape::API::Boolean, desc: "If `true`, squashes all commits into a single commit on merge. When omitted, defaults to the [project's squash option setting](https://docs.gitlab.com/user/project/merge_requests/squash_and_merge/#configure-squash-options-for-a-project), which can override this value at merge time."
+          optional :merge_after, type: String, desc: 'Date after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8.'
 
           use :optional_params_ee
         end
@@ -371,7 +371,7 @@ module API
 
         optional :iids, type: Array[Integer],
           coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-          desc: 'Returns the request having the given `iid`.',
+          desc: 'Return merge requests matching the provided internal IDs.',
           documentation: { is_array: true }
       end
       route_setting :authentication, job_token_allowed: true
@@ -410,11 +410,11 @@ module API
         tags %w[merge_requests]
       end
       params do
-        requires :title, type: String, desc: 'The title of the merge request.'
-        requires :source_branch, type: String, desc: 'The source branch.'
-        requires :target_branch, type: String, desc: 'The target branch.'
+        requires :title, type: String, desc: 'Title of the merge request.'
+        requires :source_branch, type: String, desc: 'Source branch.'
+        requires :target_branch, type: String, desc: 'Target branch.'
         optional :target_project_id, type: Integer,
-          desc: 'The target project of the merge request defaults to the :id of the project.'
+          desc: 'ID of the target project for the merge request. If omitted, defaults to the source project.'
         use :optional_params
       end
       route_setting :mcp, tool_name: :create_merge_request,
@@ -459,7 +459,7 @@ module API
         tags %w[merge_requests]
       end
       params do
-        requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
       end
       route_setting :authorization, permissions: :delete_merge_request, boundary_type: :project
       delete ":id/merge_requests/:merge_request_iid", feature_category: :code_review_workflow, urgency: :low do
@@ -473,10 +473,10 @@ module API
       end
 
       params do
-        requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
-        optional :render_html, type: Boolean, desc: 'If `true`, response includes rendered HTML for title and description.'
-        optional :include_diverged_commits_count, type: Boolean, desc: 'If `true`, response includes the commits behind the target branch.'
-        optional :include_rebase_in_progress, type: Boolean, desc: 'If `true`, response includes whether a rebase operation is in progress.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
+        optional :render_html, type: Boolean, desc: 'If `true`, the response includes rendered HTML for title and description.'
+        optional :include_diverged_commits_count, type: Boolean, desc: 'If `true`, the response includes the commits behind the target branch.'
+        optional :include_rebase_in_progress, type: Boolean, desc: 'If `true`, the response includes whether a rebase operation is in progress.'
       end
       desc 'Retrieve a merge request' do
         detail 'Retrieves a merge request for a specified project.'
@@ -551,7 +551,7 @@ module API
         tags %w[merge_requests]
       end
       params do
-        requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
         use :pagination
       end
       # Unlisted pending removal: superseded by get_merge_request with include: ["commits"]
@@ -598,7 +598,7 @@ module API
         requires :commits, type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           allow_blank: false,
-          desc: 'The context commits’ SHA.',
+          desc: "Context commits' SHAs.",
           documentation: { is_array: true }
       end
       desc 'Create context commits for a merge request' do
@@ -638,7 +638,7 @@ module API
         requires :commits, type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           allow_blank: false,
-          desc: 'The context commits’ SHA.',
+          desc: "Context commits' SHAs.",
           documentation: { is_array: true }
       end
       desc 'Delete context commits from a merge request' do
@@ -702,7 +702,7 @@ module API
         tags %w[merge_requests]
       end
       params do
-        requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
         use :pagination
         use :with_unidiff
       end
@@ -753,7 +753,7 @@ module API
         tags %w[merge_requests]
       end
       params do
-        requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
+        requires :merge_request_iid, type: Integer, desc: 'Internal ID of the merge request.'
       end
       # Unlisted pending removal: superseded by get_merge_request with include: ["pipelines"]
       # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
@@ -779,7 +779,7 @@ module API
       end
       params do
         optional :async, type: Boolean, default: false,
-          desc: 'Indicates if the merge request pipeline creation should be performed asynchronously. If set to `true`, the pipeline will be created outside of the API request and the endpoint will return an empty response with a `202` status code. When the response is `202`, the creation can still fail outside of this request.'
+          desc: 'If `true`, creates the merge request pipeline asynchronously outside the API request, returning an empty response with a `202` status code. Pipeline creation can still fail after a `202` response.'
       end
       route_setting :authorization, permissions: :create_merge_request_pipeline, boundary_type: :project
       post ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
@@ -821,13 +821,13 @@ module API
         tags %w[merge_requests]
       end
       params do
-        optional :title, type: String, allow_blank: false, desc: 'The title of the merge request.'
-        optional :target_branch, type: String, allow_blank: false, desc: 'The target branch.'
+        optional :title, type: String, allow_blank: false, desc: 'Title of the merge request.'
+        optional :target_branch, type: String, allow_blank: false, desc: 'Target branch.'
         optional :state_event, type: String,
           values: %w[close reopen],
-          desc: 'New state (close/reopen).'
+          desc: 'Event to change the state of the merge request.'
         optional :discussion_locked, type: Boolean,
-          desc: 'Flag indicating if the merge request’s discussion is locked. If the discussion is locked only project members can add, edit or resolve comments.'
+          desc: "If `true`, locks the merge request's discussion so only project members can add, edit, or resolve comments."
 
         use :optional_params
         at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
@@ -882,11 +882,11 @@ module API
         optional :should_remove_source_branch, type: Boolean,
           desc: 'If `true`, removes the source branch.'
         optional :merge_when_pipeline_succeeds, type: Boolean,
-          desc: 'Deprecated: Use auto_merge instead.'
+          desc: 'If `true`, merges the merge request automatically once the pipeline succeeds. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521291) in GitLab 17.11. Use `auto_merge` instead.'
         optional :auto_merge, type: Boolean,
-          desc: 'If `true`, the merge request is set to auto merge.'
-        optional :sha, type: String, desc: 'If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.'
-        optional :squash, type: Grape::API::Boolean, desc: 'If `true`, the commits are squashed into a single commit on merge.'
+          desc: 'If `true`, the merge request merges when checks pass.'
+        optional :sha, type: String, desc: 'SHA that must match the HEAD of the source branch, otherwise the merge fails. Use to ensure that only reviewed commits are merged. Required if the [require a commit SHA on the merge requests API](https://docs.gitlab.com/user/group/manage/#require-a-commit-sha-on-the-merge-requests-api) setting is enabled for the group or instance.'
+        optional :squash, type: Grape::API::Boolean, desc: 'If `true`, squashes all commits into a single commit on merge.'
 
         use :optional_merge_params
       end
@@ -998,7 +998,7 @@ module API
         tags %w[merge_requests]
       end
       params do
-        optional :skip_ci, type: Boolean, desc: 'Set to true to skip creating a CI pipeline.'
+        optional :skip_ci, type: Boolean, desc: 'If `true`, skips creating a CI pipeline.'
       end
       route_setting :authorization, permissions: :rebase_merge_request, boundary_type: :project
       put ':id/merge_requests/:merge_request_iid/rebase', feature_category: :code_review_workflow, urgency: :low do

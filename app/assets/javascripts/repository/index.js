@@ -7,17 +7,15 @@ import createStore from '~/code_navigation/store';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
 import initHeaderApp from './init_header_app';
-import repositoryPathMixin from './mixins/repository_path';
+import initLastCommitApp from './init_last_commit_app';
+import initForkInfoApp from './init_fork_info_app';
 import RepositoryApp from './components/app.vue';
-import ForkInfo from './components/fork_info.vue';
-import LastCommit from './components/last_commit.vue';
 
 import apolloProvider from './graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
-import { generateHistoryUrl } from './utils/url_utility';
 
 Vue.use(Vuex);
 Vue.use(PerformancePlugin, {
@@ -66,80 +64,9 @@ export default function setupVueRepositoryList() {
     },
   });
 
-  const initForkInfo = () => {
-    const forkEl = document.getElementById('js-fork-info');
-    if (!forkEl) {
-      return null;
-    }
-    const {
-      selectedBranch,
-      sourceName,
-      sourcePath,
-      sourceDefaultBranch,
-      createMrPath,
-      viewMrPath,
-      canSyncBranch,
-      aheadComparePath,
-      behindComparePath,
-    } = forkEl.dataset;
-    return new Vue({
-      el: forkEl,
-      name: 'ForkInfoRoot',
-      apolloProvider,
-      render(h) {
-        return h(ForkInfo, {
-          props: {
-            canSyncBranch: parseBoolean(canSyncBranch),
-            projectPath,
-            selectedBranch,
-            sourceName,
-            sourcePath,
-            sourceDefaultBranch,
-            aheadComparePath,
-            behindComparePath,
-            createMrPath,
-            viewMrPath,
-          },
-        });
-      },
-    });
-  };
-
-  const lastCommitEl = document.getElementById('js-last-commit');
-
-  const initLastCommitApp = () =>
-    new Vue({
-      el: lastCommitEl,
-      name: 'RepositoryLastCommitRoot',
-      router,
-      apolloProvider,
-      mixins: [repositoryPathMixin],
-      computed: {
-        refType() {
-          return this.$route.meta.refType || this.$route.query.ref_type;
-        },
-        historyUrl() {
-          return generateHistoryUrl(
-            lastCommitEl.dataset.historyLink,
-            this.computedPath,
-            this.refType,
-          );
-        },
-      },
-      render(h) {
-        return h(LastCommit, {
-          props: {
-            currentPath: this.computedPath,
-            refType: this.refType,
-            historyUrl: this.historyUrl.href,
-          },
-        });
-      },
-    });
-
   initHeaderApp({ router });
-  initLastCommitApp();
-  initForkInfo();
+  initLastCommitApp(router);
+  initForkInfoApp();
 
   // eslint-disable-next-line no-new
   new Vue({

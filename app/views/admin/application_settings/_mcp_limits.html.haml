@@ -1,0 +1,18 @@
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-mcp-limits-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    %h5
+      = s_('AdminSettings|Authenticated MCP server request rate limit')
+    .form-group
+      = f.gitlab_ui_checkbox_component :throttle_authenticated_mcp_enabled,
+        s_('AdminSettings|Enable authenticated MCP server request rate limit'),
+        help_text: _('Helps reduce request volume (for example, from crawlers or abusive bots)')
+    .form-group
+      = f.label :throttle_authenticated_mcp_requests_per_period, s_('AdminSettings|Max authenticated MCP server requests per period per user'), class: 'gl-font-bold'
+      = f.number_field :throttle_authenticated_mcp_requests_per_period, class: 'form-control gl-form-input'
+    .form-group
+      = f.label :throttle_authenticated_mcp_period_in_seconds, s_('AdminSettings|Authenticated MCP server rate limit period in seconds'), class: 'gl-font-bold'
+      = f.number_field :throttle_authenticated_mcp_period_in_seconds, class: 'form-control gl-form-input'
+
+  = f.submit _('Save changes'), pajamas_button: true

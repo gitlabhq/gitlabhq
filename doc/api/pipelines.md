@@ -592,10 +592,24 @@ Example of response
 
 ## Retry jobs in a pipeline
 
+{{< history >}}
+
+- `409 Conflict` response for concurrent retries of the same pipeline [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627233) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `lock_concurrent_pipeline_retries`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the `409 Conflict` response is controlled by a feature flag. For more information, see the history.
+
 Retries failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
 
 If you exceed the [pipeline retry rate limits](../administration/cicd/limits.md#pipeline-retry-rate-limits),
 this endpoint returns a `429 Too Many Requests` status code.
+
+Only one retry of a given pipeline runs at a time.
+If a retry of the same pipeline is already in progress,
+this endpoint returns a `409 Conflict` status code.
+Wait for the retry to finish, then send the request again.
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry

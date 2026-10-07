@@ -1152,6 +1152,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
+  def use_mermaid_v12_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:use_mermaid_v12, type: :gitlab_com_derisk)
+  end
+
   def vulnerability_malware_detection_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:vulnerability_malware_detection, type: :beta)
   end

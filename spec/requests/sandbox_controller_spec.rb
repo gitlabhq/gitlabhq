@@ -97,10 +97,11 @@ RSpec.describe SandboxController, feature_category: :shared do
         it 'overrides the img-src and media-src CSPs to self, the allowlist, and the asset proxy' do
           get_mermaid
 
-          expect(directives['img-src']).to eq(
-            "'self' https://assets.example.com/ http://gitlab.com:* http://*.mydomain.com:* http://localhost:*")
-          expect(directives['media-src']).to eq(
-            "'self' https://assets.example.com/ http://gitlab.com:* http://*.mydomain.com:* http://localhost:*")
+          expected = "'self' https://assets.example.com/ http://gitlab.com:* http://*.mydomain.com:* " \
+            "http://#{Gitlab.config.gitlab.host}:*"
+
+          expect(directives['img-src']).to eq(expected)
+          expect(directives['media-src']).to eq(expected)
         end
       end
     end
@@ -120,5 +121,9 @@ RSpec.describe SandboxController, feature_category: :shared do
 
   describe 'GET #mermaid_v11' do
     it_behaves_like 'mermaid sandbox endpoint', :sandbox_mermaid_v11_path
+  end
+
+  describe 'GET #mermaid_v12' do
+    it_behaves_like 'mermaid sandbox endpoint', :sandbox_mermaid_v12_path
   end
 end

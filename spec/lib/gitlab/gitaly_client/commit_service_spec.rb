@@ -1453,6 +1453,28 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
       client.find_commits(order: 'default', path: ' ')
     end
+
+    it 'sends an RPC request with include_shortstat enabled' do
+      request = Gitaly::FindCommitsRequest.new(
+        repository: repository_message,
+        disable_walk: true,
+        include_shortstat: true,
+        global_options: Gitaly::GlobalOptions.new(literal_pathspecs: false)
+      )
+
+      # Earlier examples may have populated the process-wide stub cache.
+      ::Gitlab::GitalyClient.clear_stubs!
+
+      expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+        expect(service).to receive(:find_commits)
+          .with(request, kind_of(Hash))
+          .and_return(
+            instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {})
+          )
+      end
+
+      client.find_commits(include_shortstat: true)
+    end
   end
 
   describe '#object_existence_map' do

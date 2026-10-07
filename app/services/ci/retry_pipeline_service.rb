@@ -2,6 +2,11 @@
 
 module Ci
   class RetryPipelineService < ::BaseService
+    # TTL for the Redis lease held while one pipeline retry runs. 1 minute matches the
+    # Rack request timeout, so the REST API path never needs longer. A lease that
+    # expires just lets retries overlap, as before this lock.
+    LOCK_TIMEOUT = 1.minute
+
     # Counted before the access check on purpose, per
     # https://gitlab.com/gitlab-org/gitlab/-/issues/627233: a rejected call is still a
     # call. The access response is returned first so the caller keeps the real reason.
@@ -13,6 +18,49 @@ module Ci
 
       return throttled_response if throttled_response
 
+      retry_jobs_exclusively(pipeline)
+    rescue Gitlab::Access::AccessDeniedError => e
+      ServiceResponse.error(message: e.message, http_status: :forbidden)
+    rescue ActiveRecord::StaleObjectError
+      ServiceResponse.error(message: 'Error updating stale job', http_status: :conflict)
+    end
+
+    def check_access(pipeline)
+      if can?(current_user, :update_pipeline, pipeline)
+        ServiceResponse.success
+      else
+        ServiceResponse.error(message: '403 Forbidden', http_status: :forbidden)
+      end
+    end
+
+    private
+
+    # Non-waiting on purpose: a concurrent retry of the same pipeline cannot do useful
+    # work until the first one finishes, so it is rejected rather than queued behind
+    # the lock and tying up a web thread.
+    def retry_jobs_exclusively(pipeline)
+      return retry_jobs(pipeline) unless Feature.enabled?(:lock_concurrent_pipeline_retries, pipeline.project)
+
+      key = lock_key(pipeline)
+      uuid = Gitlab::ExclusiveLease.new(key, timeout: LOCK_TIMEOUT).try_obtain
+      return retry_in_progress_response unless uuid
+
+      begin
+        retry_jobs(pipeline)
+      ensure
+        Gitlab::ExclusiveLease.cancel(key, uuid)
+      end
+    end
+
+    def retry_in_progress_response
+      ServiceResponse.error(
+        message: 'Pipeline is already being retried',
+        reason: :retry_in_progress,
+        http_status: :conflict
+      )
+    end
+
+    def retry_jobs(pipeline)
       builds_relation(pipeline).find_each do |job|
         next unless can_be_retried?(job)
 
@@ -36,21 +84,11 @@ module Ci
       start_pipeline(pipeline)
 
       ServiceResponse.success
-    rescue Gitlab::Access::AccessDeniedError => e
-      ServiceResponse.error(message: e.message, http_status: :forbidden)
-    rescue ActiveRecord::StaleObjectError
-      ServiceResponse.error(message: 'Error updating stale job', http_status: :conflict)
     end
 
-    def check_access(pipeline)
-      if can?(current_user, :update_pipeline, pipeline)
-        ServiceResponse.success
-      else
-        ServiceResponse.error(message: '403 Forbidden', http_status: :forbidden)
-      end
+    def lock_key(pipeline)
+      "ci:retry_pipeline_service:lock:#{pipeline.id}"
     end
-
-    private
 
     # Returns a throttled ServiceResponse, or nil when the call may proceed.
     def check_rate_limit(pipeline)

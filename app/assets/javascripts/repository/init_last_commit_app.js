@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import apolloProvider from '~/repository/graphql';
 import LastCommit from '~/repository/components/last_commit.vue';
+import repositoryPathMixin from '~/repository/mixins/repository_path';
 import { generateHistoryUrl } from '~/repository/utils/url_utility';
 
 export default function initLastCommitApp(router) {
@@ -9,24 +10,26 @@ export default function initLastCommitApp(router) {
 
   return new Vue({
     el: lastCommitEl,
-    name: 'BlobLastCommitRoot',
+    name: 'LastCommitRoot',
     router,
     apolloProvider,
+    mixins: [repositoryPathMixin],
     computed: {
-      currentPath() {
-        return this.$route.params.path;
-      },
       refType() {
         return this.$route.meta.refType || this.$route.query.ref_type;
       },
       historyUrl() {
-        return generateHistoryUrl(lastCommitEl.dataset.historyLink, this.currentPath, this.refType);
+        return generateHistoryUrl(
+          lastCommitEl.dataset.historyLink,
+          this.computedPath,
+          this.refType,
+        );
       },
     },
     render(h) {
       return h(LastCommit, {
         props: {
-          currentPath: this.currentPath,
+          currentPath: this.computedPath,
           refType: this.refType,
           historyUrl: this.historyUrl.href,
         },

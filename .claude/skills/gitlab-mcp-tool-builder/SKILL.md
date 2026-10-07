@@ -48,7 +48,7 @@ MCP client (JSON-RPC POST /api/v4/mcp, "tools/call")
           → process_result    (shape output → MCP Response)
 ```
 
-- **`<Name>Tool`** (`.../<area>/<name>_tool.rb`) — subclass of `Mcp::Tools::GraphqlTool`;
+- **`<Name>Tool`** (`.../<area>/<name>_tool.rb`) — subclass of `Mcp::Tools::Base::GraphqlTool`;
   loads the operation from a `.graphql` file, maps `params → variables`, optionally
   reshapes output.
 - **`<Name>Service`** (`.../<area>/<name>_service.rb`) — subclass of
@@ -92,8 +92,7 @@ Rules for the file:
 
 ## Tool naming and consolidation conventions (!245400)
 
-> **Note:** Existing tools (`get_merge_request_notes`, `create_merge_request_note`, etc.)
-> predate these conventions. Copy them for the **implementation pattern** but name and
+> **Note:** Some existing tools predate these conventions. Copy them for the **implementation pattern** but name and
 > structure your new tool per the conventions below.
 
 Every tool name uses a `verb_object` shape. The verb signals the operation class:
@@ -378,11 +377,11 @@ what you promised. Restart the app first (`gdk restart rails-web`) so the new to
 |---|---|
 | Two-class field-by-field detail, naming, mapping, mutation deltas | [references/tool-anatomy.md](references/tool-anatomy.md) |
 | How the GraphQL API is built + how to discover it (introspection) | [references/graphql-api-model.md](references/graphql-api-model.md) |
-| Full worked read example (`get_merge_request_notes`) | [references/worked-example.md](references/worked-example.md) |
+| Full worked read example (`get_commit`) | [references/worked-example.md](references/worked-example.md) |
 | Agent-as-consumer review checklist | [references/agent-consumer-review.md](references/agent-consumer-review.md) |
 | Canonical dev docs | `doc/development/duo_agent_platform/mcp/{_index,graphql_integration}.md` |
-| Framework classes | `app/services/mcp/tools/graphql_tool.rb`, `.../base/graphql_service.rb`, `.../manager.rb` |
+| Framework classes | `app/services/mcp/tools/base/graphql_tool.rb`, `.../base/graphql_service.rb`, `.../manager.rb` |
 | Concerns | `app/services/mcp/tools/concerns/{resource_finder,url_parser,content_validation,constants}.rb` |
-| Closest read / write templates | `.../merge_requests/get_merge_request_notes_{tool,service}.rb` / `create_merge_request_note_{tool,service}.rb` |
+| Closest read / write templates | `.../commits/get_commit_{tool,service}.rb` / `.../notes/save_note_{tool,service}.rb` |
 | Project-or-group tool template | `.../labels/search_{tool,service}.rb` + `app/graphql/queries/mcp/labels/search.query.graphql` |
 | RuboCop rule forbidding inline operations | `rubocop/cop/mcp/use_graphql_query_file.rb` |

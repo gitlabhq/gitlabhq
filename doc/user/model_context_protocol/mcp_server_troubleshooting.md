@@ -54,7 +54,55 @@ does not support the GitLab MCP server protocol specification.
 To resolve this issue, ask the AI tool provider
 to update their client implementation.
 
+## Error: `429 Too Many Requests`
+
+Your MCP client might stop working and report a generic HTTP or connection error, and every request
+fails until the rate limit period resets. This happens when a rate limit is exceeded: either the
+MCP server rate limit or the authenticated API rate limit, because MCP server requests count against
+both. GitLab refuses the request before it reaches the MCP server, so no tool runs. Unlike a
+[`rate_limited` tool result](#error-rate_limited-tool-result), this is not a `200 OK` that carries
+an error result.
+
+The response is HTTP `429` with content type `text/plain` and, by default, the body `Retry later`.
+It is not a JSON-RPC message, so an MCP client cannot read it as an MCP response.
+
+To confirm the cause, check the response headers:
+
+- `RateLimit-Name` identifies which limit was reached. On GitLab Self-Managed, the MCP server limit
+  is `throttle_authenticated_mcp`. Any other value means a different limit, such as the general
+  authenticated API limit.
+- `Retry-After` is the number of seconds to wait before you retry. It is the time remaining in the
+  current period, not the full period. Clients should honor it rather than retry immediately.
+
+The response also includes the other
+[rate limit headers](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
+
+Before the limit is reached, successful `200 OK` responses already include `RateLimit-Remaining`,
+so a client or proxy that reads headers can see the limit approaching.
+
+Administrators can also check the logs:
+
+- A refused request appears in the
+  [Workhorse log](../../administration/logs/_index.md#workhorse-logs) with `status` `429` and `uri`
+  `/api/v4/mcp`. The entry has no user and no limit name.
+- A refused request does not appear in `api_json.log` or
+  [`mcp.log`](../../administration/logs/_index.md#mcplog), because it never reaches the API. It also
+  does not appear in `auth.log`, unlike some other GitLab rate limits.
+- Requests that were counted but allowed appear in
+  [`api_json.log`](../../administration/logs/_index.md#api_jsonlog) with a `rate_limit_state` field
+  containing `rack_request_mcp:authenticated_mcp:allow`. Use this to identify which users consume
+  the limit.
+
+To resolve this issue, wait for the number of seconds in `Retry-After`, then retry.
+
+- On GitLab.com, per-plan limits apply to MCP requests. For the published values, see
+  [rate limits](mcp_server.md#rate-limits).
+- On GitLab Self-Managed, the limit is disabled by default. If it is enabled, an administrator can
+  [raise or disable it](../../administration/settings/user_and_ip_rate_limits.md#enable-authenticated-mcp-server-request-rate-limit).
+
 ## Error: `rate_limited` tool result
+
+If you got an HTTP `429 Too Many Requests` response instead, see [`429 Too Many Requests`](#error-429-too-many-requests).
 
 You might get a tool result with `isError: true`, even though the MCP server itself returned `200 OK`.
 This happens when a tool call hits a rate limit on the underlying GitLab API endpoint it calls, for

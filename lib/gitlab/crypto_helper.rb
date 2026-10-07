@@ -9,23 +9,29 @@ module Gitlab
     }.freeze
 
     def sha256(value)
-      salt = Gitlab::Encryption::KeyProvider[:db_key_base_truncated].encryption_key.secret
-      ::Digest::SHA256.base64digest("#{value}#{salt}")
+      salted_sha256(value, Gitlab::Encryption::KeyProvider[:db_key_base_truncated].encryption_key.secret)
+    end
+
+    # One digest per `db_key_base` key, current key first, to look up digests
+    # written before a rotation.
+    def sha256_candidates(value)
+      Gitlab::Encryption::KeyProvider[:db_key_base_truncated].decryption_keys_current_first
+        .map { |key| salted_sha256(value, key.secret) }.uniq
     end
 
     def encryption_key
-      @encryption_key ||= Gitlab::Encryption::KeyProvider[:db_key_base_32].encryption_key
+      Gitlab::Encryption::KeyProvider[:db_key_base_32].encryption_key
     end
 
     def aes256_gcm_encrypt(value, nonce: nil)
-      encrypted_token = Encryptor.encrypt(
-        AES256_GCM_OPTIONS.merge(
-          value: value,
-          iv: nonce || Gitlab::Utils.ensure_utf8_size(encryption_key.secret, bytes: 12.bytes),
-          key: encryption_key.secret
-        )
-      )
-      Base64.strict_encode64(encrypted_token)
+      aes256_gcm_encrypt_with_key(value, encryption_key.secret, nonce: nonce)
+    end
+
+    # One ciphertext per `db_key_base` key, current key first, to look up
+    # deterministically encrypted values written before a rotation.
+    def aes256_gcm_encrypt_candidates(value, nonce: nil)
+      Gitlab::Encryption::KeyProvider[:db_key_base_32].decryption_keys_current_first
+        .map { |key| aes256_gcm_encrypt_with_key(value, key.secret, nonce: nonce) }.uniq
     end
 
     def aes256_gcm_decrypt(value, nonce: nil)
@@ -46,6 +52,23 @@ module Gitlab
       rescue OpenSSL::Cipher::CipherError
         raise if index == keys.length - 1
       end
+    end
+
+    private
+
+    def salted_sha256(value, salt)
+      ::Digest::SHA256.base64digest("#{value}#{salt}")
+    end
+
+    def aes256_gcm_encrypt_with_key(value, secret, nonce: nil)
+      encrypted_token = Encryptor.encrypt(
+        AES256_GCM_OPTIONS.merge(
+          value: value,
+          iv: nonce || Gitlab::Utils.ensure_utf8_size(secret, bytes: 12.bytes),
+          key: secret
+        )
+      )
+      Base64.strict_encode64(encrypted_token)
     end
   end
 end

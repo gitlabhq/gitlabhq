@@ -3733,6 +3733,10 @@ class Project < ApplicationRecord
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
+  def use_mermaid_v12_feature_flag_enabled?
+    group&.use_mermaid_v12_feature_flag_enabled? || Feature.enabled?(:use_mermaid_v12, self, type: :gitlab_com_derisk)
+  end
+
   def vulnerability_malware_detection_feature_flag_enabled?
     group&.vulnerability_malware_detection_feature_flag_enabled? || Feature.enabled?(:vulnerability_malware_detection, self, type: :beta)
   end

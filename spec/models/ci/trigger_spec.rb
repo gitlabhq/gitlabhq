@@ -133,6 +133,18 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
           expect(result).to be_empty
         end
       end
+
+      context 'with several db_key_base keys' do
+        include DbKeyBaseHelpers
+
+        let_it_be(:trigger) { create(:ci_trigger, project: project) }
+
+        it 'returns the trigger for a token encrypted with the previous key' do
+          stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+
+          expect(described_class.with_token(trigger.token)).to contain_exactly(trigger)
+        end
+      end
     end
   end
 

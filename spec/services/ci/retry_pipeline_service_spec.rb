@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuous_integration do
+  include ExclusiveLeaseHelpers
   include ProjectForksHelper
 
   let_it_be_with_refind(:user) { create(:user) }
@@ -380,6 +381,73 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         expect(build('deploy 4')).to be_created
 
         expect(pipeline.reload).to be_running
+      end
+    end
+
+    context 'when the pipeline is locked for the duration of the retry' do
+      let(:lock_key) { "ci:retry_pipeline_service:lock:#{pipeline.id}" }
+
+      before do
+        create_build('rspec', :failed, build_stage)
+
+        # Other leases are taken during the retry, so only the retry lease is asserted on.
+        allow(Gitlab::ExclusiveLease).to receive(:cancel).and_call_original
+      end
+
+      it 'obtains and releases the lease around the retry', :aggregate_failures do
+        expect_to_obtain_exclusive_lease(lock_key, 'uuid', timeout: described_class::LOCK_TIMEOUT)
+        expect_to_cancel_exclusive_lease(lock_key, 'uuid')
+
+        expect(service.execute(pipeline)).to be_success
+        expect(build('rspec')).to be_pending
+      end
+
+      it 'releases the lease when retrying a job fails', :aggregate_failures do
+        expect_to_obtain_exclusive_lease(lock_key, 'uuid', timeout: described_class::LOCK_TIMEOUT)
+        expect_to_cancel_exclusive_lease(lock_key, 'uuid')
+
+        allow_next_instance_of(Ci::RetryJobService) do |retry_job_service|
+          allow(retry_job_service).to receive(:clone!).and_raise(ActiveRecord::StaleObjectError)
+        end
+
+        response = service.execute(pipeline)
+
+        expect(response).to be_error
+        expect(response.http_status).to eq(:conflict)
+        expect(response.message).to eq('Error updating stale job')
+      end
+    end
+
+    context 'when another retry of the pipeline is in progress' do
+      before do
+        create_build('rspec', :failed, build_stage)
+
+        stub_exclusive_lease_taken(
+          "ci:retry_pipeline_service:lock:#{pipeline.id}",
+          timeout: described_class::LOCK_TIMEOUT
+        )
+      end
+
+      it 'returns a conflict error without retrying any job', :aggregate_failures do
+        response = service.execute(pipeline)
+
+        expect(response).to be_error
+        expect(response.reason).to eq(:retry_in_progress)
+        expect(response.http_status).to eq(:conflict)
+        expect(response.message).to eq('Pipeline is already being retried')
+        expect(build('rspec')).to be_failed
+        expect(pipeline.reload).not_to be_running
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(lock_concurrent_pipeline_retries: false)
+        end
+
+        it 'retries the pipeline without taking the lock', :aggregate_failures do
+          expect(service.execute(pipeline)).to be_success
+          expect(build('rspec')).to be_pending
+        end
       end
     end
 

@@ -664,7 +664,6 @@ Style/InlineDisableAnnotation:
     - 'app/workers/ci/external_pull_requests/create_pipeline_worker.rb'
     - 'app/workers/ci/pipeline_artifacts/expire_artifacts_worker.rb'
     - 'app/workers/ci/pipeline_bridge_status_worker.rb'
-    - 'app/workers/ci/retry_pipeline_worker.rb'
     - 'app/workers/ci/runners/reconcile_existing_runner_versions_cron_worker.rb'
     - 'app/workers/ci/runners/stale_machines_cleanup_cron_worker.rb'
     - 'app/workers/ci/schedule_delete_objects_cron_worker.rb'

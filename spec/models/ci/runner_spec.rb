@@ -1384,6 +1384,16 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     it 'returns runners with a matching description regardless of the casing' do
       expect(described_class.search(runner.description.upcase)).to eq([runner])
     end
+
+    context 'with several db_key_base keys' do
+      include DbKeyBaseHelpers
+
+      it 'returns runners with a token encrypted with the previous key' do
+        stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+
+        expect(described_class.search(runner.token)).to eq([runner])
+      end
+    end
   end
 
   describe '#pick_build!' do

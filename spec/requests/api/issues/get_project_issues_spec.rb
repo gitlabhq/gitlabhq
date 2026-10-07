@@ -1087,11 +1087,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         properties: {
           'id' => {
             type: 'string',
-            description: 'The ID or URL-encoded path of the project'
+            description: 'ID or URL-encoded path of the project.'
           },
           'issue_iid' => {
             type: 'integer',
-            description: 'The internal ID of a project issue'
+            description: 'Internal ID of the issue.'
           }
         },
         required: %w[id issue_iid],

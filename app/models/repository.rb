@@ -166,6 +166,7 @@ class Repository
       literal_pathspec: opts.fetch(:literal_pathspec, true),
       trailers: opts[:trailers]
     }
+    options[:include_shortstat] = true if opts[:include_shortstat]
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, container) if commits.present?

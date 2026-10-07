@@ -103,10 +103,6 @@ const alias = { ...aliases };
 // fallbacks. Webpack 4 doesn't support the exports field, so we alias them
 // to their actual entry files. (Rspack supports "exports", so it omits these.)
 Object.assign(alias, {
-  '@mermaid-js/parser': path.join(
-    ROOT_PATH,
-    'node_modules/@mermaid-js/parser/dist/mermaid-parser.core.mjs',
-  ),
   '@mermaid-js/layout-elk': path.join(
     ROOT_PATH,
     'node_modules/@mermaid-js/layout-elk/dist/mermaid-layout-elk.core.mjs',
@@ -336,7 +332,7 @@ module.exports = {
         // es-toolkit) use modern syntax (optional chaining, static blocks) that
         // webpack 4 can't parse. Transpile them along with both mermaid versions.
         // vscode-uri (pulled by monaco-yaml) ships the same kind of syntax in its UMD build.
-        test: /(mermaid(-v11)?|@mermaid-js|@iconify\/utils|es-toolkit|vscode-\w+)\/.*\.m?js$/,
+        test: /(mermaid(-v\d+)?|@mermaid-js|@iconify\/utils|es-toolkit|vscode-\w+)\/.*\.m?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },
@@ -791,6 +787,21 @@ module.exports = {
         }
       });
     }),
+
+    ...Object.entries({
+      '@mermaid-js/parser': 'dist/mermaid-parser.core.mjs',
+      chevrotain: 'lib/src/api.js',
+      '@chevrotain/cst-dts-gen': 'lib/src/api.js',
+      '@chevrotain/gast': 'lib/src/api.js',
+      '@chevrotain/regexp-to-ast': 'lib/src/api.js',
+      '@chevrotain/utils': 'lib/src/api.js',
+    }).map(
+      ([packageName, entry]) =>
+        new webpack.NormalModuleReplacementPlugin(
+          new RegExp(`^${packageName}$`),
+          `${packageName}/${entry}`,
+        ),
+    ),
 
     new webpack.ContextReplacementPlugin(/^\.$/, (context) => {
       if (/\/node_modules\/pdfjs-dist/.test(context.context)) {

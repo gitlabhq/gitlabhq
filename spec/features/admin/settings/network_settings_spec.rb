@@ -101,6 +101,32 @@ RSpec.describe 'Admin updates network settings', :request_store, :enable_admin_m
     end
   end
 
+  it 'changes authenticated MCP server rate limits settings', :aggregate_failures do
+    within_testid('mcp-limits-settings') do
+      click_unchecked_field(s_('AdminSettings|Enable authenticated MCP server request rate limit'))
+      fill_field_with_new_value(
+        s_('AdminSettings|Max authenticated MCP server requests per period per user'),
+        '42'
+      )
+      fill_field_with_new_value(
+        s_('AdminSettings|Authenticated MCP server rate limit period in seconds'),
+        '24'
+      )
+
+      expect_save_settings
+
+      expect_field_checked(s_('AdminSettings|Enable authenticated MCP server request rate limit'))
+      expect_field_value(
+        s_('AdminSettings|Max authenticated MCP server requests per period per user'),
+        '42'
+      )
+      expect_field_value(
+        s_('AdminSettings|Authenticated MCP server rate limit period in seconds'),
+        '24'
+      )
+    end
+  end
+
   it 'changes authenticated dependency proxy rate limits settings', :aggregate_failures do
     within_testid('dependency-proxy-limits-settings') do
       click_unchecked_field(_('Enable authenticated dependency proxy request rate limit'))

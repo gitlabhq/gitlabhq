@@ -5,13 +5,16 @@
  */
 /* eslint-disable global-require */
 
-jest.mock('mermaid-v11', () => ({
+const mockMermaid = () => ({
   mermaidAPI: {
     render: jest.fn().mockResolvedValue({ svg: '<svg></svg>' }),
   },
   initialize: jest.fn(),
   registerLayoutLoaders: jest.fn(),
-}));
+});
+
+jest.mock('mermaid-v11', () => mockMermaid());
+jest.mock('mermaid-v12', () => mockMermaid());
 
 jest.mock(
   '@mermaid-js/layout-elk',
@@ -29,7 +32,10 @@ jest.mock('dompurify', () => ({
 
 jest.mock('~/lib/utils/webpack');
 
-['mermaid_v11'].forEach((entrypoint) => {
+[
+  ['mermaid_v11', 'mermaid-v11'],
+  ['mermaid_v12', 'mermaid-v12'],
+].forEach(([entrypoint, mermaidModule]) => {
   describe(`${entrypoint} module - path validation integration`, () => {
     let resetServiceWorkersPublicPath;
 
@@ -82,13 +88,18 @@ jest.mock('~/lib/utils/webpack');
       expect(window.gon).toBeUndefined();
     });
 
-    it('registers the ELK layout loaders so `layout: elk` is honored', () => {
-      const mermaid = require('mermaid-v11');
-      const elkLayouts = require('@mermaid-js/layout-elk').default;
+    it('initializes mermaid with the shared sandbox config', () => {
+      const mermaid = require(mermaidModule);
 
       require(`~/lib/${entrypoint}`);
 
-      expect(mermaid.registerLayoutLoaders).toHaveBeenCalledWith(elkLayouts);
+      expect(mermaid.initialize).toHaveBeenCalledWith(
+        expect.objectContaining({
+          theme: 'neutral',
+          securityLevel: 'strict',
+          flowchart: expect.objectContaining({ useMaxWidth: true, htmlLabels: true }),
+        }),
+      );
     });
 
     describe('link click delegation', () => {
@@ -149,4 +160,88 @@ jest.mock('~/lib/utils/webpack');
       });
     });
   });
+});
+
+describe('mermaid initialization config', () => {
+  const initializeConfig = (entrypoint, mermaidModule) => {
+    const mermaid = require(mermaidModule);
+
+    require(`~/lib/${entrypoint}`);
+
+    return mermaid.initialize.mock.calls[0][0];
+  };
+
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  describe('mermaid_v11', () => {
+    it('leaves layout, look, and node sizing at their v11 defaults', () => {
+      const config = initializeConfig('mermaid_v11', 'mermaid-v11');
+
+      expect(config).not.toHaveProperty('layout');
+      expect(config).not.toHaveProperty('look');
+      expect(config.flowchart).toEqual({ useMaxWidth: true, htmlLabels: true });
+      expect(config).not.toHaveProperty('state');
+    });
+  });
+
+  describe('mermaid_v12', () => {
+    let config;
+
+    beforeEach(() => {
+      config = initializeConfig('mermaid_v12', 'mermaid-v12');
+    });
+
+    it('does not set a global layout, so mindmap and swimlane keep their own defaults', () => {
+      expect(config).not.toHaveProperty('layout');
+    });
+
+    it('restores the classic look', () => {
+      expect(config.look).toBe('classic');
+    });
+
+    it.each(['flowchart', 'state', 'class', 'er', 'requirement'])(
+      'restores the dagre layout for %s diagrams',
+      (diagramType) => {
+        expect(config[diagramType].layout).toBe('dagre');
+      },
+    );
+
+    it.each(['flowchart', 'state'])('restores v11 node sizing for %s diagrams', (diagramType) => {
+      expect(config[diagramType]).toMatchObject({ minNodeWidth: 0, wrappingWidth: 200 });
+    });
+
+    it('keeps the shared flowchart config alongside the overrides', () => {
+      expect(config.flowchart).toMatchObject({ useMaxWidth: true, htmlLabels: true });
+    });
+  });
+});
+
+describe('mermaid_v11 ELK layout', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  it('registers the ELK layout loaders so `layout: elk` is honored', () => {
+    const mermaid = require('mermaid-v11');
+    const elkLayouts = require('@mermaid-js/layout-elk').default;
+
+    require('~/lib/mermaid_v11');
+
+    expect(mermaid.registerLayoutLoaders).toHaveBeenCalledWith(elkLayouts);
+  });
+});
+
+describe('mermaid DOMPurify instance', () => {
+  it.each(['mermaid-v11', 'mermaid-v12'])(
+    '%s resolves the same DOMPurify the sandbox registers its hooks on',
+    (mermaidModule) => {
+      const mermaidPackageJson = require.resolve(`${mermaidModule}/package.json`);
+
+      expect(require.resolve('dompurify', { paths: [mermaidPackageJson] })).toBe(
+        require.resolve('dompurify'),
+      );
+    },
+  );
 });

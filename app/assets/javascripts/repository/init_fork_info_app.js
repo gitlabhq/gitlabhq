@@ -22,7 +22,7 @@ export default function initForkInfoApp() {
 
   return initVueApp({
     el: forkEl,
-    name: 'BlobForkInfoRoot',
+    name: 'ForkInfoRoot',
     apolloProvider,
     component: ForkInfo,
     props: {

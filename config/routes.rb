@@ -122,6 +122,7 @@ InitializerConnections.warn_if_database_connection do
       scope path: '-' do
         # sandbox
         get '/sandbox/mermaid_v11' => 'sandbox#mermaid_v11'
+        get '/sandbox/mermaid_v12' => 'sandbox#mermaid_v12'
         get '/sandbox/swagger' => 'sandbox#swagger'
 
         get '/:model/:model_id/uploads/:secret/:filename',

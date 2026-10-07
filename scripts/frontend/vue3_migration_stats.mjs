@@ -172,6 +172,7 @@ const OWNERSHIP_OVERRIDES = new Map([
   ['performance_bar', { stage: 'foundations' }],
   ['redirect_listbox', { stage: 'foundations' }],
   ['sandboxed_mermaid_v11', { stage: 'plan' }],
+  ['sandboxed_mermaid_v12', { stage: 'plan' }],
   ['sandboxed_swagger', { stage: 'plan' }],
   ['sentry', { stage: 'production_engineering' }],
   ['super_sidebar', { stage: 'foundations' }],

@@ -20,16 +20,63 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
 
   let_it_be(:issue) { create(:issue, project: project, description: description) }
 
+  let(:sandbox_path) { sandbox_mermaid_v12_path }
+
   let(:mermaid_frame_selector) do
-    src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_mermaid_v11_path}"
+    src_prefix = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}#{sandbox_path}"
     "iframe[src^='#{src_prefix}'][sandbox='allow-scripts']"
   end
 
   context 'in an issue' do
-    it 'includes mermaid frame correctly', :with_license do
-      visit project_issue_path(project, issue)
+    shared_examples 'renders flowchart layouts' do
+      after do
+        expect_page_to_have_no_console_errors
+      end
 
-      expect(page).to have_css(mermaid_frame_selector)
+      {
+        'default' => '',
+        'ELK' => "---\nconfig:\n  layout: elk\n---\n"
+      }.each do |layout, configuration|
+        context "with the #{layout} layout" do
+          let_it_be(:diagram_issue) do
+            create(:issue, project: project, description: <<~MERMAID)
+              ```mermaid
+              #{configuration}flowchart LR
+                A[Start] --> B{Review}
+                B -->|Yes| C[Done]
+                B -->|No| A
+              ```
+            MERMAID
+          end
+
+          it 'renders nodes and edges inside the sandbox', :with_license, :aggregate_failures do
+            visit project_issue_path(project, diagram_issue)
+
+            page.within_frame(find(mermaid_frame_selector)) do
+              within('#app > svg') do
+                expect(page).to have_css('.node', count: 3)
+                expect(page).to have_css('.flowchart-link', count: 3)
+
+                expect(page).to have_css('.nodeLabel', exact_text: 'Start')
+                expect(page).to have_css('.nodeLabel', exact_text: 'Review')
+                expect(page).to have_css('.nodeLabel', exact_text: 'Done')
+              end
+            end
+          end
+        end
+      end
+    end
+
+    it_behaves_like 'renders flowchart layouts'
+
+    context 'when use_mermaid_v12 is disabled' do
+      let(:sandbox_path) { sandbox_mermaid_v11_path }
+
+      before do
+        stub_feature_flags(use_mermaid_v12: false)
+      end
+
+      it_behaves_like 'renders flowchart layouts'
     end
   end
 
@@ -87,6 +134,50 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
       visit(group_milestone_path(group_milestone.group, group_milestone))
 
       expect(page).to have_css(mermaid_frame_selector)
+    end
+  end
+
+  describe 'use_mermaid_v12 feature flag' do
+    shared_examples 'uses the sandbox at' do |path_helper|
+      let(:sandbox_path) { public_send(path_helper) }
+
+      it "uses #{path_helper}" do
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css(mermaid_frame_selector)
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        stub_feature_flags(use_mermaid_v12: false)
+      end
+
+      it_behaves_like 'uses the sandbox at', :sandbox_mermaid_v11_path
+    end
+
+    context 'when enabled for the project' do
+      before do
+        stub_feature_flags(use_mermaid_v12: project)
+      end
+
+      it_behaves_like 'uses the sandbox at', :sandbox_mermaid_v12_path
+    end
+
+    context 'when enabled for the immediate group' do
+      before do
+        stub_feature_flags(use_mermaid_v12: subgroup)
+      end
+
+      it_behaves_like 'uses the sandbox at', :sandbox_mermaid_v12_path
+    end
+
+    context 'when enabled for an ancestor group' do
+      before do
+        stub_feature_flags(use_mermaid_v12: group)
+      end
+
+      it_behaves_like 'uses the sandbox at', :sandbox_mermaid_v12_path
     end
   end
 end

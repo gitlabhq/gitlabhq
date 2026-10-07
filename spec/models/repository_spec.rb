@@ -635,6 +635,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
           commits
         end
       end
+
+      context 'when include_shortstat is passed' do
+        let(:kwargs) { { limit: 1, include_shortstat: true } }
+
+        it 'passes include_shortstat option to perform the query' do
+          expect(Gitlab::Git::Commit).to receive(:where)
+            .with(a_hash_including(include_shortstat: true))
+            .and_call_original
+
+          commits
+        end
+      end
     end
 
     context "when 'author' is set" do
