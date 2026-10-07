@@ -221,5 +221,63 @@ RSpec.describe Gitlab::StringRangeMarker, feature_category: :source_code_managem
         end
       end
     end
+
+    context 'when an html_safe rich_line contains markup and happens to match raw_line length' do
+      let(:rich) { %(<span class="s">"AAAA"</span>).html_safe }
+      let(:raw) { 'x' * rich.length }
+
+      subject(:result) do
+        described_class.new(raw, rich).mark([0..5]) do |text, left:, right:, mode:|
+          "<mark>#{text}</mark>".html_safe
+        end
+      end
+
+      it 'maps through the rich line markup instead of applying raw offsets directly' do
+        expect(raw.length).to eq(rich.length)
+        expect(result).not_to include('<mark><span ')
+        expect(result).to eq(%(<span class="s"><mark>"AAAA"</mark></span>))
+      end
+    end
+
+    context 'when an html_safe rich_line tag boundary falls inside a marked range' do
+      let(:rich) { %(a<i>b</i>cd).html_safe }
+      let(:raw) { 'x' * rich.length }
+
+      subject(:result) do
+        described_class.new(raw, rich).mark([1..2]) do |text, left:, right:, mode:|
+          %(<span class="idiff">#{text}</span>).html_safe
+        end
+      end
+
+      it 'marks the content characters either side of the tag boundary' do
+        expect(raw.length).to eq(rich.length)
+        expect(result).to eq(
+          %(a<i><span class="idiff">b</span></i><span class="idiff">c</span>d)
+        )
+      end
+
+      it 'does not split a tag, which raw offsets applied directly would do' do
+        expect(result).not_to include(%(<span class="idiff"><i))
+        expect(result).to include('<i>')
+        expect(result).to be_html_safe
+      end
+    end
+
+    context 'when an html_safe rich_line holds an entity and happens to match raw_line length' do
+      let(:rich) { %(a&amp;b).html_safe }
+      let(:raw) { 'x' * rich.length }
+
+      subject(:result) do
+        described_class.new(raw, rich).mark([0..1]) do |text, left:, right:, mode:|
+          %(<mark>#{text}</mark>).html_safe
+        end
+      end
+
+      it 'marks the whole entity rather than splitting it' do
+        expect(raw.length).to eq(rich.length)
+        expect(result).to eq(%(<mark>a&amp;</mark>b))
+        expect(result).to be_html_safe
+      end
+    end
   end
 end
