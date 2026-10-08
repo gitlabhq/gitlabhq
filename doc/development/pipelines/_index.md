@@ -896,15 +896,17 @@ If you want to force tests to run with a single database, you can add the `pipel
 
 ### Elasticsearch and OpenSearch versions testing
 
-Our test suite runs against Elasticsearch 9 as GitLab.com runs on Elasticsearch 9 when certain conditions are met.
+GitLab.com runs on Elasticsearch 9. The full EE test suite runs against Elasticsearch 7 in the regular `rspec-ee` jobs.
+The `rspec-ee * es9` jobs run only the specs that have
+[Elasticsearch metadata](../testing_guide/best_practices.md#elasticsearch-specs) against Elasticsearch 9.
 
-We run our test suite against Elasticsearch 8, 9 and OpenSearch 1, 2 on nightly scheduled pipelines. All
+We run our test suite against Elasticsearch 8, 9 and OpenSearch 1, 2 on scheduled pipelines. All
 test suites use PostgreSQL 17 because there is no dependency between the database and search backend.
 
 | Where?                                                                                          | Elasticsearch version | OpenSearch Version   | PostgreSQL version   |
 |-------------------------------------------------------------------------------------------------|-----------------------|----------------------|----------------------|
-| Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 9.X (production)      |                      | 17 (default version) |
-| `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 9.X (production) | 1.X, 2.X             | 17 (default version) |
+| Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 7.X, 9.X (production, tagged specs only) |                      | 17 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 9.X (production, tagged specs only) | 1.X, 2.X             | 17 (default version) |
 | `weekly` scheduled pipelines for the `master` branch                                            | 8.X                   | latest               | 17 (default version) |
 
 ## Monitoring

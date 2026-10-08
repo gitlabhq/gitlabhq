@@ -111,12 +111,31 @@ module Organizations
             visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
           )
 
+          transfer_oauth_application_granular_scopes(batch_ids)
           transfer_oauth_applications(batch_ids)
           transfer_stage_event_hashes(batch_ids)
         end
       end
 
       # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def transfer_oauth_application_granular_scopes(namespace_ids)
+        application_ids = Authn::OauthApplication
+          .where(owner_type: 'Namespace', owner_id: namespace_ids, organization_id: old_organization.id)
+          .select(:id)
+
+        update_organization_id_for(Authz::OauthApplicationGranularScope) do |relation|
+          relation.where(application_id: application_ids)
+        end
+
+        granular_scope_ids = Authz::OauthApplicationGranularScope
+          .where(application_id: application_ids)
+          .select(:granular_scope_id)
+
+        update_organization_id_for(Authz::GranularScope) do |relation|
+          relation.where(id: granular_scope_ids)
+        end
+      end
+
       def transfer_oauth_applications(namespace_ids)
         update_organization_id_for(Authn::OauthApplication) do |relation|
           relation.where(owner_type: 'Namespace', owner_id: namespace_ids)

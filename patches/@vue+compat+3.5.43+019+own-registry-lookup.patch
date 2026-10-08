@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6137,7 +6137,11 @@
+@@ -6160,7 +6160,11 @@
      const res = (
        // local registration
        // check instance[type] first which is resolved for options API
@@ -15,13 +15,10 @@ index aaaaaaa..bbbbbbb 100644
        resolve(instance.appContext[type], name)
      );
      if (!res && maybeSelfReference) {
-@@ -6152,8 +6156,40 @@
-   } else {
-     warn$1(
-       `resolve${capitalize(type.slice(0, -1))} can only be used in render() or setup().`
-+    );
-+  }
-+}
+@@ -6178,6 +6182,38 @@
+     );
+   }
+ }
 +/*! GitLab: a component definition may be shared with a Vue 2 realm (an SFC with
 + * no Vue imports is not duplicated by the Vue 3 infection mechanism). After a late
 + * global `Vue.mixin()` Vue 2 re-merges its constructor options and writes the merged
@@ -49,18 +46,19 @@ index aaaaaaa..bbbbbbb 100644
 +    warnedForeignRegistries.add(registry);
 +    warn$1(
 +      `The "${type}" registry of this component inherits from another registry. A Vue 2 realm re-merged this shared component definition; its Vue 2 hooks and methods may leak into this Vue 3 instance.`
-     );
-   }
++    );
++  }
 +  const declared = (key) => hasOwn(registry, key) && registry[key] !== proto[key] ? registry[key] : void 0;
 +  return declared(name) || declared(camelize(name)) || declared(capitalize(camelize(name)));
- }
++}
  function resolve(registry, name) {
    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+ }
 diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6118,7 +6118,11 @@
+@@ -6141,7 +6141,11 @@
      const res = (
        // local registration
        // check instance[type] first which is resolved for options API
@@ -73,13 +71,10 @@ index aaaaaaa..bbbbbbb 100644
        resolve(instance.appContext[type], name)
      );
      if (!res && maybeSelfReference) {
-@@ -6133,8 +6137,40 @@
-   } else if (!!(process.env.NODE_ENV !== "production")) {
-     warn$1(
-       `resolve${capitalize(type.slice(0, -1))} can only be used in render() or setup().`
-+    );
-+  }
-+}
+@@ -6159,6 +6163,38 @@
+     );
+   }
+ }
 +/*! GitLab: a component definition may be shared with a Vue 2 realm (an SFC with
 + * no Vue imports is not duplicated by the Vue 3 infection mechanism). After a late
 + * global `Vue.mixin()` Vue 2 re-merges its constructor options and writes the merged
@@ -107,18 +102,19 @@ index aaaaaaa..bbbbbbb 100644
 +    warnedForeignRegistries.add(registry);
 +    warn$1(
 +      `The "${type}" registry of this component inherits from another registry. A Vue 2 realm re-merged this shared component definition; its Vue 2 hooks and methods may leak into this Vue 3 instance.`
-     );
-   }
++    );
++  }
 +  const declared = (key) => hasOwn(registry, key) && registry[key] !== proto[key] ? registry[key] : void 0;
 +  return declared(name) || declared(camelize(name)) || declared(capitalize(camelize(name)));
- }
++}
  function resolve(registry, name) {
    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+ }
 diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6045,7 +6045,11 @@
+@@ -6068,7 +6068,11 @@
      const res = (
        // local registration
        // check instance[type] first which is resolved for options API
@@ -131,13 +127,10 @@ index aaaaaaa..bbbbbbb 100644
        resolve(instance.appContext[type], name)
      );
      if (!res && maybeSelfReference) {
-@@ -6060,8 +6064,40 @@
-   } else if (!!(process.env.NODE_ENV !== "production")) {
-     warn$1(
-       `resolve${capitalize(type.slice(0, -1))} can only be used in render() or setup().`
-+    );
-+  }
-+}
+@@ -6086,6 +6090,38 @@
+     );
+   }
+ }
 +/*! GitLab: a component definition may be shared with a Vue 2 realm (an SFC with
 + * no Vue imports is not duplicated by the Vue 3 infection mechanism). After a late
 + * global `Vue.mixin()` Vue 2 re-merges its constructor options and writes the merged
@@ -165,10 +158,11 @@ index aaaaaaa..bbbbbbb 100644
 +    warnedForeignRegistries.add(registry);
 +    warn$1(
 +      `The "${type}" registry of this component inherits from another registry. A Vue 2 realm re-merged this shared component definition; its Vue 2 hooks and methods may leak into this Vue 3 instance.`
-     );
-   }
++    );
++  }
 +  const declared = (key) => hasOwn(registry, key) && registry[key] !== proto[key] ? registry[key] : void 0;
 +  return declared(name) || declared(camelize(name)) || declared(capitalize(camelize(name)));
- }
++}
  function resolve(registry, name) {
    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+ }

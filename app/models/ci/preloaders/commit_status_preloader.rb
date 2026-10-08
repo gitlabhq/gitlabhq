@@ -13,12 +13,12 @@ module Ci
       # Rails raises when a record's class lacks one. A row shared between classes
       # (the project) is then one instance: Rails batches loaders that build the
       # same query even where a subclass redeclares the association.
-      def execute(relations, scope: nil)
+      def execute(relations, scope: nil, available_records: [])
         relations = normalize(relations)
         validate!(relations)
 
         relations.group_by { |entry| owners(entry) }.each do |owners, associations|
-          preload(objects(owners), associations, scope)
+          preload(objects(owners), associations, scope, available_records)
         end
       end
 
@@ -32,10 +32,12 @@ module Ci
         records.select { |job| klasses.any? { |klass| job.is_a?(klass) } }
       end
 
-      def preload(records, associations, scope)
+      def preload(records, associations, scope, available_records)
         return if records.empty? || associations.empty?
 
-        ActiveRecord::Associations::Preloader.new(records: records, associations: associations, scope: scope).call
+        ActiveRecord::Associations::Preloader.new(
+          records: records, associations: associations, scope: scope, available_records: available_records
+        ).call
       end
 
       # One entry per association: `{ a: x, b: y }` becomes `[{ a: x }, { b: y }]`.

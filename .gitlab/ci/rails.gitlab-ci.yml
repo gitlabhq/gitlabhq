@@ -1379,14 +1379,14 @@ rspec-ee unit pg17 es9:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-ee-base-pg17-es9
-    - .rspec-ee-unit-parallel
+  parallel: 9
   rules:
     - !reference [".rails:rules:run-search-tests", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
 rspec-ee integration pg17 es9:
   extends:
     - .rspec-ee-base-pg17-es9
-    - .rspec-ee-integration-parallel
+  parallel: 1
   rules:
     - !reference [".rails:rules:run-search-tests", rules]
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-ee-only", rules]
@@ -1396,7 +1396,7 @@ rspec-ee system pg17 es9:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rspec-ee-base-pg17-es9
-    - .rspec-ee-system-parallel
+  parallel: 2
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:run-search-tests", rules]

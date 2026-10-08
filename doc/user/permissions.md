@@ -473,7 +473,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | View job logs and job details page[^non-members-project]                                                             |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | View pipelines and pipeline details pages[^non-members-project]                                                      |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | View pipelines tab in MR[^non-members-guests]                                                                       |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
-| View [vulnerabilities in a pipeline](application_security/detect/security_scanning_results.md)[^guests-project-based] |            |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View [vulnerabilities in a pipeline](application_security/detect/security_scanning_results.md#view-pipeline-security-report) |            |       |         |          |        ✓         |     ✓     |     ✓      |
 | Run deployment job for a protected environment[^reporters-user-part]                                                 |            |       |         |    ✓     |                  |     ✓     |     ✓      |
 | View [agents for Kubernetes](clusters/agent/_index.md)                                                      |            |       |         |          |                  |     ✓     |     ✓      |
 | View project [Secure Files](../api/secure_files.md)                                                         |            |       |         |          |                  |     ✓     |     ✓      |
@@ -519,7 +519,6 @@ Project Owners can perform any listed action, and can delete pipelines:
     `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false`
     is not set on the job.<br>The `artifacts:public` setting only affects GitLab UI and API access.
     CI/CD job tokens can still access artifacts with the runner API.
-[^guests-project-based]: Guests: Only if **Project-based pipeline visibility** is enabled.
 [^reporters-user-part]: Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
     <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
 [^developers-maintainers-user]: Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).

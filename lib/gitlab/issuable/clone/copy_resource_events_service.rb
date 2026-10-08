@@ -26,14 +26,18 @@ module Gitlab
 
         def copy_resource_label_events
           new_namespace_id = namespace_id_for_new_entity(new_entity)
+          events = original_entity.resource_label_events
+          labels = Label.id_in(events.select(:label_id)).to_a
+          references = ::Issuables::LabelEventReferencesService.new(new_entity.resource_parent).execute(labels)
 
-          copy_events(ResourceLabelEvent.table_name, original_entity.resource_label_events) do |event|
+          copy_events(ResourceLabelEvent.table_name, events) do |event|
             event.attributes
-              .except(*(blocked_resource_event_attributes + %w[reference reference_html]))
+              .except(*blocked_resource_event_attributes)
               .merge(
                 entity_key => new_entity.id,
                 'action' => ResourceLabelEvent.actions[event.action],
-                'namespace_id' => new_namespace_id
+                'namespace_id' => new_namespace_id,
+                'reference' => references[event.label_id]
               )
           end
         end

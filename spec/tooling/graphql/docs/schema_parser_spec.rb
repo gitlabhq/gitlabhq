@@ -96,6 +96,18 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
       end
     end
 
+    describe '@mutations' do
+      subject(:mutations) { result.mutations }
+
+      it 'contains an array of mutation types' do
+        expect(mutations).to all(be_a(Tooling::Graphql::Docs::Schema::Mutation))
+      end
+
+      it 'contains the root mutation fields' do
+        expect(mutations.map(&:name)).to contain_exactly('graphqlMutation')
+      end
+    end
+
     describe '@directives' do
       subject(:directives) { result.directives }
 
@@ -191,6 +203,11 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
 
       it 'contains the input object type in the schema' do
         expect(input_objects.map(&:name)).to include('GraphQLInputObject')
+      end
+
+      it 'excludes mutation input objects', :aggregate_failures do
+        expect(result.mutations.map(&:input_object_name)).to contain_exactly('GraphQLMutationInput')
+        expect(input_objects.map(&:name)).not_to include('GraphQLMutationInput')
       end
     end
 

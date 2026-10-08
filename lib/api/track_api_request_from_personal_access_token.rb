@@ -16,7 +16,7 @@ module API
 
       additional_properties = {
         label: endpoint_id,
-        pat_type: token_info[:pat_type],
+        pat_type: token_info[:token_granularity],
         response_code: context.status
       }
 

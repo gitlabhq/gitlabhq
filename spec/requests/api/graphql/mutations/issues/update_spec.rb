@@ -98,7 +98,8 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
 
     context 'setting labels' do
       before do
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(106)
+        # Was 106. Storing the label event reference adds two queries.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
       end
 
       let(:mutation) do
@@ -137,7 +138,8 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
 
         it 'resets labels' do
           # 106 -> 112: extra work_item_positions reads from the position write-cutover (MR !254713).
-          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(112)
+          # 112 -> 114: storing the label event reference adds two queries.
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(114)
 
           post_graphql_mutation(mutation, current_user: current_user)
 
@@ -175,7 +177,8 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
 
           it 'resets labels' do
             # 106 -> 107: extra work_item_positions read from the position write-cutover (MR !254713).
-            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(107)
+            # 107 -> 109: storing the label event reference adds two queries.
+            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(109)
 
             post_graphql_mutation(mutation, current_user: current_user)
 

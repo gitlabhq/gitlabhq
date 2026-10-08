@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6827,7 +6827,7 @@
+@@ -6850,7 +6850,7 @@
      $: (i) => i,
      $el: (i) => getDevRootFragmentEl(i) ,
      $data: (i) => i.data,
@@ -11,7 +11,7 @@ index aaaaaaa..bbbbbbb 100644
      $attrs: (i) => shallowReadonly(i.attrs) ,
      $slots: (i) => shallowReadonly(i.slots) ,
      $refs: (i) => shallowReadonly(i.refs) ,
-@@ -9164,6 +9164,10 @@
+@@ -9187,6 +9187,10 @@
        );
      }
    }
@@ -26,7 +26,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6808,7 +6808,7 @@
+@@ -6831,7 +6831,7 @@
      $: (i) => i,
      $el: (i) => !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
      $data: (i) => i.data,
@@ -35,7 +35,7 @@ index aaaaaaa..bbbbbbb 100644
      $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
      $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
      $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -9149,6 +9149,10 @@
+@@ -9172,6 +9172,10 @@
        );
      }
    }
@@ -50,7 +50,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6735,7 +6735,7 @@
+@@ -6758,7 +6758,7 @@
      $: (i) => i,
      $el: (i) => !!(process.env.NODE_ENV !== "production") ? getDevRootFragmentEl(i) : i.vnode.el,
      $data: (i) => i.data,
@@ -59,7 +59,7 @@ index aaaaaaa..bbbbbbb 100644
      $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
      $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
      $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -9076,6 +9076,10 @@
+@@ -9099,6 +9099,10 @@
        );
      }
    }

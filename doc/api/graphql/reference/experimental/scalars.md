@@ -1210,6 +1210,7 @@ An example `MergeRequestID` is: `"gid://gitlab/MergeRequest/1"`.
 A `MergeRequestIssueID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestIssueID` is: `"gid://gitlab/MergeRequestIssue/1"`.
+The older format `"gid://gitlab/MergeRequestsClosingIssues/1"` was deprecated in 19.5.
 
 ## `MergeRequestsExternalStatusCheckID`
 

@@ -466,6 +466,125 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     end
   end
 
+  describe '.jobs page field preloads' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+    let_it_be(:environment) { create(:environment, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: maintainer, sha: project.commit.sha) }
+
+    # Bridges to other projects scale with the page, but the set of downstream
+    # projects stays fixed.
+    let_it_be(:downstream_project) { create(:project, :public, :repository) }
+    let_it_be(:manual_downstream_project) { create(:project, :public, :repository) }
+
+    # The pipeline jobs page fields that read CI-database associations.
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              jobs {
+                nodes {
+                  artifacts { nodes { downloadPath fileType } }
+                  allowFailure status scheduledAt manualJob triggered createdByTag
+                  id refName refPath tags shortSha commitPath
+                  stage { id name }
+                  name duration finishedAt coverage retryable cancelable active stuck
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    def create_page_jobs
+      create(:ci_build, :success, :artifacts, pipeline: pipeline)
+      create(:ci_build, :manual, pipeline: pipeline, tag_list: %w[tag1 tag2])
+      create(:generic_commit_status, pipeline: pipeline, ref: pipeline.ref)
+      create(:ci_build, :running, :deploy_job, :with_deployment, pipeline: pipeline, environment: environment.name)
+      create(:ci_bridge, :running, :deploy_job, :with_deployment, pipeline: pipeline, environment: environment.name)
+      create(:ci_build, :manual, :deploy_job, :with_deployment, pipeline: pipeline, environment: environment.name)
+      create(:ci_build, :with_deployment, pipeline: pipeline, environment: environment.name,
+        options: { environment: { name: environment.name, action: 'stop' } })
+
+      bridge = create(:ci_bridge, :success, pipeline: pipeline)
+      create(:ci_sources_pipeline, source_job: bridge, pipeline: create(:ci_pipeline, project: downstream_project))
+      create(:ci_bridge, :manual, pipeline: pipeline,
+        options: { trigger: { project: manual_downstream_project.full_path } })
+    end
+
+    it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+      create_page_jobs
+      post_graphql(query, current_user: maintainer)
+
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: maintainer) }
+
+      2.times { create_page_jobs }
+
+      expect { post_graphql(query, current_user: maintainer) }.not_to exceed_query_limit(control)
+      expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).size).to eq(pipeline.statuses.count)
+    end
+
+    context 'with the policy-backed fields as well' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              pipeline(iid: "#{pipeline.iid}") {
+                jobs {
+                  nodes {
+                    artifacts { nodes { downloadPath fileType } }
+                    allowFailure status scheduledAt manualJob triggered createdByTag
+                    id refName refPath tags shortSha commitPath
+                    stage { id name }
+                    name duration finishedAt coverage retryable cancelable active stuck
+                    detailedStatus { id detailsPath label action { id path } }
+                    userPermissions { readBuild readJobArtifacts updateBuild cancelBuild }
+                    canPlayJob playable
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+        create_page_jobs
+        post_graphql(query, current_user: maintainer)
+
+        control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: maintainer) }
+
+        2.times { create_page_jobs }
+
+        expect { post_graphql(query, current_user: maintainer) }.not_to exceed_query_limit(control)
+        expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).size).to eq(pipeline.statuses.count)
+      end
+
+      # Frozen because running jobs report a duration that grows between requests.
+      it 'returns the same data with batch_preload_pipeline_job_associations disabled', :freeze_time do
+        create_page_jobs
+
+        post_graphql(query, current_user: maintainer)
+        preloaded = graphql_data
+
+        stub_feature_flags(batch_preload_pipeline_job_associations: false)
+        # Without the preloads this page exceeds the test query limit, which is what the flag fixes.
+        headers = { ::GraphqlController::DISABLE_SQL_QUERY_LIMIT_HEADER => 'https://gitlab.com/gitlab-org/gitlab/-/work_items/629310' }
+        post_graphql(query, current_user: maintainer, headers: headers)
+
+        expect(graphql_data).to eq(preloaded)
+
+        nodes = graphql_dig_at(preloaded, :project, :pipeline, :jobs, :nodes)
+        expect(nodes.size).to eq(pipeline.statuses.count)
+        expect(nodes.pluck('tags')).to include(%w[tag1 tag2])
+        expect(nodes.filter_map { |node| node.dig('artifacts', 'nodes') }.flatten).to be_present
+        expect(nodes.filter_map { |node| node.dig('detailedStatus', 'detailsPath') }).to be_present
+      end
+    end
+  end
+
   describe '.jobs.runnerManager' do
     let_it_be(:admin) { create(:admin) }
     let_it_be(:runner_manager) { create(:ci_runner_machine, created_at: Time.current, contacted_at: Time.current) }

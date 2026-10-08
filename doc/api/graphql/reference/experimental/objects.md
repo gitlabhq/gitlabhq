@@ -311,7 +311,7 @@ A user with add-on data.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
@@ -606,7 +606,8 @@ Audit event recorded for a GitLab Duo Agent Platform session.
 | `humanAuthor` | [`UserCore`](#usercore) | Human user on whose behalf the audit event was triggered, present only for composite-identity sessions where a service account acts on behalf of a human. |
 | `id` | [`ID!`](scalars.md#id) | ID of the audit event. |
 | `ipAddress` | [`String`](scalars.md#string) | IP address recorded for the audit event. |
-| `workflowId` | [`ID!`](scalars.md#id) | ID of the Duo Agent Platform session the event belongs to. |
+| `sessionId` | [`AiGovernanceSessionID`](scalars.md#aigovernancesessionid) | Global ID of the AI governance session the event belongs to. |
+| `workflowId` | [`ID`](scalars.md#id) | ID of the Duo Agent Platform session the event belongs to. Null for events from external agents. |
 
 ## `AiAuditEventConnection`
 
@@ -707,6 +708,7 @@ An AI catalog flow.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| `acceptsTriggerGoal` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether a flow trigger for the flow can carry a configured goal. |
 | `configurationForGroup` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Item configuration for the given group. <br><br> <strong>Arguments for `configurationForGroup`:</strong> <dl><dt>`groupId` ([`GroupID!`](scalars.md#groupid))</dt><dd>Global ID of the group to return the item configuration of.</dd></dl> |
 | `configurationForProject` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Item configuration for the given project. <br><br> <strong>Arguments for `configurationForProject`:</strong> <dl><dt>`projectId` ([`ProjectID!`](scalars.md#projectid))</dt><dd>Global ID of the project to return the item configuration of.</dd></dl> |
 | `createdAt` | [`Time!`](scalars.md#time) | Timestamp of when the item was created. |
@@ -906,6 +908,7 @@ An AI catalog third party flow.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| `acceptsTriggerGoal` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether a flow trigger for the flow can carry a configured goal. |
 | `configurationForGroup` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Item configuration for the given group. <br><br> <strong>Arguments for `configurationForGroup`:</strong> <dl><dt>`groupId` ([`GroupID!`](scalars.md#groupid))</dt><dd>Global ID of the group to return the item configuration of.</dd></dl> |
 | `configurationForProject` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Item configuration for the given project. <br><br> <strong>Arguments for `configurationForProject`:</strong> <dl><dt>`projectId` ([`ProjectID!`](scalars.md#projectid))</dt><dd>Global ID of the project to return the item configuration of.</dd></dl> |
 | `createdAt` | [`Time!`](scalars.md#time) | Timestamp of when the item was created. |
@@ -1076,6 +1079,7 @@ Represents an AI flow trigger.
 | `eventTypes` | [`[Int!]!`](scalars.md#int) | List of events that triggers the flow. |
 | `filter` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Filter conditions for the AI flow trigger. |
 | `flowSchedules` | [`AiFlowScheduleTypeConnection`](#aiflowscheduletypeconnection) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Cron-based schedules associated with the flow trigger. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
+| `goals` | [`JSON!`](scalars.md#json) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Goals for the AI flow trigger, keyed by event type. |
 | `id` | [`ID!`](scalars.md#id) | ID of the flow trigger. |
 | `precondition` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Enforced filter conditions from the foundational flow definition. |
 | `project` | [`Project!`](#project) | Project of the flow trigger. |
@@ -1191,8 +1195,9 @@ Aggregated AI governance dashboard metrics.
 | ---- | ---- | ----------- |
 | `agents` | [`AiGovernanceKpi`](#aigovernancekpi) | Distinct AI agent instances with sessions in the timeframe. Chat conversations are not counted. |
 | `connectedAgents` | [`[AiGovernanceConnectedAgent!]`](#aigovernanceconnectedagent) | Registered external (Connected) agents by type, ordered by registered machines. Empty when `agentClass` is `INTERNAL_DAP`. <br><br> <strong>Arguments for `connectedAgents`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of agent types to return. Defaults to 5, maximum 20.</dd></dl> |
-| `sessionDistribution` | [`[AiGovernanceSessionDistribution!]`](#aigovernancesessiondistribution) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Sessions in the timeframe grouped by flow type for GitLab Duo sessions and by agent type for external sessions, ordered by session count. Returns the top 10. Missing names are reported as `unknown`. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. |
+| `sessionDistribution` | [`AiGovernanceSessionDistribution`](#aigovernancesessiondistribution) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Sessions and distinct developers in the timeframe, split by agent or flow type. Empty when ClickHouse is not enabled for analytics. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. |
 | `sessions` | [`AiGovernanceKpi`](#aigovernancekpi) | AI sessions in the timeframe, including Duo Chat conversations. |
+| `toolCalls` | [`AiGovernanceKpi`](#aigovernancekpi) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Tools invoked by AI agents in the timeframe. Counts every invocation, not distinct tools. Returns null when the `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. |
 | `topProjects` | [`[AiGovernanceProjectActivity!]`](#aigovernanceprojectactivity) | Projects with the most AI sessions in the timeframe, ordered by session count. Sessions attached to a namespace rather than a project are not counted. <br><br> <strong>Arguments for `topProjects`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of projects to return. Defaults to 5, maximum 20.</dd></dl> |
 | `topUsers` | [`[AiGovernanceUserActivity!]`](#aigovernanceuseractivity) | Users with the most AI sessions in the timeframe, ordered by session count. <br><br> <strong>Arguments for `topUsers`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of users to return. Defaults to 5, maximum 20.</dd></dl> |
 
@@ -1216,6 +1221,8 @@ AI session recorded for AI governance, from GitLab Duo or an external agent.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `agentType` | [`String`](scalars.md#string) | Type of the agent that ran the session, for example `claude-code`. Values differ between sources. |
+| `auditEvents` | [`AiAuditEventConnection`](#aiauditeventconnection) | Audit events recorded for the session. Returns no events for GitLab Duo sessions delivered through a private messaging integration. This field can only be resolved for one session in any single request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
+| `auditEventsCount` | [`Int`](scalars.md#int) | Number of audit events recorded for the session. |
 | `downloadPath` | [`String`](scalars.md#string) | Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo. |
 | `flowType` | [`String`](scalars.md#string) | Flow type of the session, for example `chat`. Values differ between sources. |
 | `id` | [`AiGovernanceSessionID!`](scalars.md#aigovernancesessionid) | Global ID of the session. |
@@ -1240,14 +1247,49 @@ This connection has additional fields beyond the [standard connection fields](#s
 
 ## `AiGovernanceSessionDistribution`
 
-Number of AI sessions for one flow type or agent type.
+AI sessions and developers in the timeframe, split by agent or flow type.
 
 ### Fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `count` | [`Int!`](scalars.md#int) | Number of sessions in the timeframe. |
-| `name` | [`String!`](scalars.md#string) | Flow type for GitLab Duo sessions, agent type for external sessions. |
+| `slices` | [`[AiGovernanceSessionDistributionSlice!]!`](#aigovernancesessiondistributionslice) | Slices ordered by developers, then sessions, then name. Returns the top 10. Missing names are reported as `unknown`. |
+| `totalDevelopers` | [`Int!`](scalars.md#int) | Number of distinct developers with sessions in the timeframe, across all slices. |
+| `totalSessions` | [`Int!`](scalars.md#int) | Number of sessions in the timeframe, across all slices. |
+
+## `AiGovernanceSessionDistributionSlice`
+
+AI sessions and developers for one agent or flow type.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `developers` | [`Int!`](scalars.md#int) | Number of distinct developers with sessions in the slice. |
+| `name` | [`String!`](scalars.md#string) | Name of the slice. Version-less flow type for `INTERNAL_DAP`, agent type for `EXTERNAL`. For `ALL`, `gitlab_duo` for GitLab Duo sessions and agent type for external sessions. |
+| `sessions` | [`Int!`](scalars.md#int) | Number of sessions in the slice. |
+
+## `AiGovernanceToolCall`
+
+AI agent tool usage aggregated for the AI governance dashboard.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `count` | [`Int!`](scalars.md#int) | Number of tool invocations in the selected timeframe. |
+| `toolName` | [`String!`](scalars.md#string) | Name of the tool. |
+
+## `AiGovernanceToolCallsReport`
+
+Top tools invoked by AI agents, with a flag marking approximate counts.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `approximate` | [`Boolean!`](scalars.md#boolean) | Indicates whether counts were capped and are approximate. |
+| `nodes` | [`[AiGovernanceToolCall!]!`](#aigovernancetoolcall) | Tools invoked in the selected timeframe, ordered by invocation count. |
 
 ## `AiGovernanceUserActivity`
 
@@ -2750,7 +2792,7 @@ Core representation of a GitLab user.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
@@ -6625,10 +6667,11 @@ The currently authenticated GitLab user.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
+| `importSourceUsers` | [`ImportSourceUserConnection`](#importsourceuserconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Completed mappings of source users whose contributions were reassigned to the current user. Returns an empty result if the `revoke_import_source_user_reassignment` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `jobTitle` | [`String`](scalars.md#string) | Job title of the user. |
 | `lastActivityOn` | [`Date`](scalars.md#date) | Date the user last performed any actions. |
 | `linkedin` | [`String`](scalars.md#string) | LinkedIn profile name of the user. |
@@ -7649,6 +7692,39 @@ Group-level Dependency Proxy settings.
 | ---- | ---- | ----------- |
 | `enabled` | [`Boolean!`](scalars.md#boolean) | Indicates whether the dependency proxy is enabled for the group. |
 | `identity` | [`String`](scalars.md#string) | Identity credential used to authenticate with Docker Hub when pulling images. Can be a username (for password or personal access token (PAT)) or organization name (for organization access token (OAT)). |
+
+## `DependencyScanningConfiguration`
+
+Configuration for a dependency scanning scan profile.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `additionalCaCertBundle` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>CA certificate bundle to trust. The bundle is added to the system's certificates and used by other tools during the scan. |
+| `apiScanDownloadDelay` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Vulnerability scanning API initial delay in seconds before downloading scan results. |
+| `apiTimeout` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Vulnerability scanning API request timeout in seconds. |
+| `disabledResolutionJobs` | [`[SecurityScanProfileDependencyResolutionJob!]`](enums.md#securityscanprofiledependencyresolutionjob) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Resolution jobs that are disabled. |
+| `enableManifestFallback` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether manifest fallback for dependency scanning is enabled. |
+| `enableVulnerabilityScan` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether the vulnerability analysis of generated SBOMs is enabled. |
+| `excludedPaths` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Glob paths excluded from the scan. |
+| `gradleCliOpts` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Additional command-line options passed to Gradle during dependency resolution. |
+| `gradleResolutionImage` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Image used by the Gradle dependency resolution job. |
+| `includeDevDependencies` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether development and test dependencies are included when scanning a supported file. |
+| `mavenArgs` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Additional arguments passed to Maven during dependency resolution. |
+| `mavenDependencyPluginVersion` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Version of maven-dependency-plugin used during resolution. |
+| `mavenResolutionImage` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Image used by the Maven dependency resolution job. |
+| `maxDepth` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Specifies the directory depth the analyzer should scan. A value of -1 scans all directories. |
+| `pipDependencyPath` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Path to install Python packages for analysis. |
+| `pipExtraIndexUrl` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Additional URLs of Python package indexes used in addition to pipIndexUrl. |
+| `pipIndexUrl` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Base URL of the Python Package Index. |
+| `pipManifestFileNamePattern` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Custom pip manifest file name pattern to use for dependency resolution and manifest scanning. The pattern matches file names only, not directory paths. |
+| `pipcompileLockfileFileNamePattern` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Custom pipcompile lockfile file name pattern to use when analyzing. The pattern matches file names only, not directory paths. |
+| `pythonResolutionImage` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Image used by the Python dependency resolution job. |
+| `searchIgnoreHiddenDirs` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether hidden directories are ignored when searching for supported files. |
+| `secureAnalyzersPrefix` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Prefix for the container registry from which the analyzer image is pulled. |
+| `secureLogLevel` | [`SecurityScanProfileSecureLogLevel`](enums.md#securityscanprofilesecureloglevel) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Logging level used by the analyzer. |
+| `staticReachabilityEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether static reachability is enabled. |
 
 ## `DependencyTrackedRef`
 
@@ -10120,7 +10196,8 @@ GPG signature for a signed commit.
 | `aiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Indicates whether AI audit events are stored for the group. |
 | `aiDomainSettings` | [`StringConnection`](#stringconnection) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>List of allowed or denied domains for AI features. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiDomainSettings`:</strong> <dl><dt>`domainSettingType` ([`AiDomainSettingType!`](enums.md#aidomainsettingtype))</dt><dd>Type of domain setting to retrieve.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Filter domains by substring match.</dd></dl> |
 | `aiGovernanceMetrics` | [`AiGovernanceMetrics`](#aigovernancemetrics) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled. <br><br> <strong>Arguments for `aiGovernanceMetrics`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Agent class to segment the metrics by. Defaults to ALL.</dd><dt>`timeframe` ([`AiGovernanceMetricsTimeframe`](enums.md#aigovernancemetricstimeframe))</dt><dd>Time window for the metrics. Defaults to LAST_7_DAYS.</dd></dl> |
-| `aiGovernanceSessions` | [`AiGovernanceSessionConnection`](#aigovernancesessionconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>AI sessions for the group, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiGovernanceSessions`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Filter sessions by agent class. Defaults to all agent classes.</dd><dt>`flowType` ([`String`](scalars.md#string))</dt><dd>Filter by flow type.</dd><dt>`not` ([`AiGovernanceSessionNegatedFilterInput`](input_objects.md#aigovernancesessionnegatedfilterinput))</dt><dd>Negated filter conditions.</dd><dt>`projectPath` ([`String`](scalars.md#string))</dt><dd>Filter by project full path.</dd><dt>`sessionStartedAfter` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or after the timestamp.</dd><dt>`sessionStartedBefore` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or before the timestamp.</dd><dt>`triggeredByUserId` ([`UserID`](scalars.md#userid))</dt><dd>Filter to sessions triggered by the user with the given global ID.</dd></dl> |
+| `aiGovernanceSessions` | [`AiGovernanceSessionConnection`](#aigovernancesessionconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>AI sessions for the group, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiGovernanceSessions`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Filter sessions by agent class. Defaults to all agent classes.</dd><dt>`flowType` ([`String`](scalars.md#string))</dt><dd>Filter by flow type.</dd><dt>`id` ([`AiGovernanceSessionID`](scalars.md#aigovernancesessionid))</dt><dd>Global ID of the session.</dd><dt>`not` ([`AiGovernanceSessionNegatedFilterInput`](input_objects.md#aigovernancesessionnegatedfilterinput))</dt><dd>Negated filter conditions.</dd><dt>`projectPath` ([`String`](scalars.md#string))</dt><dd>Filter by project full path.</dd><dt>`sessionStartedAfter` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or after the timestamp.</dd><dt>`sessionStartedBefore` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or before the timestamp.</dd><dt>`triggeredByUserId` ([`UserID`](scalars.md#userid))</dt><dd>Filter to sessions triggered by the user with the given global ID.</dd></dl> |
+| `aiGovernanceToolCalls` | [`AiGovernanceToolCallsReport`](#aigovernancetoolcallsreport) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Top tools invoked by AI agents, with invocation counts. Returns null when the `ai_governance_dashboard` or `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. <br><br> <strong>Arguments for `aiGovernanceToolCalls`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Agent class to segment the tool calls by. Defaults to ALL.</dd><dt>`timeframe` ([`AiGovernanceMetricsTimeframe`](enums.md#aigovernancemetricstimeframe))</dt><dd>Time window for the tool calls. Defaults to LAST_7_DAYS.</dd></dl> |
 | `aiMetrics` | [`AiMetrics`](#aimetrics) | Status: Experiment. Introduced in GitLab 16.11.<br/><br/>AI-related metrics. <br><br> <strong>Arguments for `aiMetrics`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month.</dd></dl> |
 | `aiSettings` | [`AiNamespaceSettings`](#ainamespacesettings) | Status: Experiment. Introduced in GitLab 18.8.<br/><br/>AI settings for the namespace. |
 | `aiUsageData` | [`AiUsageData`](#aiusagedata) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>AI-related data. |
@@ -10320,6 +10397,7 @@ GPG signature for a signed commit.
 | `totalRepositorySize` | [`Float`](scalars.md#float) | Total repository size of all projects in the root namespace in bytes. |
 | `totalRepositorySizeExcess` | [`Float`](scalars.md#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | `transferInProgress` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Indicates if the group is currently being transferred. |
+| `triageAndRemediationCoverageCounters` | [`TriageAndRemediationCoverageCounters`](#triageandremediationcoveragecounters) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Triage and remediation coverage counters for the group, for a given trigger type. <br><br> <strong>Arguments for `triageAndRemediationCoverageCounters`:</strong> <dl><dt>`triggerType` ([`ScanProfileTriggerType!`](enums.md#scanprofiletriggertype))</dt><dd>Trigger type to count coverage for.</dd></dl> |
 | `twoFactorGracePeriod` | [`Int`](scalars.md#int) | Time before two-factor authentication is enforced. |
 | `updatedAt` | [`Time`](scalars.md#time) | Timestamp of when the group was last updated. |
 | `userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
@@ -10946,6 +11024,7 @@ This connection has additional fields beyond the [standard connection fields](#s
 | `createdAt` | [`Time!`](scalars.md#time) | Timestamp of when the source user was created. |
 | `id` | [`ImportSourceUserID!`](scalars.md#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
 | `importType` | [`ImportSource!`](enums.md#importsource) | Name of the importer. |
+| `namespace` | [`Namespace`](#namespace) | Namespace the contributions were imported to. |
 | `placeholderUser` | [`UserCore`](#usercore) | Placeholder user associated with the import source user. |
 | `reassignToUser` | [`UserCore`](#usercore) | User that contributions are reassigned to. |
 | `reassignedByUser` | [`UserCore`](#usercore) | User that did the reassignment. |
@@ -12191,7 +12270,7 @@ Paginated collection of [`MergeAccessLevel`](#mergeaccesslevel). See [Standard c
 | `reference` | [`String!`](scalars.md#string) | Internal reference of the merge request. Returned in shortened format by default. <br><br> <strong>Arguments for `reference`:</strong> <dl><dt>`full` ([`Boolean`](scalars.md#boolean))</dt><dd>Boolean option specifying whether the reference should be returned in full.</dd></dl> |
 | `resolvableDiscussionsCount` | [`Int`](scalars.md#int) | Number of user discussions that are resolvable in the merge request. |
 | `resolvedDiscussionsCount` | [`Int`](scalars.md#int) | Number of user discussions that are resolved in the merge request. |
-| `resourceLabelEvents` | [`MergeRequestResourceLabelEventConnection`](#mergerequestresourcelabeleventconnection) | Label events of the merge request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
+| `resourceLabelEvents` | [`MergeRequestResourceLabelEventConnection`](#mergerequestresourcelabeleventconnection) | Label events of the merge request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `resourceLabelEvents`:</strong> <dl><dt>`labelId` ([`LabelID`](scalars.md#labelid))</dt><dd>Global ID of the label to filter the label events.</dd></dl> |
 | `retargeted` | [`Boolean`](scalars.md#boolean) | Indicates if merge request was retargeted. |
 | `reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `riskAssessment` | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Risk assessment for the merge request. Ultimate only. |
@@ -12277,7 +12356,7 @@ A user assigned to a merge request.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
@@ -12361,7 +12440,7 @@ The author of the merge request.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
@@ -12550,7 +12629,7 @@ A user participating in a merge request.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
@@ -12671,7 +12750,7 @@ A user assigned to a merge request as a reviewer.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
@@ -13221,6 +13300,48 @@ This connection has additional fields beyond the [standard connection fields](#s
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `count` | [`Int!`](scalars.md#int) | Returns the number of items in the connection up to a limit. If the number is greater than the limit, returns `limit + 1`. <br><br> <strong>Arguments for `count`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Limit value to be applied to the count query. Default is 1000.</dd></dl> |
+
+## `MttrOverTimeBucket`
+
+Mean time to remediation for a single weekly (Monday to Sunday) bucket, with optional breakdowns by severity and report type.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `byReportType` | [`[MttrOverTimeByReportType!]!`](#mttrovertimebyreporttype) | Remediation metrics for the bucket broken down by report type. |
+| `bySeverity` | [`[MttrOverTimeBySeverity!]!`](#mttrovertimebyseverity) | Remediation metrics for the bucket broken down by severity. |
+| `count` | [`Int!`](scalars.md#int) | Number of vulnerabilities remediated in the bucket. Denominator of the MTTR average. |
+| `endDate` | [`ISO8601Date!`](scalars.md#iso8601date) | End of the weekly bucket (Sunday). Capped at the current date, so the most recent bucket may be partial. |
+| `mttr` | [`Float`](scalars.md#float) | Mean time to remediation, in days (sumDays / count). Null when no vulnerabilities were remediated in the bucket. |
+| `startDate` | [`ISO8601Date!`](scalars.md#iso8601date) | Start of the weekly bucket (Monday). |
+| `sumDays` | [`Float!`](scalars.md#float) | Sum of remediation time, in days, across vulnerabilities remediated in the bucket. Numerator of the MTTR average. |
+
+## `MttrOverTimeByReportType`
+
+Mean time to remediation for a single report type within a weekly bucket.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `count` | [`Int!`](scalars.md#int) | Number of vulnerabilities of the report type remediated in the bucket. |
+| `mttr` | [`Float`](scalars.md#float) | Mean time to remediation for the report type, in days (sumDays / count). Null when the count is 0. |
+| `reportType` | [`VulnerabilityReportType!`](enums.md#vulnerabilityreporttype) | Report type the breakdown applies to. |
+| `sumDays` | [`Float!`](scalars.md#float) | Sum of remediation time, in days, across vulnerabilities of the report type remediated in the bucket. |
+
+## `MttrOverTimeBySeverity`
+
+Mean time to remediation for a single severity within a weekly bucket.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `count` | [`Int!`](scalars.md#int) | Number of vulnerabilities of the severity remediated in the bucket. |
+| `mttr` | [`Float`](scalars.md#float) | Mean time to remediation for the severity, in days (sumDays / count). Null when the count is 0. |
+| `severity` | [`VulnerabilitySeverity!`](enums.md#vulnerabilityseverity) | Severity the breakdown applies to. |
+| `sumDays` | [`Float!`](scalars.md#float) | Sum of remediation time, in days, across vulnerabilities of the severity remediated in the bucket. |
 
 ## `Namespace`
 
@@ -15617,7 +15738,8 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `aiCatalogItems` | [`AiCatalogItemConnection!`](#aicatalogitemconnection) | Status: Experiment. Introduced in GitLab 18.6.<br/><br/>AI Catalog items of the project. This field can be resolved for only one project in any single request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiCatalogItems`:</strong> <dl><dt>`allAvailable` ([`Boolean`](scalars.md#boolean))</dt><dd>Include public items from the AI Catalog.</dd><dt>`enabled` ([`Boolean`](scalars.md#boolean))</dt><dd>Include only items that are enabled or disabled in the project.</dd><dt>`itemTypes` ([`[AiCatalogItemType!]`](enums.md#aicatalogitemtype))</dt><dd>Types of items to retrieve.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search items by name and description.</dd><dt>`sort` ([`AiCatalogItemsSort`](enums.md#aicatalogitemssort))</dt><dd>Sort order of items.</dd></dl> |
 | `aiFlowTriggers` | [`AiFlowTriggerTypeConnection`](#aiflowtriggertypeconnection) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>AI flow triggers of the project. This field can only be resolved for one project per request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiFlowTriggers`:</strong> <dl><dt>`ids` ([`[AiFlowTriggerID!]`](scalars.md#aiflowtriggerid))</dt><dd>Filter AI flow triggers by IDs.</dd></dl> |
 | `aiGovernanceMetrics` | [`AiGovernanceMetrics`](#aigovernancemetrics) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled. <br><br> <strong>Arguments for `aiGovernanceMetrics`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Agent class to segment the metrics by. Defaults to ALL.</dd><dt>`timeframe` ([`AiGovernanceMetricsTimeframe`](enums.md#aigovernancemetricstimeframe))</dt><dd>Time window for the metrics. Defaults to LAST_7_DAYS.</dd></dl> |
-| `aiGovernanceSessions` | [`AiGovernanceSessionConnection`](#aigovernancesessionconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>AI sessions for the project, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiGovernanceSessions`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Filter sessions by agent class. Defaults to all agent classes.</dd><dt>`flowType` ([`String`](scalars.md#string))</dt><dd>Filter by flow type.</dd><dt>`not` ([`AiGovernanceSessionNegatedFilterInput`](input_objects.md#aigovernancesessionnegatedfilterinput))</dt><dd>Negated filter conditions.</dd><dt>`sessionStartedAfter` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or after the timestamp.</dd><dt>`sessionStartedBefore` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or before the timestamp.</dd><dt>`triggeredByUserId` ([`UserID`](scalars.md#userid))</dt><dd>Filter to sessions triggered by the user with the given global ID.</dd></dl> |
+| `aiGovernanceSessions` | [`AiGovernanceSessionConnection`](#aigovernancesessionconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>AI sessions for the project, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiGovernanceSessions`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Filter sessions by agent class. Defaults to all agent classes.</dd><dt>`flowType` ([`String`](scalars.md#string))</dt><dd>Filter by flow type.</dd><dt>`id` ([`AiGovernanceSessionID`](scalars.md#aigovernancesessionid))</dt><dd>Global ID of the session.</dd><dt>`not` ([`AiGovernanceSessionNegatedFilterInput`](input_objects.md#aigovernancesessionnegatedfilterinput))</dt><dd>Negated filter conditions.</dd><dt>`sessionStartedAfter` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or after the timestamp.</dd><dt>`sessionStartedBefore` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or before the timestamp.</dd><dt>`triggeredByUserId` ([`UserID`](scalars.md#userid))</dt><dd>Filter to sessions triggered by the user with the given global ID.</dd></dl> |
+| `aiGovernanceToolCalls` | [`AiGovernanceToolCallsReport`](#aigovernancetoolcallsreport) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Top tools invoked by AI agents, with invocation counts. Returns null when the `ai_governance_dashboard` or `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. <br><br> <strong>Arguments for `aiGovernanceToolCalls`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Agent class to segment the tool calls by. Defaults to ALL.</dd><dt>`timeframe` ([`AiGovernanceMetricsTimeframe`](enums.md#aigovernancemetricstimeframe))</dt><dd>Time window for the tool calls. Defaults to LAST_7_DAYS.</dd></dl> |
 | `aiMetrics` | [`AiMetrics`](#aimetrics) | Status: Experiment. Introduced in GitLab 16.11.<br/><br/>AI-related metrics. <br><br> <strong>Arguments for `aiMetrics`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month.</dd></dl> |
 | `aiUsageData` | [`AiUsageData`](#aiusagedata) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>AI-related data. |
 | `aiUserMetrics` | [`AiUserMetricsConnection`](#aiusermetricsconnection) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>AI-related user metrics. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiUserMetrics`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month. ClickHouse needs to be enabled when passing this param.</dd><dt>`sort` ([`AiUserMetricsSort`](enums.md#aiusermetricssort))</dt><dd>Sort AI user metrics.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month. ClickHouse needs to be enabled when passing this param.</dd></dl> |
@@ -15889,6 +16011,7 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `topics` | [`[String!]`](scalars.md#string) | List of project topics. |
 | `trackingKey` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 16.0.<br/><br/>Tracking key assigned to the project. |
 | `transferInProgress` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Indicates if the project is currently being transferred. |
+| `triageAndRemediationCoverage` | [`TriageAndRemediationCoverage`](#triageandremediationcoverage) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Triage and remediation capability coverage for the project. |
 | `unprotectedBranches` | [`StringConnection`](#stringconnection) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Paginated list of unprotected branches, ignoring any wildcard branch rules. Supports forward-only pagination with `first` and `after`. This field can only be resolved for one project in any single request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `unprotectedBranches`:</strong> <dl><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search query to filter branch names (case-insensitive).</dd></dl> |
 | `updatedAt` | [`Time`](scalars.md#time) | Timestamp of when the project was last updated. |
 | `userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
@@ -17820,6 +17943,7 @@ Secrets Manager entitlement for a top-level group, or for the instance on GitLab
 | `blockedReason` | [`SecretsManagerEntitlementBlockedReason`](enums.md#secretsmanagerentitlementblockedreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the entitlement is blocked; null when state is not BLOCKED. |
 | `creditsRemaining` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Number of trial credits remaining. |
 | `creditsTotal` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Initial trial credit allocation for the current trial period. |
+| `gracePeriodEndDate` | [`Date`](scalars.md#date) | Last day of the read-only grace period, inclusive. Set only when blockedReason is GRACE; null otherwise. |
 | `offlineLicense` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Indicates whether the instance license is not an online cloud license, so no Secrets Manager trial can be started. Null on GitLab.com. |
 | `onDemandEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Indicates whether on-demand purchasing is enabled for the namespace. |
 | `state` | [`SecretsManagerEntitlementState!`](enums.md#secretsmanagerentitlementstate) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Resolved entitlement state. |
@@ -17961,6 +18085,7 @@ Represents security metrics.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| `mttrOverTime` | [`[MttrOverTimeBucket!]`](#mttrovertimebucket) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Weekly mean time to remediation (MTTR) of vulnerabilities. Each week only counts vulnerabilities detected no earlier than 90 days before the week starts, so a week's MTTR is at most about 97 days. Returns `null` unless the `security_dashboard_mttr_chart` feature flag is enabled. This feature is currently under development and not yet available for general use. <br><br> <strong>Arguments for `mttrOverTime`:</strong> <dl><dt>`endDate` ([`ISO8601Date!`](scalars.md#iso8601date))</dt><dd>End date of the time range. Snapped forward to the end of its week (Sunday), capped at the current date. The most recent week may be partial. The range can span at most 12 weeks.</dd><dt>`severity` ([`[VulnerabilitySeverity!]`](enums.md#vulnerabilityseverity))</dt><dd>Filter vulnerabilities by severity.</dd><dt>`startDate` ([`ISO8601Date!`](scalars.md#iso8601date))</dt><dd>Start date of the time range. Snapped back to the start of its week (Monday) so results align to full Monday to Sunday buckets.</dd></dl> |
 | `riskScore` | [`RiskScore`](#riskscore) | Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Total risk score information. This feature is currently under development and not yet available for general use. |
 | `vulnerabilitiesByAge` | [`[VulnerabilitiesByAge!]`](#vulnerabilitiesbyage) | Status: Experiment. Introduced in GitLab 18.9.<br/><br/>Vulnerability age statistics based on predefined age bands. See [`VulnerabilitiesByAge`](#vulnerabilitiesbyage) for details. This feature is currently under development and not yet available for general use. <br><br> <strong>Arguments for `vulnerabilitiesByAge`:</strong> <dl><dt>`severity` ([`[VulnerabilitySeverity!]`](enums.md#vulnerabilityseverity))</dt><dd>Filter vulnerabilities by severity.</dd></dl> |
 | `vulnerabilitiesByIdentifier` | [`[VulnerabilitiesByIdentifier!]`](#vulnerabilitiesbyidentifier) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Vulnerability identifier statistics with filtering. This feature is currently under development and not yet available for general use. <br><br> <strong>Arguments for `vulnerabilitiesByIdentifier`:</strong> <dl><dt>`severity` ([`[VulnerabilitySeverity!]`](enums.md#vulnerabilityseverity))</dt><dd>Filter vulnerabilities by severity.</dd></dl> |
@@ -18034,6 +18159,7 @@ Aggregated security posture counters for a namespace.
 | `withFailures` | [`Int!`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Number of unarchived projects with at least one failed scan. |
 | `withScanners` | [`Int!`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Number of unarchived projects with at least one security scanner configured. |
 | `withStale` | [`Int!`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Number of unarchived projects with at least one stale scan. |
+| `withTriageCoverage` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Count of unarchived projects in the group with at least one triage and remediation trigger enabled. |
 
 ## `SecurityReportSummary`
 
@@ -19211,6 +19337,7 @@ Representing a to-do entry.
 | `targetType` | [`TodoTargetEnum!`](enums.md#todotargetenum) | Target type of the to-do item. |
 | `targetUrl` | [`String`](scalars.md#string) | URL of the to-do item target. |
 | `transferFailedRetryUrl` | [`String`](scalars.md#string) | URL that retries a transfer-failed to-do item. |
+| `transferFailureReason` | [`String`](scalars.md#string) | Reason the transfer failed, for a transfer-failed to-do item. |
 
 ## `TodoConnection`
 
@@ -19279,6 +19406,39 @@ Represents a directory.
 ## `TreeEntryConnection`
 
 Paginated collection of [`TreeEntry`](#treeentry). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+
+## `TriageAndRemediationCapability`
+
+A triage and remediation capability and its coverage state for a project.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `enabled` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Indicates the capability is attached to the project. |
+| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Run mode for the capability. |
+| `triggerType` | [`ScanProfileTriggerType!`](enums.md#scanprofiletriggertype) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Trigger type the capability applies to. |
+
+## `TriageAndRemediationCoverage`
+
+Triage and remediation capability coverage for a project.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `capabilities` | [`[TriageAndRemediationCapability!]!`](#triageandremediationcapability) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Triage and remediation capabilities and their coverage state, one entry per trigger type. |
+
+## `TriageAndRemediationCoverageCounters`
+
+Triage and remediation coverage counters for a namespace, for a given trigger type.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `autoCount` | [`Int!`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Count of unarchived projects in the group where the trigger type is attached and set to automatic. |
+| `enabledCount` | [`Int!`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Count of unarchived projects in the group where the trigger type is attached. |
 
 ## `TrialUsage`
 
@@ -19458,7 +19618,7 @@ Core representation of a GitLab user.
 | `groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `groupCount` | [`Int`](scalars.md#int) | Group count for the user. |
 | `groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
+| `groups` | [`GroupConnection`](#groupconnection) | Groups where the user has access. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `groups`:</strong> <dl><dt>`permissionScope` ([`GroupPermission`](enums.md#grouppermission))</dt><dd>Filter by permissions the user has on groups.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search by group name or path.</dd><dt>`soloOwned` ([`Boolean`](scalars.md#boolean))</dt><dd>When true, returns only groups in the current organization where the user is the sole owner.</dd><dt>`sort` ([`GroupSort`](enums.md#groupsort))</dt><dd>Sort groups by given criteria.</dd></dl> |
 | `human` | [`Boolean`](scalars.md#boolean) | Indicates if the user is a regular user. |
 | `id` | [`UserID!`](scalars.md#userid) | Global ID of the user. |
 | `ide` | [`Ide`](#ide) | IDE settings. |
@@ -21456,6 +21616,7 @@ Paginated collection of [`WorkItemDescriptionTemplate`](#workitemdescriptiontemp
 | `development` | [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment) | Development widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `emailParticipants` | [`WorkItemWidgetEmailParticipants`](#workitemwidgetemailparticipants) | Email participants widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `errorTracking` | [`WorkItemWidgetErrorTracking`](#workitemwidgeterrortracking) | Error tracking widget of the work item. Returns `null` if the widget is not available for the work item. |
+| `escalationStatus` | [`WorkItemWidgetEscalationStatus`](#workitemwidgetescalationstatus) | Escalation status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `healthStatus` | [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus) | Health status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `hierarchy` | [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy) | Hierarchy widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `iteration` | [`WorkItemWidgetIteration`](#workitemwidgetiteration) | Iteration widget of the work item. Returns `null` if the widget is not available for the work item. |
@@ -22129,6 +22290,19 @@ Represents details about a line of code of the stack trace.
 | `line` | [`String`](scalars.md#string) | Line of code. |
 | `lineNumber` | [`Int`](scalars.md#int) | Line number of code. |
 
+## `WorkItemWidgetEscalationStatus`
+
+Represents the escalation status widget.
+
+**Implements:** [`WorkItemWidget`](interfaces.md#workitemwidget)
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `escalationStatus` | [`IssueEscalationStatus`](enums.md#issueescalationstatus) | Escalation status of the work item. |
+| `type` | [`WorkItemWidgetType`](enums.md#workitemwidgettype) | Widget type. |
+
 ## `WorkItemWidgetHealthStatus`
 
 Represents a health status widget.
@@ -22648,8 +22822,12 @@ Chat user metrics for a user. Requires ClickHouse. Premium and Ultimate with Git
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| `completeDuoChatResponseEventCount` | [`Int`](scalars.md#int) | Total count of `complete_duo_chat_response` event. |
 | `lastDuoActivityOn` | [`Date`](scalars.md#date) | Date of the last Chat activity for the user. |
+| `reportDuoChatTokenUsageEventCount` | [`Int`](scalars.md#int) | Total count of `report_duo_chat_token_usage` event. |
 | `requestDuoChatResponseEventCount` | [`Int`](scalars.md#int) | Total count of `request_duo_chat_response` event. |
+| `toolFailedDuoChatEventCount` | [`Int`](scalars.md#int) | Total count of `tool_failed_duo_chat` event. |
+| `toolSucceededDuoChatEventCount` | [`Int`](scalars.md#int) | Total count of `tool_succeeded_duo_chat` event. |
 | `totalEventCount` | [`Int`](scalars.md#int) | Total count of all Chat events for the user. |
 
 ## `codeReviewMetrics`
@@ -22732,7 +22910,11 @@ Requires ClickHouse. Premium and Ultimate only.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| `completeDuoChatResponseEventCount` | [`Int`](scalars.md#int) | Total count of `complete_duo_chat_response` event. |
+| `reportDuoChatTokenUsageEventCount` | [`Int`](scalars.md#int) | Total count of `report_duo_chat_token_usage` event. |
 | `requestDuoChatResponseEventCount` | [`Int`](scalars.md#int) | Total count of `request_duo_chat_response` event. |
+| `toolFailedDuoChatEventCount` | [`Int`](scalars.md#int) | Total count of `tool_failed_duo_chat` event. |
+| `toolSucceededDuoChatEventCount` | [`Int`](scalars.md#int) | Total count of `tool_succeeded_duo_chat` event. |
 
 ## `duoMessagingUserMetrics`
 

@@ -370,6 +370,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | `FEATURE_DISCOVERY_SEARCH` | Feature discovery search feature setting. |
 | `GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | `GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
+| `RECOMMEND_REVIEWERS_ASSIGN` | Recommend reviewers assign feature setting. |
 | `RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
@@ -436,6 +437,7 @@ Source that recorded an AI governance session.
 | `CLAUDE_CODE_COMPLIANCE_API` | Claude Code session ingested from the Claude Compliance API. |
 | `CLAUDE_CODE_GLAB` | Claude Code session reported through the GitLab CLI. |
 | `GITLAB_DUO` | Session run on the GitLab Duo Agent Platform. |
+| `MCP` | Session inferred from tool calls made through the GitLab MCP server. |
 
 ## `AiMessageRole`
 
@@ -477,6 +479,7 @@ AI features that can be configured through the Model Selection feature settings.
 | `DUO_DEVELOPER` | Duo developer feature setting. |
 | `GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | `GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
+| `RECOMMEND_REVIEWERS_ASSIGN` | Recommend reviewers assign feature setting. |
 | `RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
@@ -567,6 +570,7 @@ Type of AI usage event.
 | `CODE_SUGGESTION_DIRECT_ACCESS_TOKEN_REFRESH` | Code Suggestion token was refreshed. Old data only. |
 | `CODE_SUGGESTION_REJECTED_IN_IDE` | Code Suggestion was rejected in IDE. |
 | `CODE_SUGGESTION_SHOWN_IN_IDE` | Code Suggestion was shown in IDE. |
+| `COMPLETE_DUO_CHAT_RESPONSE` | Duo Chat response was completed, with an answer or an error. |
 | `DUO_WORKFLOW_WORKLOAD_COMPLETED` | Duo Workflow workload was completed. |
 | `ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW` | Duo Code Review encountered an error. |
 | `EXCLUDED_FILES_FROM_DUO_CODE_REVIEW` | Files were excluded from Duo Code Review. |
@@ -584,6 +588,7 @@ Type of AI usage event.
 | `REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-down reaction to Duo Code Review comment. |
 | `REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-up reaction to Duo Code Review comment. |
 | `REFACTOR_CODE` | Code refactor was requested with the GitLab Duo Chat /refactor command. |
+| `REPORT_DUO_CHAT_TOKEN_USAGE` | Duo Chat agent turn reported its token usage per model. |
 | `REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
 | `REQUEST_DUO_VULNERABILITY_RESOLUTION` | An AI vulnerability resolution was requested with GitLab Duo. |
 | `REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR` | MR author requested Duo Code Review. |
@@ -644,6 +649,8 @@ Values for sorting AI user metrics.
 | `CODE_SUGGESTION_REJECTED_IN_IDE_DESC` | Code Suggestion Rejected In Ide event count in descending order. |
 | `CODE_SUGGESTION_SHOWN_IN_IDE_ASC` | Code Suggestion Shown In Ide event count in ascending order. |
 | `CODE_SUGGESTION_SHOWN_IN_IDE_DESC` | Code Suggestion Shown In Ide event count in descending order. |
+| `COMPLETE_DUO_CHAT_RESPONSE_ASC` | Complete Duo Chat Response event count in ascending order. |
+| `COMPLETE_DUO_CHAT_RESPONSE_DESC` | Complete Duo Chat Response event count in descending order. |
 | `DUO_MESSAGING_TOTAL_COUNT_ASC` | Duo Messaging total event count in ascending order. |
 | `DUO_MESSAGING_TOTAL_COUNT_DESC` | Duo Messaging total event count in descending order. |
 | `DUO_WORKFLOW_TOTAL_COUNT_ASC` | Duo Workflow total event count in ascending order. |
@@ -698,6 +705,8 @@ Values for sorting AI user metrics.
 | `REFACTOR_CODE_DESC` | Refactor Code event count in descending order. |
 | `REFACTOR_CODE_TOTAL_COUNT_ASC` | Refactor Code total event count in ascending order. |
 | `REFACTOR_CODE_TOTAL_COUNT_DESC` | Refactor Code total event count in descending order. |
+| `REPORT_DUO_CHAT_TOKEN_USAGE_ASC` | Report Duo Chat Token Usage event count in ascending order. |
+| `REPORT_DUO_CHAT_TOKEN_USAGE_DESC` | Report Duo Chat Token Usage event count in descending order. |
 | `REQUEST_DUO_CHAT_RESPONSE_ASC` | Request Duo Chat Response event count in ascending order. |
 | `REQUEST_DUO_CHAT_RESPONSE_DESC` | Request Duo Chat Response event count in descending order. |
 | `REQUEST_DUO_VULNERABILITY_RESOLUTION_ASC` | Request Duo Vulnerability Resolution event count in ascending order. |
@@ -2650,6 +2659,7 @@ Where a Duo Workflow session was initiated from.
 | `MERGE_REQUEST_FIX_PIPELINE` | Session initiated from fixing a failed pipeline on a merge request. |
 | `MERGE_REQUEST_RESOLVE_DISCUSSION` | Session initiated from resolving a discussion on a merge request. |
 | `SLACK` | Session initiated from Slack. |
+| `WORK_ITEM_PLAN_TO_MERGE_REQUEST` | Session initiated from implementing a work item plan. |
 | `WORK_ITEM_TO_MERGE_REQUEST` | Session initiated from creating a merge request from a work item. |
 
 ## `DuoWorkflowStatus`
@@ -5368,6 +5378,16 @@ Controls GitLab Advanced SAST diff-based scanning.
 | `DIFFERENTIAL` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Enable diff-based scanning. |
 | `DISABLED` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Disable diff-based scanning. |
 
+## `SecurityScanProfileDependencyResolutionJob`
+
+Dependency resolution job that can be disabled.
+
+| Value | Description |
+| ----- | ----------- |
+| `GRADLE` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Gradle dependency resolution job. |
+| `MAVEN` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Maven dependency resolution job. |
+| `PYTHON` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Python dependency resolution job. |
+
 ## `SecurityScanProfileFalsePositiveConfidence`
 
 False positive assessment a finding must carry to be acted on.
@@ -5394,6 +5414,18 @@ Whether a triage and remediation capability runs automatically or on demand.
 | ----- | ----------- |
 | `AUTO` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Run automatically as findings appear. |
 | `MANUAL` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Run only when triggered by a user. |
+
+## `SecurityScanProfileSecureLogLevel`
+
+Logging level used by the analyzer.
+
+| Value | Description |
+| ----- | ----------- |
+| `DEBUG` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Debug messages and above. |
+| `ERROR` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Error messages and above. |
+| `FATAL` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Fatal messages only. |
+| `INFO` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Informational messages and above. |
+| `WARN` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Warning messages and above. |
 
 ## `SecurityScanProfileType`
 
@@ -5930,11 +5962,13 @@ Name of the feature that the callout is for.
 | `CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
 | `CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |
 | `DUO_CODE_REVIEW_ENABLED_BY_DEFAULT` | Callout feature name for duo_code_review_enabled_by_default. |
+| `DUO_PANEL_REQUEST_PAINTED_DOOR` | Callout feature name for duo_panel_request_painted_door. |
 | `END_OF_TRIAL_MODAL` | Callout feature name for end_of_trial_modal. |
 | `ENFORCEMENT_AT_LIMIT_ALERT` | Callout feature name for enforcement_at_limit_alert. |
 | `EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET` | Callout feature name for expired_duo_enterprise_trial_widget. |
 | `EXPIRED_DUO_PRO_TRIAL_WIDGET` | Callout feature name for expired_duo_pro_trial_widget. |
 | `EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
+| `EXPLORE_PREMIUM_REQUEST_PAINTED_DOOR` | Callout feature name for explore_premium_request_painted_door. |
 | `FREE_GROUP_LIMITED_ALERT` | Callout feature name for free_group_limited_alert. |
 | `NAMESPACE_OVER_STORAGE_USERS_COMBINED_ALERT` | Callout feature name for namespace_over_storage_users_combined_alert. |
 | `NAMESPACE_STORAGE_LIMIT_ALERT_ALERT_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_alert_threshold. |
@@ -6622,6 +6656,7 @@ Type of a work item widget.
 | `DEVELOPMENT` | Development widget. |
 | `EMAIL_PARTICIPANTS` | Email Participants widget. |
 | `ERROR_TRACKING` | Error Tracking widget. |
+| `ESCALATION_STATUS` | Escalation Status widget. |
 | `HEALTH_STATUS` | Health Status widget. |
 | `HIERARCHY` | Hierarchy widget. |
 | `ITERATION` | Iteration widget. |

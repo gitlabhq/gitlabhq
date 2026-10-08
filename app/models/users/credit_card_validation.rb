@@ -60,7 +60,11 @@ module Users
     end
 
     def used_by_banned_user?
-      self.class.by_banned_user.similar_to(self).similar_by_holder_name(holder_name_hash).exists?
+      return true if self.class.by_banned_user.similar_to(self).similar_by_holder_name(holder_name_hash).exists?
+      return false if stripe_card_fingerprint.blank?
+      return false unless Feature.enabled?(:limit_phone_verification_by_card_fingerprint, user)
+
+      self.class.by_banned_user.where(stripe_card_fingerprint: stripe_card_fingerprint).exists?
     end
 
     def set_last_digits_hash

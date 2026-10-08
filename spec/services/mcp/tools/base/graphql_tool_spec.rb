@@ -187,6 +187,21 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     end
   end
 
+  describe '#resource_not_found_error_for_result' do
+    it 'delegates to the existing hook when operation data is missing' do
+      error = tool.send(:resource_not_found_error_for_result, { 'data' => { 'testMutation' => nil } })
+
+      expect(error[:isError]).to be(true)
+      expect(error[:content].first[:text]).to eq('Operation returned no data')
+    end
+
+    it 'returns nil when operation data exists' do
+      result = tool.send(:resource_not_found_error_for_result, { 'data' => { 'testMutation' => {} } })
+
+      expect(result).to be_nil
+    end
+  end
+
   describe '#execute' do
     let(:graphql_result) do
       {
@@ -371,6 +386,18 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data',
           reason: :not_found)
         expect(result).to eq(error_response)
+      end
+
+      context 'when a result-aware hook does not handle missing data' do
+        before do
+          allow(tool).to receive(:resource_not_found_error_for_result).and_return(nil)
+        end
+
+        it 'falls back to the default not-found error' do
+          expect(tool.execute).to eq(error_response)
+          expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data',
+            reason: :not_found)
+        end
       end
     end
 

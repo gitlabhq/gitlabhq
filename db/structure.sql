@@ -379,6 +379,11 @@ AND NOT EXISTS (
   SELECT 1
   FROM oauth_consent_grant_granular_scopes
   WHERE granular_scope_id = OLD.granular_scope_id
+)
+AND NOT EXISTS (
+  SELECT 1
+  FROM oauth_application_granular_scopes
+  WHERE granular_scope_id = OLD.granular_scope_id
 );
 RETURN OLD;
 
@@ -26088,6 +26093,22 @@ CREATE SEQUENCE oauth_access_tokens_id_seq
 
 ALTER SEQUENCE oauth_access_tokens_id_seq OWNED BY oauth_access_tokens.id;
 
+CREATE TABLE oauth_application_granular_scopes (
+    id bigint NOT NULL,
+    application_id bigint NOT NULL,
+    granular_scope_id bigint NOT NULL,
+    organization_id bigint NOT NULL
+);
+
+CREATE SEQUENCE oauth_application_granular_scopes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE oauth_application_granular_scopes_id_seq OWNED BY oauth_application_granular_scopes.id;
+
 CREATE TABLE oauth_applications (
     id bigint NOT NULL,
     name character varying NOT NULL,
@@ -38123,6 +38144,8 @@ ALTER TABLE ONLY oauth_access_grants ALTER COLUMN id SET DEFAULT nextval('oauth_
 
 ALTER TABLE ONLY oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('oauth_access_tokens_id_seq'::regclass);
 
+ALTER TABLE ONLY oauth_application_granular_scopes ALTER COLUMN id SET DEFAULT nextval('oauth_application_granular_scopes_id_seq'::regclass);
+
 ALTER TABLE ONLY oauth_applications ALTER COLUMN id SET DEFAULT nextval('oauth_applications_id_seq'::regclass);
 
 ALTER TABLE ONLY oauth_consent_grant_granular_scopes ALTER COLUMN id SET DEFAULT nextval('oauth_consent_grant_granular_scopes_id_seq'::regclass);
@@ -41962,6 +41985,9 @@ ALTER TABLE ONLY oauth_access_grants
 
 ALTER TABLE ONLY oauth_access_tokens
     ADD CONSTRAINT oauth_access_tokens_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY oauth_application_granular_scopes
+    ADD CONSTRAINT oauth_application_granular_scopes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY oauth_applications
     ADD CONSTRAINT oauth_applications_pkey PRIMARY KEY (id);
@@ -46516,6 +46542,8 @@ CREATE INDEX idx_oauth_access_grants_on_organization_id ON oauth_access_grants U
 
 CREATE INDEX idx_oauth_access_tokens_on_organization_id ON oauth_access_tokens USING btree (organization_id);
 
+CREATE UNIQUE INDEX idx_oauth_application_granular_scopes_on_app_id_scope_id ON oauth_application_granular_scopes USING btree (application_id, granular_scope_id);
+
 CREATE INDEX idx_oauth_applications_dynamic_and_id ON oauth_applications USING btree (dynamic, id);
 
 CREATE INDEX idx_oauth_applications_organization_id ON oauth_applications USING btree (organization_id);
@@ -50361,6 +50389,10 @@ CREATE INDEX index_oauth_access_tokens_on_id_where_revoked ON oauth_access_token
 CREATE UNIQUE INDEX index_oauth_access_tokens_on_refresh_token ON oauth_access_tokens USING btree (refresh_token);
 
 CREATE UNIQUE INDEX index_oauth_access_tokens_on_token ON oauth_access_tokens USING btree (token);
+
+CREATE INDEX index_oauth_application_granular_scopes_on_granular_scope_id ON oauth_application_granular_scopes USING btree (granular_scope_id);
+
+CREATE INDEX index_oauth_application_granular_scopes_on_organization_id ON oauth_application_granular_scopes USING btree (organization_id);
 
 CREATE INDEX index_oauth_applications_on_owner_id_and_owner_type ON oauth_applications USING btree (owner_id, owner_type);
 
@@ -57576,6 +57608,8 @@ CREATE TRIGGER trigger_decac6b7c511 BEFORE INSERT OR UPDATE ON snippet_repositor
 
 CREATE TRIGGER trigger_delete_orphaned_granular_scopes AFTER DELETE ON personal_access_token_granular_scopes FOR EACH ROW EXECUTE FUNCTION delete_orphaned_granular_scopes();
 
+CREATE TRIGGER trigger_delete_orphaned_granular_scopes_for_oauth_apps AFTER DELETE ON oauth_application_granular_scopes FOR EACH ROW EXECUTE FUNCTION delete_orphaned_granular_scopes();
+
 CREATE TRIGGER trigger_delete_orphaned_granular_scopes_for_oauth_grants AFTER DELETE ON oauth_consent_grant_granular_scopes FOR EACH ROW EXECUTE FUNCTION delete_orphaned_granular_scopes();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
@@ -57768,6 +57802,9 @@ ALTER TABLE ONLY ai_catalog_items
 ALTER TABLE ONLY work_item_transitions
     ADD CONSTRAINT fk_01ba2355cd FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY oauth_application_granular_scopes
+    ADD CONSTRAINT fk_024fc4aa00 FOREIGN KEY (granular_scope_id) REFERENCES granular_scopes(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_0250c0ad51 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
@@ -57800,6 +57837,9 @@ ALTER TABLE ONLY work_item_type_custom_lifecycles
 
 ALTER TABLE ONLY work_item_type_custom_lifecycles
     ADD CONSTRAINT fk_0425cd8e8b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_application_granular_scopes
+    ADD CONSTRAINT fk_0449ba4e98 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_0480f2308c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -59687,6 +59727,9 @@ ALTER TABLE ONLY vulnerability_finding_ascp_component_links
 
 ALTER TABLE ONLY compliance_requirements
     ADD CONSTRAINT fk_8f5fb77fc7 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_application_granular_scopes
+    ADD CONSTRAINT fk_8f7ef73b30 FOREIGN KEY (application_id) REFERENCES oauth_applications(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_secrets_managers
     ADD CONSTRAINT fk_8f88850d11 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -321,6 +321,63 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end
       end
 
+      context 'for oauth application granular scopes' do
+        let_it_be_with_reload(:group_application) do
+          create(:oauth_application, owner_id: group.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_reload(:subgroup_application) do
+          create(:oauth_application, owner_id: subgroup.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_reload(:user_application) do
+          create(:oauth_application, owner: user, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:group_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :instance)
+        end
+
+        let_it_be_with_reload(:subgroup_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :instance)
+        end
+
+        let_it_be_with_reload(:user_granular_scope) do
+          create(:granular_scope, organization: old_organization, namespace: nil, access: :user)
+        end
+
+        let_it_be_with_reload(:group_join_record) do
+          create(:oauth_application_granular_scope, application: group_application,
+            granular_scope: group_granular_scope, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:subgroup_join_record) do
+          create(:oauth_application_granular_scope, application: subgroup_application,
+            granular_scope: subgroup_granular_scope, organization: old_organization)
+        end
+
+        let_it_be_with_reload(:user_join_record) do
+          create(:oauth_application_granular_scope, application: user_application,
+            granular_scope: user_granular_scope, organization: old_organization)
+        end
+
+        it 'updates organization_id for granular scopes declared by group-owned applications' do
+          service.execute
+
+          expect(group_join_record.reload.organization_id).to eq(new_organization.id)
+          expect(subgroup_join_record.reload.organization_id).to eq(new_organization.id)
+          expect(group_granular_scope.reload.organization_id).to eq(new_organization.id)
+          expect(subgroup_granular_scope.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update granular scopes declared by user-owned applications' do
+          service.execute
+
+          expect(user_join_record.reload.organization_id).to eq(old_organization.id)
+          expect(user_granular_scope.reload.organization_id).to eq(old_organization.id)
+        end
+      end
+
       context 'when batching updates' do
         include_context 'with transfer batch size of 1'
 

@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -6159,22 +6159,38 @@
+@@ -6182,23 +6182,39 @@
    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
  }
  
@@ -36,15 +36,16 @@ index aaaaaaa..bbbbbbb 100644
      wrapped._compatWrapped = true;
 +    compatRenderCache.set(render, wrapped);
    }
-+}
+ }
 +/*! GitLab: the render function to install on an instance, see convertLegacyRenderFn. */
 +function resolveCompatRender(Component) {
 +  const render = Component.render;
 +  return render && compatRenderCache.get(render) || render;
- }
++}
  function compatH(type, propsOrChildren, children) {
    if (!type) {
-@@ -12622,7 +12638,7 @@
+     type = Comment;
+@@ -12669,7 +12685,7 @@
          }
        }
      }
@@ -57,7 +58,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -6140,22 +6140,38 @@
+@@ -6163,23 +6163,39 @@
    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
  }
  
@@ -91,15 +92,16 @@ index aaaaaaa..bbbbbbb 100644
      wrapped._compatWrapped = true;
 +    compatRenderCache.set(render, wrapped);
    }
-+}
+ }
 +/*! GitLab: the render function to install on an instance, see convertLegacyRenderFn. */
 +function resolveCompatRender(Component) {
 +  const render = Component.render;
 +  return render && compatRenderCache.get(render) || render;
- }
++}
  function compatH(type, propsOrChildren, children) {
    if (!type) {
-@@ -12647,7 +12663,7 @@
+     type = Comment;
+@@ -12694,7 +12710,7 @@
          }
        }
      }
@@ -112,7 +114,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -6067,22 +6067,38 @@
+@@ -6090,23 +6090,39 @@
    return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
  }
  
@@ -146,15 +148,16 @@ index aaaaaaa..bbbbbbb 100644
      wrapped._compatWrapped = true;
 +    compatRenderCache.set(render, wrapped);
    }
-+}
+ }
 +/*! GitLab: the render function to install on an instance, see convertLegacyRenderFn. */
 +function resolveCompatRender(Component) {
 +  const render = Component.render;
 +  return render && compatRenderCache.get(render) || render;
- }
++}
  function compatH(type, propsOrChildren, children) {
    if (!type) {
-@@ -12574,7 +12590,7 @@
+     type = Comment;
+@@ -12621,7 +12637,7 @@
          }
        }
      }

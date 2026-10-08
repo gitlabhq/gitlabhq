@@ -1,0 +1,11 @@
+---
+name: limit_phone_verification_by_card_fingerprint
+description: Treat credit cards sharing a Stripe fingerprint with a banned user as banned, and limit daily
+  phone verification SMS sends across all accounts sharing a card fingerprint.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608205
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259213
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631801
+milestone: '19.5'
+group: group::abuse engineering
+type: gitlab_com_derisk
+default_enabled: false

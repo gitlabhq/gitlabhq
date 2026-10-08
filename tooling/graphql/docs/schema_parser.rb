@@ -4,6 +4,7 @@ require_relative 'schema/directive'
 require_relative 'schema/enum'
 require_relative 'schema/input_object'
 require_relative 'schema/interface'
+require_relative 'schema/mutation'
 require_relative 'schema/object'
 require_relative 'schema/query'
 require_relative 'schema/scalar'
@@ -18,7 +19,8 @@ module Tooling
         # fields section rather than repeated on the objects page.
         STANDARD_EDGE_FIELDS = %w[cursor node].freeze
 
-        attr_reader :directives, :enums, :input_objects, :interfaces, :objects, :queries, :scalars, :unions
+        attr_reader :directives, :enums, :input_objects, :interfaces, :mutations, :objects, :queries, :scalars,
+          :unions
 
         def initialize(schema)
           @schema = schema
@@ -26,6 +28,7 @@ module Tooling
           @enums = []
           @input_objects = []
           @interfaces = []
+          @mutations = []
           @objects = []
           @queries = []
           @scalars = []
@@ -34,6 +37,7 @@ module Tooling
 
         def execute
           parse_queries
+          parse_mutations
           parse_types
           parse_directives
 
@@ -50,6 +54,12 @@ module Tooling
           end
         end
 
+        def parse_mutations
+          @mutations = root_mutation.fields.values.map do |mutation|
+            Schema::Mutation.new(mutation)
+          end
+        end
+
         def parse_types
           schema.types.each_value do |type|
             next if type.introspection?
@@ -60,7 +70,11 @@ module Tooling
             end
 
             @enums << Schema::Enum.new(type) if type.kind.enum?
-            @input_objects << Schema::InputObject.new(type) if type.kind.input_object?
+
+            if type.kind.input_object? && mutation_input_names.exclude?(type.graphql_name)
+              @input_objects << Schema::InputObject.new(type)
+            end
+
             @scalars << Schema::Scalar.new(type) if type.kind.scalar?
 
             if type.kind.interface?
@@ -77,13 +91,14 @@ module Tooling
           end
         end
 
+        # Mutation input objects are documented as the mutation's arguments, so
+        # they are left off the input objects page.
+        def mutation_input_names
+          @mutation_input_names ||= mutations.to_set(&:input_object_name)
+        end
+
         def mutation_payload_names
-          @mutation_payload_names ||=
-            if root_mutation
-              root_mutation.fields.values.map { |field| field.type.unwrap.graphql_name }.to_set
-            else
-              Set.new
-            end
+          @mutation_payload_names ||= mutations.to_set { |mutation| mutation.type.name }
         end
 
         def mutation_payload?(type)

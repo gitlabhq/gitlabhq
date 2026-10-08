@@ -286,6 +286,7 @@ Effective configuration for a scan profile trigger, resolved by scan type, and b
 ### Member types {.no_toc}
 
 - [`AutoRemediationConfiguration`](objects.md#autoremediationconfiguration)
+- [`DependencyScanningConfiguration`](objects.md#dependencyscanningconfiguration)
 - [`SastConfiguration`](objects.md#sastconfiguration)
 - [`SastFalsePositiveConfiguration`](objects.md#sastfalsepositiveconfiguration)
 - [`SastVulnerabilityResolutionConfiguration`](objects.md#sastvulnerabilityresolutionconfiguration)

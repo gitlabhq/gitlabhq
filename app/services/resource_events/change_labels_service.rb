@@ -19,11 +19,18 @@ module ResourceEvents
         created_at: resource.system_note_timestamp
       }
 
+      references = ::Issuables::LabelEventReferencesService.new(resource.resource_parent)
+        .execute(added_labels + removed_labels)
+
       labels = added_labels.map do |label|
-        label_hash.merge(label_id: label.id, action: ResourceLabelEvent.actions['add'])
+        label_hash.merge(
+          label_id: label.id, action: ResourceLabelEvent.actions['add'], reference: references[label.id]
+        )
       end
       labels += removed_labels.map do |label|
-        label_hash.merge(label_id: label.id, action: ResourceLabelEvent.actions['remove'])
+        label_hash.merge(
+          label_id: label.id, action: ResourceLabelEvent.actions['remove'], reference: references[label.id]
+        )
       end
 
       ids = ApplicationRecord.legacy_bulk_insert(ResourceLabelEvent.table_name, labels, return_ids: true) # rubocop:disable Gitlab/BulkInsert

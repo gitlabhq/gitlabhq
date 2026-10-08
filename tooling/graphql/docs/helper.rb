@@ -12,6 +12,11 @@ module Tooling
         # connections section.
         STANDARD_CONNECTION_FIELDS = %w[edges nodes pageInfo].freeze
 
+        # Table cells cannot contain Markdown paragraphs, so descriptions rendered
+        # in tables separate paragraphs with HTML line breaks instead.
+        TABLE_PARAGRAPH_BREAK = '<br/><br/>'
+        PARAGRAPH_BREAK = "\n\n"
+
         def sorted_by_name(collection)
           collection.sort_by(&:name)
         end
@@ -20,12 +25,12 @@ module Tooling
           "`#{item.name}`"
         end
 
-        def description(item)
+        def description(item, paragraph_break: TABLE_PARAGRAPH_BREAK)
           description =
             if deprecated?(item)
               deprecation_description(item)
             elsif experiment?(item)
-              experiment_description(item)
+              experiment_description(item, paragraph_break)
             else
               plain_description(item)
             end
@@ -75,6 +80,11 @@ module Tooling
           "#{query_body_parts(query).join("\n\n")}\n"
         end
 
+        # Renders the full body for a mutation section (below the ## heading).
+        def render_mutation_body(mutation)
+          "#{mutation_body_parts(mutation).join("\n\n")}\n"
+        end
+
         # Summary for a connection object, linking to the node type and the
         # standard connection fields section. A node without a resolvable type
         # (such as a subclassed connection) is rendered unlinked.
@@ -93,8 +103,8 @@ module Tooling
           object.fields.reject { |f| STANDARD_CONNECTION_FIELDS.include?(f.name) }
         end
 
-        def field_description(field)
-          description = description(field)
+        def field_description(field, paragraph_break: TABLE_PARAGRAPH_BREAK)
+          description = description(field, paragraph_break: paragraph_break)
           return description unless field.connection?
 
           [description, connection_note].reject(&:empty?).join(' ')
@@ -180,7 +190,7 @@ module Tooling
 
         def query_body_parts(query)
           parts = []
-          desc = field_description(query)
+          desc = field_description(query, paragraph_break: PARAGRAPH_BREAK)
           parts << desc if desc.present?
           parts << "**Returns:** #{type(query)}"
 
@@ -189,6 +199,20 @@ module Tooling
               "#{docs_render('arguments_table', arguments: query.arguments_without_pagination)}"
           end
 
+          parts
+        end
+
+        def mutation_body_parts(mutation)
+          parts = []
+          desc = description(mutation, paragraph_break: PARAGRAPH_BREAK)
+          parts << desc if desc.present?
+          parts << "**Input type:** `#{mutation.input_object_name}`"
+
+          if mutation.arguments.present?
+            parts << "### Arguments {.no_toc}\n\n#{docs_render('arguments_table', arguments: mutation.arguments)}"
+          end
+
+          parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: mutation.return_fields)}"
           parts
         end
 
@@ -245,9 +269,9 @@ module Tooling
           string
         end
 
-        def experiment_description(item)
+        def experiment_description(item, paragraph_break)
           "Status: Experiment. Introduced in GitLab #{item.deprecation.milestone}." \
-            "<br/><br/>#{item.deprecation.original_description}"
+            "#{paragraph_break}#{item.deprecation.original_description}"
         end
       end
     end

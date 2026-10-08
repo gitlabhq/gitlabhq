@@ -120,7 +120,7 @@ module Mutations
 
         def validate_sudo_not_escalated!(sudo, calling_token)
           return unless sudo
-          return if calling_token.sudo?
+          return if calling_token.try(:sudo?)
 
           raise_resource_not_available_error!(
             'A granular token without sudo cannot create a token with sudo.'

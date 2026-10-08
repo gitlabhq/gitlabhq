@@ -103,7 +103,8 @@ include:
     GEO_SECONDARY_PROXY: 0
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
     EVENT_PROF: "sql.active_record"
-    RSPEC_TAGS: "--tag ~level:background_migration --tag ~click_house --tag ~duo_workflow_service --tag ~partition_tz"
+    RSPEC_DEFAULT_TAGS: "--tag ~level:background_migration --tag ~click_house --tag ~duo_workflow_service --tag ~partition_tz"
+    RSPEC_TAGS: "${RSPEC_DEFAULT_TAGS}"
   needs:
     - !reference [.rspec-base-needs, needs]
     - job: "detect-tests"
@@ -240,6 +241,9 @@ include:
     - .rspec-base
     - .use-pg17-es9-ee
     - .rails:rules:run-search-tests
+  variables:
+    RSPEC_TAGS: "${RSPEC_DEFAULT_TAGS} --tag elastic --tag elastic_delete_by_query --tag elastic_clean --tag elasticsearch_settings_enabled --tag elastic_helpers --tag elasticsearch_adapter"
+    RSPEC_DRY_RUN_TAGS: "elastic elastic_delete_by_query elastic_clean elasticsearch_settings_enabled elastic_helpers elasticsearch_adapter"
 
 .rspec-ee-base-pg17-opensearch-latest:
   extends:

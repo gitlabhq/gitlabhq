@@ -2154,6 +2154,19 @@ polluted with non-essential data. If using the `:elastic` or `:elastic_delete_by
 is causing issues, use `:elastic_clean` instead. `:elastic_clean` is significantly slower than the other traits
 and should be used sparingly.
 
+GitLab.com runs on Elasticsearch 9. The `rspec-ee * es9` jobs run only the specs that have one of these metadata tags:
+
+- `:elastic`
+- `:elastic_delete_by_query`
+- `:elastic_clean`
+- `:elasticsearch_settings_enabled`
+- `:elastic_helpers`
+- `:elasticsearch_adapter`
+
+A spec without one of these tags runs against Elasticsearch 7 only, in the regular `rspec-ee` jobs.
+If you add a new Elasticsearch metadata tag, add it to `RSPEC_TAGS` and `RSPEC_DRY_RUN_TAGS` in
+`.rspec-ee-base-pg17-es9` in `.gitlab/ci/rails/shared.gitlab-ci.yml`.
+
 Most tests for Elasticsearch logic relate to:
 
 - Creating data in PostgreSQL and waiting for it to be indexed in Elasticsearch.

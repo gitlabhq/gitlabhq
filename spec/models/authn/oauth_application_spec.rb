@@ -13,6 +13,13 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
         .with_foreign_key(:application_id).inverse_of(:application)
     end
 
+    it 'has many declared granular scopes' do
+      is_expected.to have_many(:oauth_application_granular_scopes).class_name('Authz::OauthApplicationGranularScope')
+        .with_foreign_key(:application_id).inverse_of(:application).autosave(true)
+      is_expected.to have_many(:granular_scopes).through(:oauth_application_granular_scopes)
+        .class_name('Authz::GranularScope')
+    end
+
     it 'is invalid without an organization' do
       expect(build(:oauth_application, organization: nil)).not_to be_valid
     end
@@ -30,6 +37,24 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
 
     it 'is registered as a supported feature flag model' do
       expect(Feature::SUPPORTED_MODELS).to include('Authn::OauthApplication')
+    end
+  end
+
+  describe '#granular?' do
+    let_it_be(:group) { create(:group) }
+
+    it 'is false when the application declares no granular scopes' do
+      expect(application.granular?).to be(false)
+    end
+
+    it 'is true when the application declares granular scopes' do
+      granular_application = create(:oauth_application, :granular,
+        boundary: Authz::Boundary.for(group), permissions: :read_member_role)
+
+      expect(granular_application.granular?).to be(true)
+      expect(granular_application.granular_scopes).to contain_exactly(
+        have_attributes(namespace: group, access: 'selected_memberships', permissions: ['read_member_role'])
+      )
     end
   end
 

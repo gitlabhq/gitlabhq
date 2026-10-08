@@ -327,6 +327,22 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
       end
     end
 
+    context 'when authenticated with a granular token that has sudo', :enable_admin_mode do
+      let_it_be(:admin) { create(:admin, :with_namespace) }
+      let!(:calling_token) do
+        create(:granular_pat, :sudo, user: admin,
+          boundary: ::Authz::Boundary.for(:user),
+          permissions: [:create_personal_access_token])
+      end
+
+      it 'creates a token with sudo enabled', :aggregate_failures do
+        expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
+          .to change { admin.personal_access_tokens.where(sudo: true).count }.by(1)
+
+        expect(graphql_errors).to be_nil
+      end
+    end
+
     context 'when authenticated with a granular token that does not have sudo' do
       let_it_be(:admin) { create(:admin, :with_namespace) }
       let!(:calling_token) do
@@ -337,6 +353,26 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
 
       it 'cannot escalate by minting a token with sudo' do
         expect { post_graphql_mutation(mutation, token: { personal_access_token: calling_token }) }
+          .not_to change { admin.personal_access_tokens.count }
+
+        expect_graphql_errors_to_include(
+          'A granular token without sudo cannot create a token with sudo.'
+        )
+      end
+    end
+
+    context 'when authenticated with a granular OAuth token' do
+      let_it_be(:admin) { create(:admin, :with_namespace) }
+      let_it_be(:application) { create(:oauth_application) }
+      let!(:calling_token) { create(:oauth_access_token, :granular, resource_owner: admin, application: application) }
+
+      before do
+        create(:oauth_consent_grant, user: admin, application: application,
+          boundary: ::Authz::Boundary.for(:user), permissions: :create_personal_access_token)
+      end
+
+      it 'cannot escalate by minting a token with sudo' do
+        expect { post_graphql_mutation(mutation, token: { oauth_access_token: calling_token }) }
           .not_to change { admin.personal_access_tokens.count }
 
         expect_graphql_errors_to_include(

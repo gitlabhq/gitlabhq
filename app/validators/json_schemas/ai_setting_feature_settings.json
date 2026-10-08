@@ -18,6 +18,11 @@
       "type": "boolean",
       "default": false,
       "description": "Allow AI audit events to be streamed to configured external destinations"
+    },
+    "duo_token_usage_tracking_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Record the tokens each GitLab Duo Non-Agentic Chat request uses, per user and model"
     }
   }
 }

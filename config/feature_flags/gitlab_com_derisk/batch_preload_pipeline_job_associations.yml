@@ -1,0 +1,11 @@
+---
+name: batch_preload_pipeline_job_associations
+description: Batch-preload the CI-database associations that CiJob fields read, so a
+  page of pipeline jobs loads them once instead of per job.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629310
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256452
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629426
+milestone: '19.5'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

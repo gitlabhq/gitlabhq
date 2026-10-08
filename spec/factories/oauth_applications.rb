@@ -31,4 +31,19 @@ FactoryBot.define do
   trait :with_device_code_enabled do
     device_code_enabled { true }
   end
+
+  trait :granular do
+    transient do
+      boundary { Authz::Boundary.for(:instance) }
+      permissions { [:create_member_role] }
+    end
+
+    oauth_application_granular_scopes do
+      granular_scope = association(:granular_scope,
+        boundary: boundary, permissions: Array(permissions), strategy: :build)
+
+      [association(:oauth_application_granular_scope,
+        application: instance, granular_scope: granular_scope, strategy: :build)]
+    end
+  end
 end

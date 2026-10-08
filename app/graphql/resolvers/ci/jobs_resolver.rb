@@ -64,7 +64,9 @@ module Resolvers
         jobs = jobs.with_type(job_kind) if job_kind
         jobs = jobs.with_when_executed(when_executed) if when_executed.present?
 
-        jobs
+        return jobs unless preload_page_associations?
+
+        apply_lookahead(jobs.extending(::Ci::Preloaders::CommitStatusRelationExtension))
       end
 
       def init_collection(security_report_types)
@@ -108,6 +110,30 @@ module Resolvers
         return [] unless permissions.selections.map(&:name).intersect?(::Ci::BuildPolicy.all_job_write_abilities)
 
         %i[deployments]
+      end
+
+      def preload_page_associations?
+        Feature.enabled?(:batch_preload_pipeline_job_associations, pipeline.project)
+      end
+
+      def preloads
+        {
+          artifacts: [{ job_artifacts: :project }],
+          browse_artifacts_path: [:project],
+          commit_path: [:project],
+          detailed_status: [
+            :error_job_messages, :project, { downstream_pipeline: { project: { namespace: :route } } }
+          ],
+          playable: [:job_definition],
+          play_path: [:project],
+          ref_path: [:project],
+          retryable: [:job_definition],
+          retry_path: [:project, :job_definition],
+          stuck: [:project],
+          tags: [:job_definition],
+          web_path: [:project],
+          [:user_permissions, :read_job_artifacts] => [:job_artifacts_archive]
+        }
       end
     end
   end

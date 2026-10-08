@@ -181,6 +181,9 @@ export default {
     hot: DEV_SERVER_LIVERELOAD,
     liveReload: DEV_SERVER_LIVERELOAD,
     allowedHosts: DEV_SERVER_ALLOWED_HOSTS || 'all',
+    // Rails serves public/. The default static dir would serve stale build output from it and
+    // watch it with an fd per file (chokidar 4 has no fsevents), crashing with EMFILE.
+    static: false,
     client: {
       ...(DEV_SERVER_PUBLIC_ADDR ? { webSocketURL: DEV_SERVER_PUBLIC_ADDR } : {}),
       overlay: {

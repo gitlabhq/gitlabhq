@@ -1557,6 +1557,22 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
       end
 
+      it 'records the token as legacy in the token info' do
+        validate_and_save_access_token!
+
+        expect(::Current.token_info).to include(token_granularity: 'legacy')
+      end
+
+      context 'when the token is granular' do
+        let(:personal_access_token) { create(:granular_pat, user: user) }
+
+        it 'records the token as granular in the token info' do
+          validate_and_save_access_token!
+
+          expect(::Current.token_info).to include(token_granularity: 'granular')
+        end
+      end
+
       context 'when reset_token is true' do
         it 'reloads the access token before validation' do
           expect(personal_access_token).to receive(:reload)
@@ -1603,6 +1619,22 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         expect(::Current.token_info).to match(a_hash_including({
           token_application_id: oauth_access_token.application_id
         }))
+      end
+
+      it 'records the token as legacy in the token info' do
+        validate_and_save_access_token!
+
+        expect(::Current.token_info).to include(token_granularity: 'legacy')
+      end
+
+      context 'when the token is granular' do
+        let!(:oauth_access_token) { create(:oauth_access_token, :granular, resource_owner: user) }
+
+        it 'records the token as granular in the token info' do
+          validate_and_save_access_token!
+
+          expect(::Current.token_info).to include(token_granularity: 'granular')
+        end
       end
 
       context 'when reset_token is true' do

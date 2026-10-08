@@ -35,7 +35,9 @@ Experimental items can change at any time and are not recommended for use in pro
 
 ## `abuseReport`
 
-Status: Experiment. Introduced in GitLab 16.3.<br/><br/>Find an abuse report.
+Status: Experiment. Introduced in GitLab 16.3.
+
+Find an abuse report.
 
 **Returns:** [`AbuseReport`](objects.md#abusereport)
 
@@ -47,7 +49,9 @@ Status: Experiment. Introduced in GitLab 16.3.<br/><br/>Find an abuse report.
 
 ## `accessTokenPermissions`
 
-Status: Experiment. Introduced in GitLab 18.6.<br/><br/>List of permissions for fine-grained access tokens.
+Status: Experiment. Introduced in GitLab 18.6.
+
+List of permissions for fine-grained access tokens.
 
 **Returns:** [`[AccessTokenPermission!]!`](objects.md#accesstokenpermission)
 
@@ -65,7 +69,9 @@ Retrieve all active add-on purchases. This query can be used in GitLab.com and s
 
 ## `adminDuoAvailabilityNamespaces`
 
-Status: Experiment. Introduced in GitLab 19.2.<br/><br/>List groups with their resolved GitLab Duo availability for admin overrides. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.2.
+
+List groups with their resolved GitLab Duo availability for admin overrides. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AdminDuoAvailabilityNamespaceConnection`](objects.md#adminduoavailabilitynamespaceconnection)
 
@@ -81,7 +87,9 @@ Status: Experiment. Introduced in GitLab 19.2.<br/><br/>List groups with their r
 
 ## `adminGroups`
 
-Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Find groups visible to the current admin. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.4.
+
+Find groups visible to the current admin. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`GroupInterfaceConnection`](objects.md#groupinterfaceconnection)
 
@@ -105,7 +113,9 @@ Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Find groups visible to t
 
 ## `adminMemberRole`
 
-Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Finds a single admin custom role for the instance. Available only for GitLab Self-Managed.
+Status: Experiment. Introduced in GitLab 17.10.
+
+Finds a single admin custom role for the instance. Available only for GitLab Self-Managed.
 
 **Returns:** [`AdminMemberRole`](objects.md#adminmemberrole)
 
@@ -121,13 +131,17 @@ Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Finds a single admin cu
 
 ## `adminMemberRolePermissions`
 
-Status: Experiment. Introduced in GitLab 17.9.<br/><br/>List of all admin customizable permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.9.
+
+List of all admin customizable permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`CustomizableAdminPermissionConnection`](objects.md#customizableadminpermissionconnection)
 
 ## `adminMemberRoles`
 
-Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Admin custom roles available for the instance. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.10.
+
+Admin custom roles available for the instance. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AdminMemberRoleConnection`](objects.md#adminmemberroleconnection)
 
@@ -143,7 +157,9 @@ Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Admin custom roles avai
 
 ## `adminProjects`
 
-Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Find projects visible to the current admin. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.4.
+
+Find projects visible to the current admin. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`ProjectInterfaceConnection`](objects.md#projectinterfaceconnection)
 
@@ -177,7 +193,9 @@ Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Find projects visible to
 
 ## `aiCatalogAgentFlowConfig`
 
-Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Get flow configuration for an AI Catalog agent.
+Status: Experiment. Introduced in GitLab 18.4.
+
+Get flow configuration for an AI Catalog agent.
 
 **Returns:** [`String`](scalars.md#string)
 
@@ -190,13 +208,17 @@ Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Get flow configuration f
 
 ## `aiCatalogBuiltInTools`
 
-Status: Experiment. Introduced in GitLab 18.3.<br/><br/>List of AI Catalog built-in tools. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.3.
+
+List of AI Catalog built-in tools. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiCatalogBuiltInToolConnection`](objects.md#aicatalogbuiltintoolconnection)
 
 ## `aiCatalogConfiguredItems`
 
-Status: Experiment. Introduced in GitLab 18.2.<br/><br/>AI Catalog items configured for use. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.2.
+
+AI Catalog items configured for use. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiCatalogItemConsumerConnection!`](objects.md#aicatalogitemconsumerconnection)
 
@@ -217,7 +239,9 @@ Status: Experiment. Introduced in GitLab 18.2.<br/><br/>AI Catalog items configu
 
 ## `aiCatalogCustomAndFoundationalItems`
 
-Status: Experiment. Introduced in GitLab 19.0.<br/><br/>List of AI Catalog items, including foundational items. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.0.
+
+List of AI Catalog items, including foundational items. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiCatalogCustomAndFoundationalItemConnection!`](objects.md#aicatalogcustomandfoundationalitemconnection)
 
@@ -231,7 +255,9 @@ Status: Experiment. Introduced in GitLab 19.0.<br/><br/>List of AI Catalog items
 
 ## `aiCatalogItem`
 
-Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Find an AI Catalog item.
+Status: Experiment. Introduced in GitLab 18.2.
+
+Find an AI Catalog item.
 
 **Returns:** [`AiCatalogItem`](interfaces.md#aicatalogitem)
 
@@ -244,7 +270,9 @@ Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Find an AI Catalog item.
 
 ## `aiCatalogItemConsumer`
 
-Status: Experiment. Introduced in GitLab 18.5.<br/><br/>Find a single AI Catalog item consumer by ID.
+Status: Experiment. Introduced in GitLab 18.5.
+
+Find a single AI Catalog item consumer by ID.
 
 **Returns:** [`AiCatalogItemConsumer`](objects.md#aicatalogitemconsumer)
 
@@ -256,7 +284,9 @@ Status: Experiment. Introduced in GitLab 18.5.<br/><br/>Find a single AI Catalog
 
 ## `aiCatalogItemVersions`
 
-Status: Experiment. Introduced in GitLab 18.8.<br/><br/>Public AI Catalog item versions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.8.
+
+Public AI Catalog item versions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiCatalogItemVersionConnection!`](objects.md#aicatalogitemversionconnection)
 
@@ -269,7 +299,9 @@ Status: Experiment. Introduced in GitLab 18.8.<br/><br/>Public AI Catalog item v
 
 ## `aiCatalogItems`
 
-Status: Experiment. Introduced in GitLab 18.2.<br/><br/>List of AI Catalog items. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.2.
+
+List of AI Catalog items. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiCatalogItemConnection!`](objects.md#aicatalogitemconnection)
 
@@ -284,7 +316,9 @@ Status: Experiment. Introduced in GitLab 18.2.<br/><br/>List of AI Catalog items
 
 ## `aiCatalogMcpServer`
 
-Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Find an AI Catalog MCP server by ID.
+Status: Experiment. Introduced in GitLab 18.10.
+
+Find an AI Catalog MCP server by ID.
 
 **Returns:** [`AiCatalogMcpServer`](objects.md#aicatalogmcpserver)
 
@@ -296,19 +330,25 @@ Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Find an AI Catalog MCP 
 
 ## `aiCatalogMcpServers`
 
-Status: Experiment. Introduced in GitLab 18.10.<br/><br/>List of AI Catalog MCP servers. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.10.
+
+List of AI Catalog MCP servers. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiCatalogMcpServerConnection!`](objects.md#aicatalogmcpserverconnection)
 
 ## `aiCatalogMcpTools`
 
-Status: Experiment. Introduced in GitLab 18.11.<br/><br/>List of MCP tools dynamically discovered from the GitLab MCP server. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.11.
+
+List of MCP tools dynamically discovered from the GitLab MCP server. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiCatalogMcpToolConnection!`](objects.md#aicatalogmcptoolconnection)
 
 ## `aiChatAvailableModels`
 
-Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Get available models for Duo Agentic Chat.
+Status: Experiment. Introduced in GitLab 18.4.
+
+Get available models for Duo Agentic Chat.
 
 **Returns:** [`AvailableModels`](objects.md#availablemodels)
 
@@ -339,7 +379,9 @@ Get available GitLab Duo Chat context presets for the current user for a specifi
 
 ## `aiChatIncludedProjects`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Get projects that can be included by the current user in a GitLab Duo Chat context. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.7.
+
+Get projects that can be included by the current user in a GitLab Duo Chat context. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`ProjectConnection`](objects.md#projectconnection)
 
@@ -351,7 +393,9 @@ Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Get projects that can be
 
 ## `aiConversationThreads`
 
-Status: Experiment. Introduced in GitLab 17.9.<br/><br/>List conversation threads of AI features. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.9.
+
+List conversation threads of AI features. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiConversationsThreadConnection!`](objects.md#aiconversationsthreadconnection)
 
@@ -364,7 +408,9 @@ Status: Experiment. Introduced in GitLab 17.9.<br/><br/>List conversation thread
 
 ## `aiDomainSettings`
 
-Status: Experiment. Introduced in GitLab 19.0.<br/><br/>List of allowed or denied domains for AI features. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.0.
+
+List of allowed or denied domains for AI features. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`StringConnection`](objects.md#stringconnection)
 
@@ -377,7 +423,9 @@ Status: Experiment. Introduced in GitLab 19.0.<br/><br/>List of allowed or denie
 
 ## `aiFeatureSettings`
 
-Status: Experiment. Introduced in GitLab 17.4.<br/><br/>List of configurable AI features. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.4.
+
+List of configurable AI features. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiFeatureSettingConnection`](objects.md#aifeaturesettingconnection)
 
@@ -389,7 +437,9 @@ Status: Experiment. Introduced in GitLab 17.4.<br/><br/>List of configurable AI 
 
 ## `aiFlowsMetadata`
 
-Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Metadata describing Duo Agent Platform flow capabilities available to the caller.
+Status: Experiment. Introduced in GitLab 19.2.
+
+Metadata describing Duo Agent Platform flow capabilities available to the caller.
 
 **Returns:** [`AiFlowsMetadata`](objects.md#aiflowsmetadata)
 
@@ -403,7 +453,9 @@ Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Metadata describing Duo 
 
 ## `aiFoundationalChatAgent`
 
-Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Core agent in GitLab.
+Status: Experiment. Introduced in GitLab 19.0.
+
+Core agent in GitLab.
 
 **Returns:** [`AiFoundationalChatAgent`](objects.md#aifoundationalchatagent)
 
@@ -415,7 +467,9 @@ Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Core agent in GitLab.
 
 ## `aiFoundationalChatAgents`
 
-Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Core agents in GitLab. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.6.
+
+Core agents in GitLab. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiFoundationalChatAgentConnection!`](objects.md#aifoundationalchatagentconnection)
 
@@ -428,7 +482,9 @@ Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Core agents in GitLab. T
 
 ## `aiMessages`
 
-Status: Experiment. Introduced in GitLab 16.1.<br/><br/>Find GitLab Duo Chat messages. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 16.1.
+
+Find GitLab Duo Chat messages. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiMessageConnection!`](objects.md#aimessageconnection)
 
@@ -443,7 +499,9 @@ Status: Experiment. Introduced in GitLab 16.1.<br/><br/>Find GitLab Duo Chat mes
 
 ## `aiModelSelectionNamespaceSettings`
 
-Status: Experiment. Introduced in GitLab 18.1.<br/><br/>List of configurable AI features for namespace Model Selection. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.1.
+
+List of configurable AI features for namespace Model Selection. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiModelSelectionNamespaceFeatureSettingConnection`](objects.md#aimodelselectionnamespacefeaturesettingconnection)
 
@@ -455,7 +513,9 @@ Status: Experiment. Introduced in GitLab 18.1.<br/><br/>List of configurable AI 
 
 ## `aiSelfHostedModels`
 
-Status: Experiment. Introduced in GitLab 17.1.<br/><br/>Returns the self-hosted model if an ID is provided, otherwise returns all models. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.1.
+
+Returns the self-hosted model if an ID is provided, otherwise returns all models. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiSelfHostedModelConnection`](objects.md#aiselfhostedmodelconnection)
 
@@ -479,7 +539,9 @@ Get available GitLab Duo Chat slash commands for the current user for a specific
 
 ## `aiToolRules`
 
-Status: Experiment. Introduced in GitLab 19.1.<br/><br/>AI tool governance rules for a namespace. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.1.
+
+AI tool governance rules for a namespace. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AiToolRuleConnection`](objects.md#aitoolruleconnection)
 
@@ -494,13 +556,17 @@ Status: Experiment. Introduced in GitLab 19.1.<br/><br/>AI tool governance rules
 
 ## `aiUsageData`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Instance level AI-related data. Admins only.
+Status: Experiment. Introduced in GitLab 18.7.
+
+Instance level AI-related data. Admins only.
 
 **Returns:** [`AiInstanceUsageData`](objects.md#aiinstanceusagedata)
 
 ## `artifactRegistryRoleAssignments`
 
-Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Direct Artifact Registry role assignments on the given resources. Returns only roles assigned on a resource itself, not members who inherit access from a membership on an ancestor namespace, so it is not a complete list of everyone who can access the resource. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.3.
+
+Direct Artifact Registry role assignments on the given resources. Returns only roles assigned on a resource itself, not members who inherit access from a membership on an ancestor namespace, so it is not a complete list of everyone who can access the resource. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`ArtifactRegistryRoleAssignmentConnection`](objects.md#artifactregistryroleassignmentconnection)
 
@@ -525,13 +591,17 @@ Deprecated in GitLab 18.10. Use `auditEventsInstanceStreamingDestinations` with 
 
 ## `auditEventsInstanceStreamingDestinations`
 
-Status: Experiment. Introduced in GitLab 16.11.<br/><br/>Instance-level external audit event streaming destinations. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 16.11.
+
+Instance-level external audit event streaming destinations. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`InstanceAuditEventStreamingDestinationConnection`](objects.md#instanceauditeventstreamingdestinationconnection)
 
 ## `blobSearch`
 
-Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Find code visible to the current user.
+Status: Experiment. Introduced in GitLab 17.2.
+
+Find code visible to the current user.
 
 **Returns:** [`BlobSearch`](objects.md#blobsearch)
 
@@ -572,13 +642,17 @@ CI related settings that apply to the entire instance.
 
 ## `ciCatalogBundledResources`
 
-Status: Experiment. Introduced in GitLab 19.3.<br/><br/>GitLab-maintained bundled CI/CD Catalog resources available on the current cell. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.3.
+
+GitLab-maintained bundled CI/CD Catalog resources available on the current cell. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`CiCatalogBundledResourceConnection`](objects.md#cicatalogbundledresourceconnection)
 
 ## `ciCatalogResource`
 
-Status: Experiment. Introduced in GitLab 16.1.<br/><br/>A single CI/CD Catalog resource visible to an authorized user.
+Status: Experiment. Introduced in GitLab 16.1.
+
+A single CI/CD Catalog resource visible to an authorized user.
 
 **Returns:** [`CiCatalogResource`](objects.md#cicatalogresource)
 
@@ -591,7 +665,9 @@ Status: Experiment. Introduced in GitLab 16.1.<br/><br/>A single CI/CD Catalog r
 
 ## `ciCatalogResources`
 
-Status: Experiment. Introduced in GitLab 15.11.<br/><br/>All CI/CD Catalog resources under a common namespace, visible to an authorized user. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 15.11.
+
+All CI/CD Catalog resources under a common namespace, visible to an authorized user. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`CiCatalogResourceConnection`](objects.md#cicatalogresourceconnection)
 
@@ -710,7 +786,9 @@ List of the instance's CI/CD variables. This field is a [connection](objects.md#
 
 ## `cloudConnectorStatus`
 
-Status: Experiment. Introduced in GitLab 17.3.<br/><br/>Run a series of status checks for Cloud Connector features.
+Status: Experiment. Introduced in GitLab 17.3.
+
+Run a series of status checks for Cloud Connector features.
 
 **Returns:** [`CloudConnectorStatus`](objects.md#cloudconnectorstatus)
 
@@ -786,7 +864,9 @@ Find custom dashboards for an organization. This field is a [connection](objects
 
 ## `customField`
 
-Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Find a custom field by its ID.
+Status: Experiment. Introduced in GitLab 17.10.
+
+Find a custom field by its ID.
 
 **Returns:** [`CustomField`](objects.md#customfield)
 
@@ -840,19 +920,25 @@ Get configured DevOps adoption namespaces. **Status**: Beta. This endpoint is su
 
 ## `duoDefaultNamespaceCandidates`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>List namespaces suitable to be set as default namespace. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.7.
+
+List namespaces suitable to be set as default namespace. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`NamespaceConnection`](objects.md#namespaceconnection)
 
 ## `duoSettings`
 
-Status: Experiment. Introduced in GitLab 17.9.<br/><br/>Get GitLab Duo settings.
+Status: Experiment. Introduced in GitLab 17.9.
+
+Get GitLab Duo settings.
 
 **Returns:** [`DuoSettings`](objects.md#duosettings)
 
 ## `duoWorkflowBranches`
 
-Status: Experiment. Introduced in GitLab 19.3.<br/><br/>The alternative branches to the provided user message. Multiple branches can be created when a user retries a message. Returns an error unless the message is on the current branch of the session. Returns an empty list if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints.
+Status: Experiment. Introduced in GitLab 19.3.
+
+The alternative branches to the provided user message. Multiple branches can be created when a user retries a message. Returns an error unless the message is on the current branch of the session. Returns an empty list if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints.
 
 **Returns:** [`[DuoWorkflowBranch!]`](objects.md#duoworkflowbranch)
 
@@ -865,7 +951,9 @@ Status: Experiment. Introduced in GitLab 19.3.<br/><br/>The alternative branches
 
 ## `duoWorkflowEvents`
 
-Status: Experiment. Introduced in GitLab 17.2.<br/><br/>List the events for a Duo Agent Platform. Returns only the latest checkpoint by default. Use `first` and `after` to page through history. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.2.
+
+List the events for a Duo Agent Platform. Returns only the latest checkpoint by default. Use `first` and `after` to page through history. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`DuoWorkflowEventConnection!`](objects.md#duoworkfloweventconnection)
 
@@ -877,13 +965,17 @@ Status: Experiment. Introduced in GitLab 17.2.<br/><br/>List the events for a Du
 
 ## `duoWorkflowRecentSessionProjects`
 
-Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Projects the current user has Duo Agent Platform sessions in, ordered by most recent session activity. Not a complete list: limited to the 50 most recent projects.
+Status: Experiment. Introduced in GitLab 19.5.
+
+Projects the current user has Duo Agent Platform sessions in, ordered by most recent session activity. Not a complete list: limited to the 50 most recent projects.
 
 **Returns:** [`[Project!]`](objects.md#project)
 
 ## `duoWorkflowWorkflows`
 
-Status: Experiment. Introduced in GitLab 17.2.<br/><br/>List the workflows owned by the current user. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.2.
+
+List the workflows owned by the current user. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`DuoWorkflowConnection!`](objects.md#duoworkflowconnection)
 
@@ -953,7 +1045,9 @@ A user's frecently visited projects.
 
 ## `functionalVerificationStatus`
 
-Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Status of a GitLab Duo Agent Platform functional verification check.
+Status: Experiment. Introduced in GitLab 19.5.
+
+Status of a GitLab Duo Agent Platform functional verification check.
 
 **Returns:** [`FunctionalVerificationStatus`](objects.md#functionalverificationstatus)
 
@@ -977,7 +1071,9 @@ Find a Geo node.
 
 ## `gitlabCreditsAvailable`
 
-Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Whether GitLab credits are available for the current user.
+Status: Experiment. Introduced in GitLab 18.11.
+
+Whether GitLab credits are available for the current user.
 
 **Returns:** [`Boolean!`](scalars.md#boolean)
 
@@ -989,7 +1085,9 @@ Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Whether GitLab credits 
 
 ## `gitlabCreditsUnavailableReason`
 
-Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason GitLab credits are unavailable. Returns "usage_billing_forbidden" when usage billing is not available for the account. Returns null when credits are available or the unavailability reason is not recognized.
+Status: Experiment. Introduced in GitLab 19.2.
+
+Reason GitLab credits are unavailable. Returns "usage_billing_forbidden" when usage billing is not available for the account. Returns null when credits are available or the unavailability reason is not recognized.
 
 **Returns:** [`AiCreditsDenialReason`](enums.md#aicreditsdenialreason)
 
@@ -1007,7 +1105,9 @@ Whether Ona is enabled in application settings.
 
 ## `googleCloudArtifactRegistryRepositoryArtifact`
 
-Status: Experiment. Introduced in GitLab 16.10.<br/><br/>Details about an artifact in the Google Artifact Registry.
+Status: Experiment. Introduced in GitLab 16.10.
+
+Details about an artifact in the Google Artifact Registry.
 
 **Returns:** [`GoogleCloudArtifactRegistryArtifactDetails`](unions.md#googlecloudartifactregistryartifactdetails)
 
@@ -1035,7 +1135,9 @@ Find a group.
 
 ## `groupSecret`
 
-Status: Experiment. Introduced in GitLab 18.9.<br/><br/>View a specific group secret.
+Status: Experiment. Introduced in GitLab 18.9.
+
+View a specific group secret.
 
 **Returns:** [`GroupSecret`](objects.md#groupsecret)
 
@@ -1048,7 +1150,9 @@ Status: Experiment. Introduced in GitLab 18.9.<br/><br/>View a specific group se
 
 ## `groupSecrets`
 
-Status: Experiment. Introduced in GitLab 18.9.<br/><br/>List group secrets. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.9.
+
+List group secrets. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`GroupSecretConnection`](objects.md#groupsecretconnection)
 
@@ -1060,7 +1164,9 @@ Status: Experiment. Introduced in GitLab 18.9.<br/><br/>List group secrets. This
 
 ## `groupSecretsCount`
 
-Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Total number of secrets in a group.
+Status: Experiment. Introduced in GitLab 18.11.
+
+Total number of secrets in a group.
 
 **Returns:** [`Int`](scalars.md#int)
 
@@ -1072,7 +1178,9 @@ Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Total number of secrets
 
 ## `groupSecretsManager`
 
-Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Find a group secrets manager.
+Status: Experiment. Introduced in GitLab 18.6.
+
+Find a group secrets manager.
 
 **Returns:** [`GroupSecretsManager`](objects.md#groupsecretsmanager)
 
@@ -1084,7 +1192,9 @@ Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Find a group secrets man
 
 ## `groupSecretsNeedingRotation`
 
-Status: Experiment. Introduced in GitLab 18.10.<br/><br/>List group secrets that need to be rotated. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.10.
+
+List group secrets that need to be rotated. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`GroupSecretConnection`](objects.md#groupsecretconnection)
 
@@ -1096,7 +1206,9 @@ Status: Experiment. Introduced in GitLab 18.10.<br/><br/>List group secrets that
 
 ## `groupSecretsPermissions`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>List group secrets permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.7.
+
+List group secrets permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`GroupSecretsPermissionConnection`](objects.md#groupsecretspermissionconnection)
 
@@ -1145,7 +1257,9 @@ Deprecated in GitLab 18.10. Use `auditEventsInstanceStreamingDestinations` with 
 
 ## `instanceSecretsManagerEnrollment`
 
-Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Check if Secrets Manager is enrolled at the instance level.
+Status: Experiment. Introduced in GitLab 19.0.
+
+Check if Secrets Manager is enrolled at the instance level.
 
 **Returns:** [`SecretsManagerInstanceEnrollment`](objects.md#secretsmanagerinstanceenrollment)
 
@@ -1157,7 +1271,9 @@ Fields related to Instance Security Dashboard.
 
 ## `integrationExclusions`
 
-Status: Experiment. Introduced in GitLab 17.0.<br/><br/> This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.0.
+
+ This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`IntegrationExclusionConnection`](objects.md#integrationexclusionconnection)
 
@@ -1181,7 +1297,9 @@ Find an issue.
 
 ## `issues`
 
-Status: Experiment. Introduced in GitLab 15.6.<br/><br/>Find issues visible to the current user. At least one filter must be provided. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 15.6.
+
+Find issues visible to the current user. At least one filter must be provided. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`IssueConnection`](objects.md#issueconnection)
 
@@ -1263,13 +1381,17 @@ All jobs on this GitLab instance. Returns an empty result for users without admi
 
 ## `knowledgeGraphExcludedNamespaces`
 
-Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Top-level groups excluded from automatic Knowledge Graph indexing. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.5.
+
+Top-level groups excluded from automatic Knowledge Graph indexing. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`GroupConnection!`](objects.md#groupconnection)
 
 ## `ldapAdminRoleLinks`
 
-Status: Experiment. Introduced in GitLab 17.11.<br/><br/>LDAP admin links. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.11.
+
+LDAP admin links. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`LdapAdminRoleLinkConnection`](objects.md#ldapadminrolelinkconnection)
 
@@ -1281,7 +1403,9 @@ Fields related to entries in the license history. This field is a [connection](o
 
 ## `memberRole`
 
-Status: Experiment. Introduced in GitLab 16.6.<br/><br/>Finds a single custom role for the instance. Available only for GitLab Self-Managed.
+Status: Experiment. Introduced in GitLab 16.6.
+
+Finds a single custom role for the instance. Available only for GitLab Self-Managed.
 
 **Returns:** [`MemberRole`](objects.md#memberrole)
 
@@ -1297,13 +1421,17 @@ Status: Experiment. Introduced in GitLab 16.6.<br/><br/>Finds a single custom ro
 
 ## `memberRolePermissions`
 
-Status: Experiment. Introduced in GitLab 16.4.<br/><br/>List of all standard customizable permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 16.4.
+
+List of all standard customizable permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`CustomizableStandardPermissionConnection`](objects.md#customizablestandardpermissionconnection)
 
 ## `memberRoles`
 
-Status: Experiment. Introduced in GitLab 16.7.<br/><br/>Custom roles available for the instance. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 16.7.
+
+Custom roles available for the instance. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`MemberRoleConnection`](objects.md#memberroleconnection)
 
@@ -1331,7 +1459,9 @@ Find a merge request.
 
 ## `mergeRequests`
 
-Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Find merge requests visible to the current user. At least one filter must be provided. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 19.3.
+
+Find merge requests visible to the current user. At least one filter must be provided. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`MergeRequestConnection`](objects.md#mergerequestconnection)
 
@@ -1413,7 +1543,9 @@ Find a machine learning experiment.
 
 ## `mlModel`
 
-Status: Experiment. Introduced in GitLab 16.7.<br/><br/>Find machine learning models.
+Status: Experiment. Introduced in GitLab 16.7.
+
+Find machine learning models.
 
 **Returns:** [`MlModel`](objects.md#mlmodel)
 
@@ -1437,7 +1569,9 @@ Find a namespace.
 
 ## `namespaceSecretsManagerEnrollment`
 
-Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Check Secrets Manager enrollment for a namespace.
+Status: Experiment. Introduced in GitLab 19.0.
+
+Check Secrets Manager enrollment for a namespace.
 
 **Returns:** [`SecretsManagerEnrollment`](objects.md#secretsmanagerenrollment)
 
@@ -1466,11 +1600,14 @@ Security-filtered projects for a namespace. This field is a [connection](objects
 | `search` | [`String`](scalars.md#string) | Search projects by name. |  |
 | `securityAnalyzerFilters` | [`[AnalyzerFilterInput!]`](input_objects.md#analyzerfilterinput) | Filter projects by analyzer type and status. |  |
 | `sortBy` | [`SortableAnalyzerType`](enums.md#sortableanalyzertype) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Sort projects by analyzer status. |  |
+| `triggerType` | [`ScanProfileTriggerType`](enums.md#scanprofiletriggertype) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Filter projects by attached triage and remediation trigger type. |  |
 | `vulnerabilityCountFilters` | [`[VulnerabilityCountFilterInput!]`](input_objects.md#vulnerabilitycountfilterinput) | Filter projects by vulnerability counts using comparison operators. |  |
 
 ## `note`
 
-Status: Experiment. Introduced in GitLab 15.9.<br/><br/>Find a note.
+Status: Experiment. Introduced in GitLab 15.9.
+
+Find a note.
 
 **Returns:** [`Note`](objects.md#note)
 
@@ -1482,13 +1619,17 @@ Status: Experiment. Introduced in GitLab 15.9.<br/><br/>Find a note.
 
 ## `openbaoHealth`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Check if OpenBao instance is healthy and reachable.
+Status: Experiment. Introduced in GitLab 18.7.
+
+Check if OpenBao instance is healthy and reachable.
 
 **Returns:** [`Boolean!`](scalars.md#boolean)
 
 ## `organization`
 
-Status: Experiment. Introduced in GitLab 16.4.<br/><br/>Find an organization.
+Status: Experiment. Introduced in GitLab 16.4.
+
+Find an organization.
 
 **Returns:** [`Organization`](objects.md#organization)
 
@@ -1500,7 +1641,9 @@ Status: Experiment. Introduced in GitLab 16.4.<br/><br/>Find an organization.
 
 ## `organizations`
 
-Status: Experiment. Introduced in GitLab 16.8.<br/><br/>List organizations. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 16.8.
+
+List organizations. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`OrganizationConnection`](objects.md#organizationconnection)
 
@@ -1526,7 +1669,9 @@ Find a package. This field can only be resolved for one query in any single requ
 
 ## `packageMetadataAdvisories`
 
-Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Get multiple package metadata advisories. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.11.
+
+Get multiple package metadata advisories. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`PackageMetadataAdvisoryConnection`](objects.md#packagemetadataadvisoryconnection)
 
@@ -1540,7 +1685,9 @@ Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Get multiple package me
 
 ## `packageMetadataAdvisory`
 
-Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Get a package metadata advisory.
+Status: Experiment. Introduced in GitLab 18.11.
+
+Get a package metadata advisory.
 
 **Returns:** [`PackageMetadataAdvisory`](objects.md#packagemetadataadvisory)
 
@@ -1553,7 +1700,9 @@ Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Get a package metadata 
 
 ## `pipelineExecutionSchedulePolicyTestRun`
 
-Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Find a pipeline execution schedule policy test run by ID.
+Status: Experiment. Introduced in GitLab 18.10.
+
+Find a pipeline execution schedule policy test run by ID.
 
 **Returns:** [`PolicyScheduleTestRun`](objects.md#policyscheduletestrun)
 
@@ -1589,7 +1738,9 @@ Find a project compliance violation.
 
 ## `projectSecret`
 
-Status: Experiment. Introduced in GitLab 17.9.<br/><br/>View a specific project secret.
+Status: Experiment. Introduced in GitLab 17.9.
+
+View a specific project secret.
 
 **Returns:** [`ProjectSecret`](objects.md#projectsecret)
 
@@ -1602,7 +1753,9 @@ Status: Experiment. Introduced in GitLab 17.9.<br/><br/>View a specific project 
 
 ## `projectSecrets`
 
-Status: Experiment. Introduced in GitLab 17.8.<br/><br/>List project secrets. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.8.
+
+List project secrets. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`ProjectSecretConnection`](objects.md#projectsecretconnection)
 
@@ -1614,7 +1767,9 @@ Status: Experiment. Introduced in GitLab 17.8.<br/><br/>List project secrets. Th
 
 ## `projectSecretsCount`
 
-Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Total number of secrets in a project.
+Status: Experiment. Introduced in GitLab 18.11.
+
+Total number of secrets in a project.
 
 **Returns:** [`Int`](scalars.md#int)
 
@@ -1626,7 +1781,9 @@ Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Total number of secrets
 
 ## `projectSecretsManager`
 
-Status: Experiment. Introduced in GitLab 17.4.<br/><br/>Find a project secrets manager.
+Status: Experiment. Introduced in GitLab 17.4.
+
+Find a project secrets manager.
 
 **Returns:** [`ProjectSecretsManager`](objects.md#projectsecretsmanager)
 
@@ -1638,7 +1795,9 @@ Status: Experiment. Introduced in GitLab 17.4.<br/><br/>Find a project secrets m
 
 ## `projectSecretsNeedingRotation`
 
-Status: Experiment. Introduced in GitLab 18.5.<br/><br/>List project secrets that need to be rotated. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.5.
+
+List project secrets that need to be rotated. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`ProjectSecretConnection`](objects.md#projectsecretconnection)
 
@@ -1650,7 +1809,9 @@ Status: Experiment. Introduced in GitLab 18.5.<br/><br/>List project secrets tha
 
 ## `projectSecretsPermissions`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>List project secrets permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.7.
+
+List project secrets permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`ProjectSecretsPermissionConnection`](objects.md#projectsecretspermissionconnection)
 
@@ -1796,7 +1957,9 @@ Get all runners in the GitLab instance (project and shared). Access is restricte
 
 ## `secretPermissions`
 
-Status: Experiment. Introduced in GitLab 17.10.<br/><br/>List secret permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.10.
+
+List secret permissions. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`SecretPermissionConnection`](objects.md#secretpermissionconnection)
 
@@ -1808,7 +1971,9 @@ Status: Experiment. Introduced in GitLab 17.10.<br/><br/>List secret permissions
 
 ## `secretsManagerInstanceEntitlement`
 
-Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Instance-wide Secrets Manager entitlement on GitLab Self-Managed. Not available on GitLab.com, where entitlement is per top-level group.
+Status: Experiment. Introduced in GitLab 19.4.
+
+Instance-wide Secrets Manager entitlement on GitLab Self-Managed. Not available on GitLab.com, where entitlement is per top-level group.
 
 **Returns:** [`SecretsManagerEntitlement`](objects.md#secretsmanagerentitlement)
 
@@ -1826,7 +1991,9 @@ Security configuration for the project.
 
 ## `securityScanProfile`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Get security scan profile by ID.
+Status: Experiment. Introduced in GitLab 18.7.
+
+Get security scan profile by ID.
 
 **Returns:** [`ScanProfileType!`](objects.md#scanprofiletype)
 
@@ -1838,7 +2005,9 @@ Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Get security scan profil
 
 ## `securityScanProfileVariables`
 
-Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Configuration variables a security scan profile of the given type can set.
+Status: Experiment. Introduced in GitLab 19.5.
+
+Configuration variables a security scan profile of the given type can set.
 
 **Returns:** [`[SecurityScanProfileVariable!]`](objects.md#securityscanprofilevariable)
 
@@ -1850,7 +2019,9 @@ Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Configuration variables 
 
 ## `selfManagedAddOnEligibleUsers`
 
-Status: Experiment. Introduced in GitLab 16.7.<br/><br/>Users within the self-managed instance who are eligible for add-ons. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 16.7.
+
+Users within the self-managed instance who are eligible for add-ons. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`AddOnUserConnection`](objects.md#addonuserconnection)
 
@@ -1889,13 +2060,17 @@ Find Snippets visible to the current user. This field is a [connection](objects.
 
 ## `spdxLicenses`
 
-Status: Experiment. Introduced in GitLab 19.1.<br/><br/>List of SPDX licenses from the SPDX licence catalogue.
+Status: Experiment. Introduced in GitLab 19.1.
+
+List of SPDX licenses from the SPDX licence catalogue.
 
 **Returns:** [`[SpdxLicense!]`](objects.md#spdxlicense)
 
 ## `standardRole`
 
-Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Finds a single default role for the instance. Available only for GitLab Self-Managed.
+Status: Experiment. Introduced in GitLab 17.6.
+
+Finds a single default role for the instance. Available only for GitLab Self-Managed.
 
 **Returns:** [`StandardRole`](objects.md#standardrole)
 
@@ -1907,7 +2082,9 @@ Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Finds a single default r
 
 ## `standardRoles`
 
-Status: Experiment. Introduced in GitLab 17.3.<br/><br/>Default roles available for the instance. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 17.3.
+
+Default roles available for the instance. Available only for GitLab Self-Managed. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`StandardRoleConnection`](objects.md#standardroleconnection)
 
@@ -1925,7 +2102,9 @@ Fields related to entries in future subscriptions. This field is a [connection](
 
 ## `subscriptionUsage`
 
-Status: Experiment. Introduced in GitLab 18.5.<br/><br/>Usage data of consumables under the subscription.
+Status: Experiment. Introduced in GitLab 18.5.
+
+Usage data of consumables under the subscription.
 
 **Returns:** [`GitlabSubscriptionUsage`](objects.md#gitlabsubscriptionusage)
 
@@ -1940,7 +2119,9 @@ Status: Experiment. Introduced in GitLab 18.5.<br/><br/>Usage data of consumable
 
 ## `syntheticNote`
 
-Status: Experiment. Introduced in GitLab 15.9.<br/><br/>Find a synthetic note.
+Status: Experiment. Introduced in GitLab 15.9.
+
+Find a synthetic note.
 
 **Returns:** [`Note`](objects.md#note)
 
@@ -1997,7 +2178,9 @@ Find project topics. This field is a [connection](objects.md#connections-and-pag
 
 ## `trialUsage`
 
-Status: Experiment. Introduced in GitLab 18.9.<br/><br/>Usage data for trial subscriptions.
+Status: Experiment. Introduced in GitLab 18.9.
+
+Usage data for trial subscriptions.
 
 **Returns:** [`GitlabTrialUsage`](objects.md#gitlabtrialusage)
 
@@ -2056,7 +2239,9 @@ Find users. This field is a [connection](objects.md#connections-and-pagination) 
 
 ## `virtualRegistriesContainerRegistry`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Find a container virtual registry. Returns null if the `container_virtual_registries` feature flag is disabled.
+Status: Experiment. Introduced in GitLab 18.7.
+
+Find a container virtual registry. Returns null if the `container_virtual_registries` feature flag is disabled.
 
 **Returns:** [`ContainerRegistryDetails`](objects.md#containerregistrydetails)
 
@@ -2068,7 +2253,9 @@ Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Find a container virtual
 
 ## `virtualRegistriesContainerUpstream`
 
-Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Finds a container upstream registry with details. Returns `null` if the `container_virtual_registries` feature flag is disabled.
+Status: Experiment. Introduced in GitLab 18.7.
+
+Finds a container upstream registry with details. Returns `null` if the `container_virtual_registries` feature flag is disabled.
 
 **Returns:** [`ContainerUpstreamDetails`](objects.md#containerupstreamdetails)
 
@@ -2080,7 +2267,9 @@ Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Finds a container upstre
 
 ## `virtualRegistriesPackagesMavenRegistry`
 
-Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Find a Maven virtual registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
+Status: Experiment. Introduced in GitLab 18.6.
+
+Find a Maven virtual registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
 
 **Returns:** [`MavenRegistryDetails`](objects.md#mavenregistrydetails)
 
@@ -2092,7 +2281,9 @@ Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Find a Maven virtual reg
 
 ## `virtualRegistriesPackagesMavenUpstream`
 
-Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Find a Maven upstream registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
+Status: Experiment. Introduced in GitLab 18.6.
+
+Find a Maven upstream registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
 
 **Returns:** [`MavenUpstreamDetails`](objects.md#mavenupstreamdetails)
 
@@ -2169,7 +2360,9 @@ Find a vulnerability.
 
 ## `wikiPage`
 
-Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Find a wiki page.
+Status: Experiment. Introduced in GitLab 17.6.
+
+Find a wiki page.
 
 **Returns:** [`WikiPage`](objects.md#wikipage)
 
@@ -2183,7 +2376,9 @@ Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Find a wiki page.
 
 ## `workItem`
 
-Status: Experiment. Introduced in GitLab 15.1.<br/><br/>Find a work item.
+Status: Experiment. Introduced in GitLab 15.1.
+
+Find a work item.
 
 **Returns:** [`WorkItem`](objects.md#workitem)
 
@@ -2195,7 +2390,9 @@ Status: Experiment. Introduced in GitLab 15.1.<br/><br/>Find a work item.
 
 ## `workItemAllowedStatuses`
 
-Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Allowed work item statuses from the root groups the current user belongs to. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 18.4.
+
+Allowed work item statuses from the root groups the current user belongs to. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`WorkItemStatusConnection`](objects.md#workitemstatusconnection)
 
@@ -2207,7 +2404,9 @@ Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Allowed work item status
 
 ## `workItemDescriptionTemplateContent`
 
-Status: Experiment. Introduced in GitLab 17.9.<br/><br/>Find a work item description template.
+Status: Experiment. Introduced in GitLab 17.9.
+
+Find a work item description template.
 
 **Returns:** [`WorkItemDescriptionTemplate`](objects.md#workitemdescriptiontemplate)
 
@@ -2219,13 +2418,17 @@ Status: Experiment. Introduced in GitLab 17.9.<br/><br/>Find a work item descrip
 
 ## `workItemTypeIconDefinitions`
 
-Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Available icon definitions for work item types.
+Status: Experiment. Introduced in GitLab 18.10.
+
+Available icon definitions for work item types.
 
 **Returns:** [`[WorkItemTypeIconDefinition!]!`](objects.md#workitemtypeicondefinition)
 
 ## `workItemsByReference`
 
-Status: Experiment. Introduced in GitLab 16.7.<br/><br/>Find work items by their reference. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
+Status: Experiment. Introduced in GitLab 16.7.
+
+Find work items by their reference. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`.
 
 **Returns:** [`WorkItemConnection`](objects.md#workitemconnection)
 

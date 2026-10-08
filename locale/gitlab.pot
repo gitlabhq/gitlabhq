@@ -3084,6 +3084,9 @@ msgstr ""
 msgid "AICatalog|Flow enabled in %{name}."
 msgstr ""
 
+msgid "AICatalog|Flow enabled without a trigger"
+msgstr ""
+
 msgid "AICatalog|Flow hidden."
 msgstr ""
 
@@ -63674,6 +63677,9 @@ msgstr ""
 msgid "PolicyStore|Complete the policy before saving"
 msgstr ""
 
+msgid "PolicyStore|Compliance"
+msgstr ""
+
 msgid "PolicyStore|Continue editing"
 msgstr ""
 
@@ -63869,6 +63875,9 @@ msgstr ""
 msgid "PolicyStore|Owner"
 msgstr ""
 
+msgid "PolicyStore|Pipelines must succeed before merging"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
@@ -63894,6 +63903,12 @@ msgid "PolicyStore|Policy store experiment setting updated."
 msgstr ""
 
 msgid "PolicyStore|Production"
+msgstr ""
+
+msgid "PolicyStore|Project setting"
+msgstr ""
+
+msgid "PolicyStore|Project settings change requested"
 msgstr ""
 
 msgid "PolicyStore|Projects"
@@ -63926,6 +63941,9 @@ msgstr ""
 msgid "PolicyStore|Require approval"
 msgstr ""
 
+msgid "PolicyStore|Required value"
+msgstr ""
+
 msgid "PolicyStore|Review impact"
 msgstr ""
 
@@ -63956,6 +63974,9 @@ msgstr ""
 msgid "PolicyStore|Search…"
 msgstr ""
 
+msgid "PolicyStore|Secret push protection is enabled"
+msgstr ""
+
 msgid "PolicyStore|Select projects"
 msgstr ""
 
@@ -63963,6 +63984,9 @@ msgid "PolicyStore|Select scope"
 msgstr ""
 
 msgid "PolicyStore|Select..."
+msgstr ""
+
+msgid "PolicyStore|Setting validation"
 msgstr ""
 
 msgid "PolicyStore|Show configuration details"
@@ -64010,6 +64034,12 @@ msgstr ""
 msgid "PolicyStore|The policy could not be updated. Try again."
 msgstr ""
 
+msgid "PolicyStore|The project setting this rule checks."
+msgstr ""
+
+msgid "PolicyStore|The value the setting must have. The control matches the type of the selected setting."
+msgstr ""
+
 msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only. Actions will not be executed."
 msgstr ""
 
@@ -64052,6 +64082,9 @@ msgstr ""
 msgid "PolicyStore|What happens when rules are matched?"
 msgstr ""
 
+msgid "PolicyStore|When a change to a project setting is requested, before it is saved"
+msgstr ""
+
 msgid "PolicyStore|When a deployment advances to the next environment"
 msgstr ""
 
@@ -64059,6 +64092,9 @@ msgid "PolicyStore|When a deployment environment is not in the required operatio
 msgstr ""
 
 msgid "PolicyStore|When a deployment to a gated environment is requested"
+msgstr ""
+
+msgid "PolicyStore|When a project setting does not match the required value"
 msgstr ""
 
 msgid "PolicyStore|When an existing deployment is promoted to a new environment"

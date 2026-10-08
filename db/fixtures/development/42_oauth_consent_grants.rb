@@ -12,8 +12,12 @@ Gitlab::Seeder.quiet do
   users = User.not_mass_generated.where(organization_id: organization.id).first(grants.size)
 
   users.zip(grants).each do |user, attributes|
+    name = "Consent grant seed for #{user.username}"
+
+    next if Authn::OauthApplication.exists?(name: name, owner: user)
+
     application = Authn::OauthApplication.create!(
-      name: "Consent grant seed for #{user.username}",
+      name: name,
       redirect_uri: 'https://example.com/oauth/callback',
       scopes: 'api',
       owner: user,

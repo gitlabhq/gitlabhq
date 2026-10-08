@@ -13,6 +13,9 @@ module Authn
 
     has_many :oauth_consent_grants, class_name: 'Authz::OauthConsentGrant', foreign_key: :application_id,
       inverse_of: :application
+    has_many :oauth_application_granular_scopes, class_name: 'Authz::OauthApplicationGranularScope',
+      foreign_key: :application_id, inverse_of: :application, autosave: true
+    has_many :granular_scopes, through: :oauth_application_granular_scopes, class_name: 'Authz::GranularScope'
 
     scope :dynamic, -> { where(dynamic: true) }
     scope :with_token_digests, ->(hashed_tokens) do
@@ -62,6 +65,10 @@ module Authn
         return true if fallback_strategy.secret_matches?(input, secret)
       end
       false
+    end
+
+    def granular?
+      granular_scopes.any?
     end
 
     def iam_routing_enabled?

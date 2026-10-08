@@ -85,8 +85,10 @@ module Mcp
             return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
           end
 
-          operation_data = result.dig('data', operation_name)
+          not_found_error = resource_not_found_error_for_result(result)
+          return not_found_error if not_found_error
 
+          operation_data = result.dig('data', operation_name)
           return resource_not_found_error if operation_data.nil?
 
           operation_errors = operation_data['errors']
@@ -105,6 +107,12 @@ module Mcp
           ::Mcp::Tools::Base::Response.error(
             "Operation returned no data", reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
+        end
+
+        def resource_not_found_error_for_result(result)
+          return unless result.dig('data', operation_name).nil?
+
+          resource_not_found_error
         end
 
         def extract_error_messages(errors)

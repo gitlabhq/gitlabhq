@@ -114,6 +114,7 @@ non_sql_service_pings: no_work_needed
 notes: supported
 oauth_access_grants: supported
 oauth_access_tokens: supported
+oauth_application_granular_scopes: supported
 oauth_applications: supported
 oauth_consent_grant_granular_scopes: supported
 oauth_consent_grants: supported

@@ -19,7 +19,7 @@ module Packages
     FILE_SHA256_MAX_LENGTH = 64.bytes
 
     delegate :conan_file_type, to: :conan_file_metadatum
-    delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
+    delegate :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
     delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm, allow_nil: true
 
     enum :status, { default: 0, pending_destruction: 1, processing: 2, error: 3 }

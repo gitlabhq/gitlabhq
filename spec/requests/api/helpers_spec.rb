@@ -789,6 +789,19 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       it_behaves_like 'sudo'
     end
 
+    context 'using a granular OAuth token' do
+      let(:token) { create(:oauth_access_token, :granular, resource_owner: admin) }
+
+      before do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token.plaintext_token}"
+        set_param(API::Helpers::SUDO_PARAM, user.id.to_s)
+      end
+
+      it 'is forbidden' do
+        expect { current_user }.to raise_error(/Fine-grained OAuth tokens cannot be used with sudo/)
+      end
+    end
+
     context 'using a personal access token' do
       let(:token) { create(:personal_access_token) }
 

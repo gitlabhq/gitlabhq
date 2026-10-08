@@ -239,7 +239,6 @@ delegations:
   app/models/packages/conan/package.rb:
   - conan_recipe_path
   app/models/packages/package_file.rb:
-  - debian_file_type
   - debian_component
   - debian_architecture
   app/models/project.rb:

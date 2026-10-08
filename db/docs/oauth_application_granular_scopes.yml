@@ -1,0 +1,14 @@
+---
+table_name: oauth_application_granular_scopes
+classes:
+- Authz::OauthApplicationGranularScope
+feature_categories:
+- permissions
+description: Joins OAuth applications with the granular scopes they declare. Consent
+  grants copy this set when a user authorizes the application.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257023
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

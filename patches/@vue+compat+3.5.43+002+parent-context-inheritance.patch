@@ -2,7 +2,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
-@@ -7732,6 +7732,25 @@
+@@ -7755,6 +7755,25 @@
      if (Ctor !== Vue) {
        applySingletonPrototype(app, Ctor);
      }
@@ -32,7 +32,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vu
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
-@@ -7715,6 +7715,25 @@
+@@ -7738,6 +7738,25 @@
      if (Ctor !== Vue) {
        applySingletonPrototype(app, Ctor);
      }
@@ -62,7 +62,7 @@ diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_mod
 index aaaaaaa..bbbbbbb 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-@@ -7642,6 +7642,25 @@
+@@ -7665,6 +7665,25 @@
      if (Ctor !== Vue) {
        applySingletonPrototype(app, Ctor);
      }

@@ -167,6 +167,31 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       argument :search, GraphQL::Types::String, required: false, description: 'A search argument.'
     end
 
+    spec_object_create = Class.new(::Mutations::BaseMutation) do
+      graphql_name 'ObjectCreate'
+      description 'Creates an object.'
+
+      argument :name, GraphQL::Types::String, required: true, description: 'Name of the object.'
+      argument :options, spec_input_object, required: false, description: 'Options for the object.'
+
+      field :object, spec_object, null: true, description: 'Created object.'
+      field :related, spec_object.connection_type, null: true, description: 'Related objects.'
+    end
+
+    spec_deprecated_mutation = Class.new(::Mutations::BaseMutation) do
+      graphql_name 'DeprecatedMutation'
+      description 'A deprecated mutation.'
+    end
+
+    spec_experimental_mutation = Class.new(::Mutations::BaseMutation) do
+      graphql_name 'ExperimentalMutation'
+      description 'An experimental mutation.'
+    end
+
+    spec_mutation_without_arguments = Class.new(::Mutations::BaseMutation) do
+      graphql_name 'MutationWithoutArguments'
+    end
+
     Class.new(GraphQL::Schema) do
       directive(spec_directive)
 
@@ -208,6 +233,17 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           experiment: { milestone: '2.0' }
         field :list_query, [GraphQL::Types::String], null: false, description: 'A list query.'
       end)
+
+      mutation(Class.new(::Types::BaseObject) do
+        graphql_name 'Mutation'
+
+        field :object_create, mutation: spec_object_create
+        field :deprecated_mutation, mutation: spec_deprecated_mutation,
+          deprecated: { milestone: '1.0', reason: 'Use objectCreate instead' }
+        field :experimental_mutation, mutation: spec_experimental_mutation,
+          experiment: { milestone: '2.0' }
+        field :mutation_without_arguments, mutation: spec_mutation_without_arguments
+      end)
     end
   end
 
@@ -215,6 +251,87 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
   def page(filename)
     pages.find { |compiled_doc| compiled_doc.filename.to_s.end_with?(filename) }
+  end
+
+  describe 'the mutations page' do
+    subject(:doc) { page('mutations.md').doc }
+
+    def section(name)
+      doc[/^## `#{name}`\n.*?(?=\n## |\z)/m]
+    end
+
+    it 'renders a mutation with its description, input type, arguments, and fields' do
+      expect(section('objectCreate')).to eq(
+        <<~MD
+          ## `objectCreate`
+
+          Creates an object.
+
+          **Input type:** `ObjectCreateInput`
+
+          ### Arguments {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `name` | [`String!`](scalars.md#string) | Name of the object. |
+          | `options` | [`InputObject`](input_objects.md#inputobject) | Options for the object. |
+
+          ### Fields {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
+          | `object` | [`Object`](objects.md#object) | Created object. |
+          | `related` | [`ObjectConnection`](objects.md#objectconnection) | Related objects. This field is a [connection](objects.md#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
+        MD
+      )
+    end
+
+    it 'renders a mutation without a description or arguments' do
+      expect(section('mutationWithoutArguments')).to eq(
+        <<~MD
+          ## `mutationWithoutArguments`
+
+          **Input type:** `MutationWithoutArgumentsInput`
+
+          ### Fields {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
+        MD
+      )
+    end
+
+    it 'omits clientMutationId from the arguments and fields of every mutation' do
+      expect(doc).not_to match(/^\| `clientMutationId` \|/)
+    end
+
+    it 'renders the deprecation and experiment status of a mutation', :aggregate_failures do
+      expect(section('deprecatedMutation')).to include('Deprecated in GitLab 1.0. Use objectCreate instead.')
+      expect(section('experimentalMutation'))
+        .to include("Status: Experiment. Introduced in GitLab 2.0.\n\nAn experimental mutation.")
+    end
+
+    it 'lists mutations in alphabetical order' do
+      expect(doc.scan(/^## `(\w+)`/).flatten)
+        .to eq(%w[deprecatedMutation experimentalMutation mutationWithoutArguments objectCreate])
+    end
+
+    it 'explains how to call a mutation, and clientMutationId, before the mutations', :aggregate_failures do
+      first_mutation = doc.index('## `deprecatedMutation`')
+
+      expect(doc.index("## Calling a mutation\n")).to be < first_mutation
+      expect(doc.index("### `clientMutationId` {.no_toc}\n")).to be < first_mutation
+    end
+
+    it 'shows the deprecation warning before the first section' do
+      expect(doc.index('WARNING:')).to be < doc.index("## Calling a mutation\n")
+    end
+
+    it 'does not include introspection types' do
+      expect(doc).not_to include('__')
+    end
   end
 
   describe 'the queries page' do
@@ -270,7 +387,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     it 'renders the deprecation and experiment status of a query', :aggregate_failures do
       expect(section('deprecatedQuery')).to include('Deprecated in GitLab 1.0. Use findObject instead.')
       expect(section('experimentalQuery'))
-        .to include('Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental query.')
+        .to include("Status: Experiment. Introduced in GitLab 2.0.\n\nAn experimental query.")
     end
 
     it 'renders the full type signature of the return type' do
@@ -394,6 +511,10 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
     it 'does not include introspection types' do
       expect(doc).not_to include('__')
+    end
+
+    it 'excludes mutation payload types' do
+      expect(doc).not_to include('## `ObjectCreatePayload`')
     end
 
     it 'includes the connections section' do
@@ -555,6 +676,10 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           | `scalarArg` | [`String`](scalars.md#string) | A scalar argument. | `"the default"` |
         MD
       )
+    end
+
+    it 'excludes mutation input objects' do
+      expect(doc.scan(/^## `(\w+)`/).flatten).to eq(%w[InputObject])
     end
 
     it 'lists arguments in alphabetical order' do

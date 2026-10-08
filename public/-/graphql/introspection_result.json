@@ -29906,6 +29906,18 @@
               "deprecationReason": null
             },
             {
+              "name": "REPORT_DUO_CHAT_TOKEN_USAGE",
+              "description": "Duo Chat agent turn reported its token usage per model.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPLETE_DUO_CHAT_RESPONSE",
+              "description": "Duo Chat response was completed, with an answer or an error.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "TROUBLESHOOT_JOB",
               "description": "Troubleshoot job feature was used.",
               "isDeprecated": false,
@@ -30682,6 +30694,30 @@
             {
               "name": "TOOL_FAILED_DUO_CHAT_ASC",
               "description": "Tool Failed Duo Chat event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REPORT_DUO_CHAT_TOKEN_USAGE_DESC",
+              "description": "Report Duo Chat Token Usage event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REPORT_DUO_CHAT_TOKEN_USAGE_ASC",
+              "description": "Report Duo Chat Token Usage event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPLETE_DUO_CHAT_RESPONSE_DESC",
+              "description": "Complete Duo Chat Response event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPLETE_DUO_CHAT_RESPONSE_ASC",
+              "description": "Complete Duo Chat Response event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -479910,12 +479946,36 @@
           "description": "Chat user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
           "fields": [
             {
+              "name": "completeDuoChatResponseEventCount",
+              "description": "Total count of `complete_duo_chat_response` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "lastDuoActivityOn",
               "description": "Date of the last Chat activity for the user.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "reportDuoChatTokenUsageEventCount",
+              "description": "Total count of `report_duo_chat_token_usage` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -480610,6 +480670,30 @@
           "name": "duoChatMetrics",
           "description": "Requires ClickHouse. Premium and Ultimate only.",
           "fields": [
+            {
+              "name": "completeDuoChatResponseEventCount",
+              "description": "Total count of `complete_duo_chat_response` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "reportDuoChatTokenUsageEventCount",
+              "description": "Total count of `report_duo_chat_token_usage` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "requestDuoChatResponseEventCount",
               "description": "Total count of `request_duo_chat_response` event.",

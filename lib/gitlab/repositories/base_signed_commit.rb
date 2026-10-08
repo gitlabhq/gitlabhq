@@ -23,14 +23,16 @@ module Gitlab
 
         cached_signature = lazy_signature&.itself
 
-        if cached_signature.present?
-          # only update the committer email without re verifying the cached signature
-          return @signature = update_committer_email!(cached_signature) if should_update_signature?(cached_signature)
+        @signature =
+          if cached_signature.present?
+            # only update the committer email without re verifying the cached signature
+            should_update_signature?(cached_signature) ? update_committer_email!(cached_signature) : cached_signature
+          else
+            create_cached_signature!
+          end
 
-          return @signature = cached_signature
-        end
-
-        @signature = create_cached_signature!
+        @signature&.commit = @commit
+        @signature
       end
 
       def update_signature!(cached_signature)

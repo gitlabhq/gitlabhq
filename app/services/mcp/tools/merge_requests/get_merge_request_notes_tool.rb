@@ -59,15 +59,20 @@ module Mcp
         end
 
         def process_result(result)
-          missing = missing_resource(result)
-          return missing_resource_error(missing) if missing
-
           processed_result = super
           return processed_result if processed_result[:isError]
 
           merge_request = processed_result[:structuredContent]['mergeRequest']
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(merge_request) }]
           ::Mcp::Tools::Base::Response.success(formatted_content, merge_request)
+        end
+
+        override :resource_not_found_error_for_result
+        def resource_not_found_error_for_result(result)
+          missing = missing_resource(result)
+          return missing_resource_error(missing) if missing
+
+          super
         end
 
         def missing_resource(result)

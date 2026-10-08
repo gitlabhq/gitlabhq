@@ -22,7 +22,9 @@ For public and internal projects, you can change who can see your:
 - Pipelines
 - Job output logs
 - Job artifacts
-- [Pipeline security results](../../user/application_security/detect/security_scanning_results.md)
+
+The **Project-based pipeline visibility** setting does not change who can view the
+[pipeline security report](../../user/application_security/detect/security_scanning_results.md#view-pipeline-security-report).
 
 To change the visibility of your pipelines and related features:
 
@@ -38,7 +40,7 @@ To change the visibility of your pipelines and related features:
 
    When it is cleared:
 
-   - For **Public** projects, job logs, job artifacts, the pipeline security dashboard,
+   - For **Public** projects, job logs, job artifacts,
      and the **CI/CD** menu items are visible only to project members (Reporter or higher).
      Other users, including guest users, can only view the status of pipelines and jobs, and only
      when viewing merge requests or commits.
