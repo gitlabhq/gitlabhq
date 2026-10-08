@@ -28,7 +28,7 @@ module Gitlab
           end
 
           def filename
-            "#{@component.name}.yml"
+            "#{@component.name}.json"
           end
         end
       end

@@ -3737,10 +3737,6 @@ class Project < ApplicationRecord
     group&.use_mermaid_v12_feature_flag_enabled? || Feature.enabled?(:use_mermaid_v12, self, type: :gitlab_com_derisk)
   end
 
-  def vulnerability_malware_detection_feature_flag_enabled?
-    group&.vulnerability_malware_detection_feature_flag_enabled? || Feature.enabled?(:vulnerability_malware_detection, self, type: :beta)
-  end
-
   def dependency_malware_detection_feature_flag_enabled?
     group&.dependency_malware_detection_feature_flag_enabled? || Feature.enabled?(:dependency_malware_detection, self, type: :beta)
   end

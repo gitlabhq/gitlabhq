@@ -22,4 +22,10 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker, feature
   end
 
   it_behaves_like "refreshes user's project authorizations"
+
+  it_behaves_like 'defers on database health signal behind a feature flag',
+    feature_flag: :defer_primary_auth_refresh_on_wal_rate,
+    gitlab_schema: :gitlab_main_org,
+    delay_by: 1.minute,
+    indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
 end

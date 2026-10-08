@@ -78,30 +78,119 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
   end
 
   describe '#fetch_postgres_table_size' do
-    let(:table_name) { '_test_table' }
-    let(:query) do
-      <<~SQL
-        SELECT
-          size_in_bytes,
-          CASE
-            WHEN size_in_bytes < 10 * 1024^3 THEN 'small'
-            WHEN size_in_bytes < 50 * 1024^3 THEN 'medium'
-            WHEN size_in_bytes < 100 * 1024^3 THEN 'large'
-            ELSE 'over_limit'
-          END AS classification
-        FROM postgres_table_sizes
-        WHERE table_name = $1::text
-          AND schema_name = 'public'
-      SQL
+    include Database::DatabaseHelpers
+
+    let(:connection) { ApplicationRecord.connection }
+
+    # ActiveRecord's raw connection has a type map installed, so `is_partition` arrives as a Ruby
+    # boolean; a plain PG.connect, as used in production, returns 't' and 'f'. Normalise through
+    # Gitlab::Utils.to_boolean, which is what the keep applies to the value, so the assertions
+    # are about the column's meaning rather than the driver's type mapping.
+    subject(:result) do
+      described_class.new.fetch_postgres_table_size(table_name).to_a.map do |row|
+        row.merge('is_partition' => Gitlab::Utils.to_boolean(row.fetch('is_partition')))
+      end
     end
 
-    let(:query_response) { double }
+    # Run the query against the test database so the partition resolution is exercised for real.
+    # The view is swapped for a table so realistic production sizes can be recorded for the
+    # relations involved.
+    before do
+      allow(PG).to receive(:connect).with(connection_string, password: password).and_return(connection.raw_connection)
 
-    subject(:result) { described_class.new.fetch_postgres_table_size(table_name) }
+      swapout_view_for_table(:postgres_table_sizes, connection: connection)
+    end
 
-    it 'fetches table size data from Postgres AI' do
-      expect(pg_client).to receive(:exec_params).with(query, [table_name]).and_return(query_response)
-      expect(result).to eq(query_response)
+    def record_size(schema_name, relation_name, size_in_bytes)
+      create(
+        :postgres_table_size,
+        identifier: "#{schema_name}.#{relation_name}",
+        schema_name: schema_name,
+        table_name: relation_name,
+        size_in_bytes: size_in_bytes
+      )
+    end
+
+    context 'with an unpartitioned table' do
+      let(:table_name) { '_test_table' }
+
+      before do
+        record_size('public', '_test_table', 20.gigabytes)
+        # A same-named relation outside the public schema (a clone leftover, for example) must
+        # not decide the classification.
+        record_size('gitlab_partitions_static', '_test_table', 200.gigabytes)
+      end
+
+      it 'classifies the table from its own row in the public schema' do
+        expect(result).to contain_exactly(
+          a_hash_including(
+            'identifier' => 'public._test_table',
+            'is_partition' => false,
+            'classification' => 'medium'
+          )
+        )
+      end
+    end
+
+    context 'with a hash-partitioned table' do
+      let(:table_name) { '_test_partitioned_table' }
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE _test_partitioned_table (
+            id bigint NOT NULL,
+            project_id bigint NOT NULL,
+            PRIMARY KEY (id, project_id)
+          ) PARTITION BY HASH (project_id);
+
+          CREATE TABLE gitlab_partitions_static._test_partitioned_table_00
+            PARTITION OF _test_partitioned_table FOR VALUES WITH (MODULUS 2, REMAINDER 0);
+
+          CREATE TABLE gitlab_partitions_static._test_partitioned_table_01
+            PARTITION OF _test_partitioned_table FOR VALUES WITH (MODULUS 2, REMAINDER 1);
+        SQL
+
+        record_size('gitlab_partitions_static', '_test_partitioned_table_00', 5.gigabytes)
+        record_size('gitlab_partitions_static', '_test_partitioned_table_01', 42.gigabytes)
+        # Shares the table's name prefix but is not one of its partitions, so it must be ignored.
+        record_size('public', '_test_partitioned_table_archive', 200.gigabytes)
+      end
+
+      context 'when the empty parent has a row in the view' do
+        before do
+          record_size('public', '_test_partitioned_table', 0)
+        end
+
+        it 'classifies the table by its largest partition rather than the empty parent' do
+          expect(result).to contain_exactly(
+            a_hash_including(
+              'identifier' => 'gitlab_partitions_static._test_partitioned_table_01',
+              'is_partition' => true,
+              'classification' => 'medium'
+            )
+          )
+        end
+      end
+
+      context 'when the parent has no row in the view' do
+        it 'still classifies the table by its largest partition' do
+          expect(result).to contain_exactly(
+            a_hash_including(
+              'identifier' => 'gitlab_partitions_static._test_partitioned_table_01',
+              'is_partition' => true,
+              'classification' => 'medium'
+            )
+          )
+        end
+      end
+    end
+
+    context 'with a table that has no row in the view' do
+      let(:table_name) { '_test_missing_table' }
+
+      it 'returns no rows' do
+        expect(result).to be_empty
+      end
     end
   end
 

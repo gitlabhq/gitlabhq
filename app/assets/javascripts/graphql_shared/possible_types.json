@@ -470,6 +470,7 @@
     "WorkItemWidgetDevelopment",
     "WorkItemWidgetEmailParticipants",
     "WorkItemWidgetErrorTracking",
+    "WorkItemWidgetEscalationPolicy",
     "WorkItemWidgetEscalationStatus",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",

@@ -75119,6 +75119,18 @@
               "deprecationReason": null
             },
             {
+              "name": "startDate",
+              "description": "Start date of the issue.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "state",
               "description": "State of the issue.",
               "args": [],
@@ -97917,6 +97929,18 @@
             {
               "name": "slaDueAt",
               "description": "Timestamp of when the issue SLA expires.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startDate",
+              "description": "Start date of the issue.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -237849,6 +237873,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetEscalationPolicy",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetEscalationStatus",
               "ofType": null
             },
@@ -239742,6 +239771,47 @@
         },
         {
           "kind": "OBJECT",
+          "name": "WorkItemWidgetEscalationPolicy",
+          "description": "Represents the escalation policy widget",
+          "fields": [
+            {
+              "name": "escalationPolicy",
+              "description": "Escalation policy of the work item.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EscalationPolicyType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "WorkItemWidgetEscalationStatus",
           "description": "Represents the escalation status widget",
           "fields": [
@@ -241339,6 +241409,12 @@
             {
               "name": "STATUS",
               "description": "Status widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ESCALATION_POLICY",
+              "description": "Escalation Policy widget.",
               "isDeprecated": false,
               "deprecationReason": null
             },

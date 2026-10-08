@@ -37,6 +37,9 @@ module Discussions
 
     def resolve_discussion(discussion)
       return unless discussion.can_resolve?(current_user)
+      # Already resolved: no-op to avoid redundant side effects such as a
+      # duplicate "resolved all threads" note.
+      return if discussion.resolved?
 
       discussion.resolve!(current_user)
       @resolved_count += 1

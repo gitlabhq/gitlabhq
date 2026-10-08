@@ -3,9 +3,9 @@
 module Ci
   module Catalog
     module BundledResources
-      # Compiles as the version's `published_by`, so a bundle can never carry
-      # content its publisher could not read.
-      class CompileAndStoreService
+      # Collection fails unless anyone can download the project's code, because a
+      # bundle can be read by any project on a Cell.
+      class CollectAndStoreService
         include Gitlab::Utils::StrongMemoize
 
         def initialize(version)
@@ -13,33 +13,59 @@ module Ci
         end
 
         def execute
-          compiled = ::Ci::Catalog::Resources::Bundle::CompileService.new(version).execute
-          return compiled unless compiled.success?
+          bundled_version = find_collected_version
+          return success(bundled_version.bundled_resource, bundled_version) if bundled_version
 
-          store(compiled.payload[:components])
+          uploaded_bundles = prepare
+          return uploaded_bundles unless uploaded_bundles.success?
+
+          ::Ci::Catalog::BundledResource.transaction { persist(uploaded_bundles.payload) }
+        end
+
+        # Documents are uploaded before any row is written, so a failed upload cannot
+        # leave rows pointing at a document that was never stored. The object key is
+        # derived from the natural key, so a retry overwrites instead of accumulating.
+        def prepare
+          unless Ability.allowed?(nil, :download_code, version.project)
+            return ServiceResponse.error(message: 'Catalog resource is not public', reason: :not_public)
+          end
+
+          collected_bundles = ::Ci::Catalog::Resources::Bundle::CollectService.new(version).execute
+          return collected_bundles unless collected_bundles.success?
+
+          ServiceResponse.success(
+            payload: {
+              readme: version.readme,
+              documents: upload_documents(collected_bundles.payload[:components])
+            }
+          )
+        end
+
+        def persist(prepared)
+          bundled_resource = upsert_bundled_resource
+          bundled_version = upsert_version_row(bundled_resource)
+
+          upsert_components(prepared[:documents], bundled_resource, bundled_version)
+
+          bundled_version.update!(readme: prepared[:readme])
+          bundled_resource.update!(latest_released_at: bundled_resource.versions.latest&.released_at)
+
+          success(bundled_resource, bundled_version)
         end
 
         private
 
         attr_reader :version
 
-        # Documents are uploaded before any row is written, so a failed upload cannot
-        # leave rows pointing at a document that was never stored. The object key is
-        # derived from the natural key, so a retry overwrites instead of accumulating.
-        def store(compiled_components)
-          readme = version.readme
-          documents = upload_documents(compiled_components)
+        def find_collected_version
+          ::Ci::Catalog::BundledResource.find_bundled_version(
+            server_fqdn: server_fqdn,
+            full_path: version.project.full_path,
+            semver: version.semver
+          )
+        end
 
-          bundled_resource, bundled_version = ::Ci::Catalog::BundledResource.transaction do
-            resource = upsert_bundled_resource
-            row = upsert_version_row(resource)
-            upsert_components(documents, resource, row)
-            row.update!(readme: readme)
-            resource.update!(latest_released_at: resource.versions.latest&.released_at)
-
-            [resource, row]
-          end
-
+        def success(bundled_resource, bundled_version)
           ServiceResponse.success(
             payload: {
               bundled_resource: bundled_resource,
@@ -49,18 +75,18 @@ module Ci
           )
         end
 
-        def upload_documents(compiled_components)
-          compiled_components.map do |compiled|
+        def upload_documents(collected_components)
+          collected_components.map do |collected|
             component = ::Ci::Catalog::BundledResources::Component.new(
-              name: compiled[:name],
-              spec: spec_for(compiled[:name]),
+              name: collected[:name],
+              spec: spec_for(collected[:name]),
               bundled_resource: key_resource,
               version: key_version
             )
             component.file = ::CarrierWaveStringFile.new_file(
-              file_content: compiled[:content],
-              filename: compiled[:name],
-              content_type: 'application/x-yaml'
+              file_content: collected[:content],
+              filename: collected[:name],
+              content_type: 'application/json'
             )
 
             component.validate!
@@ -77,8 +103,6 @@ module Ci
         end
 
         def upsert_components(documents, bundled_resource, bundled_version)
-          return if documents.empty?
-
           now = Time.current
           rows = documents.map do |document|
             document.merge(

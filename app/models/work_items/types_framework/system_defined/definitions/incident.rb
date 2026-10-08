@@ -16,6 +16,7 @@ module WorkItems
                 description
                 development
                 email_participants
+                escalation_policy
                 escalation_status
                 hierarchy
                 iteration

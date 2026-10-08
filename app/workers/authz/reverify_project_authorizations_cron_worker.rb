@@ -11,8 +11,14 @@ module Authz
     idempotent!
     deduplicate :until_executing
     concurrency_limit -> { 10 }
+    defer_on_database_health_signal :gitlab_main_org, [], 5.minutes,
+      indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
 
     MAX_RUNTIME = 200.seconds
+
+    def self.defer_on_database_health_signal?
+      Feature.enabled?(:defer_safety_net_auth_refresh_on_wal_rate, :instance)
+    end
 
     def perform
       return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)

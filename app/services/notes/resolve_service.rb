@@ -3,6 +3,9 @@
 module Notes
   class ResolveService < ::BaseService
     def execute(note)
+      # Already resolved: no-op to avoid re-posting the "resolved all threads" note.
+      return if note.resolved?
+
       note.resolve!(current_user)
 
       case note.noteable

@@ -19,6 +19,12 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
     expect(described_class.get_concurrency_limit).to eq(10)
   end
 
+  it_behaves_like 'defers on database health signal behind a feature flag',
+    feature_flag: :defer_safety_net_auth_refresh_on_wal_rate,
+    gitlab_schema: :gitlab_main_org,
+    delay_by: 5.minutes,
+    indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
+
   describe '#perform' do
     subject(:perform) { worker.perform }
 

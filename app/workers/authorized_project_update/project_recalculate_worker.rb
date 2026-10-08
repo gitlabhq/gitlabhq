@@ -14,6 +14,13 @@ module AuthorizedProjectUpdate
 
     idempotent!
 
+    defer_on_database_health_signal :gitlab_main_org, [], 1.minute,
+      indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
+
+    def self.defer_on_database_health_signal?
+      Feature.enabled?(:defer_primary_auth_refresh_on_wal_rate, :instance)
+    end
+
     def perform(project_id)
       project = Project.find_by_id(project_id)
       return unless project

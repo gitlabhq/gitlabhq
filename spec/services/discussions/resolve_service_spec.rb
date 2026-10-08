@@ -42,6 +42,29 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
       service.execute
     end
 
+    context 'when the discussion is already resolved' do
+      before do
+        discussion.resolve!(user)
+      end
+
+      it 'does not execute the notification service' do
+        expect(MergeRequests::ResolvedDiscussionNotificationService).not_to receive(:new)
+
+        service.execute
+      end
+
+      it 'does not track thread resolve usage data' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_resolve_thread_action)
+
+        service.execute
+      end
+
+      it 'does not post a new note on the merge request' do
+        expect { service.execute }.not_to change { merge_request.notes.count }
+      end
+    end
+
     context 'when all discussions are resolved' do
       it 'publishes the discussions resolved event' do
         expect { service.execute }

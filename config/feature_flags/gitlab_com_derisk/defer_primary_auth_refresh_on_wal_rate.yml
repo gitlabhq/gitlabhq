@@ -1,0 +1,10 @@
+---
+name: defer_primary_auth_refresh_on_wal_rate
+description: Defers primary project authorization refresh workers when the database WAL rate is above its SLO
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/626462
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254347
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632253
+milestone: '19.5'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

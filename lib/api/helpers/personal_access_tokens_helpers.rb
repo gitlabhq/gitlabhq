@@ -125,38 +125,30 @@ module API
       end
 
       def build_granular_scopes(current_user, inputs)
-        inputs.flat_map { |input| granular_scope_attrs(current_user, input) }.map { |attrs| ::Authz::GranularScope.new(attrs) }
+        boundary_rule = ::Authz::GranularScopes::ReadBoundaryRule.new(current_user)
+        builder_inputs = inputs.map { |input| granular_scope_builder_input(input) }
+
+        ::Authz::GranularScopes::Builder.new(builder_inputs, boundary_rule: boundary_rule).build
+      rescue ::Authz::GranularScopes::Builder::ResourceNotAllowedError
+        not_found!
       end
 
-      def granular_scope_attrs(current_user, input)
-        base_attrs = { access: input[:access], permissions: input[:permissions] }
-
-        case input[:access].to_s
-        when ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS.to_s
-          selected_memberships_attrs(current_user, input, base_attrs)
-        when ::Authz::GranularScope::Access::PERSONAL_PROJECTS.to_s
-          [base_attrs.merge(namespace: current_user.namespace)]
-        else
-          [base_attrs]
-        end
+      def granular_scope_builder_input(input)
+        {
+          access: input[:access],
+          permissions: input[:permissions],
+          resources: granular_scope_resources(input)
+        }
       end
 
-      def selected_memberships_attrs(current_user, input, base_attrs)
+      def granular_scope_resources(input)
+        return [] unless input[:access].to_s == ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS.to_s
+
         groups = Group.id_in(Array(input[:group_ids]))
         projects = Project.id_in(Array(input[:project_ids]))
           .preload(:project_namespace) # rubocop:disable CodeReuse/ActiveRecord -- avoids N+1 loading project_namespace per project
 
-        resource_scope_attrs(current_user, groups, base_attrs) +
-          resource_scope_attrs(current_user, projects, base_attrs)
-      end
-
-      def resource_scope_attrs(current_user, resources, base_attrs)
-        resources.map do |resource|
-          boundary = ::Authz::Boundary.for(resource)
-          not_found! unless Ability.allowed?(current_user, :read_boundary, resource)
-
-          base_attrs.merge(namespace: boundary.namespace)
-        end
+        groups.to_a + projects.to_a
       end
 
       def create_granular_token(current_user, granular_scopes, token_params, target_user: current_user)

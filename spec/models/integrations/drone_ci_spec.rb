@@ -224,5 +224,32 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching, fea
 
       drone.execute(push_sample_data)
     end
+
+    context 'when merge_request' do
+      let(:merge_request_data) do
+        {
+          object_kind: 'merge_request',
+          object_attributes: {
+            state: 'opened',
+            source_branch: branch,
+            action: 'open'
+          }
+        }
+      end
+
+      it 'triggers on action open' do
+        expect(drone).to receive(:execute_web_hook!).with(merge_request_data)
+
+        drone.execute(merge_request_data)
+      end
+
+      it 'does not trigger on action update without oldrev (label/title/assignee change)' do
+        merge_request_data[:object_attributes][:action] = 'update'
+
+        expect(drone).not_to receive(:execute_web_hook!)
+
+        drone.execute(merge_request_data)
+      end
+    end
   end
 end

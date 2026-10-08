@@ -38,19 +38,49 @@ module Keeps
         pg_client.exec_params(query)
       end
 
+      # Returns at most one row: the relation whose size classifies the dictionary table.
+      #
+      # Every dictionary table lives in the public schema, so the table itself is always a
+      # candidate. A partitioned table has no storage of its own (its row in the view, if any,
+      # reports zero bytes) and the dictionary defines its size as the size of its largest
+      # partition, so when the public relation is partitioned its partitions are candidates too.
+      # Partitions are resolved through pg_inherits rather than a name prefix: a sibling table
+      # that merely shares the prefix (an `_archive` copy, for example) must not be counted.
       def fetch_postgres_table_size(table_name)
         query = <<~SQL
+          WITH relations AS (
+            SELECT 'public'::text AS schema_name, $1::text AS table_name, false AS is_partition
+            UNION ALL
+            SELECT child_namespace.nspname::text, child.relname::text, true
+            FROM pg_inherits
+            INNER JOIN pg_class parent ON parent.oid = pg_inherits.inhparent
+            INNER JOIN pg_namespace parent_namespace ON parent_namespace.oid = parent.relnamespace
+            INNER JOIN pg_class child ON child.oid = pg_inherits.inhrelid
+            INNER JOIN pg_namespace child_namespace ON child_namespace.oid = child.relnamespace
+            WHERE parent.relname = $1::text
+              AND parent_namespace.nspname = 'public'
+              AND parent.relkind = 'p'
+          )
           SELECT
-            size_in_bytes,
+            size_row.identifier,
+            size_row.size_in_bytes,
+            relations.is_partition,
             CASE
-              WHEN size_in_bytes < 10 * 1024^3 THEN 'small'
-              WHEN size_in_bytes < 50 * 1024^3 THEN 'medium'
-              WHEN size_in_bytes < 100 * 1024^3 THEN 'large'
+              WHEN size_row.size_in_bytes < 10 * 1024^3 THEN 'small'
+              WHEN size_row.size_in_bytes < 50 * 1024^3 THEN 'medium'
+              WHEN size_row.size_in_bytes < 100 * 1024^3 THEN 'large'
               ELSE 'over_limit'
             END AS classification
-          FROM postgres_table_sizes
-          WHERE table_name = $1::text
-            AND schema_name = 'public'
+          FROM relations
+          CROSS JOIN LATERAL (
+            SELECT identifier, size_in_bytes
+            FROM postgres_table_sizes
+            WHERE schema_name = relations.schema_name
+              AND table_name = relations.table_name
+            LIMIT 1
+          ) size_row
+          ORDER BY size_row.size_in_bytes DESC, relations.is_partition ASC, size_row.identifier ASC
+          LIMIT 1
         SQL
 
         pg_client.exec_params(query, [table_name])
@@ -60,10 +90,10 @@ module Keeps
       # Such a trigger means the connected database is not the authoritative one for this table
       # (writes are locked post-decomposition), so its size there says nothing about the real
       # table. Matching by trigger function, not trigger name: names derived from long table
-      # names get truncated to 63 bytes by PostgreSQL. Both this query and
-      # fetch_postgres_table_size are scoped to the public schema, where every dictionary table
-      # lives: a same-named relation in another schema (partition, clone leftover) must not
-      # decide a skip or a classification.
+      # names get truncated to 63 bytes by PostgreSQL. The query is scoped to the public schema,
+      # where every dictionary table lives: a same-named relation in another schema (clone
+      # leftover, for example) must not decide a skip. fetch_postgres_table_size starts from the
+      # same public relation and only widens to partitions that pg_inherits attributes to it.
       def table_write_locked?(table_name)
         query = <<~SQL
           SELECT EXISTS (

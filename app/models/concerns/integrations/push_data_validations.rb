@@ -8,7 +8,14 @@ module Integrations
     extend ActiveSupport::Concern
 
     def merge_request_valid?(data)
-      data.dig(:object_attributes, :state) == 'opened' && merge_request_unchecked?(data)
+      attrs = data[:object_attributes]
+      return false unless attrs
+
+      # oldrev is only set when the source branch head moved, so gating 'update' on it
+      # avoids spurious builds for label/title/assignee changes.
+      attrs[:state] == 'opened' &&
+        (%w[open reopen].include?(attrs[:action]) ||
+          (attrs[:action] == 'update' && attrs[:oldrev].present?))
     end
 
     def push_valid?(data)
@@ -34,11 +41,6 @@ module Integrations
         .from_project(project)
         .from_source_branches(Gitlab::Git.ref_name(data[:ref]))
         .exists?
-    end
-
-    def merge_request_unchecked?(data)
-      MergeRequest.state_machines[:merge_status]
-        .check_state?(data.dig(:object_attributes, :merge_status))
     end
   end
 end

@@ -24,6 +24,13 @@ module AuthorizedProjectUpdate
 
     idempotent!
 
+    defer_on_database_health_signal :gitlab_main_org, [], 5.minutes,
+      indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
+
+    def self.defer_on_database_health_signal?
+      Feature.enabled?(:defer_safety_net_auth_refresh_on_wal_rate, :instance)
+    end
+
     def perform(start_user_id, end_user_id)
       return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
 

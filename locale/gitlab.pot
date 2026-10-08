@@ -2553,6 +2553,9 @@ msgid_plural "AICatalog|%d more"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AICatalog|%{itemName} is private and can't be shared with other projects."
+msgstr ""
+
 msgid "AICatalog|%{linkStart}Service accounts%{linkEnd} represent non-human entities. This is the account that you mention or assign to trigger the %{itemType}."
 msgstr ""
 
@@ -3144,6 +3147,9 @@ msgstr ""
 msgid "AICatalog|GitLab-managed external agents"
 msgstr ""
 
+msgid "AICatalog|Go to %{itemType} settings"
+msgstr ""
+
 msgid "AICatalog|HTTP"
 msgstr ""
 
@@ -3516,6 +3522,9 @@ msgstr ""
 msgid "AICatalog|This %{itemType} is already enabled."
 msgstr ""
 
+msgid "AICatalog|This %{itemType} is private"
+msgstr ""
+
 msgid "AICatalog|This %{itemType} was removed from the AI Catalog. You can still use it in this %{targetType}."
 msgstr ""
 
@@ -3586,6 +3595,9 @@ msgid "AICatalog|This private %{itemType} is managed by %{projectName}. You can 
 msgstr ""
 
 msgid "AICatalog|This service account has no associated projects you can view. It might be used in projects that you can't view."
+msgstr ""
+
+msgid "AICatalog|To enable it for all projects in the group, change its visibility setting to %{boldStart}Restricted%{boldEnd} or %{boldStart}Public%{boldEnd} in %{projectName}."
 msgstr ""
 
 msgid "AICatalog|To prevent versioning issues, you can edit only the latest version of this agent. To edit an earlier version, %{linkStart}duplicate the agent%{linkEnd}."

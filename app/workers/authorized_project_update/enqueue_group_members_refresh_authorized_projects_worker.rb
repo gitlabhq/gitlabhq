@@ -13,6 +13,13 @@ module AuthorizedProjectUpdate # rubocop:disable Gitlab/BoundedContexts -- keepi
     idempotent!
     deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
 
+    defer_on_database_health_signal :gitlab_main_org, [], 1.minute,
+      indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
+
+    def self.defer_on_database_health_signal?
+      Feature.enabled?(:defer_primary_auth_refresh_on_wal_rate, :instance)
+    end
+
     def perform(group_id, params = {})
       priority = params.fetch('priority', UserProjectAccessChangedService::LOW_PRIORITY).to_sym
 

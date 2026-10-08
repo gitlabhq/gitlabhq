@@ -37,8 +37,6 @@ module Mutations
           required: true,
           description: 'List of granular scopes to assign to the token.'
 
-        attr_reader :granular_scopes
-
         def resolve(**args)
           if Feature.disabled?(:granular_personal_access_tokens, current_user)
             raise_resource_not_available_error! '`granular_personal_access_tokens` feature flag is disabled.'
@@ -70,52 +68,37 @@ module Mutations
         private
 
         def build_granular_scopes(inputs)
-          attrs = inputs.flat_map { |input| prepare_granular_scope_attrs(input) }
+          boundary_rule = ::Authz::GranularScopes::ReadBoundaryRule.new(current_user)
+          builder_inputs = inputs.map { |input| granular_scope_builder_input(input) }
 
-          @granular_scopes ||= attrs.map { |a| ::Authz::GranularScope.new(a) }
+          ::Authz::GranularScopes::Builder.new(builder_inputs, boundary_rule: boundary_rule).build
+        rescue ::Authz::GranularScopes::Builder::ResourceNotAllowedError
+          raise_resource_not_available_error!
         end
 
-        def prepare_granular_scope_attrs(input)
-          base_attrs = input.to_h.except(:resource_ids)
+        def granular_scope_builder_input(input)
+          {
+            access: input.access,
+            permissions: input.permissions,
+            resources: selected_resources(input)
+          }
+        end
 
-          case input.access.to_sym
-          when ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS
-            ids_by_type = GitlabSchema.parse_gids(input.resource_ids).group_by { |gid| gid.model_class.name }
+        def selected_resources(input)
+          return [] unless input.access.to_sym == ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS
 
-            projects = batch_load(ids_by_type.fetch('Project', []), [:project_namespace])
-            project_scopes = build_resource_scopes(projects, base_attrs)
+          ids_by_type = GitlabSchema.parse_gids(input.resource_ids).group_by { |gid| gid.model_class.name }
+          groups = batch_load(ids_by_type.fetch('Group', []))
+          projects = batch_load(ids_by_type.fetch('Project', []), [:project_namespace])
 
-            groups = batch_load(ids_by_type.fetch('Group', []))
-            group_scopes = build_resource_scopes(groups, base_attrs)
-
-            group_scopes + project_scopes
-          when ::Authz::GranularScope::Access::PERSONAL_PROJECTS
-            base_attrs.merge(namespace: ::Authz::Boundary.for(current_user).namespace)
-          else
-            # namespace_id is nil for all_memberships, user, and instance access
-            base_attrs
-          end
+          # Queue both loaders before the first sync so each model class loads in one query
+          (groups + projects).filter_map(&:sync)
         end
 
         def batch_load(gids, preloads = [])
           gids.map do |gid|
             ::Gitlab::Graphql::Loaders::BatchModelLoader.new(gid.model_class, gid.model_id, preloads).find
           end
-        end
-
-        def build_resource_scopes(resources, scope_attrs)
-          resources.filter_map do |resource|
-            loaded = resource.sync
-            next unless loaded
-
-            scope_attrs.merge(namespace: boundary!(loaded).namespace)
-          end
-        end
-
-        def boundary!(resource)
-          raise_resource_not_available_error! unless Ability.allowed?(current_user, :read_boundary, resource)
-
-          ::Authz::Boundary.for(resource)
         end
 
         def validate_sudo_not_escalated!(sudo, calling_token)

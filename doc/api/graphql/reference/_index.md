@@ -45754,6 +45754,7 @@ Fields:
 | <a id="epicissue-relativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the issue (used for positioning in epic tree and issue boards). |
 | <a id="epicissue-severity"></a>`severity` | [`IssuableSeverity`](#issuableseverity) | Severity level of the incident. |
 | <a id="epicissue-sladueat"></a>`slaDueAt` | [`Time`](#time) | Timestamp of when the issue SLA expires. |
+| <a id="epicissue-startdate"></a>`startDate` | [`Time`](#time) | Start date of the issue. |
 | <a id="epicissue-state"></a>`state` | [`IssueState!`](#issuestate) | State of the issue. |
 | <a id="epicissue-status"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | Introduced in GitLab 18.0. Status: Experiment. Status of the issue. |
 | <a id="epicissue-statuspagepublishedincident"></a>`statusPagePublishedIncident` | [`Boolean`](#boolean) | Indicates whether an issue is published to the status page. |
@@ -51400,6 +51401,7 @@ Fields:
 | <a id="issue-relativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the issue (used for positioning in epic tree and issue boards). |
 | <a id="issue-severity"></a>`severity` | [`IssuableSeverity`](#issuableseverity) | Severity level of the incident. |
 | <a id="issue-sladueat"></a>`slaDueAt` | [`Time`](#time) | Timestamp of when the issue SLA expires. |
+| <a id="issue-startdate"></a>`startDate` | [`Time`](#time) | Start date of the issue. |
 | <a id="issue-state"></a>`state` | [`IssueState!`](#issuestate) | State of the issue. |
 | <a id="issue-status"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | Introduced in GitLab 18.0. Status: Experiment. Status of the issue. |
 | <a id="issue-statuspagepublishedincident"></a>`statusPagePublishedIncident` | [`Boolean`](#boolean) | Indicates whether an issue is published to the status page. |
@@ -67644,6 +67646,7 @@ Fields:
 | <a id="workitemfeatures-development"></a>`development` | [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment) | Development widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-emailparticipants"></a>`emailParticipants` | [`WorkItemWidgetEmailParticipants`](#workitemwidgetemailparticipants) | Email participants widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-errortracking"></a>`errorTracking` | [`WorkItemWidgetErrorTracking`](#workitemwidgeterrortracking) | Error tracking widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatures-escalationpolicy"></a>`escalationPolicy` | [`WorkItemWidgetEscalationPolicy`](#workitemwidgetescalationpolicy) | Escalation policy widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-escalationstatus"></a>`escalationStatus` | [`WorkItemWidgetEscalationStatus`](#workitemwidgetescalationstatus) | Escalation status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-healthstatus"></a>`healthStatus` | [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus) | Health status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-hierarchy"></a>`hierarchy` | [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy) | Hierarchy widget of the work item. Returns `null` if the widget is not available for the work item. |
@@ -68302,6 +68305,17 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="workitemwidgeterrortrackingstacktracecontext-line"></a>`line` | [`String`](#string) | Line of code. |
 | <a id="workitemwidgeterrortrackingstacktracecontext-linenumber"></a>`lineNumber` | [`Int`](#int) | Line number of code. |
+
+### `WorkItemWidgetEscalationPolicy`
+
+Represents the escalation policy widget.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetescalationpolicy-escalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy of the work item. |
+| <a id="workitemwidgetescalationpolicy-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetEscalationStatus`
 
@@ -75708,6 +75722,7 @@ Type of a work item widget.
 | <a id="workitemwidgettype-development"></a>`DEVELOPMENT` | Development widget. |
 | <a id="workitemwidgettype-email_participants"></a>`EMAIL_PARTICIPANTS` | Email Participants widget. |
 | <a id="workitemwidgettype-error_tracking"></a>`ERROR_TRACKING` | Error Tracking widget. |
+| <a id="workitemwidgettype-escalation_policy"></a>`ESCALATION_POLICY` | Escalation Policy widget. |
 | <a id="workitemwidgettype-escalation_status"></a>`ESCALATION_STATUS` | Escalation Status widget. |
 | <a id="workitemwidgettype-health_status"></a>`HEALTH_STATUS` | Health Status widget. |
 | <a id="workitemwidgettype-hierarchy"></a>`HIERARCHY` | Hierarchy widget. |
@@ -79570,6 +79585,7 @@ Implementations:
 - [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment)
 - [`WorkItemWidgetEmailParticipants`](#workitemwidgetemailparticipants)
 - [`WorkItemWidgetErrorTracking`](#workitemwidgeterrortracking)
+- [`WorkItemWidgetEscalationPolicy`](#workitemwidgetescalationpolicy)
 - [`WorkItemWidgetEscalationStatus`](#workitemwidgetescalationstatus)
 - [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus)
 - [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy)

@@ -3541,7 +3541,7 @@
       when: never
     - if: $SAST_DISABLED
       when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /(^|[,[:space:]])gitlab-advanced-sast([,[:space:]]|$)/
       when: never
     # Only run on tier-3 MR pipelines to save CI minutes. A merge request runs a
     # tier-3 pipeline before it is merged, so pre-merge coverage is preserved.

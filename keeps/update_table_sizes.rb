@@ -22,13 +22,17 @@ module Keeps
 
       change = ::Gitlab::Housekeeper::Change.new
       change.identifiers = change_identifiers
-      change.context = { tables_to_update: tables_to_update }
+      change.context = {
+        tables_to_update: tables_to_update,
+        partitioned_tables: partitioned_tables_to_update
+      }
       yield(change)
     end
 
     def make_change!(change)
       tables_to_update = change.context[:tables_to_update]
-      build_change_details(change, tables_to_update.keys)
+      partitioned_tables = change.context.fetch(:partitioned_tables, {})
+      build_change_details(change, tables_to_update.keys, partitioned_tables)
       change.changed_files = []
 
       tables_to_update.each do |table_name, classification|
@@ -43,6 +47,14 @@ module Keeps
 
     private
 
+    # Maps each dictionary table to the relation that classifies it:
+    #
+    #   { classification: 'medium', measured_relation: 'gitlab_partitions_static.foo_12',
+    #     size_in_bytes: 45_097_156_608, partitioned: true }
+    #
+    # For an unpartitioned table the measured relation is the table itself. For a partitioned
+    # table it is the largest partition, as the database dictionary defines the size of a
+    # partitioned table to be the size of its largest partition.
     def table_sizes
       table_sizes = {}
 
@@ -55,10 +67,10 @@ module Keeps
         # example, truncated ones) carry no lock trigger and are still reclassified.
         next if table_write_locked?(entry.table_name)
 
-        table_classification = fetch_table_classification(entry.table_name)
-        next unless table_classification
+        table_size = fetch_table_size(entry.table_name)
+        next unless table_size
 
-        table_sizes[entry.table_name] = table_classification
+        table_sizes[entry.table_name] = table_size
       end
 
       table_sizes
@@ -69,10 +81,16 @@ module Keeps
       postgres_ai.table_write_locked?(table_name)
     end
 
-    def fetch_table_classification(table_name)
-      result = postgres_ai.fetch_postgres_table_size(table_name)
+    def fetch_table_size(table_name)
+      row = postgres_ai.fetch_postgres_table_size(table_name).first
+      return unless row
 
-      result.first&.fetch('classification')
+      {
+        classification: row.fetch('classification'),
+        measured_relation: row.fetch('identifier'),
+        size_in_bytes: row.fetch('size_in_bytes').to_i,
+        partitioned: Gitlab::Utils.to_boolean(row.fetch('is_partition'))
+      }
     end
 
     def database_entries
@@ -83,18 +101,32 @@ module Keeps
       tables_to_update = {}
 
       database_entries.each do |entry|
-        next unless entry.table_size != table_sizes[entry.table_name]
-        next if table_sizes[entry.table_name].nil?
+        table_size = table_sizes[entry.table_name]
+
+        next if table_size.nil?
+        next if entry.table_size == table_size[:classification]
         next if entry.gitlab_schema == 'gitlab_internal'
 
-        tables_to_update[entry.table_name] = table_sizes[entry.table_name]
+        tables_to_update[entry.table_name] = table_size[:classification]
       end
 
       tables_to_update
     end
     strong_memoize_attr :tables_to_update
 
-    def build_change_details(change, table_names)
+    # The subset of tables_to_update whose classification came from a partition, mapped to that
+    # partition and its size. Surfaced in the merge request so the blast radius of reclassifying
+    # partitioned tables is visible to the reviewer.
+    def partitioned_tables_to_update
+      tables_to_update.keys.filter_map do |table_name|
+        table_size = table_sizes[table_name]
+        next unless table_size[:partitioned]
+
+        [table_name, { relation: table_size[:measured_relation], size_in_bytes: table_size[:size_in_bytes] }]
+      end.to_h
+    end
+
+    def build_change_details(change, table_names, partitioned_tables)
       change.title = "Update table_size database dictionary entries".truncate(70, omission: '')
       change.changelog_type = 'added'
       change.labels = labels
@@ -108,6 +140,27 @@ module Keeps
       Read more about our process to classify table size in our [documentation](https://docs.gitlab.com/ee/development/database/large_tables_limitations.html).
 
       Verify this MR by inspecting the `postgres_table_sizes` view for each affected table.
+      MARKDOWN
+
+      change.description += partitioned_tables_section(partitioned_tables) if partitioned_tables.any?
+    end
+
+    def partitioned_tables_section(partitioned_tables)
+      rows = partitioned_tables.map do |table_name, partition|
+        size = ActiveSupport::NumberHelper.number_to_human_size(partition[:size_in_bytes])
+
+        "| `#{table_name}` | `#{partition[:relation]}` | #{size} |"
+      end
+
+      <<~MARKDOWN
+
+      ## Partitioned tables
+
+      The following tables are partitioned. As defined in the database dictionary, each is classified by the size of its largest partition, listed below. Verify these by inspecting the `postgres_table_sizes` row of the partition rather than the parent table, which holds no data.
+
+      | Table | Largest partition | Size |
+      | ----- | ----------------- | ---- |
+      #{rows.join("\n")}
       MARKDOWN
     end
 

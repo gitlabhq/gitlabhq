@@ -465,6 +465,10 @@ RSpec.shared_examples 'graphql issue list request spec' do
   end
 
   describe 'N+1 query checks' do
+    before do
+      User.where(id: current_user.id).update_all(last_activity_on: Time.zone.today)
+    end
+
     let(:extra_iid_for_second_query) { issue_b.iid.to_s }
     let(:search_params) { { iids: [issue_a.iid.to_s] } }
     let(:issue_filter_params) { search_params }
@@ -809,6 +813,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     before do
+      User.where(id: current_user.id).update_all(last_activity_on: Time.zone.today)
+
       issues.each do |issue|
         # create a label for each issue we have to properly test N+1
         label = create(:label, project: issue.project)
@@ -860,6 +866,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     before do
+      User.where(id: current_user.id).update_all(last_activity_on: Time.zone.today)
+
       issues.each do |issue|
         # create an assignee for each issue we have to properly test N+1
         assignee = create(:user)

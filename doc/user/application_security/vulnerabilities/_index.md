@@ -21,12 +21,9 @@ description: Vulnerability details, status, resolution, and linking issues.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254166) in GitLab 19.5. Feature flag `vulnerability_details_enrichment` removed.
 - Display of malware findings:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587647) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_malware_detection`. Enabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260114) in GitLab 19.5. Feature flag `vulnerability_malware_detection` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The display of malware findings is controlled by a feature flag.
-> For more information, see the history.
 
 Each vulnerability in a project has a vulnerability page. The page header shows the vulnerability
 title, when and in which pipeline it was detected, how many related merge requests and issues there

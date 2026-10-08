@@ -259,6 +259,87 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     end
   end
 
+  context 'when fetching issue dates' do
+    let_it_be(:dated_issue) do
+      issue = create(:issue, project: project_a, author: developer)
+      Issues::UpdateService.new(
+        container: project_a,
+        current_user: developer,
+        params: {
+          start_date: Date.new(2026, 9, 20),
+          due_date: Date.new(2026, 9, 30)
+        }
+      ).execute(issue)
+
+      issue.reload
+    end
+
+    let(:date_fields) { 'nodes { id startDate dueDate }' }
+    let(:dated_issue_query) do
+      graphql_query_for(
+        :issues,
+        { iids: [dated_issue.iid.to_s], author_username: developer.username },
+        date_fields
+      )
+    end
+
+    it 'returns persisted start and due dates' do
+      expect(dated_issue.reload).to have_attributes(
+        start_date: Date.new(2026, 9, 20),
+        due_date: Date.new(2026, 9, 30)
+      )
+      expect(dated_issue.dates_source).to have_attributes(
+        start_date: Date.new(2026, 9, 20),
+        due_date: Date.new(2026, 9, 30)
+      )
+
+      result = run_with_clean_state(dated_issue_query, context: { current_user: current_user }).as_json
+
+      expect(result['errors']).to be_nil
+      expect(result.dig('data', 'issues', 'nodes')).to contain_exactly(
+        include(
+          'id' => dated_issue.to_gid.to_s,
+          'startDate' => '2026-09-20',
+          'dueDate' => '2026-09-30'
+        )
+      )
+    end
+
+    it 'does not cause N+1 queries' do
+      control_user = create(:user)
+      scale_user = create(:user)
+      control_project = create(:project, :public)
+      scale_project = create(:project, :public)
+      control_issue = create(:issue, project: control_project, author: control_user, start_date: Date.new(2026, 9, 20))
+      scale_issues = create_list(
+        :issue, 2, project: scale_project, author: scale_user, start_date: Date.new(2026, 9, 20)
+      )
+
+      query_for = ->(user) do
+        graphql_query_for(:issues, { author_username: user.username }, 'nodes { id startDate }')
+      end
+
+      control_result = nil
+      control = ActiveRecord::QueryRecorder.new do
+        control_result = run_with_clean_state(query_for.call(control_user), context: { current_user: control_user })
+      end
+
+      scale_result = nil
+      expect do
+        scale_result = run_with_clean_state(query_for.call(scale_user), context: { current_user: scale_user })
+      end.not_to exceed_query_limit(control)
+
+      expect(control_result['errors']).to be_nil
+      expect(control_result.dig('data', 'issues', 'nodes')).to contain_exactly(
+        include('id' => control_issue.to_gid.to_s, 'startDate' => '2026-09-20')
+      )
+      expect(scale_result['errors']).to be_nil
+      expect(scale_result.dig('data', 'issues', 'nodes')).to match_array(
+        scale_issues.map { |issue| include('id' => issue.to_gid.to_s, 'startDate' => '2026-09-20') }
+      )
+    end
+  end
+
   context 'with rate limiting' do
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit, graphql: true do
       let_it_be(:current_user) { developer }

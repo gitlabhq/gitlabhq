@@ -17,6 +17,12 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker, feature_
 
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
 
+  it_behaves_like 'defers on database health signal behind a feature flag',
+    feature_flag: :defer_safety_net_auth_refresh_on_wal_rate,
+    gitlab_schema: :gitlab_main_org,
+    delay_by: 5.minutes,
+    indicators: [Gitlab::Database::HealthStatus::Indicators::WalRate]
+
   describe '#perform' do
     context 'when the feature flag `do_not_run_safety_net_auth_refresh_jobs` is disabled' do
       it 'runs the safety net refresh' do
