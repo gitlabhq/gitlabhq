@@ -11,6 +11,15 @@ variables:
   # Pinned: an unpinned dependency in the deploy path can break master
   GL_CNPG_VERSION: "0.29.0"
   GL_DEV_STACK_VERSION: "1.6.0"
+  # build-cng-env omits *_TAG when its image lookup fails; CNG then tags these by *_VERSION
+  CNG_GITALY_TAG: ${GITALY_TAG:-${GITALY_SERVER_VERSION:?set GITALY_TAG or GITALY_SERVER_VERSION}}
+  CNG_GITLAB_SHELL_TAG: ${GITLAB_SHELL_TAG:-${GITLAB_SHELL_VERSION:?set GITLAB_SHELL_TAG or GITLAB_SHELL_VERSION}}
+  CNG_KAS_TAG: ${GITLAB_KAS_TAG:-${GITLAB_KAS_VERSION:?set GITLAB_KAS_TAG or GITLAB_KAS_VERSION}}
+  CNG_TOOLBOX_TAG: ${GITLAB_TOOLBOX_TAG:-${CI_COMMIT_SHA:?set CI_COMMIT_SHA or GITLAB_TOOLBOX_TAG}}
+  CNG_SIDEKIQ_TAG: ${GITLAB_SIDEKIQ_TAG:-${CI_COMMIT_SHA:?set CI_COMMIT_SHA or GITLAB_SIDEKIQ_TAG}}
+  CNG_WEBSERVICE_TAG: ${GITLAB_WEBSERVICE_TAG:-${CI_COMMIT_SHA:?set CI_COMMIT_SHA or GITLAB_WEBSERVICE_TAG}}
+  CNG_WORKHORSE_TAG: ${GITLAB_WORKHORSE_TAG:-${CI_COMMIT_SHA:?set CI_COMMIT_SHA or GITLAB_WORKHORSE_TAG}}
+  CNG_REGISTRY_TAG: ${GITLAB_CONTAINER_REGISTRY_TAG:-${CI_COMMIT_SHA:?set CI_COMMIT_SHA or GITLAB_CONTAINER_REGISTRY_TAG}}
 
 deployers:
   # gitlab-dev-stack writes its secrets here, so create it first
@@ -82,27 +91,26 @@ deployers:
             global.gatewayApi.configureCertmanager: false
             gatewayApiResources.gateway.protocol: HTTP
 
-            # Tags resolved by scripts/cng-image-tags.sh
             gitlab.gitaly.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly
-            gitlab.gitaly.image.tag: ${CAPRONI_CNG_GITALY_TAG}
+            gitlab.gitaly.image.tag: ${CNG_GITALY_TAG}
             gitlab.gitlab-shell.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell
-            gitlab.gitlab-shell.image.tag: ${CAPRONI_CNG_GITLAB_SHELL_TAG}
+            gitlab.gitlab-shell.image.tag: ${CNG_GITLAB_SHELL_TAG}
             gitlab.migrations.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-toolbox-ee
-            gitlab.migrations.image.tag: ${CAPRONI_CNG_TOOLBOX_TAG}
+            gitlab.migrations.image.tag: ${CNG_TOOLBOX_TAG}
             gitlab.toolbox.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-toolbox-ee
-            gitlab.toolbox.image.tag: ${CAPRONI_CNG_TOOLBOX_TAG}
+            gitlab.toolbox.image.tag: ${CNG_TOOLBOX_TAG}
             gitlab.sidekiq.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee
-            gitlab.sidekiq.image.tag: ${CAPRONI_CNG_SIDEKIQ_TAG}
+            gitlab.sidekiq.image.tag: ${CNG_SIDEKIQ_TAG}
             gitlab.sidekiq.annotations.commit: ${CI_COMMIT_SHORT_SHA}
             gitlab.webservice.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-webservice-ee
-            gitlab.webservice.image.tag: ${CAPRONI_CNG_WEBSERVICE_TAG}
+            gitlab.webservice.image.tag: ${CNG_WEBSERVICE_TAG}
             gitlab.webservice.annotations.commit: ${CI_COMMIT_SHORT_SHA}
             gitlab.webservice.workhorse.image: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee
-            gitlab.webservice.workhorse.tag: ${CAPRONI_CNG_WORKHORSE_TAG}
+            gitlab.webservice.workhorse.tag: ${CNG_WORKHORSE_TAG}
             gitlab.kas.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-kas
-            gitlab.kas.image.tag: ${CAPRONI_CNG_KAS_TAG}
+            gitlab.kas.image.tag: ${CNG_KAS_TAG}
             gitlab.registry.image.repository: registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-container-registry
-            gitlab.registry.image.tag: ${CAPRONI_CNG_REGISTRY_TAG}
+            gitlab.registry.image.tag: ${CNG_REGISTRY_TAG}
 
 cluster:
   driver: k3d

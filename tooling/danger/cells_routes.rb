@@ -35,7 +35,7 @@ module Tooling
         return unless applicable?
 
         comparison = compare
-        return if comparison.nil? || comparison.identical?
+        return if comparison.nil? || comparison.covered?
 
         warn(construct_message(comparison))
       rescue StandardError => e
@@ -123,13 +123,6 @@ module Tooling
       end
 
       def drift_detail(comparison)
-        if comparison.formatting_only?
-          return <<~DETAIL
-            No route was added or removed. Only the file format or extra per-route fields changed.
-            The HTTP Router parses this file, so the two copies still have to match byte for byte.
-          DETAIL
-        end
-
         lists = [
           template_list(comparison.gitlab_only, "GitLab but not in the HTTP Router"),
           template_list(comparison.router_only, "the HTTP Router but not in GitLab")

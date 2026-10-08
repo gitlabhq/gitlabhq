@@ -1,8 +1,4 @@
-import {
-  BIDI_CHARS,
-  BIDI_CHARS_CLASS_LIST,
-  BIDI_CHAR_TOOLTIP,
-} from '~/vue_shared/components/source_viewer/constants';
+import { BIDI_CHARS, BIDI_CHARS_CLASS_LIST, BIDI_CHAR_TOOLTIP } from '../constants';
 
 /**
  * Highlight.js plugin for wrapping BIDI chars.

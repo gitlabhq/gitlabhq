@@ -1,17 +1,14 @@
 <script>
-import { defineAsyncComponent } from 'vue';
 import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { parseBoolean } from '@gitlab/frontend-utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { i18n, STATE_CLOSED, STATE_OPEN, LINKED_CATEGORIES_MAP } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
-import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -49,17 +46,11 @@ export default {
     HelpIcon,
     WorkItemCloseConfirmModal,
     WorkItemStateToggle,
-    CommentTemperature: defineAsyncComponent(
-      () =>
-        import(
-          /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
-        ),
-    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glAbilitiesMixin(), glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin()],
   props: {
     workItemId: {
       type: String,
@@ -202,7 +193,6 @@ export default {
       toggleResolveChecked: this.isDiscussionResolved,
       emailParticipants: [],
       workItem: {},
-      isMeasuringCommentTemperature: false,
       isCancellingEdit: false,
       blockerItems: [],
       openChildItemsCount: 0,
@@ -228,9 +218,6 @@ export default {
         issue_email_participants: this.emailParticipants,
       };
     },
-    workItemTypeKey() {
-      return capitalizeFirstCharacter(this.workItemType).replace(' ', '');
-    },
     workItemTypeId() {
       return this.workItem?.workItemType?.id;
     },
@@ -248,9 +235,6 @@ export default {
     },
     showInternalNoteCheckbox() {
       return this.canMarkNoteAsInternal && this.isNewDiscussion;
-    },
-    currentUserId() {
-      return window.gon.current_user_id;
     },
     restrictedToolBarItems() {
       if (this.hideFullscreenMarkdownButton) {
@@ -418,15 +402,7 @@ export default {
       this.$emit('cancel-editing');
       clearDraft(this.autosaveKey);
     },
-    async submitForm(shouldMeasureTemperature = true) {
-      this.isMeasuringCommentTemperature =
-        this.glAbilities.measureCommentTemperature && shouldMeasureTemperature;
-
-      if (this.isMeasuringCommentTemperature) {
-        this.$refs.commentTemperature.measureCommentTemperature();
-        return;
-      }
-
+    async submitForm() {
       const isUploadingFile = this.$el.querySelector('.uploading-progress-container:not(.hide)');
       if (this.isSubmitting || isUploadingFile) {
         return;
@@ -500,15 +476,6 @@ export default {
             @keydown.esc.stop="cancelEditing"
           />
         </comment-field-layout>
-        <comment-temperature
-          v-if="glAbilities.measureCommentTemperature"
-          ref="commentTemperature"
-          v-model="commentText"
-          :item-id="workItemId"
-          :item-type="workItemTypeKey"
-          :user-id="currentUserId"
-          @save="submitForm(false)"
-        />
         <div class="note-form-actions" data-testid="work-item-comment-form-actions">
           <div v-if="showResolveDiscussionToggle">
             <label>
@@ -538,7 +505,7 @@ export default {
               category="primary"
               variant="confirm"
               data-testid="confirm-button"
-              :disabled="!commentText.length || isMeasuringCommentTemperature"
+              :disabled="!commentText.length"
               :loading="isSubmitting"
               @click="submitForm()"
               >{{ commentButtonTextComputed }}
@@ -551,7 +518,6 @@ export default {
               :work-item-type="workItemType"
               :full-path="fullPath"
               :has-comment="Boolean(commentText.length)"
-              :disabled="Boolean(commentText.length) && isMeasuringCommentTemperature"
               :parent-id="parentId"
               can-update
               @submit-comment="submitForm()"

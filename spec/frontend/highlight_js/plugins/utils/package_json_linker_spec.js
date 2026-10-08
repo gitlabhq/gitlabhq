@@ -1,4 +1,4 @@
-import packageJsonLinker from '~/vue_shared/components/source_viewer/plugins/utils/package_json_linker';
+import packageJsonLinker from '~/highlight_js/plugins/utils/package_json_linker';
 import { PACKAGE_JSON_CONTENT } from '../mock_data';
 
 describe('Highlight.js plugin for linking package.json dependencies', () => {

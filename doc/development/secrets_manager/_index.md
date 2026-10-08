@@ -8,12 +8,26 @@ ignore_in_report: true
 
 GitLab Secrets Manager stores secrets in OpenBao, an open source secrets management engine.
 GitLab runs OpenBao as a backing service and manages it through a Rails service layer.
-All Secrets Manager code is EE-only and lives under `ee/`.
+All Secrets Manager code is GitLab Enterprise Edition (EE) only and lives under `ee/`.
 The feature category is `secrets_management`.
-If you are new to the team, start with [Set up Secrets Manager locally](local_setup.md) to get a working environment first.
 
-Most of this page covers backend work, meaning the Rails service layer, the OpenBao client, and RSpec.
-Frontend work needs a smaller setup, covered in [Frontend development](#frontend-development) on this page.
+Read the page that matches your task:
+
+- [Set up Secrets Manager locally](local_setup.md) to get a working GitLab Development Kit (GDK) environment.
+- [Secrets Manager architecture](architecture.md) for the data model, OpenBao namespace layout, and what GitLab sends the runner.
+- [Secrets Manager change guidelines](change_guidelines.md) before you write or review any Secrets Manager change.
+- [Secrets Manager states and side effects](states_and_side_effects.md) before you change provisioning, deprovisioning, secret writes, enrollment, or entitlement.
+- [Secrets Manager fulfillment and entitlement](fulfillment.md) before you change trials, billing, entitlement checks, or read-only behavior.
+- [Secrets Manager enrollment](enrollment.md) for namespace and instance enrollment and how availability uses them.
+- [Secrets Manager services](services.md) to add or change a service.
+- [Secrets Manager GraphQL API](graphql.md) to add or change a type, mutation, or resolver.
+- [Secrets Manager OpenBao client and authentication](openbao_client.md) for the client, JWTs, Common Expression Language (CEL) programs, and access control list (ACL) policies.
+- [Secrets Manager workers and policies](workers_and_policies.md) for background workers, cron jobs, authorization policies, and audit logs.
+- [Secrets Manager performance](performance.md) before you change hot paths like CI job pickup, secret writes, or OpenBao calls.
+- [Secrets Manager testing](testing.md) for spec helpers, factories, shared examples, and Kubernetes testing.
+- [Secrets Manager frontend development](frontend.md) to work on the Vue application and its specs.
+
+If you change behavior that a page describes, update the page in the same merge request.
 
 ## How it fits together
 
@@ -28,21 +42,29 @@ A token for one namespace can only read that namespace.
 Cross-level access in CI, for example a project reading a group's secrets, is handled explicitly by GitLab, not by OpenBao.
 
 GitLab authenticates to OpenBao with JWTs.
-OpenBao validates these JWTs by fetching the GitLab OIDC discovery document, so GitLab must be reachable over HTTP for OpenBao operations to work.
+OpenBao validates these JWTs by fetching the GitLab OpenID Connect (OIDC) discovery document.
+This means GitLab must be reachable over HTTP for OpenBao operations to work.
 
 ## Availability gates
 
-Three conditions must all be true before Secrets Manager is available.
+Two conditions must both be true before Secrets Manager is available.
 All checks go through `SecretsManagement::Availability` at `ee/lib/secrets_management/availability.rb`.
 
 - License. The `native_secrets_management` licensed feature, which is available on Premium and above.
-- Feature flag. `secrets_manager` for projects, `group_secrets_manager` for groups. Both are `type: beta` and `default_enabled: true`.
 - Enrollment. On GitLab.com, enrollment is per top-level group (`SecretsManagement::NamespaceEnrollment`). On GitLab Self-Managed, including the GDK, enrollment is the instance-wide `secrets_manager_instance_enrolled` application setting, which defaults to `false`.
 
 The gates are combined with AND.
-Turning off the feature flag, or removing the enrollment record, makes Secrets Manager unavailable right away, including for CI jobs that are already running.
+Turning off enrollment makes Secrets Manager unavailable right away.
+CI jobs picked up after that get no secrets, and jobs that are already running keep the secrets they received.
+During rollout, feature flags also control availability, one for projects and one for groups.
+The flags are planned for removal.
+
+Entitlement is a separate, additional gate based on trial and billing status.
+For details, see [Entitlement states](fulfillment.md#entitlement-states).
 
 ## Code map
+
+Use this table to find where a given kind of Secrets Manager code lives.
 
 | What | Where |
 |------|-------|
@@ -60,6 +82,9 @@ Turning off the feature flag, or removing the enrollment record, makes Secrets M
 | Frontend tests | `ee/spec/frontend/ci/secrets/` |
 
 ## Patterns to know before you write code
+
+These patterns repeat across the Secrets Manager codebase.
+Knowing them before you write code helps you avoid the most common bugs.
 
 ### Secrets are not ActiveRecord
 
@@ -84,7 +109,7 @@ Concurrent writes to the same project return an error.
 ### Metadata check-and-set
 
 Updates pass a `metadata_cas` value that must match the current metadata version.
-The check provides optimistic concurrency control.
+This stops two updates from silently overwriting each other, a pattern known as optimistic concurrency control.
 
 ### Two-phase writes
 
@@ -97,81 +122,16 @@ Map it to a safe message instead.
 
 ### Groups are not projects
 
-Project secrets take a `branch` parameter, group secrets take a `protected` parameter.
-They also differ in policy refresh timing and helper locations.
+Project secrets take a `branch` parameter, and group secrets take a `protected` parameter.
+The two sides also differ in default role grants and in how transfer works.
 Check the group code path separately when you change project code.
+For the full list, see [Project and group differences](states_and_side_effects.md#project-and-group-differences).
 
 ### Deprovision is task-driven and asynchronous
 
-An initiate service records a maintenance task with snapshot IDs, and a worker reads the task and runs the OpenBao cleanup.
+Deleting a secrets manager row fires a database trigger that records a deprovision task.
+A worker reads the task and runs the OpenBao cleanup.
 Cleanup can then finish after the parent project or group is already gone.
-
-## Testing
-
-Any spec that talks to OpenBao must carry the `:gitlab_secrets_manager` RSpec tag.
-The tag is wired up in `ee/spec/spec_helper.rb`.
-
-The tag does the following automatically for each example:
-
-- Stubs the `native_secrets_management` licensed feature.
-- Stubs `ci_jwt_signing_key` with a test key pair from `ee/spec/fixtures/secrets_manager/`.
-- Starts a local OpenBao development server.
-- Configures JWT auth.
-- Resets the KV secrets engines after the example finishes.
-
-The first tagged spec run builds the OpenBao test binary, so expect it to take a while.
-Later runs reuse the binary.
-Use `:skip_openbao_setup` metadata to opt an example out of the server setup.
-
-Example commands:
-
-```shell
-bundle exec rspec ee/spec/services/secrets_management/
-bundle exec rspec ee/spec/requests/api/graphql/secrets_management/
-```
-
-Enrollment test helpers (`SecretsManagement::EnrollmentHelpers`) are included for all EE specs, so you do not need the `:gitlab_secrets_manager` tag just to set up enrollment.
-
-Specs use a hard-coded JWKS instead of OIDC discovery, so specs do not need a running web server.
-Local manual testing does need one.
-
-## Testing against a Kubernetes cluster
-
-The GDK cannot cover every case.
-If you need OpenBao running inside a Kubernetes cluster, for example to test the External Secrets Operator against it, use [Caproni](https://gitlab.com/gitlab-org/caproni), which deploys GitLab and OpenBao to a local cluster.
-For support, ask in the `#proj_caproni` Slack channel.
-
-## Frontend development
-
-The Secrets Manager frontend is a Vue application with Vue Router and Apollo.
-It lives at `ee/app/assets/javascripts/ci/secrets/`, and `index.js` mounts `components/secrets_app.vue`.
-
-### Code layout
-
-- `components/secrets_table/`, `components/secret_form/`, and `components/secret_details/` hold the feature components.
-- `graphql/queries/` and `graphql/mutations/` hold the GraphQL documents, colocated with the app.
-- `router.js` defines the routes, and `constants.js` and `context_config.js` hold the shared configuration.
-- The settings toggle component is outside this tree, at `ee/app/assets/javascripts/pages/projects/shared/permissions/secrets_manager/`.
-
-### Running frontend tests
-
-Specs live at `ee/spec/frontend/ci/secrets/`, mirroring the source layout.
-Run them with this command:
-
-```shell
-yarn jest ee/spec/frontend/ci/secrets/
-```
-
-The specs mock the GraphQL layer with `createMockApollo`, so they do not need OpenBao, a license, or enrollment.
-You can run the whole suite against a plain GDK.
-Shared fixtures are in `ee/spec/frontend/ci/secrets/mock_data.js`.
-
-You still need the full backend setup, described in the local setup page, when you want to exercise the feature in a browser rather than in a spec.
-
-For more general frontend guidance, see:
-
-- [Frontend development guidelines](../fe_guide/_index.md)
-- [Frontend testing guide](../testing_guide/frontend_testing.md)
 
 ## Related documentation
 

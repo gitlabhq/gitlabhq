@@ -94,6 +94,20 @@ describe('issue_note_form component', () => {
     expect(wrapper.text()).toContain('Switch to rich text editing');
   });
 
+  describe('markdown editor', () => {
+    it('shows markdown editor', () => {
+      createComponentWrapper();
+
+      expect(wrapper.findComponent(MarkdownEditor).exists()).toBe(true);
+    });
+
+    it('passes down restoreFromAutosave prop to the editor', () => {
+      createComponentWrapper({ restoreFromAutosave: true });
+
+      expect(wrapper.findComponent(MarkdownEditor).props('restoreFromAutosave')).toBe(true);
+    });
+  });
+
   describe('conflicts editing', () => {
     beforeEach(() => {
       createComponentWrapper();

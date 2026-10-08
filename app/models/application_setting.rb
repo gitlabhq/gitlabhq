@@ -102,6 +102,27 @@ class ApplicationSetting < ApplicationRecord
 
   sanitizes! :default_branch_name
 
+  # These two are shared by the setting's validation and the Code dropdown helper, so the
+  # two can't disagree about which schemes are usable.
+
+  # Returns the URL's scheme when it is syntactically a scheme.
+  #
+  # @param url [String, nil]
+  # @return [String, nil] the scheme, or nil when the URL has none
+  def self.code_dropdown_url_scheme(url)
+    scheme = Gitlab::Utils.parse_url(url)&.scheme
+
+    scheme if scheme.present? && scheme.match?(CODE_DROPDOWN_SCHEME_FORMAT)
+  end
+
+  # Checks if the scheme is one that is not safe in a link, for example `javascript`.
+  #
+  # @param scheme [String]
+  # @return [Boolean]
+  def self.code_dropdown_scheme_blocked?(scheme)
+    CODE_DROPDOWN_BLOCKED_SCHEMES.include?(scheme.to_s.downcase)
+  end
+
   def self.kroki_formats_attributes
     {
       blockdiag: {
@@ -1654,15 +1675,15 @@ class ApplicationSetting < ApplicationRecord
   # cleanly, so the scheme is checked separately to keep script-executing URLs out of the
   # rendered href. See doc/development/secure_coding_guidelines.md.
   def validate_code_dropdown_template_url(template, index, label)
-    scheme = Gitlab::Utils.parse_url(template)&.scheme
+    scheme = self.class.code_dropdown_url_scheme(template)
 
-    if scheme.blank? || !scheme.match?(CODE_DROPDOWN_SCHEME_FORMAT)
+    if scheme.blank?
       errors.add(:code_dropdown_custom_clients,
         format(_('entry %{index} %{label}: must be a valid URL with a scheme'), index: index + 1, label: label))
       return false
     end
 
-    return true unless CODE_DROPDOWN_BLOCKED_SCHEMES.include?(scheme.downcase)
+    return true unless self.class.code_dropdown_scheme_blocked?(scheme)
 
     errors.add(:code_dropdown_custom_clients,
       format(_('entry %{index} %{label}: scheme "%{scheme}" is not allowed'),

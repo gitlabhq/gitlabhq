@@ -1,7 +1,6 @@
 import { sprintf } from '~/locale';
 import {
   updateNoteErrorMessage,
-  isSlashCommand,
   getNoteFormErrorMessages,
   shouldRenderAsDuoSystemNote,
   findStartedNoteForReply,
@@ -91,27 +90,6 @@ describe('note utils', () => {
     it('returns default error when response is null', () => {
       expect(getNoteFormErrorMessages(null)).toEqual([COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK]);
     });
-  });
-
-  describe('isSlashCommand', () => {
-    it.each`
-      message                              | shouldBeSlashCommand
-      ${'/close'}                          | ${true}
-      ${'/label ~bug'}                     | ${true}
-      ${'/assign @user'}                   | ${true}
-      ${'This is not a slash command'}     | ${false}
-      ${'Messsage with a / in the middle'} | ${false}
-      ${' /not-a-command'}                 | ${false}
-      ${'\n\n/command'}                    | ${true}
-      ${''}                                | ${false}
-      ${null}                              | ${false}
-      ${undefined}                         | ${false}
-    `(
-      'when passed `$message` as a message parameter it returns `$shouldBeSlashCommand`',
-      ({ message, shouldBeSlashCommand } = {}) => {
-        expect(isSlashCommand(message)).toBe(shouldBeSlashCommand);
-      },
-    );
   });
 
   describe('shouldRenderAsDuoSystemNote', () => {

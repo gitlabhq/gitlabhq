@@ -37395,6 +37395,7 @@ Fields:
 | <a id="artifactregistryrepositorydetails-packages"></a>`packages` {{< icon name="warning-solid" >}} | [`ArtifactRegistryPackageConnection`](#artifactregistrypackageconnection) | Introduced in GitLab 19.3. Status: Experiment. Packages the repository holds, ordered by name. Can be selected once per operation, so one operation reads packages for one repository. Returns `null` for a virtual repository, for a repository holding images, for a repository that is gone, and when Artifact Registry rejects the read. |
 | <a id="artifactregistryrepositorydetails-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRemoteSettings`](#artifactregistryremotesettings) | Introduced in GitLab 19.3. Status: Experiment. Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. |
 | <a id="artifactregistryrepositorydetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
+| <a id="artifactregistryrepositorydetails-statistics"></a>`statistics` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryStatistics`](#artifactregistryrepositorystatistics) | Introduced in GitLab 19.5. Status: Experiment. Read-time package or image count of a hosted repository. Can be selected once per operation. Returns `null` without a read for a remote or virtual repository, and `null` for a repository that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryrepositorydetails-updatedby"></a>`updatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.4. Status: Experiment. User who last changed the repository. Null when the editor is unknown or no longer exists. |
 | <a id="artifactregistryrepositorydetails-upstreamrepositories"></a>`upstreamRepositories` {{< icon name="warning-solid" >}} | [`[ArtifactRegistryUpstreamRepositoryAssociation!]`](#artifactregistryupstreamrepositoryassociation) | Introduced in GitLab 19.5. Status: Experiment. Upstream repositories a virtual repository resolves through, in resolution order. Can be selected once per operation. Returns `null` for a hosted or remote repository, for a repository that is gone, and when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryrepositorydetails-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryPermissions!`](#artifactregistryrepositorypermissions) | Introduced in GitLab 19.5. Status: Experiment. Permissions Artifact Registry grants the current user on the repository. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
@@ -37497,6 +37498,17 @@ Fields:
 | <a id="artifactregistryrepositorypermissions-readrepository"></a>`readRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can read the repository and its metadata. |
 | <a id="artifactregistryrepositorypermissions-updaterepository"></a>`updateRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change the repository's settings. |
 | <a id="artifactregistryrepositorypermissions-updaterepositoryupstream"></a>`updateRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change an upstream of the repository. |
+
+### `ArtifactRegistryRepositoryStatistics`
+
+Read-time statistics for a hosted repository in Artifact Registry.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositorystatistics-imagescount"></a>`imagesCount` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.5. Status: Experiment. Number of images the repository holds, computed at read time. `null` for a repository holding packages. |
+| <a id="artifactregistryrepositorystatistics-packagescount"></a>`packagesCount` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.5. Status: Experiment. Number of packages the repository holds, computed at read time. `null` for a repository holding images. |
 
 ### `ArtifactRegistryRoleAssignment`
 

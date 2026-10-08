@@ -1,6 +1,6 @@
 import hljsCore from 'highlight.js/lib/core';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
-import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
+import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/highlight_js/constants';
 import { highlightContent } from '~/highlight_js';
 
 jest.mock('highlight.js/lib/core');

@@ -54,6 +54,14 @@ clone-gitlab-repo:
       - 128  # get_sources exhaustion from Gitaly load-shedding
       - 201  # low free disk space; repeated from .default-retry because deep merge replaces arrays
   script:
+    # The variable below should keep the pool off this checkout. Verify it, rather than
+    # trust it: a borrowed .git is unusable on the VMs that download this artifact, and a
+    # runner is free to set GIT_ALTERNATE_OBJECT_DIRECTORIES for reasons of its own.
+    - |
+      if [ -n "$GIT_ALTERNATE_OBJECT_DIRECTORIES" ] || [ -e .git/objects/info/alternates ]; then
+        echo "This checkout borrows objects from a VM-local git object pool and cannot be an artifact."
+        exit 1
+      fi
     # The runner injects CI_JOB_TOKEN into .git/config both as an
     # authenticated remote URL and as an http.extraheader entry.
     # Strip both before the artifact is captured so the token is not
@@ -63,6 +71,9 @@ clone-gitlab-repo:
     - git config --unset-all http.extraheader || true
   variables:
     GIT_STRATEGY: clone
+    # The checkout becomes an artifact used on other VMs, so it must not borrow objects
+    # from the per-VM git object pool.
+    GIT_ALTERNATE_OBJECT_DIRECTORIES: ""
   artifacts:
     paths:
       - '*'

@@ -1,5 +1,5 @@
 <script>
-import { GlPopover, GlDashboardPanel } from '@gitlab/ui';
+import { GlPopover, GlDashboardPanel, GlResizeObserverDirective } from '@gitlab/ui';
 import { alertVariantIconMap } from '@gitlab/ui/src/utils/constants';
 import { isObject } from 'lodash-es';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
@@ -18,6 +18,9 @@ export default {
   components: {
     GlPopover,
     GlDashboardPanel,
+  },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [glSlotsMixin],
   props: {
@@ -82,6 +85,7 @@ export default {
   data() {
     return {
       dropdownOpen: false,
+      bodyOverflows: false,
     };
   },
   computed: {
@@ -103,6 +107,12 @@ export default {
     },
     showAlertPopover() {
       return this.showAlertState && !this.dropdownOpen;
+    },
+  },
+  methods: {
+    updateBodyOverflows() {
+      const { scrollHeight, clientHeight } = this.$refs.bodyContent;
+      this.bodyOverflows = scrollHeight > clientHeight;
     },
   },
   PANEL_POPOVER_DELAY: {
@@ -144,14 +154,19 @@ export default {
       <!-- TODO: remove once https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3629 adds a real #footer slot.
            GlDashboardPanel has none, so the body is split to keep the footer pinned. -->
       <div v-if="glSlots().footer" class="gl-flex gl-h-full gl-flex-col">
-        <!-- Focusable because it scrolls: a keyboard user has no other way to reach
-             content the footer has pushed out of view. -->
+        <!-- Focusable while it scrolls: a keyboard user has no other way to reach
+             content the footer has pushed out of view. Both sizes are observed because
+             either the panel or its content can grow. -->
         <div
+          ref="bodyContent"
+          v-gl-resize-observer="updateBodyOverflows"
           class="gl-min-h-0 gl-grow gl-overflow-y-auto"
-          tabindex="0"
+          :tabindex="bodyOverflows ? 0 : null"
           data-testid="panel-body-content"
         >
-          <slot name="body"></slot>
+          <div v-gl-resize-observer="updateBodyOverflows" data-testid="panel-body-content-inner">
+            <slot name="body"></slot>
+          </div>
         </div>
         <div class="gl-mt-3 gl-shrink-0" data-testid="panel-footer">
           <!-- @slot Content pinned below the panel body. -->

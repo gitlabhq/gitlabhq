@@ -200,11 +200,17 @@ module TreeHelper
     Array(Gitlab::CurrentSettings.code_dropdown_custom_clients).filter_map do |entry|
       next unless entry.is_a?(Hash)
 
-      {
+      client = {
         name: entry['name'],
         ssh_url: substitute_code_dropdown_clone_url(entry['ssh_url_template'], ssh_url),
         http_url: substitute_code_dropdown_clone_url(entry['http_url_template'], http_url)
       }
+
+      # An entry needs only one template. If the instance disables that protocol, or the template
+      # fails the scheme check, the client has nothing left to link to and would never render.
+      next if client[:ssh_url].nil? && client[:http_url].nil?
+
+      client
     end
   end
 
@@ -218,10 +224,9 @@ module TreeHelper
   end
 
   def code_dropdown_url_scheme_allowed?(url)
-    scheme = Gitlab::Utils.parse_url(url)&.scheme
-    return false if scheme.blank? || !scheme.match?(ApplicationSetting::CODE_DROPDOWN_SCHEME_FORMAT)
+    scheme = ApplicationSetting.code_dropdown_url_scheme(url)
 
-    ApplicationSetting::CODE_DROPDOWN_BLOCKED_SCHEMES.exclude?(scheme.downcase)
+    scheme.present? && !ApplicationSetting.code_dropdown_scheme_blocked?(scheme)
   end
 
   def download_links(project, ref, archive_prefix, ref_type)

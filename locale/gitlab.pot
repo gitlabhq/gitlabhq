@@ -11117,12 +11117,6 @@ msgstr ""
 msgid "An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present."
 msgstr ""
 
-msgid "An error occured when subscribing to the comment temperature updates. Please try again."
-msgstr ""
-
-msgid "An error occured while parsing comment temperature. Please try again."
-msgstr ""
-
 msgid "An error occurred archiving this group. Please refresh the page to try again."
 msgstr ""
 
@@ -21719,9 +21713,6 @@ msgid "Comment '%{label}' position"
 msgstr ""
 
 msgid "Comment added to the timeline."
-msgstr ""
-
-msgid "Comment anyway"
 msgstr ""
 
 msgid "Comment could not be submitted: %{reason}."
@@ -37871,9 +37862,6 @@ msgstr ""
 msgid "Failed to mark this %{work_item_type} as duplicate due to insufficient permissions."
 msgstr ""
 
-msgid "Failed to measure the comment temperature. Please try again."
-msgstr ""
-
 msgid "Failed to move this issue because label was not found."
 msgstr ""
 
@@ -52388,6 +52376,9 @@ msgstr ""
 msgid "Merge request is blocked by the maximum number of merge requests (%{max_count})"
 msgstr ""
 
+msgid "Merge request merged via another merge request, skipping compliance violations"
+msgstr ""
+
 msgid "Merge request must be open."
 msgstr ""
 
@@ -59947,6 +59938,9 @@ msgstr ""
 msgid "Organization|GitLab usernames"
 msgstr ""
 
+msgid "Organization|Give Organization feedback"
+msgstr ""
+
 msgid "Organization|Go to Artifact Registry"
 msgstr ""
 
@@ -64683,9 +64677,6 @@ msgid "Problem with %{name} command: %{message}."
 msgstr ""
 
 msgid "Proceed"
-msgstr ""
-
-msgid "Proceed with caution."
 msgstr ""
 
 msgid "Product Designer"
@@ -89242,9 +89233,6 @@ msgstr ""
 msgid "Updated date"
 msgstr ""
 
-msgid "Updated. Check again"
-msgstr ""
-
 msgid "Updating"
 msgstr ""
 
@@ -93895,9 +93883,6 @@ msgstr ""
 msgid "We found your token in a public project and have automatically revoked it to protect your account."
 msgstr ""
 
-msgid "We have detected that your message might be composed against %{linkStart}our guidelines%{linkEnd}. Please review our findings below:"
-msgstr ""
-
 msgid "We recommend a work email address."
 msgstr ""
 
@@ -94803,6 +94788,12 @@ msgstr ""
 msgid "WikiPage|Delete sidebar"
 msgstr ""
 
+msgid "WikiPage|Discard changes and switch"
+msgstr ""
+
+msgid "WikiPage|Discard plain text changes?"
+msgstr ""
+
 msgid "WikiPage|For templates, the path is generated from the title and cannot be edited."
 msgstr ""
 
@@ -94810,6 +94801,9 @@ msgid "WikiPage|Format"
 msgstr ""
 
 msgid "WikiPage|Generate path from title"
+msgstr ""
+
+msgid "WikiPage|Keep editing in plain text"
 msgstr ""
 
 msgid "WikiPage|Page path"
@@ -94834,6 +94828,9 @@ msgid "WikiPage|Save changes with message"
 msgstr ""
 
 msgid "WikiPage|Save template"
+msgstr ""
+
+msgid "WikiPage|Switching to rich text will discard changes made in plain text. Continue?"
 msgstr ""
 
 msgid "WikiPage|Template title"

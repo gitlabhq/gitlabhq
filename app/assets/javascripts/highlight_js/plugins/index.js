@@ -1,7 +1,7 @@
-import wrapChildNodes from '~/vue_shared/components/source_viewer/plugins/wrap_child_nodes';
-import wrapBidiChars from '~/vue_shared/components/source_viewer/plugins/wrap_bidi_chars';
-import linkDependencies from '~/vue_shared/components/source_viewer/plugins/link_dependencies';
-import wrapLines from '~/vue_shared/components/source_viewer/plugins/wrap_lines';
+import wrapChildNodes from './wrap_child_nodes';
+import wrapBidiChars from './wrap_bidi_chars';
+import linkDependencies from './link_dependencies';
+import wrapLines from './wrap_lines';
 
 const HLJS_ON_AFTER_HIGHLIGHT = 'after:highlight';
 

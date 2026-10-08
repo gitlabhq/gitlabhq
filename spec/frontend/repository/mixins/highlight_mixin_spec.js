@@ -2,19 +2,19 @@ import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
-import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
+import { splitIntoChunks } from '~/highlight_js/workers/highlight_utils';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEXT_FILE_TYPE } from '~/repository/constants';
+import { LINES_PER_CHUNK } from '~/highlight_js/constants';
 import {
-  LINES_PER_CHUNK,
   EVENT_ACTION,
   EVENT_LABEL_FALLBACK,
 } from '~/vue_shared/components/source_viewer/constants';
 import Tracking from '~/tracking';
 
-jest.mock('~/vue_shared/components/source_viewer/workers/highlight_utils', () => ({
+jest.mock('~/highlight_js/workers/highlight_utils', () => ({
   splitIntoChunks: jest.fn().mockResolvedValue([]),
 }));
 

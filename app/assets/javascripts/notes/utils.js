@@ -108,11 +108,3 @@ export const findStartedNoteForReply = (incomingNotes, discussions) => {
 
   return null;
 };
-
-export const isSlashCommand = (message) => {
-  const trimmedMessage = message
-    ?.split('\n')
-    .filter((line) => line.trim() !== '')
-    .join('\n');
-  return trimmedMessage?.startsWith('/') || false;
-};

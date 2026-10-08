@@ -1,4 +1,4 @@
-import composerJsonLinker from '~/vue_shared/components/source_viewer/plugins/utils/composer_json_linker';
+import composerJsonLinker from '~/highlight_js/plugins/utils/composer_json_linker';
 import { COMPOSER_JSON_EXAMPLES } from '../mock_data';
 
 describe('Highlight.js plugin for linking composer.json dependencies', () => {

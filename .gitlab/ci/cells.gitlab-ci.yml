@@ -29,5 +29,8 @@ cells-routes:router-in-sync:
     - .cells:rules:routes-router-in-sync
   stage: lint
   needs: []
+  # Non-blocking until a check of how the router classifies new routes replaces it:
+  # https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/954
+  allow_failure: true
   script:
     - scripts/cells/check_router_routes_sync.rb

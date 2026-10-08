@@ -1,4 +1,4 @@
-import goSumLinker from '~/vue_shared/components/source_viewer/plugins/utils/go_sum_linker';
+import goSumLinker from '~/highlight_js/plugins/utils/go_sum_linker';
 
 describe('Highlight.js plugin for linking go.sum dependencies', () => {
   it('mutates the input value by wrapping dependencies and tags in anchors', () => {

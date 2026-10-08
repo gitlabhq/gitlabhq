@@ -1,8 +1,5 @@
-import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
-import {
-  highlight,
-  splitIntoChunks,
-} from '~/vue_shared/components/source_viewer/workers/highlight_utils';
+import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/highlight_js/constants';
+import { highlight, splitIntoChunks } from '~/highlight_js/workers/highlight_utils';
 import { highlightContent } from '~/highlight_js';
 
 jest.mock('~/highlight_js');

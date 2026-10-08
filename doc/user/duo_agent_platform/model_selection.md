@@ -29,6 +29,7 @@ For some features, you can select a different model, which persists until you ch
 - Default LLM for Business Logic Security Scan [set](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7077) to Claude Sonnet 5 Gemini Enterprise Agent Platform on October 2, 2026.
 - Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7238) to Claude Sonnet 5.5 Gemini Enterprise Agent Platform on October 5, 2026.
 - [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258913) for Recommend Reviewers Flow introduced in GitLab 19.5.
+- Default LLM for GitLab Duo Agentic Chat, GitLab Duo Developer, and all other agents [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7346) to Claude Sonnet 5.5 Gemini Enterprise Agent Platform on October 7, 2026.
 
 {{< /history >}}
 
@@ -36,12 +37,13 @@ This table lists the default model for each feature in the Agent Platform.
 
 | Feature | Model |
 |-------|--------------|
-| GitLab Duo Agentic Chat | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
+| GitLab Duo Agentic Chat | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
 | Code Review Flow[^earlier-code-review] | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
 | Security Review Flow | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 | Business Logic Security Scan[^bl-security-experiment] | Claude Sonnet 5 Gemini Enterprise Agent Platform |
 | Recommend Reviewers Flow | Claude Haiku 4.5 Gemini Enterprise Agent Platform |
-| All other agents | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
+| GitLab Duo Developer | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
+| All other agents | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
 
 [^earlier-code-review]: For GitLab 19.0 or earlier, Code Review Flow uses the [default LLM](../gitlab_duo/model_selection.md#default-models)
     set for GitLab Duo Code Review, the non-agentic version.

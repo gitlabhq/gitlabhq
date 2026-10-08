@@ -73,9 +73,7 @@ through `RouterSnapshot.job_token` so it counts as authenticated.
 ## SnapshotComparison
 
 Compares the snapshot committed in GitLab with the copy the HTTP Router mirrors. The verdict is
-byte equality, because the router parses the file and a serialization change matters as much as a
-missing route. The template sets are compared separately, only to explain a byte difference in
-terms a route author can act on.
+coverage: the router must have every GitLab template. Templates that only the router has are allowed.
 
 ```ruby
 comparison = Gitlab::Cells::HttpRouter::SnapshotComparison.new(
@@ -83,10 +81,9 @@ comparison = Gitlab::Cells::HttpRouter::SnapshotComparison.new(
   router_payload: downloaded_body
 )
 
-comparison.identical?       # => false
-comparison.formatting_only? # => false when a template moved
-comparison.router_only      # => templates GitLab no longer has
-comparison.gitlab_only      # => templates the router has not seen
+comparison.covered?    # => false when the router lacks a GitLab template
+comparison.router_only # => templates GitLab no longer has
+comparison.gitlab_only # => templates the router has not seen
 ```
 
 A payload that is not a routing snapshot, such as a 404 error page, raises

@@ -81,7 +81,7 @@ RSpec.describe Tooling::Danger::CellsRoutes, feature_category: :tooling do
 
       context 'when the merge request does not change the snapshot' do
         let(:changed_files)  { ['app/models/user.rb'] }
-        let(:router_payload) { payload('/only-router') }
+        let(:router_payload) { payload }
 
         it_behaves_like 'a skipped check'
       end
@@ -91,7 +91,7 @@ RSpec.describe Tooling::Danger::CellsRoutes, feature_category: :tooling do
       %w[17-8-stable 17-8-stable-ee 17-8-stable-jh].each do |branch|
         context "when the merge request targets #{branch}" do
           let(:target_branch)  { branch }
-          let(:router_payload) { payload('/only-router') }
+          let(:router_payload) { payload }
 
           it_behaves_like 'a skipped check'
         end
@@ -100,7 +100,7 @@ RSpec.describe Tooling::Danger::CellsRoutes, feature_category: :tooling do
       context 'when the project is FOSS' do
         let(:project_name)   { 'gitlab-foss' }
         let(:project_path)   { 'gitlab-org/gitlab-foss' }
-        let(:router_payload) { payload('/only-router') }
+        let(:router_payload) { payload }
 
         it_behaves_like 'a skipped check'
       end
@@ -112,7 +112,7 @@ RSpec.describe Tooling::Danger::CellsRoutes, feature_category: :tooling do
         context "when the project is JiHu (#{path})" do
           let(:project_name)   { path == 'gitlab-cn/gitlab' ? 'gitlab' : 'gitlab-jh-validation' }
           let(:project_path)   { path }
-          let(:router_payload) { payload('/only-router') }
+          let(:router_payload) { payload }
 
           it_behaves_like 'a skipped check'
         end
@@ -123,7 +123,7 @@ RSpec.describe Tooling::Danger::CellsRoutes, feature_category: :tooling do
     # gate runs there, so the rule has to run there too.
     context 'when the project is gitlab-org/security/gitlab' do
       let(:project_path)   { 'gitlab-org/security/gitlab' }
-      let(:router_payload) { payload('/only-router') }
+      let(:router_payload) { payload }
 
       it 'runs the check and warns on drift' do
         expect(cells_routes).to receive(:warn)
@@ -264,17 +264,22 @@ RSpec.describe Tooling::Danger::CellsRoutes, feature_category: :tooling do
       end
     end
 
-    context 'when only the serialization drifted' do
+    context 'when only the serialization differs' do
       let(:local_payload)  { payload('/shared', pretty: true) }
       let(:router_payload) { payload('/shared', pretty: false) }
 
-      it 'says no route was added or removed' do
-        expect(cells_routes).to receive(:warn) do |message|
-          expect(message).to include('No route was added or removed')
-          expect(message).not_to include('but not in')
-          # The template sets match, so the misrouting claim would be false.
-          expect(message).not_to include('wrong Cell')
-        end
+      it 'does not warn' do
+        expect(cells_routes).not_to receive(:warn)
+
+        cells_routes.check!
+      end
+    end
+
+    context 'when the router has templates GitLab does not have' do
+      let(:router_payload) { payload('/shared', '/only-router') }
+
+      it 'does not warn' do
+        expect(cells_routes).not_to receive(:warn)
 
         cells_routes.check!
       end

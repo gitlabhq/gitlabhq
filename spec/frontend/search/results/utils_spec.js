@@ -1,4 +1,4 @@
-import { highlight } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
+import { highlight } from '~/highlight_js/workers/highlight_utils';
 import {
   HIGHLIGHT_MARK,
   HIGHLIGHT_HTML_START,
@@ -15,7 +15,7 @@ import {
   truncateHtml,
 } from '~/search/results/utils';
 
-jest.mock('~/vue_shared/components/source_viewer/workers/highlight_utils', () => ({
+jest.mock('~/highlight_js/workers/highlight_utils', () => ({
   highlight: jest.fn(),
 }));
 

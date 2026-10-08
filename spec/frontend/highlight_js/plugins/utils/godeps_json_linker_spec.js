@@ -1,4 +1,4 @@
-import godepsJsonLinker from '~/vue_shared/components/source_viewer/plugins/utils/godeps_json_linker';
+import godepsJsonLinker from '~/highlight_js/plugins/utils/godeps_json_linker';
 
 const getInputValue = (dependencyString) =>
   `<span class="hljs-attr">&quot;ImportPath&quot;</span><span class="hljs-punctuation">:</span><span class=""> </span><span class="hljs-string">&quot;${dependencyString}&quot;</span>`;

@@ -1,4 +1,4 @@
-import wrapChildNodes from '~/vue_shared/components/source_viewer/plugins/wrap_child_nodes';
+import wrapChildNodes from '~/highlight_js/plugins/wrap_child_nodes';
 
 describe('Highlight.js plugin for wrapping _emitter nodes', () => {
   it('mutates the input value by wrapping each node in a span tag', () => {

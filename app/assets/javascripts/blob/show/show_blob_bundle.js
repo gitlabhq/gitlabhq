@@ -2,7 +2,7 @@ import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
 import initBlob from '~/pages/projects/init_blob';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import '~/sourcegraph/load';
-import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
+import HighlightWorker from '~/highlight_js/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
 import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';

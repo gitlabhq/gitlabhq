@@ -551,6 +551,42 @@ principles:
       - path: doc/development/cicd/keyword_reviews.md
         url: https://docs.gitlab.com/development/cicd/keyword_reviews/
 
+  # ── Secrets Manager ───────────────────────────────────────────────────────
+
+  secrets-manager:
+    description: Secrets Manager state combinations (secrets manager lifecycle, maintenance tasks, enrollment, entitlement), required side effects on state transitions, project and group parity, and keeping the Secrets Manager developer docs current
+    group: Secrets Manager
+    owner_team: '@gitlab-com/secrets-manager'
+    team_slug: secrets-manager
+    file_filters:
+      - 'ee/app/models/secrets_management/**/*.rb'
+      - 'ee/app/models/concerns/secrets_management/**/*.rb'
+      - 'ee/app/services/secrets_management/**/*.rb'
+      - 'ee/app/services/concerns/secrets_management/**/*.rb'
+      - 'ee/app/graphql/**/secrets_management/**/*.rb'
+      - 'ee/app/workers/secrets_management/**/*.rb'
+      - 'ee/app/policies/secrets_management/**/*.rb'
+      - 'ee/lib/secrets_management/**/*.rb'
+      - 'ee/lib/api/secrets_management/**/*.rb'
+      - 'ee/lib/api/internal/secrets_manager.rb'
+      - 'ee/app/services/ee/ci/register_job_service.rb'
+      - 'ee/app/presenters/ee/ci/build_runner_presenter.rb'
+      - 'ee/app/helpers/secrets_management/**/*.rb'
+      - 'ee/app/controllers/projects/secrets_controller.rb'
+      - 'ee/app/controllers/groups/secrets_controller.rb'
+      - 'ee/app/assets/javascripts/ci/secrets/**/*'
+      - 'ee/spec/**/secrets_management/**/*.rb'
+      - 'ee/spec/frontend/ci/secrets/**/*'
+    sources:
+      - path: doc/development/secrets_manager/states_and_side_effects.md
+        url: https://docs.gitlab.com/development/secrets_manager/states_and_side_effects/
+      - path: doc/development/secrets_manager/fulfillment.md
+        url: https://docs.gitlab.com/development/secrets_manager/fulfillment/
+      - path: doc/development/secrets_manager/enrollment.md
+        url: https://docs.gitlab.com/development/secrets_manager/enrollment/
+      - path: doc/development/secrets_manager/change_guidelines.md
+        url: https://docs.gitlab.com/development/secrets_manager/change_guidelines/
+
   # ── Frontend (4 sub-domains) ──────────────────────────────────────────────
 
   frontend-vue:

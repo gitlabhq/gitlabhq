@@ -100,4 +100,22 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning do
       expect(subject).to contain_exactly(merged_event)
     end
   end
+
+  describe '.merged_by_another_merge_request', feature_category: :compliance_management do
+    let!(:merged_by_another_mr_event) do
+      create(:resource_state_event, merge_request: merge_request, state: :merged, source_merge_request: merge_request)
+    end
+
+    before do
+      create(:resource_state_event, merge_request: merge_request, state: :merged)
+      create(:resource_state_event, merge_request: merge_request, state: :merged, source_commit: 'abcd1234')
+      create(:resource_state_event, merge_request: merge_request, state: :closed, source_merge_request: merge_request)
+    end
+
+    subject(:events) { described_class.merged_by_another_merge_request }
+
+    it 'returns only merged events with a source merge request' do
+      expect(events).to contain_exactly(merged_by_another_mr_event)
+    end
+  end
 end

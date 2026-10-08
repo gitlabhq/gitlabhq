@@ -1,4 +1,4 @@
-import wrapLines from '~/vue_shared/components/source_viewer/plugins/wrap_lines';
+import wrapLines from '~/highlight_js/plugins/wrap_lines';
 
 describe('Highlight.js plugin for wrapping lines', () => {
   it('mutates the input value by wrapping each line in a div with the correct attributes', () => {

@@ -166,6 +166,17 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         expect(subject[:download_links]).to eq('[]')
       end
     end
+
+    it 'includes the custom Code dropdown clients' do
+      stub_feature_flags(custom_code_dropdown_clients: true)
+      stub_application_setting(code_dropdown_custom_clients: [
+        { 'name' => 'VSCodium', 'http_url_template' => 'vscodium://vscode.git/clone?url={url}' }
+      ])
+
+      parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+
+      expect(parsed.pluck('name')).to eq(['VSCodium'])
+    end
   end
 
   describe '#vue_file_list_data' do
@@ -381,23 +392,28 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
 
         # #security -- a stored value can skip model validation (for example a direct database
         # write), and these links render unsanitized, so the helper must drop unsafe URLs itself.
-        it 'drops URLs whose scheme would be refused on save, keeping the safe one' do
-          [
-            'javascript:alert(1)//{url}',
-            'JaVaScRiPt:alert(1)//{url}',
-            'data:text/html,<script>alert(1)</script>?{url}',
-            ' javascript:alert(1)//{url}',
-            'no-scheme/{url}'
-          ].each do |template|
-            stub_application_setting(code_dropdown_custom_clients: [
-              vscodium_entry.merge('http_url_template' => template)
-            ])
+        context 'with a template whose scheme would be refused on save' do
+          where(:template) do
+            [
+              'javascript:alert(1)//{url}',
+              'JaVaScRiPt:alert(1)//{url}',
+              'data:text/html,<script>alert(1)</script>?{url}',
+              ' javascript:alert(1)//{url}',
+              'no-scheme/{url}'
+            ]
+          end
 
-            data = helper.compact_code_dropdown_data(project, ref, 'heads')
-            parsed = Gitlab::Json.parse(data[:custom_code_dropdown_clients]).first
+          with_them do
+            it 'drops that URL and keeps the safe one' do
+              stub_application_setting(code_dropdown_custom_clients: [
+                vscodium_entry.merge('http_url_template' => template)
+              ])
 
-            expect(parsed['http_url']).to be_nil, "expected #{template.inspect} to be dropped"
-            expect(parsed['ssh_url']).to start_with('vscodium://')
+              parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients]).first
+
+              expect(parsed['http_url']).to be_nil
+              expect(parsed['ssh_url']).to start_with('vscodium://')
+            end
           end
         end
 
@@ -414,6 +430,28 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
           parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients]).first
           expect(parsed['http_url']).to be_nil
           expect(parsed['ssh_url']).to start_with('vscodium://')
+        end
+
+        it 'skips an entry left with no usable URL when a protocol is disabled' do
+          allow(helper).to receive(:ssh_enabled?).and_return(false)
+          stub_application_setting(code_dropdown_custom_clients: [
+            vscodium_entry.except('http_url_template'), vscodium_entry.merge('name' => 'Fork')
+          ])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+
+          expect(parsed.pluck('name')).to eq(['Fork'])
+          expect(parsed.first['ssh_url']).to be_nil
+        end
+
+        it 'skips an entry whose only template has a blocked scheme' do
+          stub_application_setting(code_dropdown_custom_clients: [
+            { 'name' => 'Bad', 'http_url_template' => 'javascript:alert(1)//{url}' }, vscodium_entry
+          ])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+
+          expect(parsed.pluck('name')).to eq(['VSCodium'])
         end
       end
     end

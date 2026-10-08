@@ -964,6 +964,19 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       })
     end
 
+    it 'includes the custom Code dropdown clients' do
+      stub_feature_flags(custom_code_dropdown_clients: true)
+      stub_application_setting(code_dropdown_custom_clients: [
+        { 'name' => 'VSCodium', 'http_url_template' => 'vscodium://vscode.git/clone?url={url}' }
+      ])
+
+      parsed = Gitlab::Json::SafeParser.parse(
+        helper.vue_blob_header_app_data(project, blob, ref)[:custom_code_dropdown_clients]
+      )
+
+      expect(parsed.pluck('name')).to eq(['VSCodium'])
+    end
+
     context 'when SSH is disabled' do
       before do
         allow(helper).to receive(:ssh_enabled?).and_return(false)

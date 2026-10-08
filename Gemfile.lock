@@ -654,7 +654,7 @@ GEM
       rake (>= 12.0.0, < 14.0.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.9.9)
+    doorkeeper (5.9.3)
       railties (>= 5)
     doorkeeper-device_authorization_grant (1.0.3)
       doorkeeper (~> 5.5)
@@ -2910,6 +2910,7 @@ CHECKSUMS
   browser (5.3.1) sha256=62745301701ff2c6c5d32d077bb12532b20be261929dcb52c6781ed0d5658b3c
   builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
   bullet (8.0.8) sha256=b4b9905eb6b803d9a0ba620944ed79c8bb27ff3ca90ef8f8e39ff21db5b7c542
+  bundler (4.0.18) sha256=02d9a17429de1847b4e0c9f27a9ee4b20c0a74c0a641b4e77195d6019e3618ac
   byebug (12.0.0) sha256=d4a150d291cca40b66ec9ca31f754e93fed8aa266a17335f71bb0afa7fca1a1e
   capybara (3.40.0) sha256=42dba720578ea1ca65fd7a41d163dd368502c191804558f6e0f71b391054aeef
   capybara-screenshot (1.0.27) sha256=afa1896cc23df77be1774e8d3b3ce3953bf060aeaa04ff87607b5daf689174f2
@@ -2969,7 +2970,7 @@ CHECKSUMS
   diffy (3.4.4) sha256=79384ab5ca82d0e115b2771f0961e27c164c456074bd2ec46b637ebf7b6e47e3
   digest-crc (0.6.5) sha256=5ca456f3352dc5ff17eb95deb3dd5a79dc79f8bf751d8005abca5b7b9b252124
   domain_name (0.5.20190701) sha256=000a600454cb4a344769b2f10b531765ea7bd3a304fe47ed12e5ca1eab969851
-  doorkeeper (5.9.9) sha256=691fc87815c2ea7c075518be26855c2343bb3cf6a41400a92a5782f62786ec86
+  doorkeeper (5.9.3) sha256=e6d120235bd134494bd02d08e8063c994fc1a58a681285077e671529bfc5d90b
   doorkeeper-device_authorization_grant (1.0.3) sha256=94c3ac12a0d50942850ecd58ed64298b397a5e903e8880cb68d4085600932679
   doorkeeper-openid_connect (1.10.5) sha256=1382e5573e2fdfef2b16ce9969af777e61496b8e9cff0197789d8bf9c12efb02
   dotenv (2.7.6) sha256=2451ed5e8e43776d7a787e51d6f8903b98e446146c7ad143d5678cc2c409d547
@@ -3661,4 +3662,4 @@ CHECKSUMS
   zstd-ruby (2.0.8) sha256=0215f522a185f10c57bc742f167d49b3618aed45ceab04cc2f9080d3e504b404
 
 BUNDLED WITH
-  4.0.19
+  4.0.18

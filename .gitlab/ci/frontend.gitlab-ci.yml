@@ -286,6 +286,11 @@ cleanup-frontend-fixtures:
     - .with-ruby-slim-image
     - .frontend:rules:fixtures-packages-cleanup
   stage: fixtures
+  # The script only calls the GitLab API and needs no artifacts. Downloading
+  # them pulls colliding compile-{test,production}-assets outputs that fail
+  # extraction with a file-vs-directory conflict. See:
+  # https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/30834
+  dependencies: []
   before_script:
     - source scripts/utils.sh
     - install_gitlab_gem

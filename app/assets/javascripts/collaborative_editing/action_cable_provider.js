@@ -58,6 +58,7 @@ export default class ActionCableProvider {
         connected: () => {
           this.connected = true;
           this.#flushFullState();
+          if (this.synced) this.awareness.setLocalState(this.awareness.getLocalState());
         },
         disconnected: () => {
           this.connected = false;

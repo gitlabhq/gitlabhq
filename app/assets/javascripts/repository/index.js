@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import { parseBoolean } from '@gitlab/frontend-utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
-import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
+import HighlightWorker from '~/highlight_js/workers/highlight_worker?worker';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
 import initHeaderApp from './init_header_app';
 import initLastCommitApp from './init_last_commit_app';

@@ -27,6 +27,7 @@ import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking
 import { getInitialEditingMode } from '~/vue_shared/components/markdown/utils';
 import { EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
 import { ActionCableProvider } from '~/collaborative_editing';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import CollaboratorsIndicator from '~/collaborative_editing/components/collaborators_indicator.vue';
 import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
@@ -227,6 +228,7 @@ export default {
       isTemplateUrl: isTemplateUrl(),
       isSubmitting: false,
       collaborationProvider: null,
+      plainTextStartContent: this.pageInfo.content || '',
     };
   },
   apollo: {
@@ -482,8 +484,32 @@ export default {
     },
 
     notifyContentEditorInactive() {
+      const wasContentEditorActive = this.isContentEditorActive;
       this.isContentEditorActive = false;
       this.stopCollaborativeEditing();
+      if (wasContentEditorActive && this.collaborativeEditingEnabled) {
+        this.plainTextStartContent = this.content;
+      }
+    },
+    async beforeContentEditor(markdown) {
+      if (!this.collaborativeEditingEnabled || markdown === this.plainTextStartContent) return true;
+
+      const discard = await confirmAction(
+        s__('WikiPage|Switching to rich text will discard changes made in plain text. Continue?'),
+        {
+          title: s__('WikiPage|Discard plain text changes?'),
+          primaryBtnText: s__('WikiPage|Discard changes and switch'),
+          cancelBtnText: s__('WikiPage|Keep editing in plain text'),
+        },
+      );
+
+      if (discard) {
+        this.content = this.plainTextStartContent;
+        // Let MarkdownEditor receive the restored content before it mounts rich text.
+        await this.$nextTick();
+      }
+
+      return discard;
     },
 
     trackFormSubmit() {
@@ -719,6 +745,7 @@ export default {
             supports-table-of-contents
             :disable-attachments="isTemplate"
             :collaboration-provider="collaborationProvider"
+            :before-content-editor="beforeContentEditor"
             immersive
             @content-editor="notifyContentEditorActive"
             @markdown-field="notifyContentEditorInactive"

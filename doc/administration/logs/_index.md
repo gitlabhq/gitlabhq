@@ -1297,6 +1297,9 @@ tool call names, for example because it does not exist or the lookup failed.
 When a GitLab Duo session is created through the MCP server, a line with `event_name` set to
 `duo_session_created` is logged. This line has `source_type` set to `mcp`.
 The `duo_workflow_id` field holds the session ID.
+The line also shows which flow or agent the session runs, in the fields `item_type`, `flow_name`,
+`component_name`, `custom_item_id`, `item_version`, and `item_schema_version`.
+Fields that do not apply are left out.
 
 The log file is located at:
 

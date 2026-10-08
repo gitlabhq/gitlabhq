@@ -34,10 +34,13 @@ module Gitlab
 
           return skip_syncing_partitions unless table_partitioned?
 
-          Gitlab::AppLogger.info(log_payload(message: 'Checking state of dynamic postgres partitions'))
+          Gitlab::AppLogger.info(log_payload(
+            message: 'Checking state of dynamic postgres partitions',
+            replica_mode: logical_replication_subscriber?
+          ))
 
           only_with_exclusive_lease(model, lease_key: MANAGEMENT_LEASE_KEY) do
-            model.partitioning_strategy.validate_and_fix
+            model.partitioning_strategy.validate_and_fix unless logical_replication_subscriber?
 
             partitions_to_create = missing_partitions
             partitions_to_detach = extra_partitions
@@ -95,9 +98,15 @@ module Gitlab
         end
 
         def extra_partitions
+          return [] if logical_replication_subscriber?
           return [] unless connection.table_exists?(model.table_name)
 
           model.partitioning_strategy.extra_partitions
+        end
+
+        # Overridden in EE
+        def logical_replication_subscriber?
+          false
         end
 
         def only_with_exclusive_lease(model, lease_key:)
@@ -115,7 +124,7 @@ module Gitlab
               create_partition_tables(partitions)
               attach_partition_tables(partitions)
 
-              model.partitioning_strategy.after_adding_partitions
+              model.partitioning_strategy.after_adding_partitions unless logical_replication_subscriber?
             end
           end
         end
@@ -433,3 +442,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Database::Partitioning::PartitionManager.prepend_mod

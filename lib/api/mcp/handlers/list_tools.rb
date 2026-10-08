@@ -17,7 +17,10 @@ module API
         #   only tools from those toolsets (plus ALWAYS_ON) are returned. The
         #   pseudo-value "all" includes every toolset. When both allowed_tools
         #   and allowed_toolsets are given, the result is their union.
-        def invoke(current_user, allowed_tools: nil, allowed_toolsets: nil, tool_name_prefix: nil)
+        # include_named_unlisted: when true, an unlisted tool named in allowed_tools is
+        #   returned too.
+        def invoke(
+          current_user, allowed_tools: nil, allowed_toolsets: nil, tool_name_prefix: nil, include_named_unlisted: false)
           tools_hash = manager.list_tools
 
           allowed_tools = resolve_aliases(allowed_tools)
@@ -27,7 +30,7 @@ module API
           tools = tools_hash.filter_map do |name, tool|
             next nil if included && included.exclude?(name)
             next nil unless tool_available?(tool, current_user)
-            next nil if tool.unlisted?
+            next nil if tool.unlisted? && !(include_named_unlisted && Array(allowed_tools).include?(name))
 
             build_tool_data(name, tool, tool_name_prefix)
           end
@@ -46,9 +49,6 @@ module API
 
         private
 
-        # The header may carry aliases: Ai::DuoWorkflows::McpConfigService sends every
-        # read-only tool's aliases on default chat requests, and a session built before a
-        # tool rename keeps sending the old name.
         def resolve_aliases(allowed_tools)
           return allowed_tools if allowed_tools.blank?
 

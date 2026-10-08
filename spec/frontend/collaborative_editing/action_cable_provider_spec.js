@@ -1,5 +1,10 @@
 import * as Y from 'yjs';
-import { Awareness, encodeAwarenessUpdate, removeAwarenessStates } from 'y-protocols/awareness';
+import {
+  Awareness,
+  encodeAwarenessUpdate,
+  applyAwarenessUpdate,
+  removeAwarenessStates,
+} from 'y-protocols/awareness';
 import cable from '~/actioncable_consumer';
 import ActionCableProvider from '~/collaborative_editing/action_cable_provider';
 import { bytesToBase64 } from '~/collaborative_editing/encoding';
@@ -104,6 +109,36 @@ describe('collaborative_editing/action_cable_provider', () => {
       connectAndInit();
 
       expect(sentMessages('awareness')).not.toHaveLength(0);
+    });
+
+    it('does not announce awareness before the initial state arrives', () => {
+      provider.connect();
+      callbacks.connected();
+
+      expect(sentMessages('awareness')).toHaveLength(0);
+    });
+
+    it('re-announces its current awareness on reconnect without waiting for a heartbeat', () => {
+      connectAndInit();
+      provider.awareness.setLocalStateField('cursor', { anchor: 1 });
+      const peerAwareness = new Awareness(new Y.Doc());
+      const [initialAnnouncement] = sentMessages('awareness').slice(-1);
+      applyAwarenessUpdate(peerAwareness, decodePayload(initialAnnouncement.payload), null);
+      removeAwarenessStates(peerAwareness, [provider.doc.clientID], null);
+      subscription.send.mockClear();
+      callbacks.disconnected();
+
+      callbacks.connected();
+
+      const [announcement] = sentMessages('awareness');
+      expect(sentMessages('awareness')).toHaveLength(1);
+
+      applyAwarenessUpdate(peerAwareness, decodePayload(announcement.payload), null);
+
+      expect(peerAwareness.getStates().get(provider.doc.clientID)).toMatchObject({
+        cursor: { anchor: 1 },
+      });
+      peerAwareness.destroy();
     });
 
     it('applies the sound updates either side of a malformed one', () => {
@@ -415,6 +450,11 @@ describe('collaborative_editing/action_cable_provider', () => {
   describe('destroy', () => {
     it('announces departure before unsubscribing', () => {
       connectAndInit();
+      provider.awareness.setLocalStateField('cursor', { anchor: 1 });
+      const peerAwareness = new Awareness(new Y.Doc());
+      const [initialAnnouncement] = sentMessages('awareness').slice(-1);
+      applyAwarenessUpdate(peerAwareness, decodePayload(initialAnnouncement.payload), null);
+      expect(peerAwareness.getStates().has(provider.doc.clientID)).toBe(true);
       subscription.send.mockClear();
 
       provider.destroy();
@@ -423,6 +463,12 @@ describe('collaborative_editing/action_cable_provider', () => {
       expect(subscription.send.mock.invocationCallOrder[0]).toBeLessThan(
         subscription.unsubscribe.mock.invocationCallOrder[0],
       );
+
+      const [departure] = sentMessages('awareness');
+      applyAwarenessUpdate(peerAwareness, decodePayload(departure.payload), null);
+
+      expect(peerAwareness.getStates().has(provider.doc.clientID)).toBe(false);
+      peerAwareness.destroy();
     });
 
     it('unsubscribes so the WebSocket does not stay open', () => {

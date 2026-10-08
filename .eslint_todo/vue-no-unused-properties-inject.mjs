@@ -9,8 +9,6 @@ export default {
     'app/assets/javascripts/repository/components/header_area.vue',
     'app/assets/javascripts/repository/components/header_area/breadcrumbs.vue',
     'ee/app/assets/javascripts/analytics/group_analytics/components/group_activity_card.vue',
-    'ee/app/assets/javascripts/pages/projects/get_started/components/add_code_action_item.vue',
-    'ee/app/assets/javascripts/pages/projects/get_started/components/command_line_modal.vue',
     'ee/app/assets/javascripts/roadmap/components/epic_item.vue',
     'ee/app/assets/javascripts/security_inventory/components/bulk_scanners_update_drawer.vue',
     'ee/app/assets/javascripts/security_inventory/components/inventory_dashboard.vue',

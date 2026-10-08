@@ -2,7 +2,7 @@ import {
   createLink,
   generateHLJSOpenTag,
   getObjectKeysByKeyName,
-} from '~/vue_shared/components/source_viewer/plugins/utils/dependency_linker_util';
+} from '~/highlight_js/plugins/utils/dependency_linker_util';
 import { PODSPEC_JSON_CONTENT } from '../mock_data';
 
 describe('createLink', () => {

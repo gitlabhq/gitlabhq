@@ -98,9 +98,6 @@ methods:
     - lagging?: Will be called by the reconciliation worker in a follow-up MR
   ee/app/models/package_metadata/sync_configuration.rb:
     - self.advisories_pds_endpoint: Will be called from Location.for_advisories once advisories move to PDS in a follow-up MR (#631389)
-scopes:
-  ee/app/models/gitlab_subscriptions/add_on_purchase.rb:
-    - for_orbit_promo: Will be used by the provision service and feature team, in stacked follow-up MRs
 constants:
   app/services/mcp/tools/toolsets.rb:
     - ALWAYS_ON: Used by Manager#tools_in_toolsets to always include meta tools

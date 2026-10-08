@@ -1,12 +1,10 @@
 <script>
-import { defineAsyncComponent } from 'vue';
 import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { mapState, mapActions } from 'pinia';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { getRawPath } from '~/diffs/utils/diff_file';
 import { diffLineToString } from '~/diffs/utils/diff_line';
 import { __ } from '~/locale';
-import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { useBatchComments } from '~/batch_comments/store';
@@ -15,7 +13,6 @@ import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 import { COMMENT_FORM } from '../i18n';
-import { isSlashCommand } from '../utils';
 import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {
@@ -28,14 +25,8 @@ export default {
     GlSprintf,
     GlLink,
     GlFormCheckbox,
-    CommentTemperature: defineAsyncComponent(
-      () =>
-        import(
-          /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
-        ),
-    ),
   },
-  mixins: [issuableStateMixin, resolvable, glAbilitiesMixin()],
+  mixins: [issuableStateMixin, resolvable],
   props: {
     noteBody: {
       type: String,
@@ -129,10 +120,9 @@ export default {
       updatedNoteBody: this.noteBody,
       conflictWhileEditing: false,
       isSubmitting: false,
-      isMeasuringCommentTemperature: false,
       isResolving: this.resolveDiscussion,
       isUnresolving: !this.resolveDiscussion,
-      onSaveHandler: null,
+      // eslint-disable-next-line vue/no-unused-properties -- `resolveAsThread` is used by the `resolvable` mixin
       resolveAsThread: true,
       isSubmittingWithKeydown: false,
       formFieldProps: {
@@ -150,9 +140,8 @@ export default {
       'getDiscussionCurrentUserLastNote',
       'getNoteableData',
       'getNotesDataByProp',
-      'getUserDataByProp',
     ]),
-    ...mapState(useBatchComments, ['hasDrafts', 'withBatchComments', 'isMergeRequest']),
+    ...mapState(useBatchComments, ['hasDrafts', 'isMergeRequest']),
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
@@ -219,9 +208,6 @@ export default {
     markdownDocsPath() {
       return this.getNotesDataByProp('markdownDocsPath');
     },
-    currentUserId() {
-      return this.getUserDataByProp('id');
-    },
     isDisabled() {
       return !this.updatedNoteBody.length || this.isSubmitting;
     },
@@ -261,10 +247,7 @@ export default {
       };
     },
     shouldDisableField() {
-      return this.isSubmitting && !this.isMeasuringCommentTemperature;
-    },
-    shouldMeasureNoteTemperature() {
-      return !isSlashCommand(this.updatedNoteBody) && this.glAbilities.measureCommentTemperature;
+      return this.isSubmitting;
     },
   },
   watch: {
@@ -280,6 +263,7 @@ export default {
     this.updatePlaceholder();
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- toggleResolveNote() used by the `Resolvable` mixin
     ...mapActions(useNotes, ['toggleResolveNote']),
     shouldToggleResolved(beforeSubmitDiscussionState) {
       return (
@@ -321,6 +305,7 @@ export default {
     onInput(value) {
       this.updatedNoteBody = value;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- `append` is called via `$refs.noteForm.append()` in noteable_discussion.vue
     append(value) {
       this.$refs.markdownEditor.append(value);
     },
@@ -331,24 +316,11 @@ export default {
         this.isSubmittingWithKeydown = true;
         this.handleUpdate();
       }
-      if (!this.isMeasuringCommentTemperature) {
-        this.updatedNoteBody = '';
-      }
+      this.updatedNoteBody = '';
     },
-    runCommentTemperatureMeasurement(onSaveHandler) {
-      this.isMeasuringCommentTemperature = true;
-      this.$refs.commentTemperature.measureCommentTemperature();
-      this.onSaveHandler = this[onSaveHandler].bind(this, { shouldMeasureTemperature: false });
-    },
-    handleUpdate({ shouldMeasureTemperature = true } = {}) {
+    handleUpdate() {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
-      if (shouldMeasureTemperature && this.shouldMeasureNoteTemperature) {
-        this.runCommentTemperatureMeasurement('handleUpdate');
-        return;
-      }
-
-      this.isMeasuringCommentTemperature = false;
 
       trackSavedUsingEditor(
         this.$refs.markdownEditor.isContentEditorActive,
@@ -369,19 +341,13 @@ export default {
         this.discussionResolved ? !this.isUnresolving : this.isResolving,
       );
     },
-    handleAddToReview({ shouldMeasureTemperature = true } = {}) {
+    handleAddToReview() {
       const clickType = this.hasDrafts ? 'note-form-add-to-review' : 'note-form-start-review';
       // check if draft should resolve thread
       const shouldResolve =
         (this.discussionResolved && !this.isUnresolving) ||
         (!this.discussionResolved && this.isResolving);
       this.isSubmitting = true;
-      if (shouldMeasureTemperature && this.shouldMeasureNoteTemperature) {
-        this.runCommentTemperatureMeasurement('handleAddToReview');
-        return;
-      }
-
-      this.isMeasuringCommentTemperature = false;
 
       eventHub.$emit(clickType, { name: clickType });
       this.$emit(
@@ -393,9 +359,6 @@ export default {
           this.isSubmitting = false;
         },
       );
-    },
-    hasEmailParticipants() {
-      return this.getNoteableData.issue_email_participants?.length;
     },
   },
 };
@@ -443,15 +406,6 @@ export default {
           @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
         />
       </comment-field-layout>
-      <comment-temperature
-        v-if="glAbilities.measureCommentTemperature"
-        ref="commentTemperature"
-        v-model="updatedNoteBody"
-        :item-id="getNoteableData.id"
-        :item-type="getNoteableData.noteableType"
-        :user-id="currentUserId"
-        @save="onSaveHandler()"
-      />
       <div class="note-form-actions gl-font-size-0">
         <template v-if="showResolveDiscussionToggle">
           <label>

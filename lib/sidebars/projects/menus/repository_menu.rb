@@ -101,7 +101,7 @@ module Sidebars
         end
 
         def contributors_menu_item
-          return false unless context.project.analytics_enabled?
+          return false unless can?(context.current_user, :read_repository_graphs, context.project)
 
           link = project_graph_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 

@@ -157,6 +157,62 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
   end
 
+  context 'when the database is a logical replication subscriber (mocked)' do
+    subject(:sync_partitions) { manager.sync_partitions }
+
+    let(:manager) { described_class.new(model) }
+    let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
+    let(:connection) { ActiveRecord::Base.connection }
+    let(:table) { partitioned_table_name }
+    let(:partitioning_strategy) do
+      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil,
+        validate_and_fix: nil, analyze_interval: nil, default_analyze_interval?: false)
+    end
+
+    let(:partitions) do
+      [
+        instance_double(Gitlab::Database::Partitioning::TimePartition,
+          table: 'bar',
+          partition_name: 'foo',
+          to_create_sql: "CREATE TABLE _partition_1",
+          to_attach_sql: "ALTER TABLE foo ATTACH PARTITION _partition_1")
+      ]
+    end
+
+    before do
+      create_partitioned_table(connection, table)
+
+      allow(connection).to receive(:table_exists?).and_call_original
+      allow(connection).to receive(:table_exists?).with(table).and_return(true)
+      allow(manager).to receive(:logical_replication_subscriber?).and_return(true)
+
+      stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
+    end
+
+    it 'creates the missing partitions and leaves the parent table and its existing partitions alone', :aggregate_failures do
+      expect(manager).to receive(:create_partition_tables).with(partitions)
+      expect(manager).to receive(:attach_partition_tables).with(partitions)
+
+      sync_partitions
+
+      expect(partitioning_strategy).not_to have_received(:validate_and_fix)
+      expect(partitioning_strategy).not_to have_received(:after_adding_partitions)
+      expect(partitioning_strategy).not_to have_received(:extra_partitions)
+    end
+
+    it 'logs that it runs in replica mode' do
+      allow(manager).to receive(:create_partition_tables)
+      allow(manager).to receive(:attach_partition_tables)
+      allow(Gitlab::AppLogger).to receive(:info)
+
+      sync_partitions
+
+      expect(Gitlab::AppLogger).to have_received(:info).with(
+        hash_including('message' => 'Checking state of dynamic postgres partitions', 'replica_mode' => true)
+      )
+    end
+  end
+
   context 'creating partitions' do
     subject(:sync_partitions) { described_class.new(my_model).sync_partitions }
 
@@ -852,6 +908,22 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
         # The delete and create share the failed detach's transaction, so both roll back
         expect(Postgresql::DetachedPartition.all).to contain_exactly(stale_record)
+      end
+    end
+
+    context 'when the database is a logical replication subscriber' do
+      before do
+        allow_next_instance_of(described_class) do |manager|
+          allow(manager).to receive(:logical_replication_subscriber?).and_return(true)
+        end
+      end
+
+      it 'detaches nothing and schedules no drop', :aggregate_failures do
+        expect(Gitlab::AppLogger).not_to receive(:error)
+
+        expect { subject }.not_to change { find_partitions(my_model.table_name).size }
+
+        expect(Postgresql::DetachedPartition.count).to eq(0)
       end
     end
 

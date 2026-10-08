@@ -25,6 +25,16 @@ This works well for the following reasons:
 - The pack-objects cache is enabled on all Gitaly servers on GitLab.com.
 - The CI/CD [Git strategy setting](../../ci/pipelines/settings.md#choose-the-default-git-strategy) for `gitlab-org/gitlab` is **Git clone**,
   causing all jobs to fetch the same data, which maximizes the cache hit ratio.
+  On runners with a per-VM Git object pool, fetches send haves from the pool, so requests can vary between VMs.
+  `GLCI_GIT_OBJECT_POOL` in `.gitlab-ci.yml` controls whether a job may seed the pool, and is `"false"` until
+  the runners that have a pool are deployed. A runner that has a pool sets only `GLCI_GIT_OBJECT_POOL_DIR`, for
+  example `/cache/git-object-pools`, which names where pools live. The seeding hook in `.gitlab-ci.yml` seeds a
+  bare clone of the default branch at `$GLCI_GIT_OBJECT_POOL_DIR$CI_PROJECT_DIR/.git` on the first job of each VM.
+  `.gitlab-ci.yml` derives `GIT_ALTERNATE_OBJECT_DIRECTORIES` from that directory, and Git reads it to borrow
+  objects from the pool during `git fetch`. Until a pool is seeded, the hook creates an empty `objects`
+  directory there, which Git accepts without complaint. On a runner without a pool, the variable resolves to
+  the job's own `.git/objects`, which Git ignores as an alternate. The pool needs no feature flags and no
+  change to `GIT_STRATEGY`.
 - We use [shallow clone](../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
   history for every job.
 

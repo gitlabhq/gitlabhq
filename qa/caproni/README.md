@@ -34,7 +34,6 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
 | `manifests/github-oauth/` | Kustomization the fragment applies between namespace creation and the Helm install; its `provider.yaml` is generated from the fragment's `files:` |
 | `scripts/install-caproni.sh` | Fetches and checksum-verifies the Caproni binary at `CAPRONI_VERSION` |
-| `scripts/cng-image-tags.sh` | Resolves `*_TAG` / `*_VERSION` into image tags |
 | `scripts/write_local_config.rb` | Generates `caproni.local.yaml`: the CI domain, plus the fragments a job opts into |
 | `scripts/seed_admin_token.rb` | Seeds the admin PAT the E2E suite authenticates with |
 | `scripts/save-cluster-logs.sh` | Pod and event log bundle for failure diagnosis |
@@ -209,7 +208,11 @@ export GITLAB_HELM_CHART_REF="$(awk -F'"' \
   '$0 ~ /^[[:space:]]*GITLAB_HELM_CHART_REF:[[:space:]]*"/ {print $2; exit}' \
   "${CI_PROJECT_DIR}/.gitlab/ci/qa-common/variables.gitlab-ci.yml")"
 
-source scripts/cng-image-tags.sh
+# In CI, build-cng-env sets these. Add a v prefix to any version that is semver.
+export GITALY_TAG="$(cat "${CI_PROJECT_DIR}/GITALY_SERVER_VERSION")"
+export GITLAB_SHELL_TAG="v$(cat "${CI_PROJECT_DIR}/GITLAB_SHELL_VERSION")"
+export GITLAB_KAS_TAG="$(cat "${CI_PROJECT_DIR}/GITLAB_KAS_VERSION")"
+
 caproni up
 caproni update-etc-hosts
 ```

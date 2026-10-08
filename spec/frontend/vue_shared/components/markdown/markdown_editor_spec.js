@@ -454,6 +454,35 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(wrapper.emitted(EDITING_MODE_EVENTS[EDITING_MODE_CONTENT_EDITOR])).toHaveLength(1);
   });
 
+  describe('when the parent guards a switch to rich text', () => {
+    describe('when the parent declines', () => {
+      it('keeps the plain text draft', async () => {
+        const beforeContentEditor = jest.fn().mockResolvedValue(false);
+        buildWrapper({ propsData: { beforeContentEditor } });
+
+        await findTextarea().setValue('Unsaved plain text');
+        findMarkdownField().vm.$emit('enable-content-editor');
+        await waitForPromises();
+
+        expect(beforeContentEditor).toHaveBeenCalledWith('Unsaved plain text');
+        expect(findTextarea().element.value).toBe('Unsaved plain text');
+        expect(findContentEditor().exists()).toBe(false);
+      });
+    });
+
+    describe('when the parent confirms', () => {
+      it('enters rich text', async () => {
+        const beforeContentEditor = jest.fn().mockResolvedValue(true);
+        buildWrapper({ propsData: { beforeContentEditor } });
+
+        findMarkdownField().vm.$emit('enable-content-editor');
+        await waitForPromises();
+
+        expect(findContentEditor().exists()).toBe(true);
+      });
+    });
+  });
+
   it(`emits \`markdown-field\` when \`enable-markdown-editor\` emitted from content editor`, async () => {
     buildWrapper();
 

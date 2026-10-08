@@ -1,4 +1,4 @@
-import gemspecLinker from '~/vue_shared/components/source_viewer/plugins/utils/gemspec_linker';
+import gemspecLinker from '~/highlight_js/plugins/utils/gemspec_linker';
 
 describe('Highlight.js plugin for linking gemspec dependencies', () => {
   it('mutates the input value by wrapping dependency names in anchors', () => {

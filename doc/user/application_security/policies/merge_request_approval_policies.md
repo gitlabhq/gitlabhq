@@ -336,12 +336,9 @@ In this example:
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19465) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_policies_malware_attribute`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253877) in GitLab 19.4.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258759) in GitLab 19.5. Feature flag `security_policies_malware_attribute` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Use the `is_malicious` scanner attribute to block merge requests when a scan detects a package
 listed in the

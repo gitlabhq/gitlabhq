@@ -89,7 +89,7 @@ if (name.endsWith('.gleam')) {
 
 ### For languages without existing definitions
 
-New language definitions can be added to our codebase under [`~/vue_shared/components/source_viewer/languages/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/vue_shared/components/source_viewer/languages/).
+New language definitions can be added to our codebase under [`~/highlight_js/languages/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/highlight_js/languages/).
 
 To add support for a new language:
 

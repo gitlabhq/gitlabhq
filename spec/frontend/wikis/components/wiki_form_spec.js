@@ -21,6 +21,7 @@ import WikiTemplate from '~/wikis/components/wiki_template.vue';
 import DeleteWikiModal from '~/wikis/components/delete_wiki_modal.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import ActionCableProvider from '~/collaborative_editing/action_cable_provider';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import CollaboratorsIndicator from '~/collaborative_editing/components/collaborators_indicator.vue';
 import { EDITING_MODE_KEY, EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
 import { WIKI_FORMAT_LABEL, WIKI_FORMAT_UPDATED_ACTION } from '~/wikis/constants';
@@ -34,6 +35,7 @@ Vue.use(VueApollo);
 
 jest.mock('~/emoji');
 jest.mock('~/lib/graphql');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
 
 describe('WikiForm', () => {
   ignoreConsoleMessages([/timers APIs are not replaced with fake timers/]);
@@ -1441,6 +1443,96 @@ describe('WikiForm', () => {
     });
 
     describe('switching editing mode', () => {
+      describe('after leaving rich text', () => {
+        beforeEach(async () => {
+          createCollaborativeWrapper();
+          await activateRichTextEditor();
+          findMarkdownEditor().vm.$emit('markdown-field');
+          await nextTick();
+        });
+
+        describe('when plain text has changed', () => {
+          beforeEach(async () => {
+            findMarkdownEditor().vm.$emit('input', 'Plain text draft');
+            await nextTick();
+          });
+
+          describe('when the user declines to discard', () => {
+            it('keeps the plain text edits', async () => {
+              confirmAction.mockResolvedValue(false);
+
+              const allowed =
+                await findMarkdownEditor().props('beforeContentEditor')('Plain text draft');
+
+              expect(allowed).toBe(false);
+              expect(findMarkdownEditor().props('value')).toBe('Plain text draft');
+            });
+          });
+
+          describe('when the user confirms the discard', () => {
+            it('restores the previous content', async () => {
+              confirmAction.mockResolvedValue(true);
+
+              const allowed =
+                await findMarkdownEditor().props('beforeContentEditor')('Plain text draft');
+              await nextTick();
+
+              expect(allowed).toBe(true);
+              expect(findMarkdownEditor().props('value')).toBe(pageInfoPersisted.content);
+            });
+          });
+        });
+
+        describe('when plain text has not changed', () => {
+          it('switches without confirmation', async () => {
+            const allowed = await findMarkdownEditor().props('beforeContentEditor')(
+              pageInfoPersisted.content,
+            );
+
+            expect(allowed).toBe(true);
+            expect(confirmAction).not.toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('when a plain text draft is restored', () => {
+        beforeEach(async () => {
+          localStorage.setItem(
+            `autosave/${pageInfoPersisted.path}/content`,
+            'Saved plain text draft',
+          );
+          createCollaborativeWrapper();
+          findMarkdownEditor().vm.$emit('markdown-field');
+          await nextTick();
+        });
+
+        it('guards the draft before entering rich text', async () => {
+          confirmAction.mockResolvedValue(false);
+
+          const allowed =
+            await findMarkdownEditor().props('beforeContentEditor')('Saved plain text draft');
+
+          expect(allowed).toBe(false);
+          expect(findMarkdownEditor().props('value')).toBe('Saved plain text draft');
+        });
+      });
+
+      describe('when collaboration is disabled', () => {
+        beforeEach(async () => {
+          createCollaborativeWrapper({ glFeatures: { wikiCollaborativeEditing: false } });
+          findMarkdownEditor().vm.$emit('input', 'Plain text draft');
+          await nextTick();
+        });
+
+        it('allows the switch without guarding the edits', async () => {
+          const allowed =
+            await findMarkdownEditor().props('beforeContentEditor')('Plain text draft');
+
+          expect(allowed).toBe(true);
+          expect(confirmAction).not.toHaveBeenCalled();
+        });
+      });
+
       it('leaves the session when switching to plain text', async () => {
         createCollaborativeWrapper();
         await activateRichTextEditor();

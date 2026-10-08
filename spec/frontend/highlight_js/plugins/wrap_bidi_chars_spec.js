@@ -1,9 +1,5 @@
-import wrapBidiChars from '~/vue_shared/components/source_viewer/plugins/wrap_bidi_chars';
-import {
-  BIDI_CHARS,
-  BIDI_CHARS_CLASS_LIST,
-  BIDI_CHAR_TOOLTIP,
-} from '~/vue_shared/components/source_viewer/constants';
+import wrapBidiChars from '~/highlight_js/plugins/wrap_bidi_chars';
+import { BIDI_CHARS, BIDI_CHARS_CLASS_LIST, BIDI_CHAR_TOOLTIP } from '~/highlight_js/constants';
 
 describe('Highlight.js plugin for wrapping BiDi characters', () => {
   it.each(BIDI_CHARS)('wraps %s BiDi char', (bidiChar) => {

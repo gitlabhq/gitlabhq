@@ -177,6 +177,11 @@ export default {
       required: false,
       default: null,
     },
+    beforeContentEditor: {
+      type: Function,
+      required: false,
+      default: null,
+    },
   },
   emits: [
     'blur',
@@ -316,7 +321,15 @@ export default {
           ...otherData,
         }));
     },
-    onEditingModeChange(editingMode) {
+    async onEditingModeChange(editingMode) {
+      if (
+        editingMode === EDITING_MODE_CONTENT_EDITOR &&
+        this.beforeContentEditor &&
+        !(await this.beforeContentEditor(this.markdown))
+      ) {
+        return;
+      }
+
       this.editingMode = editingMode;
       this.notifyEditingModeChange(editingMode);
     },

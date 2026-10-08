@@ -192,6 +192,8 @@ these parameters:
 - `dependency_scanning_sbom_scan_api_download_limit`
 - `dependency_scanning_sbom_scan_api_upload_limit`
 - `disable_personal_access_tokens`
+- `duo_agent_platform_enabled`
+- `duo_availability`
 - `duo_features_enabled`
 - `elasticsearch_index_settings`
 - `file_template_project_id`
@@ -445,6 +447,8 @@ these parameters:
 - `scan_execution_policies_schedule_limit`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
+- `duo_agent_platform_enabled`
+- `duo_availability`
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
@@ -946,6 +950,8 @@ to configure other related settings. These requirements are in the `Required` co
 | `concurrent_relation_batch_export_limit` | integer          | no                                   | Maximum number of simultaneous batch export jobs to process. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6. |
 | `concurrent_relation_export_limit`       | integer          | no                                   | Maximum number of simultaneous project file exports to process. Default: 25. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `limit_concurrent_project_exports`. Disabled by default. |
 | `asciidoc_max_includes`                  | integer          | no                                   | Maximum limit of AsciiDoc include directives being processed in any one document. Default: 32. Maximum: 64. |
+| `duo_agent_platform_enabled`             | boolean          | no                                   | Indicates whether GitLab Duo Agent Platform features are turned on for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only. |
+| `duo_availability`                       | string           | no                                   | GitLab Duo availability setting for this instance. Valid values are `always_on`, `default_on`, `default_off`, and `never_on`. `default_on` and `default_off` turn GitLab Duo on and off by default. `always_on` and `never_on` lock GitLab Duo on and off for a top-level group. `never_on` also turns off experiment and beta GitLab Duo features. Sets `duo_features_enabled` and `lock_duo_features_enabled`. GitLab Self-Managed, Premium and Ultimate only. |
 | `duo_custom_agents_enabled`              | boolean          | no                                   | Indicates whether custom agents are allowed for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0. |
 | `duo_custom_flows_enabled`               | boolean          | no                                   | Indicates whether custom flows are allowed for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0. |
 | `duo_external_agents_enabled`            | boolean          | no                                   | Indicates whether external agents are allowed for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0. |

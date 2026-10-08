@@ -1,4 +1,4 @@
-import podspecJsonLinker from '~/vue_shared/components/source_viewer/plugins/utils/podspec_json_linker';
+import podspecJsonLinker from '~/highlight_js/plugins/utils/podspec_json_linker';
 import { PODSPEC_JSON_CONTENT } from '../mock_data';
 
 describe('Highlight.js plugin for linking podspec_json dependencies', () => {

@@ -17,10 +17,11 @@ RSpec.describe CheckRouterRoutesSync, feature_category: :tooling do
 
   # SnapshotComparison::MIN_ROUTES rejects a short payload as a truncated
   # response, so pad each snapshot up to the floor.
-  def payload
+  def payload(*templates)
     routes = Array.new(Gitlab::Cells::HttpRouter::SnapshotComparison::MIN_ROUTES) do |i|
       { 'template' => "/filler/#{i}", 'example' => "/filler/#{i}" }
     end
+    routes += templates.map { |template| { 'template' => template, 'example' => template } }
 
     "#{JSON.pretty_generate(routes)}\n" # rubocop:disable Gitlab/Json -- the script runs on plain Ruby, outside Rails
   end
@@ -38,9 +39,27 @@ RSpec.describe CheckRouterRoutesSync, feature_category: :tooling do
   describe '.run' do
     it 'downloads the router snapshot and reports it in sync' do
       expect { expect(described_class.run).to eq(described_class::IN_SYNC) }
-        .to output(include("matches #{described_class::LOCAL_SNAPSHOT}")).to_stdout
+        .to output(include("has every route template in #{described_class::LOCAL_SNAPSHOT}")).to_stdout
 
       expect(a_request(:get, snapshot_url)).to have_been_made
+    end
+
+    context 'when the router has templates this branch does not have' do
+      let(:router_payload) { payload('/only-router') }
+
+      it 'reports it in sync' do
+        expect { expect(described_class.run).to eq(described_class::IN_SYNC) }.to output.to_stdout
+      end
+    end
+
+    context 'when the router lacks a template on this branch' do
+      let(:local_payload) { payload('/new-route') }
+      let(:router_payload) { payload }
+
+      it 'reports drift and lists the missing template' do
+        expect { expect(described_class.run).to eq(described_class::DRIFT) }
+          .to output(include('/new-route')).to_stderr
+      end
     end
 
     context 'when CI_JOB_TOKEN is set' do

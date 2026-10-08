@@ -44233,6 +44233,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "statistics",
+              "description": "Read-time package or image count of a hosted repository. Can be selected once per operation. Returns `null` without a read for a remote or virtual repository, and `null` for a repository that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryRepositoryStatistics",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "updatedBy",
               "description": "User who last changed the repository. Null when the editor is unknown or no longer exists. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
@@ -44662,6 +44674,41 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryRepositoryStatistics",
+          "description": "Read-time statistics for a hosted repository in Artifact Registry.",
+          "fields": [
+            {
+              "name": "imagesCount",
+              "description": "Number of images the repository holds, computed at read time. `null` for a repository holding packages. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "packagesCount",
+              "description": "Number of packages the repository holds, computed at read time. `null` for a repository holding images. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

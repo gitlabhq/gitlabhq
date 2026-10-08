@@ -48,13 +48,14 @@
     }
   }
 
-  // Keyboard focus jumps and anchor scrolls align the target with the
-  // viewport edge, which the opaque stuck bar now covers. 7rem clears the
-  // bar's tallest md+ layout: a view-tabs row plus the filter controls row.
-  // Guard on the dashboard class so routes that load this bundle without a
-  // sticky bar (the dashboards list) keep the default scroll alignment.
+  // Keyboard focus jumps and anchor scrolls align the target with the edge of
+  // the scrolling element, which the opaque stuck bar covers. The paneled
+  // layout scrolls .panel-content-inner, and scroll padding only applies on the
+  // element that scrolls. 10rem clears the stuck view tabs and filter row, plus
+  // the focus ring. Guard on the dashboard class so routes that load this
+  // bundle without a sticky bar (the dashboards list) keep the default alignment.
   // stylelint-disable-next-line gitlab/no-has -- only applies while the sticky dashboard layout is rendered
-  :root:has(.explore-analytics-dashboard) {
-    scroll-padding-top: calc($calc-application-header-height + 7rem);
+  .panel-content-inner:has(.explore-analytics-dashboard) {
+    scroll-padding-top: 10rem;
   }
 }

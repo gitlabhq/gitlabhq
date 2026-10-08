@@ -241,7 +241,7 @@ back to the same JSON rule engine, at the cost of one extra Topology Service cal
 ### Check the HTTP Router is in sync
 
 The `cells-routes:router-in-sync` CI job downloads `test/routes/gitlab_routes.json` from the
-`main` branch of the HTTP Router repository and compares it byte-for-byte with
+`main` branch of the HTTP Router repository and checks that it has every route template in
 `config/routing/gitlab_routes.json` on your branch. Where `cells-routes:up-to-date` checks the
 file in GitLab against the Rails route table, `cells-routes:router-in-sync` checks the copy in the
 HTTP Router against the file in GitLab.
@@ -249,9 +249,9 @@ HTTP Router against the file in GitLab.
 The job runs only on merge request pipelines, and only when the merge request changes
 `config/routing/gitlab_routes.json`. It reports a download failure separately from route drift,
 so a network problem while fetching the file from the HTTP Router is not mistaken for a route
-change. The job sets `allow_failure: true`, so it does not block the merge request today. Making
-the job blocking is proposed in
-[work item 723](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/723).
+change. The job sets `allow_failure: true`, so it does not block the merge request today. A
+replacement check is proposed in
+[work item 954](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/954).
 
 When the job fails because of route drift, open a paired merge request in the HTTP Router that
 downloads the routes from your GitLab branch:

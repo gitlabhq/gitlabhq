@@ -10,7 +10,8 @@ This page walks you through setting up Secrets Manager in the GDK, so you can de
 For an overview of how the feature is built, see [Secrets Manager development guidelines](_index.md).
 
 This setup is for backend work.
-If you only work on the frontend, you can run the frontend specs against a plain GDK without OpenBao, as explained in the Secrets Manager development guidelines page.
+If you only work on the frontend, you can run the frontend specs against a plain GDK without OpenBao.
+For details, see [Secrets Manager frontend development](frontend.md).
 
 The Secrets Manager UI is being redesigned, so this page uses the Rails console rather than UI steps.
 The console services are stable, and they also show you the errors the UI hides.
@@ -48,7 +49,7 @@ Enrollment is the step that most new developers miss.
 
 The GDK behaves as GitLab Self-Managed, so Secrets Manager availability depends on instance enrollment.
 The `secrets_manager_instance_enrolled` application setting defaults to `false`.
-Secrets Manager stays unavailable even with OpenBao running and the feature flags on.
+Secrets Manager stays unavailable even with OpenBao running.
 
 The seed Rake task in Step 3 enrolls for you, so this step matters when you provision a project manually instead.
 
@@ -66,14 +67,14 @@ group = Group.find_by_full_path('your-root-group')
 SecretsManagement::NamespaceEnrollmentService.new(group, current_user: user).enroll
 ```
 
-Both services are idempotent, and both reject the wrong deployment type.
+Both services are safe to run more than once, and both reject the wrong deployment type.
 Namespace enrollment works only on GitLab.com, and instance enrollment works only on GitLab Self-Managed.
 
 ## Step 3: Seed a working environment
 
 The fastest way to get a working environment is the seed Rake task.
 It creates subgroups and projects under a root namespace, provisions the group and project secrets managers, and adds sample secrets.
-It also enables the feature flags and enrolls the instance for you.
+It also enrolls the instance for you.
 
 ```shell
 bundle exec rake "gitlab:secrets_management:seed[ROOT_NAMESPACE_ID]"
@@ -95,7 +96,7 @@ The task creates this hierarchy under the root namespace:
 
 ## Step 4: Verify your setup
 
-From the Rails console, confirm that all three availability gates pass for a seeded project:
+From the Rails console, confirm that both availability gates pass for a seeded project:
 
 ```ruby
 project = Project.find_by_full_path('your-root-group/subgroup-a/project-a1')
@@ -108,8 +109,7 @@ If `for_project?` returns `false`, check the gates one at a time:
 
 ```ruby
 project.licensed_feature_available?(:native_secrets_management) # license
-Feature.enabled?(:secrets_manager, project)                     # feature flag
-Gitlab::CurrentSettings.secrets_manager_instance_enrolled       # enrollment
+Gitlab::CurrentSettings.secrets_manager_instance_enrolled        # enrollment
 ```
 
 Then list the seeded secrets:
@@ -202,7 +202,7 @@ After resetting, provision your projects and groups again, for example by rerunn
 ### Secrets Manager is unavailable
 
 `SecretsManagement::Availability.for_project?` returns `false`.
-Check the three gates individually, as shown in [Step 4](#step-4-verify-your-setup).
+Check the gates individually, as shown in [Step 4](#step-4-verify-your-setup).
 On the GDK, the usual cause is that the instance is not enrolled.
 See [Step 2](#step-2-enroll-the-instance).
 

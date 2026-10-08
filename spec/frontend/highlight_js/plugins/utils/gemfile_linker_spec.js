@@ -1,4 +1,4 @@
-import gemfileLinker from '~/vue_shared/components/source_viewer/plugins/utils/gemfile_linker';
+import gemfileLinker from '~/highlight_js/plugins/utils/gemfile_linker';
 
 describe('Highlight.js plugin for linking gemfile dependencies', () => {
   it('mutates the input value by wrapping dependency names in anchors', () => {

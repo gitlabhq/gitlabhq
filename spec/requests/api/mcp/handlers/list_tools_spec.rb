@@ -319,6 +319,26 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         tool_names = json_response['result']['tools'].pluck('name')
         expect(tool_names).not_to include('get_mcp_server_version')
       end
+
+      it 'is listed when a Duo Workflow token names it in x-gitlab-enabled-mcp-server-tools' do
+        ai_workflows_token = create(:oauth_access_token, user: user, scopes: [:ai_workflows, :mcp])
+
+        post api('/mcp', user, oauth_access_token: ai_workflows_token),
+          params: params,
+          headers: { 'X-Gitlab-Enabled-Mcp-Server-Tools' => 'get_mcp_server_version,get_issue' }
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to contain_exactly('get_mcp_server_version', 'get_issue')
+      end
+
+      it 'stays hidden when an mcp-only token names it in x-gitlab-enabled-mcp-server-tools' do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params,
+          headers: { 'X-Gitlab-Enabled-Mcp-Server-Tools' => 'get_mcp_server_version,get_issue' }
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to be_empty
+      end
     end
 
     context 'when a tool declares no annotations' do
@@ -374,6 +394,13 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
         tool_names = json_response['result']['tools'].pluck('name')
         expect(tool_names).not_to include(*rest)
+      end
+
+      it 'returns a named tool from an opt-in toolset' do
+        post_list_tools_with_allowed('list_wiki_pages')
+
+        tool_names = json_response['result']['tools'].pluck('name')
+        expect(tool_names).to contain_exactly('list_wiki_pages')
       end
 
       it 'handles a single tool correctly' do

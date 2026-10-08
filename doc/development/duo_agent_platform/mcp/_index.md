@@ -890,6 +890,23 @@ You can find these sessions in the following places:
 
 The `correlation_id` links the `duo_session_created` line to the `tool_call` line of the tool that started the session.
 
+The `duo_session_created` line also records which flow or agent the session runs.
+The `agent_platform_session_created` event has the same fields as additional properties.
+The field names match the `trigger_ai_catalog_item` event.
+Fields that do not apply to the session are left out.
+
+| Field | Meaning |
+| --- | --- |
+| `item_type` | The kind of item. One of `foundational_flow`, `foundational_agent`, `foundational_external_agent`, `custom_flow`, `custom_agent`, or `custom_external_agent`. |
+| `flow_name` | The GitLab flow name, for example `developer`. For foundational agents, the value is `chat`. |
+| `component_name` | The foundational agent reference, for example `analytics_agent`. |
+| `custom_item_id` | The AI Catalog item ID. Not set for GitLab flows and foundational agents. |
+| `item_version` | The version of the item. For GitLab flows and agents, this can be a version constraint such as `^3.0.0`. |
+| `item_schema_version` | The flow schema version, for example `v1`. |
+
+For example, to find sessions that run the `developer` flow, use this query in Kibana:
+`json.event_name: "duo_session_created" and json.flow_name: "developer"`.
+
 ### Gating a tool's availability
 
 Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.
@@ -923,6 +940,15 @@ Mark a tool as *unlisted* to hide it from discovery while keeping it fully calla
 tool is omitted from the `tools/list` response and from the AI Catalog tool picker, but it stays
 resolvable through `get_tool`, remains in the Duo Workflow allowlist, and can still be called
 through `tools/call`. Use this to stage a tool before it is ready to be advertised.
+
+Workhorse sends the `X-Gitlab-Enabled-Mcp-Server-Tools` header with the tools a custom agent
+selected, so an agent that selected a tool before it was unlisted keeps it. Only a token with the
+`ai_workflows` scope gets an unlisted tool from `tools/list` by naming it in that header. Other
+clients that name one still don't see it.
+
+The picker doesn't offer unlisted tools, but an agent created through the API can still name one,
+and then it gets the tool. So don't mark a tool unlisted to keep users from calling it: that hides
+the tool, it doesn't block it.
 
 `unlisted?` differs from [`available?`](#gating-a-tools-availability): `available?` is a per-user
 check that gates whether a user is offered a tool in `tools/list`, whereas `unlisted?` is a static

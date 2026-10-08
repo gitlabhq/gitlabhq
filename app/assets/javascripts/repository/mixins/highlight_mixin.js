@@ -1,11 +1,13 @@
 import {
   LEGACY_FALLBACKS,
-  EVENT_ACTION,
-  EVENT_LABEL_FALLBACK,
   LINES_PER_CHUNK,
   ROUGE_TO_HLJS_LANGUAGE_MAP,
+} from '~/highlight_js/constants';
+import {
+  EVENT_ACTION,
+  EVENT_LABEL_FALLBACK,
 } from '~/vue_shared/components/source_viewer/constants';
-import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
+import { splitIntoChunks } from '~/highlight_js/workers/highlight_utils';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
