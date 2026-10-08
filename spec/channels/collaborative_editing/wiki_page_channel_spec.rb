@@ -471,6 +471,18 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
           .with('type' => 'sync', 'payload' => 'a-snapshot', 'clientId' => 1)
       end
 
+      it 'removes the compaction token before passing the snapshot to broadcast' do
+        perform :receive, message('sync', 'first')
+        perform :receive, message('sync', 'second')
+        token = transmissions.last['token']
+
+        expect(subscription).to receive(:broadcast)
+          .with({ 'type' => 'sync', 'payload' => 'a-snapshot', 'clientId' => 1 })
+          .and_call_original
+
+        perform :receive, message('snapshot', 'a-snapshot').merge('token' => token)
+      end
+
       it 'does not relay a snapshot the store rejected' do
         perform :receive, message('sync', 'first')
         perform :receive, message('sync', 'second')

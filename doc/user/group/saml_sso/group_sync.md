@@ -466,8 +466,8 @@ You can enforce a global lock on SAML group memberships. This lock limits who ca
 
 When global group memberships lock is enabled:
 
-- You cannot set a group or subgroup as a [Code Owner](../../project/codeowners/_index.md).
-  For more information, see [Incompatibility with Global group memberships locks](../../project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
+- To use a group or subgroup as a [Code Owner](../../project/codeowners/_index.md), see
+  [Incompatibility with Global group memberships locks](../../project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 - Only administrators can manage group members and change their access levels.
 - Group members cannot:
   - Share a project with other groups.

@@ -132,6 +132,53 @@ RSpec.describe QA::Resource::ApiFabricator do
           expect(subject.fabricate_via_api!).to eq(resource_web_url)
         end
 
+        context 'when checking availability' do
+          let(:api_url) { 'http://example.org/api/v4/foo?private_token=foo' }
+
+          it 'requests the authenticated API url' do
+            expect(api_request).to receive(:new).with(api_client_instance, subject.api_get_path)
+              .and_return(double(url: api_url))
+            expect(subject).to receive(:get).with(api_url)
+              .and_return(double('Raw GET response', code: 200, body: {}.to_json))
+
+            subject.fabricate_via_api!
+          end
+
+          it 'keeps the resource query parameters' do
+            allow(subject).to receive(:query_parameters).and_return({ with_projects: false })
+
+            expect(api_request).to receive(:new).with(api_client_instance, "#{subject.api_get_path}?with_projects=false")
+              .and_return(double(url: api_url))
+
+            subject.fabricate_via_api!
+          end
+        end
+
+        context 'when the resource defines no GET path' do
+          let(:resource) do
+            Class.new do
+              def self.name
+                'FooBarResource'
+              end
+
+              def api_post_path
+                '/bar'
+              end
+
+              def api_post_body
+                { name: 'John Doe' }
+              end
+            end
+          end
+
+          it 'checks the web url' do
+            expect(subject).to receive(:get).with(resource_web_url)
+              .and_return(double('Raw GET response', code: 200, body: {}.to_json))
+
+            subject.send(:wait_for_resource_availability, resource_web_url)
+          end
+        end
+
         it 'populates api_resource with the resource' do
           subject.fabricate_via_api!
 
@@ -298,6 +345,12 @@ RSpec.describe QA::Resource::ApiFabricator do
           subject.fabricate_via_api!
 
           expect(subject.api_resource).to eq(parsed_resource)
+        end
+
+        it 'skips the availability check' do
+          expect(subject).not_to receive(:get)
+
+          subject.fabricate_via_api!
         end
       end
     end

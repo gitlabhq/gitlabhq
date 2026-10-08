@@ -171,15 +171,24 @@ To opt in:
 `cng-relative-url-caproni` does this automatically in CI, setting `QA_RELATIVE_URL_ROOT`
 to `/relative`.
 
+## Licensing
+
+The suite licenses the instance itself: `QA::EE::Strategy.perform_before_hooks` posts
+`QA_EE_LICENSE` to `POST /api/v4/license` before any EE scenario runs. All the deployment
+supplies is `GITLAB_LICENSE_MODE=test`, which loads the test decryption key at Rails boot so
+a test-signed key validates. `values/gitlab.yaml` sets it, next to `CUSTOMER_PORTAL_URL`,
+which selects the customers portal and is not used by the API path.
+
+The orchestrator's pre-created `gitlab-license` secret is not reproduced because it was never
+consumed: the orchestrator names it at `gitlab.license.secret`, while the chart reads
+`global.gitlab.license.secret`. An instance that has to come up already licensed would need the
+secret, which could follow the same kustomize pattern as `github-oauth-secret`, and
+`global.gitlab.license.secret` naming it.
+
 ## Known gaps
 
 - Admin token seeding and reading back the root password are CI script steps rather than
   deploy hooks. [caproni#192](https://gitlab.com/gitlab-org/caproni/-/issues/192)
-- EE licence secret: the suite licenses itself over the API, which needs
-  `GITLAB_LICENSE_MODE=test` and `CUSTOMER_PORTAL_URL` (both set in
-  `values/gitlab.yaml`). The orchestrator's pre-created `gitlab-license` secret is not
-  reproduced because the suite does not need it; if that changes, it can follow the same
-  kustomize pattern as `github-oauth-secret`.
 - `save-cluster-logs.sh` only reads the `gitlab` namespace, so CloudNativePG, Valkey and
   Garage logs are not captured; they live in `gitlab-dev-stack` and `cnpg-system`.
 - Nothing validates the rendered charts ahead of a deploy, so a Helm template error is

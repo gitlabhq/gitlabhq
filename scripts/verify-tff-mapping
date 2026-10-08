@@ -754,6 +754,16 @@ tests = [
     expected: ['spec/lib/analytics/glql/documentation_spec.rb']
   },
   {
+    explanation: 'Map a system analytics dashboard definition to its content spec and the loader spec',
+    changed_file: 'ee/lib/gitlab/analytics/dashboards/system/dap_impact.yaml',
+    expected: %w[
+      ee/spec/lib/gitlab/analytics/dashboards/system/dap_impact_spec.rb
+      ee/spec/services/analytics/custom_dashboards/system_dashboards_loader_spec.rb
+      spec/dot_gitlab_ci/rules_spec.rb
+    ]
+  },
+
+  {
     explanation: 'Map any yaml file changes in devfile folder',
     changed_file: '.devfile/search.yaml',
     expected: ['spec/dot_gitlab_ci/rules_spec.rb']

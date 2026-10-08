@@ -336,9 +336,10 @@ In this example:
   ![The merge request approval widget listing the group members as Maintainers.](img/merge_request_maintainers_v17_9.png)
 
 > [!note]
-> When [global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
-> is enabled, you cannot set a group or subgroup as a Code Owner.
-> For more information, see [incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
+> When the [global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
+> is enabled, you can't invite a group to a project.
+> In GitLab 18.6 and later, to use a group as a Code Owner, invite it to a parent group of the project.
+> For more information, see [incompatibility with global group memberships locks](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 
 If you encounter issues, see [user not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
 

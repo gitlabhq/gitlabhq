@@ -430,6 +430,19 @@
   background-color: var(--gl-color-chip-color);
 }
 
+.content-editor-placeholder {
+  @apply gl-rounded-base;
+  @apply gl-border-1;
+  @apply gl-border-dashed;
+  @apply gl-border-default;
+  @apply gl-px-2;
+
+  &.content-editor-placeholder-selected {
+    @apply gl-border-solid;
+    border-color: var(--gl-focus-ring-outer-color);
+  }
+}
+
 .content-editor-comment {
   &::before {
     content: '<!--';

@@ -468,17 +468,17 @@ For the specifics of each test run in our CI/CD pipelines, see the configuration
 in the relevant projects:
 
 - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml>
-- <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/qa.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml>
-- <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab/ci/checks.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/cli/-/blob/main/.gitlab-ci.yml>
-- <https://gitlab.com/gitlab-org/ops/artifact-registry/-/blob/main/.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/ops/artifact-registry/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/release/patch-release-blogs/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml>
 
 We also run some documentation tests in these projects:
 
-- GitLab Development Kit:
-  <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>
+- GitLab Development Kit: <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>
 - GitLab Docs website: <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
 - Gitaly: <https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml>
 - GitLab Duo Plugin for JetBrains: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/main/.gitlab-ci.yml>
@@ -487,5 +487,6 @@ We also run some documentation tests in these projects:
 - GitLab Language Server: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/.gitlab-ci.yml>
 - GitLab for Visual Studio extension: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>
 - AI Gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
-- Centralized Evaluation Framework: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/.gitlab-ci.yml>
+- Centralized Evaluation Framework CLI: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/cef-cli/-/blob/main/.gitlab-ci.yml>
+- Centralized Evaluation Framework Service: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/cef-service/-/blob/main/.gitlab-ci.yml>
 - GitLab Container Registry: <https://gitlab.com/gitlab-org/container-registry/-/blob/master/.gitlab/ci/validate.yml>

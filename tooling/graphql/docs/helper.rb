@@ -270,8 +270,9 @@ module Tooling
         end
 
         def experiment_description(item, paragraph_break)
-          "Status: Experiment. Introduced in GitLab #{item.deprecation.milestone}." \
-            "#{paragraph_break}#{item.deprecation.original_description}"
+          status = "Status: Experiment. Introduced in GitLab #{item.deprecation.milestone}."
+
+          [status, item.deprecation.original_description].compact.join(paragraph_break)
         end
       end
     end

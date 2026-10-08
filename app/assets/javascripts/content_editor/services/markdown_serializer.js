@@ -45,6 +45,7 @@ import taskList from './serializer/task_list';
 import bulletList from './serializer/bullet_list';
 import orderedList from './serializer/ordered_list';
 import paragraph from './serializer/paragraph';
+import placeholder from './serializer/placeholder';
 import hardBreak from './serializer/hard_break';
 import text from './serializer/text';
 import wordBreak from './serializer/word_break';
@@ -102,6 +103,7 @@ const defaultSerializerConfig = {
     [extensions.Loading.name]: loading,
     [extensions.OrderedList.name]: orderedList,
     [extensions.Paragraph.name]: paragraph,
+    [extensions.Placeholder.name]: placeholder,
     [extensions.HTMLComment.name]: htmlComment,
     [extensions.Reference.name]: reference,
     [extensions.ReferenceLabel.name]: referenceLabel,

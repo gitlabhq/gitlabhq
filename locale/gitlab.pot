@@ -25055,6 +25055,9 @@ msgstr ""
 msgid "Content parsed with %{link}."
 msgstr ""
 
+msgid "ContentEditor|%{value}, placeholder %{placeholder}"
+msgstr ""
+
 msgid "ContentEditor|Open source file"
 msgstr ""
 
@@ -25062,6 +25065,9 @@ msgid "ContentEditor|Paste and merge into table"
 msgstr ""
 
 msgid "ContentEditor|Paste into cell"
+msgstr ""
+
+msgid "ContentEditor|Placeholder %{placeholder}"
 msgstr ""
 
 msgid "ContentEditor|Text style"

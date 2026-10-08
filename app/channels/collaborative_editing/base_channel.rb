@@ -110,7 +110,7 @@ module CollaborativeEditing
       return unless token.is_a?(String)
       return unless store.replace(data['payload'], token)
 
-      broadcast(data.merge('type' => MESSAGE_TYPE_SYNC))
+      broadcast(data.slice('payload', 'clientId').merge('type' => MESSAGE_TYPE_SYNC))
     end
 
     def broadcast(data, identity: false)

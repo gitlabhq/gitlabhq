@@ -2,6 +2,7 @@ import { Image } from '@tiptap/extension-image';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import { PARSE_HTML_PRIORITY_HIGH } from '../constants';
 import ImageWrapper from '../components/wrappers/image.vue';
+import { parseCanonicalSrc } from '../services/utils';
 
 const resolveImageEl = (element) =>
   element.nodeName === 'IMG' ? element : element.querySelector('img');
@@ -37,7 +38,7 @@ export default Image.extend({
       },
       canonicalSrc: {
         default: null,
-        parseHTML: (element) => element.dataset.canonicalSrc,
+        parseHTML: (element) => parseCanonicalSrc(resolveImageEl(element)),
         renderHTML: () => '',
       },
       alt: {

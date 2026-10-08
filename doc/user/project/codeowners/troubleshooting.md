@@ -67,8 +67,7 @@ source branch or edit the merge request to refresh them.
 
 A Code Owner approval rule is optional if any of these conditions are true:
 
-- The user or group is not a member of the project.
-  Code Owners [cannot inherit members from parent groups](https://gitlab.com/gitlab-org/gitlab/-/issues/288851/).
+- The user or group is not [eligible to be a Code Owner](reference.md#eligible-code-owners).
 - The user or group is [malformed or inaccessible](advanced.md#malformed-owners).
 - [Code Owner approval on a protected branch](../repository/branches/protected.md#require-code-owner-approval) has not been set up.
 - The section is [marked as optional](reference.md#optional-sections).
@@ -111,15 +110,12 @@ prevent users from changing their usernames.
 
 ## Incompatibility with Global group memberships locks
 
-The Code Owners feature requires direct group memberships to projects.
-When Global group memberships locks are enabled, they prevent groups from being invited as direct members to projects.
-This creates an incompatibility between the two features.
+When the global [SAML](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
+or [LDAP](../../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock)
+group memberships lock is enabled, you can't invite a group as a direct member of a project.
 
-When the Global [SAML](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) or [LDAP](../../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock) group memberships lock is enabled, you can't use groups or subgroups as Code Owners.
+To work around this issue:
 
-If you enabled either Global SAML or LDAP group memberships lock, you have the following options:
-
-- Use individual users as Code Owners instead of groups.
-- If using group-based Code Owners is a higher priority, disable the Global group memberships lock.
-
-Support for inherited group members is proposed in [issue 288851](https://gitlab.com/gitlab-org/gitlab/-/issues/288851).
+- In GitLab 18.6 and later, to use a group as a Code Owner,
+  [invite the group to a parent group of the project](advanced.md#groups-shared-with-parent-groups).
+- In GitLab 18.5 and earlier, use individual users as Code Owners, or turn off the global group memberships lock.

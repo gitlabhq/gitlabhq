@@ -460,6 +460,12 @@ mapping:
   - source: 'doc/api/glql\.md'
     test: 'spec/lib/analytics/glql/documentation_spec.rb'
 
+  # System analytics dashboards: the definition drives its content spec and the loader spec
+  - source: 'ee/lib/gitlab/analytics/dashboards/system/(?<name>.+)\.yaml'
+    test:
+      - 'ee/spec/lib/gitlab/analytics/dashboards/system/%{name}_spec.rb'
+      - 'ee/spec/services/analytics/custom_dashboards/system_dashboards_loader_spec.rb'
+
   # Devfile and root yaml related checks
   - source:
       - '.*\.yaml'

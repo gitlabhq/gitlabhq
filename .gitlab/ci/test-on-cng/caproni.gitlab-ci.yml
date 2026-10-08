@@ -20,8 +20,21 @@
       caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} wait --for=condition=Ready \
         --selector="app=webservice" pods --timeout=600s
       section_end "caproni_up"
-    - $CI_PROJECT_DIR/qa/caproni/scripts/seed_admin_token.rb
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}${QA_RELATIVE_URL_ROOT}"
+    - |
+      section_start "gitlab_ready" "Waiting for GitLab to serve the sign-in page"
+      # Pod Ready only means the probe passed; boot and migrations continue past it, and both
+      # the token seeding below and the suite's own 180s readiness check need a served page
+      deadline=$(( $(date +%s) + ${GITLAB_READY_TIMEOUT:-600} ))
+      until curl --fail --silent --connect-timeout 5 --max-time 15 --output /dev/null "${QA_GITLAB_URL}/users/sign_in"; do
+        if [ "$(date +%s)" -ge "${deadline}" ]; then
+          echo "GitLab did not serve ${QA_GITLAB_URL}/users/sign_in in ${GITLAB_READY_TIMEOUT:-600}s" >&2
+          exit 1
+        fi
+        sleep 5
+      done
+      section_end "gitlab_ready"
+    - $CI_PROJECT_DIR/qa/caproni/scripts/seed_admin_token.rb
     # Read back, not pre-created: Caproni has no pre-install hook
     - |
       export GITLAB_ADMIN_PASSWORD="$(caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} \

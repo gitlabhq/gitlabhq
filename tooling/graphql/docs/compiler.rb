@@ -45,6 +45,10 @@ module Tooling
             locals: locals
           ).execute
 
+          # Templates and partials leave runs of blank lines (for example where an
+          # item has no description). Collapse them to satisfy markdownlint MD012.
+          doc = doc.gsub(/\n{3,}/, "\n\n")
+
           CompiledDoc.new(
             filename: File.join(OUTPUT_DIR, filename),
             doc: "#{doc}\n"

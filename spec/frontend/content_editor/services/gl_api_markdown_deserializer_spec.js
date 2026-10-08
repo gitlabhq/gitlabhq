@@ -151,6 +151,15 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
       );
     });
 
+    it.each`
+      description                                                | html                                                                                                                | markdown                                                     | expected
+      ${'a resolved placeholder'}                                | ${'<p data-sourcepos="1:1-1:27" dir="auto">in <span data-placeholder="%{project_name}">gitlab</span> we trust</p>'} | ${'in %{project_name} we trust'}                             | ${'in %{project_name} we trust'}
+      ${'an unresolved placeholder'}                             | ${'<p data-sourcepos="1:1-1:19" dir="auto">unknown <span data-placeholder="">%{foo}</span> here</p>'}               | ${'unknown %{foo} here'}                                     | ${'unknown %{foo} here'}
+      ${'a raw HTML span with a non-placeholder data attribute'} | ${'<p data-sourcepos="1:1-1:55" dir="auto"><span data-placeholder="/label ~bug">hello</span> world</p>'}            | ${'<span data-placeholder="/label ~bug">hello</span> world'} | ${'<span dir="">hello</span> world'}
+    `('serializes $description', async ({ html, markdown, expected }) => {
+      expect(await roundTrip(html, markdown)).toBe(expected);
+    });
+
     it('falls back to the resolved path when the backend sends no data-canonical-src', async () => {
       const markdown = '![logo](app/assets/images/logo.svg)';
 

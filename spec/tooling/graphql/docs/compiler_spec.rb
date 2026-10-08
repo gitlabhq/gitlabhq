@@ -43,6 +43,11 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       argument :directive_arg, GraphQL::Types::String, required: false, description: 'A directive argument.'
     end
 
+    spec_directive_without_description = Class.new(GraphQL::Schema::Directive) do
+      graphql_name 'DirectiveWithoutDescription'
+      locations(:FIELD)
+    end
+
     spec_interface = Module.new do
       include ::Types::BaseInterface
       graphql_name 'ExampleInterface'
@@ -194,6 +199,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
     Class.new(GraphQL::Schema) do
       directive(spec_directive)
+      directive(spec_directive_without_description)
 
       orphan_types spec_alpha_implementor, spec_connection_interface_implementor,
         spec_interface_without_description_implementor
@@ -231,6 +237,8 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
         field :experimental_query, GraphQL::Types::String, null: true,
           description: 'An experimental query.',
           experiment: { milestone: '2.0' }
+        field :experimental_query_without_description, GraphQL::Types::String, null: true,
+          experiment: { milestone: '2.0' }
         field :list_query, [GraphQL::Types::String], null: false, description: 'A list query.'
       end)
 
@@ -251,6 +259,14 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
   def page(filename)
     pages.find { |compiled_doc| compiled_doc.filename.to_s.end_with?(filename) }
+  end
+
+  describe 'every page' do
+    it 'has no runs of blank lines' do
+      pages.each do |compiled_doc|
+        expect(compiled_doc.doc).not_to include("\n\n\n"), "#{compiled_doc.filename} has a run of blank lines"
+      end
+    end
   end
 
   describe 'the mutations page' do
@@ -326,7 +342,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     end
 
     it 'shows the deprecation warning before the first section' do
-      expect(doc.index('WARNING:')).to be < doc.index("## Calling a mutation\n")
+      expect(doc.index('> [!warning]')).to be < doc.index("## Calling a mutation\n")
     end
 
     it 'does not include introspection types' do
@@ -388,6 +404,18 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       expect(section('deprecatedQuery')).to include('Deprecated in GitLab 1.0. Use findObject instead.')
       expect(section('experimentalQuery'))
         .to include("Status: Experiment. Introduced in GitLab 2.0.\n\nAn experimental query.")
+    end
+
+    it 'renders an experimental query without a description' do
+      expect(section('experimentalQueryWithoutDescription')).to eq(
+        <<~MD
+          ## `experimentalQueryWithoutDescription`
+
+          Status: Experiment. Introduced in GitLab 2.0.
+
+          **Returns:** [`String`](scalars.md#string)
+        MD
+      )
     end
 
     it 'renders the full type signature of the return type' do

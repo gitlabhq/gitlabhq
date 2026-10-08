@@ -93,6 +93,66 @@ RSpec.shared_examples 'rich text editor - common' do
 * list item 2')
     end
 
+    describe 'with a placeholder' do
+      let(:placeholder_selector) { '[data-testid="content-editor-placeholder"]' }
+
+      before do
+        find('textarea').set('Server: %{gitlab_server}')
+        switch_to_content_editor
+      end
+
+      it 'displays the value with the placeholder syntax in a tooltip on hover' do
+        page.within content_editor_testid do
+          find(placeholder_selector, text: Gitlab.config.gitlab.host).hover
+        end
+
+        expect(page).to have_css('[role="tooltip"]', text: '%{gitlab_server}')
+      end
+
+      it 'shows and announces the placeholder syntax when reselected with the keyboard' do
+        announcement_selector = '[data-testid="content-editor-placeholder-announcement"]'
+        announcement = format(s_('ContentEditor|%{value}, placeholder %{placeholder}'),
+          value: Gitlab.config.gitlab.host, placeholder: '%{gitlab_server}')
+
+        page.within content_editor_testid do
+          find(placeholder_selector).click
+
+          expect(page).to have_css(announcement_selector, visible: :all, exact_text: announcement)
+        end
+
+        find_button('Switch to plain text editing').hover
+        type_in_content_editor :right
+
+        page.within content_editor_testid do
+          expect(page).to have_css(announcement_selector, visible: :all, exact_text: '')
+        end
+
+        expect(page).to have_no_css('[role="tooltip"]', text: '%{gitlab_server}')
+
+        type_in_content_editor :left
+
+        page.within content_editor_testid do
+          expect(page).to have_css(announcement_selector, visible: :all, exact_text: announcement)
+        end
+
+        expect(page).to have_css('[role="tooltip"]', text: '%{gitlab_server}')
+      end
+
+      it 'preserves the placeholder syntax when switching back to markdown' do
+        page.within content_editor_testid do
+          expect(page).to have_css(placeholder_selector)
+        end
+
+        type_in_content_editor :end
+        type_in_content_editor ' hello world'
+        wait_until_hidden_field_is_updated(/hello world/)
+
+        switch_to_markdown_editor
+
+        expect(page).to have_field(type: 'textarea', with: 'Server: %{gitlab_server} hello world')
+      end
+    end
+
     it 'renders correctly with table as initial content' do
       textarea = find 'textarea'
       textarea.send_keys "\n\n"
