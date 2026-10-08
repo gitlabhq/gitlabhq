@@ -26,7 +26,7 @@ module API
           route_setting :model_registry, write: true
           params do
             requires :name, type: String,
-              desc: 'Register models under this name.'
+              desc: 'Name of the registered model.'
             optional :description, type: String,
               desc: 'Description of the registered model.'
             optional :tags, type: Array, desc: 'Additional metadata for the registered model.'
@@ -152,8 +152,8 @@ module API
               default: 200
             optional :order_by,
               type: String,
-              desc: 'Order criteria. Can be by name or last_updated_timestamp, with optional DESC or ASC (default)' \
-                    'Valid examples: `name`, `name DESC`, `last_updated_timestamp DESC`' \
+              desc: 'Column and direction to sort registered models by, for example `name`, `name DESC`, or ' \
+                    '`last_updated_timestamp DESC`. Supported columns are `name` and `last_updated_timestamp`. ' \
                     'Sorting by model metadata is not supported.',
               default: 'name ASC'
             optional :page_token,

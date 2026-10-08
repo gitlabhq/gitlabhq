@@ -232,7 +232,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/services/integrations/slack_installation/project_service.rb'
     - 'app/services/issue_links/create_service.rb'
     - 'app/services/issue_links/destroy_service.rb'
-    - 'app/services/labels/find_or_create_service.rb'
     - 'app/services/members/approve_access_request_service.rb'
     - 'app/services/members/base_service.rb'
     - 'app/services/members/create_service.rb'

@@ -236,6 +236,53 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature
       end
     end
 
+    context 'when the partition has a foreign key to a partitioned table' do
+      let(:schema) { Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA }
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE _test_referenced_partitioned_table (
+            id bigint NOT NULL,
+            partition_id bigint NOT NULL,
+            PRIMARY KEY (id, partition_id)
+          ) PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{schema}._test_referenced_partition_1
+            PARTITION OF _test_referenced_partitioned_table FOR VALUES IN (1);
+          CREATE TABLE #{schema}._test_referenced_partition_2
+            PARTITION OF _test_referenced_partitioned_table FOR VALUES IN (2);
+
+          CREATE TABLE _test_referencing_table (
+            id bigint NOT NULL,
+            partition_id bigint NOT NULL,
+            CONSTRAINT fk_referenced_partitioned FOREIGN KEY (partition_id, id)
+              REFERENCES _test_referenced_partitioned_table (partition_id, id)
+          ) PARTITION BY LIST (partition_id);
+
+          CREATE TABLE #{schema}._test_referencing_partition_1
+            PARTITION OF _test_referencing_table FOR VALUES IN (1);
+
+          ALTER TABLE _test_referencing_table DETACH PARTITION #{schema}._test_referencing_partition_1;
+        SQL
+
+        Postgresql::DetachedPartition.create!(table_name: '_test_referencing_partition_1', drop_after: 1.second.ago)
+      end
+
+      it 'drops the partition' do
+        inherited_foreign_keys = Gitlab::Database::PostgresForeignKey
+          .by_constrained_table_identifier("#{schema}._test_referencing_partition_1")
+          .where(is_inherited: true)
+
+        # The detach generates one inherited key per referenced partition, and Postgres refuses to drop those directly
+        expect(inherited_foreign_keys.count).to eq(2)
+        expect(Gitlab::AppLogger).not_to receive(:error)
+
+        dropper.perform
+
+        expect_partition_removed(:_test_referencing_partition_1)
+      end
+    end
+
     context 'with multiple partitions to drop' do
       before do
         create_partition(

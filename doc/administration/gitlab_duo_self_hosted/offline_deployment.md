@@ -386,7 +386,7 @@ If your GitLab version requests one of those tags, or if you need a different
 1. On a connected machine, download the `duo-cli` binary:
 
    ```shell
-   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.25.0/duo-linux-x64" \
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.27.0/duo-linux-x64" \
      --output duo-linux-x64
    ```
 
@@ -397,19 +397,19 @@ If your GitLab version requests one of those tags, or if you need a different
 1. Build the custom image with the binary included:
 
    ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.19
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.21
    COPY duo-linux-x64 /usr/local/bin/duo
    RUN chmod +x /usr/local/bin/duo
    ```
 
-   Replace `v0.0.19` with the tag your GitLab version requests.
+   Replace `v0.0.21` with the tag your GitLab version requests.
 
 1. Transfer the image to your internal registry using the same
    `skopeo copy` procedure described above, then reference it
    in your project's `agent-config.yml`:
 
    ```yaml
-   image: registry.internal.example.com/duo/duo-executor:v0.0.19
+   image: registry.internal.example.com/duo/duo-executor:v0.0.21
    ```
 
 If the image is in a project's container registry on this GitLab instance,

@@ -1,8 +1,8 @@
 ---
-stage: Software Supply Chain Security
-group: Authentication
+stage: Security
+group: Security Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Responding to security incidents
+title: Security incident response
 ---
 
 When a security incident occurs, you should primarily follow the processes defined by your organization. The GitLab Security Operations team created this guide:
@@ -12,6 +12,8 @@ When a security incident occurs, you should primarily follow the processes defin
 - As a supplement to the processes defined by your organization to handle security incidents. It is not a replacement.
 
 Using this guide, you should feel confident in handling security incidents related to GitLab. Where necessary, the guide links to other parts of GitLab documentation.
+
+To detect incidents before and as they occur, see [Detecting security incidents](detecting_security_incidents.md).
 
 > [!warning]
 > Use the suggestions/recommendations mentioned in this guide at your own risk.
@@ -59,6 +61,8 @@ Security incidents related to credentials exposure can vary in severity from low
 - Focus on CI-related [audit events](../user/compliance/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
 - Review [job logs](../administration/cicd/job_logs.md) for any pipelines run by an adversary
 
+For more information on this scenario, see [credential exposure and token abuse](detecting_security_incidents.md#credential-exposure-and-token-abuse).
+
 ### Suspected compromised user account
 
 #### Response
@@ -86,6 +90,8 @@ Review the [audit events](../administration/compliance/audit_event_reports.md) a
 - Addition or modification of authorized OAuth applications.
 - Changes to connected SAML identity providers.
 - Changes to email addresses or notifications.
+
+For more information on this scenario, see [compromised user account](detecting_security_incidents.md#compromised-user-account).
 
 ### CI/CD-related security incidents
 
@@ -126,6 +132,8 @@ When secrets stored as CI variables are not [masked](../ci/variables/_index.md#m
 - Review audit logs for the exposed secrets systems such as CloudTrail logs for AWS or CloudAudit Logs for GCP to determine if any suspicious changes were made at the time of exposure.
 - Review audit logs available to you for any suspicious modifications to user and project settings.
 
+For more information on this scenario, see [CI/CD abuse](detecting_security_incidents.md#cicd-abuse).
+
 ### Suspected compromised instance
 
 GitLab Self-Managed customers and administrators are responsible for:
@@ -158,6 +166,8 @@ If you suspect that your GitLab instance has been compromised, you should:
 
 Review [system access audit events](../user/compliance/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions, and user login events.
 
+For more information on this scenario, see [compromised instance](detecting_security_incidents.md#compromised-instance).
+
 ### Misconfigured project or group settings
 
 Security incidents can occur as a result of improperly configured project or group settings, potentially leading to unauthorized access to sensitive or proprietary data. These incidents may include but are not limited to:
@@ -181,6 +191,8 @@ If you suspect unauthorized modifications to project settings, consider taking t
 - Audit logs can be filtered based on the `target_type` field. Based on the security incident context, apply a filter to this field to narrow down the scope.
 - Look for specific audit events of [compliance management](../user/compliance/audit_event_types.md#compliance-management) and [audit events of groups and projects](../user/compliance/audit_event_types.md#groups-and-projects).
 
+For more information on this scenario, see [misconfigured project or group settings](detecting_security_incidents.md#misconfigured-project-or-group-settings).
+
 ### Engaging GitLab for assistance with a security incident
 
 Before you ask GitLab for help, search the [GitLab documentation](https://docs.gitlab.com). You should engage support once you have performed the preliminary investigation on your end and have additional questions or need of assistance. Eligibility for assistance from GitLab Support is [determined by your license](https://support.gitlab.com/hc/en-us/articles/11626483177756-GitLab-Support#gitlab-support-service-levels).
@@ -194,9 +206,3 @@ Review the [GitLab Security documentation](_index.md) for suggestions on managin
 For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](hardening.md).
 
 You can also consider implementing abuse rate limiting as detailed in [Git abuse rate limit](../user/group/reporting/git_abuse_rate_limit.md). Setting abuse rate limits may be helpful to automatically mitigate certain types of security incidents.
-
-### Detections
-
-GitLab SIRT maintains an active repository of detections in the [GitLab SIRT public project](https://gitlab.com/gitlab-security-oss/guard/-/tree/main/detections).
-
-The detections in this repository are based on the audit events and in the general Sigma rule format. You can use sigma rule converter to get the rules in your desired format. Visit the repository for more information about Sigma format and tools related to it. Make sure you have GitLab audit logs ingested to your SIEM. You should follow the audit event streaming guide [for your GitLab Self-Managed instance](../administration/compliance/audit_event_streaming.md) or [GitLab.com top-level group](../user/compliance/audit_event_streaming.md) to stream audit events to your desired destination.

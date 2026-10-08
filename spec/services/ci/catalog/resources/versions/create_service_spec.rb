@@ -389,4 +389,171 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       end
     end
   end
+
+  describe '#execute bundle collection' do
+    let_it_be_with_refind(:project) { create(:project, :small_repo) }
+    let_it_be_with_refind(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+
+    let(:release) do
+      create(:release,
+        tag: '1.2.0',
+        project: project, sha: project.repository.root_ref_sha, author: project.first_owner
+      )
+    end
+
+    let(:user) { project.first_owner }
+    let(:metadata) { { components: [{ name: 'dast', spec: {}, component_type: 'template' }] } }
+    let(:bundle) { { readme: 'readme', documents: [] } }
+    let(:collect_service) { instance_double(Ci::Catalog::BundledResources::CollectAndStoreService) }
+
+    subject(:execute) { described_class.new(release, user, metadata).execute }
+
+    before do
+      catalog_resource.update!(verification_level: :gitlab_maintained)
+
+      allow(Ci::Catalog::BundledResources::CollectAndStoreService).to receive(:new).and_return(collect_service)
+      allow(collect_service).to receive_messages(
+        prepare: ServiceResponse.success(payload: bundle),
+        persist: ServiceResponse.success
+      )
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_collect_bundles_on_publish: false)
+      end
+
+      it 'publishes without collecting' do
+        expect(Ci::Catalog::BundledResources::CollectAndStoreService).not_to receive(:new)
+
+        expect(execute).to be_success
+      end
+    end
+
+    context 'when the catalog resource is not GitLab maintained' do
+      before do
+        catalog_resource.update!(verification_level: :unverified)
+      end
+
+      it 'publishes without collecting' do
+        expect(Ci::Catalog::BundledResources::CollectAndStoreService).not_to receive(:new)
+
+        expect(execute).to be_success
+      end
+    end
+
+    context 'when the collection succeeds' do
+      it 'publishes the version', :aggregate_failures do
+        expect(execute).to be_success
+        expect(catalog_resource.reload.state).to eq('published')
+      end
+
+      it 'persists the bundle in the publish transaction, after the version is saved', :aggregate_failures do
+        baseline = ::ApplicationRecord.connection.open_transactions
+
+        expect(collect_service).to receive(:persist).with(bundle) do
+          version = Ci::Catalog::Resources::Version.last
+
+          expect(::ApplicationRecord.connection.open_transactions).to be > baseline
+          expect(version.release).to eq(release)
+          expect(version.released_at).to eq(release.released_at)
+
+          ServiceResponse.success
+        end
+
+        execute
+      end
+
+      context 'when the release is not saved yet' do
+        let(:release) do
+          build(:release,
+            tag: '1.2.0', released_at: nil,
+            project: project, sha: project.repository.root_ref_sha, author: project.first_owner
+          )
+        end
+
+        it 'bundles the saved release date and keeps the release eligible for evidence', :aggregate_failures do
+          allow(collect_service).to receive(:prepare) do
+            travel(2.seconds)
+
+            ServiceResponse.success(payload: bundle)
+          end
+
+          persisted_released_at = nil
+          allow(collect_service).to receive(:persist) do
+            persisted_released_at = Ci::Catalog::Resources::Version.last.released_at
+
+            ServiceResponse.success
+          end
+
+          expect(execute).to be_success
+          expect(persisted_released_at).to be_present
+          expect(release.reload.released_at).to eq(persisted_released_at)
+          expect(release).not_to be_historical_release
+        end
+      end
+    end
+
+    context 'when the project is not public' do
+      before do
+        allow(collect_service).to receive(:prepare)
+          .and_return(ServiceResponse.error(message: 'Catalog resource is not public', reason: :not_public))
+      end
+
+      it 'does not publish the version', :aggregate_failures do
+        expect(collect_service).not_to receive(:persist)
+        expect { execute }.not_to change { Ci::Catalog::Resources::Version.count }
+
+        expect(execute).to be_error
+        expect(execute.message).to include('Catalog resource is not public')
+        expect(catalog_resource.reload.state).not_to eq('published')
+      end
+    end
+
+    context 'when the collection fails' do
+      before do
+        allow(collect_service).to receive(:prepare)
+          .and_return(ServiceResponse.error(message: 'Version has no publisher'))
+      end
+
+      it 'does not publish the version', :aggregate_failures do
+        expect { execute }.not_to change { Ci::Catalog::Resources::Version.count }
+
+        expect(execute).to be_error
+        expect(execute.message).to include('Version has no publisher')
+        expect(catalog_resource.reload.state).not_to eq('published')
+      end
+    end
+
+    context 'when storing the bundle raises' do
+      let(:exception) { Errno::ECONNREFUSED.new }
+
+      before do
+        allow(collect_service).to receive(:prepare).and_raise(exception)
+      end
+
+      it 'returns an error, tracks the exception and does not publish', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception, project_id: project.id)
+
+        expect { execute }.not_to change { Ci::Catalog::Resources::Version.count }
+
+        expect(execute).to be_error
+        expect(execute.message).to eq('Catalog bundle could not be stored')
+        expect(catalog_resource.reload.state).not_to eq('published')
+      end
+    end
+
+    context 'when persisting the bundle raises' do
+      before do
+        allow(collect_service).to receive(:persist).and_raise(ActiveRecord::StatementInvalid)
+      end
+
+      it 'rolls back the version', :aggregate_failures do
+        expect { execute }.to raise_error(ActiveRecord::StatementInvalid)
+          .and not_change { Ci::Catalog::Resources::Version.count }
+
+        expect(catalog_resource.reload.state).not_to eq('published')
+      end
+    end
+  end
 end

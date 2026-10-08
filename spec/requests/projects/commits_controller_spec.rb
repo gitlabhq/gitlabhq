@@ -73,6 +73,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
     let_it_be_with_reload(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, maintainer_of: project) }
 
+    let(:repository) { project.repository }
     let(:id) { 'master/README.md' }
 
     before do
@@ -179,6 +180,122 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
 
           it_behaves_like 'repository commits call'
         end
+      end
+    end
+
+    describe 'loading tags' do
+      it 'loads tags for commits' do
+        expect_next_instance_of(CommitCollection) do |collection|
+          expect(collection).to receive(:load_tags)
+        end
+
+        get project_commits_path(project, 'master/README.md')
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when tag has a non-ASCII encoding' do
+      before do
+        repository.add_tag(user, 'tést', 'master')
+      end
+
+      it 'does not raise an exception' do
+        get project_commits_path(project, 'master')
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the ref name ends in .atom' do
+      context 'when the ref does not exist with the suffix' do
+        before do
+          get project_commits_path(project, 'master.atom')
+        end
+
+        it 'renders as atom' do
+          expect(response).to be_successful
+          expect(response.body).to include('<entry>')
+          expect(response.media_type).to eq('application/atom+xml')
+        end
+
+        it 'renders summary with type=html' do
+          expect(response.body).to include('<summary type="html">')
+        end
+      end
+
+      context 'when ref_type is provided' do
+        let(:ref_type) { 'heads' }
+
+        before do
+          get project_commits_path(project, 'master.atom', ref_type: ref_type)
+        end
+
+        it 'renders as atom' do
+          expect(response).to be_successful
+          expect(response.body).to include('<entry>')
+          expect(response.media_type).to eq('application/atom+xml')
+        end
+
+        context 'when there is no reference for provided ref_type' do
+          let(:ref_type) { 'tags' }
+
+          it 'returns not found' do
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'when the ref exists with the suffix' do
+        before do
+          commit = project.repository.commit('master')
+
+          allow_next_instance_of(Repository) do |instance|
+            allow(instance).to receive(:commit).and_call_original
+            allow(instance).to receive(:commit).with('master.atom').and_return(commit)
+          end
+
+          get project_commits_path(project, 'master.atom')
+        end
+
+        it 'renders as HTML' do
+          expect(response).to be_successful
+          expect(response.media_type).to eq('text/html')
+        end
+      end
+
+      context 'when the ref does not exist' do
+        before do
+          get project_commits_path(project, 'unknown.atom')
+        end
+
+        it 'returns 404 page' do
+          expect(response).to be_not_found
+        end
+      end
+    end
+
+    context 'with markdown cache' do
+      it 'preloads markdown cache for commits' do
+        expect(Commit).to receive(:preload_markdown_cache!).and_call_original
+
+        get project_commits_path(project, 'master/README.md')
+      end
+    end
+
+    context 'when gitaly is unavailable' do
+      before do
+        allow_next_instance_of(Repository) do |repository|
+          allow(repository).to receive(:commits)
+            .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+        end
+      end
+
+      it 'returns 503 and renders the Gitaly-unavailable error' do
+        get project_commits_path(project, 'master')
+
+        expect(response).to have_gitlab_http_status(:service_unavailable)
+        expect(response.body).to include(s_('Commits|Unable to load commits'))
       end
     end
   end

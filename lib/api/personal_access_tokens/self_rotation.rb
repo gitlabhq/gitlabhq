@@ -38,7 +38,8 @@ module API
 
           new_token = rotate_token(access_token, declared_params)
 
-          present new_token, with: Entities::PersonalAccessTokenWithToken
+          present new_token, with: Entities::PersonalAccessTokenWithToken,
+            **granular_scopes_options_for([new_token])
         end
       end
     end

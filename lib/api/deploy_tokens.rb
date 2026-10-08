@@ -56,7 +56,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
@@ -93,7 +93,7 @@ module API
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-          desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, `write_package_registry`, `read_virtual_registry`, or `write_virtual_registry`.'
+          desc: 'Scopes of the deploy token. Must include at least one scope.'
         optional :expires_at, type: DateTime, desc: 'Date when the deploy token expires. If omitted, the deploy token does not expire.'
         optional :username, type: String, desc: 'Username for the deploy token. Defaults to `gitlab+deploy-token-{n}`.'
       end
@@ -168,7 +168,7 @@ module API
     end
 
     params do
-      requires :id, types: [Integer, String], desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
+      requires :id, types: [Integer, String], desc: 'ID or URL-encoded path of the group.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
@@ -205,7 +205,7 @@ module API
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-          desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`'
+          desc: 'Scopes of the deploy token. Must include at least one scope.'
         optional :expires_at, type: DateTime, desc: 'Date when the deploy token expires. If omitted, the deploy token does not expire.'
         optional :username, type: String, desc: 'Username for the deploy token. Defaults to `gitlab+deploy-token-{n}`.'
       end

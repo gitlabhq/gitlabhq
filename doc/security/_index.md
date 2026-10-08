@@ -74,7 +74,11 @@ You can find all those directories listed in the [Linux package configuration do
 
 GitLab Self-Managed customers and administrators are responsible for the security of their underlying hosts, and for keeping GitLab itself up to date. It is important to [regularly patch GitLab](../policy/maintenance.md), patch your operating system and its software, and harden your hosts in accordance with vendor guidance.
 
-## Monitoring
+## Monitoring and response
+
+- [Security incidents](security_incidents.md).
+- [Security incident detection](detecting_security_incidents.md).
+- [Security incident response](responding_to_security_incidents.md).
 
 ### Logs
 
@@ -83,10 +87,6 @@ GitLab Self-Managed customers and administrators are responsible for the securit
 - [How to use correlation ID to trace logs](../administration/logs/tracing_correlation_id.md).
 - [Logging configuration and access](https://docs.gitlab.com/omnibus/settings/logs/).
 - [How to configure audit event streaming](../administration/compliance/audit_event_streaming.md).
-
-## Response
-
-- [Responding to security incidents](responding_to_security_incidents.md).
 
 ## Rate limits
 

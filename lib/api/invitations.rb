@@ -40,7 +40,7 @@ module API
         end
         params do
           requires :access_level, type: Integer, values: ::API::Helpers::MembersHelpers.member_access_levels, desc: 'Access level to grant to the invited user. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
-          optional :email, type: Array[String], email_or_email_list: true, coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The email address to invite, or multiple emails separated by comma'
+          optional :email, type: Array[String], email_or_email_list: true, coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Email address of the member to invite, or multiple email addresses separated by commas. Required if `user_id` is not provided.'
           optional :user_id, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'ID of the user to invite, or multiple IDs separated by commas. Required if `email` is not provided.'
           optional :expires_at, type: DateTime, desc: 'Date when the invitation expires.'
           optional :invite_source, type: String, desc: 'Source of the invitation that starts the member creation process.', default: 'invitations-api'
@@ -94,7 +94,7 @@ module API
           tags %w[invitations]
         end
         params do
-          requires :email, type: String, desc: 'The email address of the invitation'
+          requires :email, type: String, desc: 'Email address the invitation was previously sent to.'
           optional :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Access level to grant to the invited user. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :expires_at, type: DateTime, desc: 'Date when the invitation expires.'
 
@@ -138,7 +138,7 @@ module API
           tags %w[invitations]
         end
         params do
-          requires :email, type: String, desc: 'The email address of the invitation'
+          requires :email, type: String, desc: 'Email address the invitation was previously sent to.'
         end
         route_setting :authorization, permissions: :delete_invitation, boundary_type: source_type.to_sym
         delete ":id/invitations/:email", requirements: { email: %r{[^/]+} } do

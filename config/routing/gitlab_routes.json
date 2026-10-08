@@ -16243,6 +16243,18 @@
     "dottedExample": "/api/scim/john.doe/application/Groups/john.doe"
   },
   {
+    "template": "/api/scim/:version/application/Schemas",
+    "example": "/api/scim/foo/application/Schemas",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/Schemas"
+  },
+  {
+    "template": "/api/scim/:version/application/Schemas/:id",
+    "example": "/api/scim/foo/application/Schemas/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/Schemas/john.doe"
+  },
+  {
     "template": "/api/scim/:version/application/Users",
     "example": "/api/scim/foo/application/Users",
     "acceptsFormat": true,
@@ -16253,6 +16265,18 @@
     "example": "/api/scim/foo/application/Users/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/scim/john.doe/application/Users/john.doe"
+  },
+  {
+    "template": "/api/scim/:version/groups/:group/Schemas",
+    "example": "/api/scim/foo/groups/foo/Schemas",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/groups/john.doe/Schemas"
+  },
+  {
+    "template": "/api/scim/:version/groups/:group/Schemas/:id",
+    "example": "/api/scim/foo/groups/foo/Schemas/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/groups/john.doe/Schemas/john.doe"
   },
   {
     "template": "/api/scim/:version/groups/:group/Users",

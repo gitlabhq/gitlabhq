@@ -150,7 +150,7 @@ module API
           tags ['project_import']
         end
         params do
-          optional :batched, type: Boolean, desc: 'Whether to export in batches'
+          optional :batched, type: Boolean, desc: 'If `true`, exports in batches.'
         end
         route_setting :authorization, permissions: :create_project_relation_export, boundary_type: :project
         post ':id/export_relations' do
@@ -189,7 +189,8 @@ module API
         params do
           requires :relation, type: String, project_portable: true, desc: 'Name of the project top-level relation to ' \
                                                                       'download or view.'
-          optional :batched, type: Boolean, desc: 'Whether to download in batches'
+          optional :batched, type: Boolean, desc: 'If `true`, downloads the batch specified by `batch_number`. ' \
+                                              'Set to `true` only for batched exports.'
           optional :batch_number, type: Integer, desc: 'Number of the export batch to download.'
 
           all_or_none_of :batched, :batch_number

@@ -79,6 +79,7 @@ Example response:
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632314) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -133,6 +134,11 @@ Example response:
     "token": "<your_new_access_token>"
 }
 ```
+
+> [!note]
+> For tokens created with granular scopes, the response also includes a `granular_scopes`
+> attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
 
 ## List all impersonation tokens for a user
 

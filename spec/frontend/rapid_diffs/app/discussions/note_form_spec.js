@@ -66,10 +66,9 @@ describe('NoteForm', () => {
 
   it('shows editor', () => {
     const autosaveKey = 'autosave';
-    const supportsQuickActions = true;
     const autofocus = true;
     const restoreFromAutosave = true;
-    createComponent({ autosaveKey, supportsQuickActions, autofocus, restoreFromAutosave });
+    createComponent({ autosaveKey, autofocus, restoreFromAutosave });
     const editor = findEditor();
     expect(editor.exists()).toBe(true);
     expect(editor.props()).toMatchObject({
@@ -88,7 +87,7 @@ describe('NoteForm', () => {
       autosaveKey,
       autocompleteDataSources: window.gl.GfmAutoComplete.dataSources,
       disabled: false,
-      supportsQuickActions,
+      supportsQuickActions: true,
       autofocus,
       restoreFromAutosave,
     });

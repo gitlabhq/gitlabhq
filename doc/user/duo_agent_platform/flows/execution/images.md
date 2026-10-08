@@ -47,8 +47,8 @@ The following table lists the current pinned versions:
 | `git-lfs`                             | UBI 9 stock                                             |
 | Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                    |
 | `npm`                                 | Bundled with Node.js 20                                 |
-| `@gitlab/duo-cli`                     | 9.25.0                                                  |
-| `glab` (GitLab CLI)                   | 1.119.0                                                 |
+| `@gitlab/duo-cli`                     | 9.27.0                                                  |
+| `glab` (GitLab CLI)                   | 1.120.0                                                 |
 | `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                        |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, root-based sandboxing)  |
 | `socat`                               | AlmaLinux 9 EPEL                                        |
@@ -60,14 +60,12 @@ The following table lists the current pinned versions:
 | Java                                  | 17 (`java-17-openjdk-headless`)                         |
 | Runtime user                          | root                                                    |
 
-The default and hardened images share a single base layer. The default image is built
-`FROM` the hardened stage and adds only the language runtimes to the default and hardened
-images. 
-
-Default and hardened images two differ in
-runtime user and in how the sandbox obtains its privileges. The default image runs as
-root and uses root-based sandboxing, and the hardened image runs as UID 1001 and relies
-on unprivileged user namespaces.
+The default and hardened images share a single base layer. The hardened image adds the
+GitLab Duo CLI, `glab`, and SRT to that layer. The default image adds the language
+runtimes, then the same tools. The two images differ in runtime user and in how the
+sandbox obtains its privileges. The default image runs as root and uses root-based
+sandboxing, and the hardened image runs as UID 1001 and relies on unprivileged user
+namespaces.
 
 ## Change the default Docker image
 
@@ -189,14 +187,14 @@ To configure flows for an offline environment:
    [GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages):
 
    ```shell
-   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.25.0/duo-linux-x64" \
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.27.0/duo-linux-x64" \
      --output duo-linux-x64
    ```
 
 1. Build a custom image that includes the binary:
 
    ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.19
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.21
    COPY duo-linux-x64 /usr/local/bin/duo
    RUN chmod +x /usr/local/bin/duo
    ```
@@ -348,8 +346,8 @@ The following table lists the current pinned versions:
 | `git-lfs`                             | UBI 9 stock                                              |
 | Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                     |
 | `npm`                                 | Bundled with Node.js 20                                  |
-| `@gitlab/duo-cli`                     | 9.25.0                                                   |
-| `glab` (GitLab CLI)                   | 1.119.0                                                  |
+| `@gitlab/duo-cli`                     | 9.27.0                                                   |
+| `glab` (GitLab CLI)                   | 1.120.0                                                  |
 | `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                         |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, userns-based sandboxing) |
 | `socat`                               | AlmaLinux 9 EPEL                                         |

@@ -1898,7 +1898,10 @@ module API
             end
 
           if response.success?
-            present response.payload[:personal_access_token], with: Entities::PersonalAccessTokenWithToken
+            personal_access_token = response.payload[:personal_access_token]
+
+            present personal_access_token, with: Entities::PersonalAccessTokenWithToken,
+              **granular_scopes_options_for([personal_access_token])
           else
             render_api_error!(response.message, response.reason || :unprocessable_entity)
           end

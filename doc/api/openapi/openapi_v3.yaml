@@ -3149,7 +3149,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the workflow
+        description: ID of the workflow.
         schema:
           type: integer
         in: path
@@ -4709,7 +4709,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -4835,7 +4835,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -12918,7 +12918,7 @@ paths:
         in: path
       - name: check_id
         required: true
-        description: ID of an external status check
+        description: ID of the external status check.
         schema:
           type: integer
         in: path
@@ -12953,7 +12953,7 @@ paths:
         in: path
       - name: check_id
         required: true
-        description: ID of an external status check
+        description: ID of the external status check.
         schema:
           type: integer
         in: path
@@ -13070,7 +13070,7 @@ paths:
         example: 1
       - name: external_status_check_id
         required: true
-        description: ID of a failed external status check
+        description: ID of the failed external status check.
         schema:
           type: integer
         in: path
@@ -15685,9 +15685,10 @@ paths:
         in: query
       - name: order_by
         required: false
-        description: 'Order criteria. Can be by name or last_updated_timestamp, with
-          optional DESC or ASC (default)Valid examples: `name`, `name DESC`, `last_updated_timestamp
-          DESC`Sorting by model metadata is not supported.'
+        description: Column and direction to sort registered models by, for example
+          `name`, `name DESC`, or `last_updated_timestamp DESC`. Supported columns
+          are `name` and `last_updated_timestamp`. Sorting by model metadata is not
+          supported.
         schema:
           type: string
           default: name ASC
@@ -34368,7 +34369,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or full path of the group.
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: integer
@@ -34409,7 +34410,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or full path of the group.
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: integer
@@ -34436,7 +34437,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or full path of the group.
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: integer
@@ -40013,7 +40014,8 @@ paths:
         in: query
       - name: batched
         required: false
-        description: Whether to download in batches. All or none of `batched`, `batch_number`
+        description: If `true`, downloads the batch specified by `batch_number`. Set
+          to `true` only for batched exports. All or none of `batched`, `batch_number`
           must be provided.
         schema:
           type: boolean
@@ -53205,7 +53207,7 @@ paths:
         in: path
       - name: email
         required: true
-        description: The email address of the invitation
+        description: Email address the invitation was previously sent to.
         schema:
           type: string
         in: path
@@ -53242,7 +53244,7 @@ paths:
         in: path
       - name: email
         required: true
-        description: The email address of the invitation
+        description: Email address the invitation was previously sent to.
         schema:
           type: string
         in: path
@@ -53358,7 +53360,7 @@ paths:
         in: path
       - name: email
         required: true
-        description: The email address of the invitation
+        description: Email address the invitation was previously sent to.
         schema:
           type: string
         in: path
@@ -53395,7 +53397,7 @@ paths:
         in: path
       - name: email
         required: true
-        description: The email address of the invitation
+        description: Email address the invitation was previously sent to.
         schema:
           type: string
         in: path
@@ -65503,8 +65505,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65555,8 +65556,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65591,8 +65591,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65622,8 +65621,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65662,8 +65660,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: integer
@@ -65714,8 +65711,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: integer
@@ -65751,8 +65747,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: integer
@@ -65782,8 +65777,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: integer
@@ -107559,7 +107553,7 @@ components:
       properties:
         external_status_check_id:
           type: integer
-          description: ID of an external status check
+          description: ID of the external status check.
           example: 1
           nullable: true
         sha:
@@ -108215,7 +108209,7 @@ components:
       properties:
         name:
           type: string
-          description: Register models under this name.
+          description: Name of the registered model.
           nullable: true
         description:
           type: string
@@ -108489,8 +108483,8 @@ components:
           default: 200
         order_by:
           type: string
-          description: Order criteria. Can be by a column of the experiment (created_at,
-            name).
+          description: Column and direction to sort experiments by, for example `created_at
+            DESC` or `name`. Supported columns are `created_at` and `name`.
           default: created_at DESC
         page_token:
           type: string
@@ -108526,11 +108520,11 @@ components:
           nullable: true
         key:
           type: string
-          description: Name for the tag.
+          description: Name of the tag.
           nullable: true
         value:
           type: string
-          description: Value for the tag.
+          description: Value of the tag.
           nullable: true
       required:
       - experiment_id
@@ -113047,7 +113041,8 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 15.5] Renamed to internal"
+          description: If `true`, marks the note as internal. Deprecated. Use `internal`
+            instead.
           nullable: true
         internal:
           type: boolean
@@ -113076,8 +113071,9 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 14.10] No longer allowed to update confidentiality
-            of notes"
+          description: If `true`, the note must already be confidential. If `false`,
+            it must not be. Confidentiality cannot be changed after a note is created.
+            Deprecated.
           nullable: true
     postApiV4ProjectsIdMergeRequestsNoteableIdNotesRequest:
       type: object
@@ -113088,7 +113084,8 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 15.5] Renamed to internal"
+          description: If `true`, marks the note as internal. Deprecated. Use `internal`
+            instead.
           nullable: true
         internal:
           type: boolean
@@ -113117,8 +113114,9 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 14.10] No longer allowed to update confidentiality
-            of notes"
+          description: If `true`, the note must already be confidential. If `false`,
+            it must not be. Confidentiality cannot be changed after a note is created.
+            Deprecated.
           nullable: true
     postApiV4ProjectsIdSnippetsNoteableIdNotesRequest:
       type: object
@@ -113129,7 +113127,8 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 15.5] Renamed to internal"
+          description: If `true`, marks the note as internal. Deprecated. Use `internal`
+            instead.
           nullable: true
         internal:
           type: boolean
@@ -113158,8 +113157,9 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 14.10] No longer allowed to update confidentiality
-            of notes"
+          description: If `true`, the note must already be confidential. If `false`,
+            it must not be. Confidentiality cannot be changed after a note is created.
+            Deprecated.
           nullable: true
     postApiV4ProjectsIdWikiPagesNoteableIdNotesRequest:
       type: object
@@ -113170,7 +113170,8 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 15.5] Renamed to internal"
+          description: If `true`, marks the note as internal. Deprecated. Use `internal`
+            instead.
           nullable: true
         internal:
           type: boolean
@@ -113199,8 +113200,9 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 14.10] No longer allowed to update confidentiality
-            of notes"
+          description: If `true`, the note must already be confidential. If `false`,
+            it must not be. Confidentiality cannot be changed after a note is created.
+            Deprecated.
           nullable: true
     postApiV4GroupsIdEpicsNoteableIdNotesRequest:
       type: object
@@ -113211,7 +113213,8 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 15.5] Renamed to internal"
+          description: If `true`, marks the note as internal. Deprecated. Use `internal`
+            instead.
           nullable: true
         internal:
           type: boolean
@@ -113240,8 +113243,9 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 14.10] No longer allowed to update confidentiality
-            of notes"
+          description: If `true`, the note must already be confidential. If `false`,
+            it must not be. Confidentiality cannot be changed after a note is created.
+            Deprecated.
           nullable: true
     postApiV4ProjectsIdVulnerabilitiesNoteableIdNotesRequest:
       type: object
@@ -113252,7 +113256,8 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 15.5] Renamed to internal"
+          description: If `true`, marks the note as internal. Deprecated. Use `internal`
+            instead.
           nullable: true
         internal:
           type: boolean
@@ -113281,8 +113286,9 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 14.10] No longer allowed to update confidentiality
-            of notes"
+          description: If `true`, the note must already be confidential. If `false`,
+            it must not be. Confidentiality cannot be changed after a note is created.
+            Deprecated.
           nullable: true
     postApiV4GroupsIdWikiPagesNoteableIdNotesRequest:
       type: object
@@ -113293,7 +113299,8 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 15.5] Renamed to internal"
+          description: If `true`, marks the note as internal. Deprecated. Use `internal`
+            instead.
           nullable: true
         internal:
           type: boolean
@@ -113322,8 +113329,9 @@ components:
           nullable: true
         confidential:
           type: boolean
-          description: "[Deprecated in 14.10] No longer allowed to update confidentiality
-            of notes"
+          description: If `true`, the note must already be confidential. If `false`,
+            it must not be. Confidentiality cannot be changed after a note is created.
+            Deprecated.
           nullable: true
     postApiV4McpRequest:
       type: object
@@ -120305,7 +120313,7 @@ components:
       properties:
         batched:
           type: boolean
-          description: Whether to export in batches
+          description: If `true`, exports in batches.
           nullable: true
     postApiV4ProjectsIdDebianDistributionsRequest:
       type: object
@@ -122437,8 +122445,8 @@ components:
           type: array
           items:
             type: string
-          description: The email address to invite, or multiple emails separated by
-            comma
+          description: Email address of the member to invite, or multiple email addresses
+            separated by commas. Required if `user_id` is not provided.
           nullable: true
         user_id:
           type: array
@@ -122509,8 +122517,8 @@ components:
           type: array
           items:
             type: string
-          description: The email address to invite, or multiple emails separated by
-            comma
+          description: Email address of the member to invite, or multiple email addresses
+            separated by commas. Required if `user_id` is not provided.
           nullable: true
         user_id:
           type: array
@@ -132017,9 +132025,7 @@ components:
             - write_package_registry
             - read_virtual_registry
             - write_virtual_registry
-          description: Indicates the deploy token scopes. Must be at least one of
-            `read_repository`, `read_registry`, `write_registry`, `read_package_registry`,
-            `write_package_registry`, `read_virtual_registry`, or `write_virtual_registry`.
+          description: Scopes of the deploy token. Must include at least one scope.
         expires_at:
           type: string
           format: date-time
@@ -132052,9 +132058,7 @@ components:
             - write_package_registry
             - read_virtual_registry
             - write_virtual_registry
-          description: Indicates the deploy token scopes. Must be at least one of
-            `read_repository`, `read_registry`, `write_registry`, `read_package_registry`,
-            or `write_package_registry`
+          description: Scopes of the deploy token. Must include at least one scope.
         expires_at:
           type: string
           format: date-time

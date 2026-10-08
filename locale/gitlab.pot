@@ -32424,6 +32424,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Implement work item with GitLab Duo"
 msgstr ""
 
+msgid "DuoAgentPlatform|Implementation with GitLab Duo isn't turned on for this project."
+msgstr ""
+
 msgid "DuoAgentPlatform|Indexed %{timeAgo}. Agents get repo-wide context."
 msgstr ""
 
@@ -93003,12 +93006,6 @@ msgstr ""
 msgid "Vulnerability report"
 msgstr ""
 
-msgid "Vulnerability resolved in %{branch}"
-msgstr ""
-
-msgid "Vulnerability resolved in the default branch"
-msgstr ""
-
 msgid "VulnerabilityChart|%{formattedStartDate} to today"
 msgstr ""
 
@@ -93661,6 +93658,12 @@ msgid "Vulnerability|Namespace:"
 msgstr ""
 
 msgid "Vulnerability|No available solution"
+msgstr ""
+
+msgid "Vulnerability|No longer detected in %{branch}"
+msgstr ""
+
+msgid "Vulnerability|No longer detected in the default branch"
 msgstr ""
 
 msgid "Vulnerability|None"
@@ -99801,6 +99804,9 @@ msgid "ciReport|Security scanning"
 msgstr ""
 
 msgid "ciReport|Security scanning is loading"
+msgstr ""
+
+msgid "ciReport|Security scans not completed. The pipeline is waiting for a manual action."
 msgstr ""
 
 msgid "ciReport|Showing %{fetchedItems} of %{totalItems} items"

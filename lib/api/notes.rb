@@ -130,7 +130,7 @@ module API
         params do
           requires :noteable_id, type: Integer, desc: 'ID of the resource the note is attached to.'
           requires :body, type: String, desc: 'Content of the note. Limited to 1,000,000 characters.'
-          optional :confidential, type: Boolean, desc: '[Deprecated in 15.5] Renamed to internal'
+          optional :confidential, type: Boolean, desc: 'If `true`, marks the note as internal. Deprecated. Use `internal` instead.'
           optional :internal, type: Boolean, default: false, desc: 'Internal note flag.'
           optional :created_at, type: String, desc: 'Date and time the note was created, in ISO 8601 format such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights.'
           optional :merge_request_diff_head_sha, type: String, desc: "SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. Required for the [`/merge`](https://docs.gitlab.com/user/project/quick_actions/#merge) quick action."
@@ -177,7 +177,7 @@ module API
           requires :note_id, type: Integer, desc: 'ID of the note.'
           optional :body, type: String, allow_blank: false, desc: 'Content of the note. Limited to 1,000,000 characters.'
           optional :confidential, type: Boolean,
-            desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
+            desc: 'If `true`, the note must already be confidential. If `false`, it must not be. Confidentiality cannot be changed after a note is created. Deprecated.'
         end
 
         route_setting :authorization,

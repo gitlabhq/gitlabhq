@@ -1015,7 +1015,7 @@ Example response:
 
 {{< /history >}}
 
-The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
+The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints, and the [discovery endpoints](#discovery-endpoints). The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 system use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, enable [Group SSO](../../user/group/saml_sso/_index.md) for the group.
@@ -1041,6 +1041,79 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 
 > [!note]
 > This API does not require the `Gitlab-Shell-Api-Request` header.
+
+### Discovery endpoints
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/452118) in GitLab 19.5 [with a flag](../../administration/feature_flags/_index.md) named `scim_discovery_endpoints`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use the discovery endpoints to let a SCIM identity provider find out which SCIM schemas GitLab supports.
+For more information, see [the RFC7644 service provider configuration section](https://www.rfc-editor.org/rfc/rfc7644#section-4).
+These endpoints only describe what GitLab supports. They do not change how users are provisioned.
+
+The group SCIM API supports only the `User` schema.
+
+#### Get the schemas
+
+Returns the SCIM schemas that GitLab supports. Each schema lists only the attributes
+that GitLab processes. Available schemas:
+
+- `urn:ietf:params:scim:schemas:core:2.0:User`
+
+```plaintext
+GET /api/scim/v2/groups/:group_path/Schemas
+GET /api/scim/v2/groups/:group_path/Schemas/:id
+```
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `id`      | string | no       | Schema identifier, for example `urn:ietf:params:scim:schemas:core:2.0:User`. |
+| `filter`  | string | no       | Not supported. If present, `GET /Schemas` returns `403 Forbidden`. |
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Schemas/urn:ietf:params:scim:schemas:core:2.0:User" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
+```
+
+Example response (truncated):
+
+```json
+{
+  "schemas": [
+    "urn:ietf:params:scim:schemas:core:2.0:Schema"
+  ],
+  "id": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "name": "User",
+  "description": "User Account",
+  "attributes": [
+    {
+      "name": "userName",
+      "type": "string",
+      "multiValued": false,
+      "description": "Unique identifier for the User, used as the GitLab username.",
+      "required": true,
+      "caseExact": false,
+      "mutability": "immutable",
+      "returned": "default",
+      "uniqueness": "server"
+    }
+  ],
+  "meta": {
+    "resourceType": "Schema",
+    "location": "https://gitlab.example.com/api/scim/v2/groups/test_group/Schemas/urn:ietf:params:scim:schemas:core:2.0:User"
+  }
+}
+```
 
 ### Get a list of SCIM provisioned users
 
@@ -1783,6 +1856,80 @@ Returns an empty response with a `204` status code if successful.
 
 > [!note]
 > This endpoint does not delete GitLab groups. It only removes SCIM management from SAML group links with the specified SCIM group ID, allowing identity providers to deprovision unneeded SCIM groups.
+
+### Discovery endpoints
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/452118) in GitLab 19.5 [with a flag](../../administration/feature_flags/_index.md) named `scim_discovery_endpoints`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use the discovery endpoints to let a SCIM identity provider find out which SCIM schemas GitLab supports.
+For more information, see [the RFC7644 service provider configuration section](https://www.rfc-editor.org/rfc/rfc7644#section-4).
+These endpoints only describe what GitLab supports. They do not change how users are provisioned.
+
+The instance SCIM API supports the `User` and `Group` schemas.
+
+#### Get the schemas
+
+Returns the SCIM schemas that GitLab supports. Each schema lists only the attributes
+that GitLab processes. Available schemas:
+
+- `urn:ietf:params:scim:schemas:core:2.0:User`
+- `urn:ietf:params:scim:schemas:core:2.0:Group`
+
+```plaintext
+GET /api/scim/v2/application/Schemas
+GET /api/scim/v2/application/Schemas/:id
+```
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `id`      | string | no       | Schema identifier, for example `urn:ietf:params:scim:schemas:core:2.0:User`. |
+| `filter`  | string | no       | Not supported. If present, `GET /Schemas` returns `403 Forbidden`. |
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/application/Schemas/urn:ietf:params:scim:schemas:core:2.0:User" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
+```
+
+Example response (truncated):
+
+```json
+{
+  "schemas": [
+    "urn:ietf:params:scim:schemas:core:2.0:Schema"
+  ],
+  "id": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "name": "User",
+  "description": "User Account",
+  "attributes": [
+    {
+      "name": "userName",
+      "type": "string",
+      "multiValued": false,
+      "description": "Unique identifier for the User, used as the GitLab username.",
+      "required": true,
+      "caseExact": false,
+      "mutability": "immutable",
+      "returned": "default",
+      "uniqueness": "server"
+    }
+  ],
+  "meta": {
+    "resourceType": "Schema",
+    "location": "https://gitlab.example.com/api/scim/v2/application/Schemas/urn:ietf:params:scim:schemas:core:2.0:User"
+  }
+}
+```
 
 ### Available filters
 

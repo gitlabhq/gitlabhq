@@ -84,7 +84,11 @@ module Gitlab
 
           # We want to load all of these into memory at once to get a consistent view to loop over,
           # since we'll be deleting from this list as we go
-          fks_to_drop = PostgresForeignKey.by_constrained_table_identifier(partition_identifier).to_a
+          #
+          # Detaching a partition whose foreign key references a partitioned table gives that key one
+          # inherited child per referenced partition, which Postgres refuses to drop directly. We drop
+          # only the `.not_inherited` keys, and Postgres removes their children with them.
+          fks_to_drop = PostgresForeignKey.by_constrained_table_identifier(partition_identifier).not_inherited.to_a
           fks_to_drop.each do |foreign_key|
             drop_foreign_key_if_present(detached_partition, foreign_key)
           end

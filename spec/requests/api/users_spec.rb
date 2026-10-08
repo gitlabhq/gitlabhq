@@ -5790,6 +5790,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(created_token.granular_scopes.count).to eq(1)
           expect(created_token.granular_scopes.first.access).to eq(access)
           expect(created_token.granular_scopes.first.permissions).to eq(['read_job'])
+
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => access, 'permissions' => ['read_job'], 'project_id' => nil, 'group_id' => nil)
+          )
         end
       end
 
@@ -5826,6 +5830,66 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(created_token.granular_scopes.map(&:namespace_id)).to contain_exactly(
             group.id, second_group.id, project.project_namespace.id, second_project.project_namespace.id
           )
+        end
+
+        it 'returns the granular scopes of the new token with the ID of each project and group' do
+          post api(path, user), params: granular_params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => project.id, 'group_id' => nil),
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => second_project.id, 'group_id' => nil),
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => nil, 'group_id' => group.id),
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => nil, 'group_id' => second_group.id)
+          )
+        end
+
+        context 'when presenting the granular scopes of the new token' do
+          # CreateGranularService writes a row for every scope, so each token is created through it before
+          # its request, and the request presents that token as the service returned it. The requests then
+          # differ only in the number of scopes they present.
+          def create_through_service(projects)
+            scopes = projects.map do |project|
+              ::Authz::GranularScope.new(access: access, permissions: ['read_job'],
+                namespace: ::Authz::Boundary.for(project).namespace)
+            end
+
+            ::Authn::PersonalAccessTokens::CreateGranularService.new(
+              current_user: user, organization: current_organization, granular_scopes: scopes,
+              params: { name: name }
+            ).execute
+          end
+
+          def post_presenting(service_response)
+            allow_next_instance_of(::Authn::PersonalAccessTokens::CreateGranularService) do |service|
+              allow(service).to receive(:execute).and_return(service_response)
+            end
+
+            post api(path, user), params: granular_params
+          end
+
+          it 'avoids N+1 queries' do
+            # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+            User.find(user.id).update_column(:last_activity_on, Date.current)
+
+            # Every token is created before the first request stubs the service.
+            warm_up = create_through_service([project])
+            one_scope = create_through_service([project])
+            two_scopes = create_through_service([project, second_project])
+
+            post_presenting(warm_up)
+
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_presenting(one_scope) }
+
+            expect { post_presenting(two_scopes) }.not_to exceed_all_query_limit(control)
+            expect(json_response['granular_scopes'].pluck('project_id')).to contain_exactly(
+              project.id, second_project.id
+            )
+          end
         end
 
         it 'batch loads project_namespace when scoping to multiple projects', :request_store do
@@ -6064,8 +6128,18 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(json_response['active']).to be_truthy
           expect(json_response['revoked']).to be_falsey
           expect(json_response['token']).to be_present
+          expect(json_response).not_to have_key('granular_scopes')
         end
       end
+    end
+
+    it 'does not load granular scopes to present a token created with scopes' do
+      recorder = ActiveRecord::QueryRecorder.new do
+        post api(path, user), params: params.merge({ scopes: %w[k8s_proxy] })
+      end
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(recorder.log).not_to include(a_string_matching(/"(personal_access_token_)?granular_scopes"/))
     end
 
     context 'when expires_at at is given' do

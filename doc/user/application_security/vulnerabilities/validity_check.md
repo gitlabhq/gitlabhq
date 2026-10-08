@@ -104,6 +104,7 @@ Validity checks support the following secret types:
 - Anthropic API keys
 - AWS IAM long-term access key IDs (beginning with `AKIA`)
 - Datadog API keys
+- EasyPost API tokens
 - GitHub App installation tokens
 - GitHub fine-grained personal access tokens
 - GitHub OAuth access tokens
@@ -145,6 +146,7 @@ The supported URLs are:
 
 - `https://api.anthropic.com/v1/models`
 - `https://api.datadoghq.com/api/v1/validate`
+- `https://api.easypost.com/v2/addresses`
 - `https://api.getpostman.com/me`
 - `https://api.github.com/installation/repositories`
 - `https://api.github.com/user`

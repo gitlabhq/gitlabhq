@@ -8,8 +8,14 @@ require('fast_spec_helper') # NOTE: Do not remove the parentheses from this requ
 # Guards the per-VM git object pool set up by the `pre_get_sources_script` hook in `default:`.
 RSpec.describe 'CI per-VM git object pool', feature_category: :tooling do
   root = File.expand_path('../..', __dir__)
-  # `!reference [a, b]` tags are not registered here, so they load as plain arrays (`["a", "b"]`).
-  load_config = ->(path) { YAML.safe_load_file(path, aliases: true) }
+  # Psych tags are process-global and the CI YAML loader may have registered `!reference`;
+  # unregister it while parsing so `!reference [a, b]` loads as a plain array.
+  load_config = ->(path) do
+    tag = Psych.load_tags.delete('!reference')
+    YAML.safe_load_file(path, aliases: true)
+  ensure
+    Psych.load_tags['!reference'] = tag if tag
+  end
 
   # The *.yml glob skips .erb templates, which are not valid YAML until rendered.
   ci_files = [File.join(root, '.gitlab-ci.yml')] + Dir.glob(File.join(root, '.gitlab/ci/**/*.yml'))

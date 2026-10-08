@@ -67,7 +67,8 @@ module API
               default: 200
             optional :order_by,
               type: String,
-              desc: 'Order criteria. Can be by a column of the experiment (created_at, name).',
+              desc: 'Column and direction to sort experiments by, for example `created_at DESC` or `name`. Supported ' \
+                'columns are `created_at` and `name`.',
               default: 'created_at DESC'
             optional :page_token,
               type: String,
@@ -118,8 +119,8 @@ module API
           end
           params do
             requires :experiment_id, type: String, desc: 'ID of the experiment.'
-            requires :key, type: String, desc: 'Name for the tag.'
-            requires :value, type: String, desc: 'Value for the tag.'
+            requires :key, type: String, desc: 'Name of the tag.'
+            requires :value, type: String, desc: 'Value of the tag.'
           end
           route_setting :authorization, permissions: :update_ml_experiment, boundary_type: :project
           post 'set-experiment-tag', urgency: :low do

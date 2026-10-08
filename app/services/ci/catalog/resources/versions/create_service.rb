@@ -16,7 +16,8 @@ module Ci
           def execute
             version = build_catalog_resource_version
             build_components(version)
-            publish(version)
+            bundle = collect_bundle(version)
+            publish(version, bundle)
 
             if errors.empty?
               ServiceResponse.success(payload: { version: version })
@@ -58,7 +59,27 @@ module Ci
             end
           end
 
-          def publish(version)
+          def collect_bundle(version)
+            return if errors.present?
+            return unless collect_bundle?
+
+            response = ::Ci::Catalog::BundledResources::CollectAndStoreService.new(version).prepare
+            return response.payload if response.success?
+
+            error(response.message)
+            nil
+          rescue StandardError => e
+            ::Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
+            error('Catalog bundle could not be stored')
+            nil
+          end
+
+          def collect_bundle?
+            project.catalog_resource.gitlab_maintained? &&
+              ::Feature.enabled?(:ci_collect_bundles_on_publish, project)
+          end
+
+          def publish(version, bundle)
             return if errors.present?
 
             ::Ci::Catalog::Resources::Version.transaction do
@@ -67,6 +88,7 @@ module Ci
               end
 
               project.catalog_resource.publish!
+              ::Ci::Catalog::BundledResources::CollectAndStoreService.new(version).persist(bundle) if bundle
             end
           end
 

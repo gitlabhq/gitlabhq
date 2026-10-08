@@ -180,6 +180,7 @@
   - ee/spec/features/search/elastic/project_search_spec.rb
 - message: "Missing field 'project' while writing result"
   specs:
+  - ee/spec/features/duo_chat/agentic_chat_smoke_spec.rb
   - ee/spec/features/projects/jobs/blocked_deployment_job_page_spec.rb
   - ee/spec/features/projects/jobs/root_cause_analysis_job_page_spec.rb
   - ee/spec/features/projects/jobs_spec.rb

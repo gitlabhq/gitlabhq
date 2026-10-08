@@ -35,7 +35,7 @@ module Labels
 
       return new_label if find_only
 
-      if new_label.nil? && (skip_authorization || Ability.allowed?(current_user, :admin_label, parent))
+      if new_label.nil? && (skip_authorization || Ability.allowed?(current_user, :create_label, parent))
         create_params = params.except(:include_ancestor_groups)
         new_label = Labels::CreateService.new(nil, create_params).execute(parent_type.to_sym => parent)
       end
