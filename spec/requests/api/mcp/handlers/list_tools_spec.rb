@@ -274,7 +274,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       before do
         # We have to use `allow_any_instance_of` since tools are initialized
         # *on class definition time* in Mcp::Tools::Manager
-        allow_any_instance_of(::Mcp::Tools::GetServerVersionService).to receive(:available?).and_return(false) # rubocop: disable RSpec/AnyInstanceOf -- see explanation above
+        allow_any_instance_of(::Mcp::Tools::GetServerVersionService).to receive(:available?).with(user).and_return(false) # rubocop: disable RSpec/AnyInstanceOf -- see explanation above
       end
 
       it 'is excluded from the list' do
@@ -560,7 +560,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         manager = Mcp::Tools::Manager.new
 
         manager.tools.each do |name, tool|
-          next if tool.unlisted?
+          next if tool.unlisted? || !tool.available?(user)
 
           if default_toolsets.include?(tool.toolset)
             expect(tool_names).to include(name), "Expected DEFAULT tool '#{name}' to be present"

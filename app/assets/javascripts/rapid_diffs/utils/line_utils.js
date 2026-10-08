@@ -81,12 +81,16 @@ export function getNewLinesInRange(diffElement, lineRange) {
   const endLine = end.new_line;
   if (!endLine) return null;
 
-  let row = findLineRow(diffElement, start.old_line, start.new_line);
+  const startRow = findLineRow(diffElement, start.old_line, start.new_line);
+  if (!startRow) return null;
+
+  const { rows } = startRow.closest('table');
   const lines = [];
   let firstLine = null;
   let lastLine = null;
 
-  while (row && lastLine !== endLine) {
+  for (let i = startRow.rowIndex; i < rows.length && lastLine !== endLine; i += 1) {
+    const row = rows[i];
     if (isRangeBoundary(row)) return null;
 
     const [, newLine] = 'hunkLines' in row.dataset ? getLineNumbers(row) : [];
@@ -98,8 +102,6 @@ export function getNewLinesInRange(diffElement, lineRange) {
       firstLine ??= newLine;
       lastLine = newLine;
     }
-
-    row = row.nextElementSibling;
   }
 
   if (lastLine !== endLine) return null;

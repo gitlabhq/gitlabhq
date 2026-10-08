@@ -328,9 +328,12 @@ Example response:
     ],
     "version": null,
     "access_level": "ref_protected",
-    "maximum_timeout": 3600
+    "maximum_timeout": 3600,
+    "token_expires_at": "2025-01-01T00:00:00.000Z"
 }
 ```
+
+`token_expires_at` is returned only to users who can view the runner's sensitive data. For instance runners, that's administrators with admin mode enabled. The value is `null` if the runner's token has no expiry.
 
 ## Update runner's details
 

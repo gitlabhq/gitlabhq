@@ -91,12 +91,55 @@ RSpec.describe Gitlab::Tracking::ClientIdentity, feature_category: :application_
         Rack::MockRequest.env_for('/').merge(
           'HTTP_X_GITLAB_CLIENT_TYPE' => 'mobile',
           'HTTP_X_GITLAB_CLIENT_NAME' => 'gitlab-mobile-ios',
+          'HTTP_X_GITLAB_CLIENT_VERSION' => '1.2.0',
           'HTTP_USER_AGENT' => chrome_user_agent
         )
       end
 
       it 'prefers the headers over the User-Agent' do
-        expect(described_class.from_request(request)).to have_attributes(type: 'mobile', name: 'gitlab-mobile-ios')
+        expect(described_class.from_request(request))
+          .to have_attributes(type: 'mobile', name: 'gitlab-mobile-ios', version: '1.2.0')
+      end
+    end
+
+    context 'with a version header' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:env) do
+        Rack::MockRequest.env_for('/').merge(
+          'HTTP_X_GITLAB_CLIENT_NAME' => 'vscode',
+          'HTTP_X_GITLAB_CLIENT_VERSION' => version_header
+        )
+      end
+
+      where(:version_header, :version) do
+        '6.21.0'                   | '6.21.0'
+        'v2024.1.2-eap+45'         | 'v2024.1.2-eap+45'
+        ' 1.2.0 '                  | '1.2.0'
+        'latest and greatest'      | nil
+        'beta'                     | nil
+        ('1' * 65)                 | nil
+        ''                         | nil
+      end
+
+      with_them do
+        it 'keeps the version only when it is shaped like one' do
+          expect(described_class.from_request(request))
+            .to have_attributes(type: 'ide', name: 'vscode', version: version)
+        end
+      end
+    end
+
+    context 'with a version header and no identity headers' do
+      let(:env) do
+        Rack::MockRequest.env_for('/').merge(
+          'HTTP_X_GITLAB_CLIENT_VERSION' => '1.2.0',
+          'HTTP_USER_AGENT' => chrome_user_agent
+        )
+      end
+
+      it 'does not attach the version to a client resolved from the User-Agent' do
+        expect(described_class.from_request(request)).to have_attributes(type: 'browser', name: 'chrome', version: nil)
       end
     end
 
@@ -171,8 +214,16 @@ RSpec.describe Gitlab::Tracking::ClientIdentity, feature_category: :application_
     end
 
     it 'reads the application context' do
-      Gitlab::ApplicationContext.with_context(client_type: 'mobile', client_name: 'gitlab-mobile-ios') do
-        expect(described_class.current).to have_attributes(type: 'mobile', name: 'gitlab-mobile-ios')
+      context = { client_type: 'mobile', client_name: 'gitlab-mobile-ios', client_version: '1.2.0' }
+
+      Gitlab::ApplicationContext.with_context(context) do
+        expect(described_class.current).to have_attributes(type: 'mobile', name: 'gitlab-mobile-ios', version: '1.2.0')
+      end
+    end
+
+    it 'has no version when the context carries none' do
+      Gitlab::ApplicationContext.with_context(client_type: 'api') do
+        expect(described_class.current).to have_attributes(type: 'api', name: nil, version: nil)
       end
     end
   end

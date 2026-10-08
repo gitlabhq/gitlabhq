@@ -5568,6 +5568,16 @@
               "defaultValue": null
             },
             {
+              "name": "clientVersion",
+              "description": "Delete jobs matching client_version in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "subscriptionPlan",
               "description": "Delete jobs matching subscription_plan in the context metadata.",
               "type": {
@@ -82536,6 +82546,16 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "malware",
+                  "description": "Filter dependencies by malware status. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },
@@ -163407,6 +163427,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "malware",
+                  "description": "Filter dependencies by malware status. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -225223,6 +225253,12 @@
             {
               "name": "EXPLORE_PREMIUM_REQUEST_PAINTED_DOOR",
               "description": "Callout feature name for explore_premium_request_painted_door.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SCAN_COVERAGE_RECOMMENDATION_BANNER",
+              "description": "Callout feature name for scan_coverage_recommendation_banner.",
               "isDeprecated": false,
               "deprecationReason": null
             }

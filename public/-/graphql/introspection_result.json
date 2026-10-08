@@ -9106,6 +9106,18 @@
               "deprecationReason": null
             },
             {
+              "name": "clientVersion",
+              "description": "Delete jobs matching client_version in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "subscriptionPlan",
               "description": "Delete jobs matching subscription_plan in the context metadata.",
               "type": {
@@ -112363,15 +112375,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "after",
@@ -186804,15 +186816,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "after",
@@ -187081,15 +187093,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "projectCountMin",
@@ -334366,15 +334378,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "after",
@@ -438155,6 +438167,12 @@
               "description": "Callout feature name for explore_premium_request_painted_door.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SCAN_COVERAGE_RECOMMENDATION_BANNER",
+              "description": "Callout feature name for scan_coverage_recommendation_banner.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -445113,15 +445131,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by malware status. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "after",

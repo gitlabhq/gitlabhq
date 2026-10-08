@@ -20,15 +20,50 @@ const mockMergeRequest = {
   webPath: '/gitlab-org/gitlab/-/merge_requests/1',
 };
 
+const mockSourcedMergeRequest = {
+  __typename: 'MergeRequest',
+  id: 'gid://gitlab/MergeRequest/2',
+  webPath: '/gitlab-org/upstream/-/merge_requests/2',
+};
+
+const forkedFromProject = () => ({
+  __typename: 'Project',
+  id: 'gid://gitlab/Project/2',
+});
+
+const selfTarget = ({ createMergeRequestIn = true } = {}) => ({
+  __typename: 'Project',
+  id: 'gid://gitlab/Project/1',
+  userPermissions: {
+    __typename: 'ProjectPermissions',
+    createMergeRequestIn,
+  },
+});
+
+const upstreamTarget = ({ createMergeRequestIn = true } = {}) => ({
+  __typename: 'Project',
+  id: 'gid://gitlab/Project/2',
+  userPermissions: {
+    __typename: 'ProjectPermissions',
+    createMergeRequestIn,
+  },
+});
+
 const mergeRequestResponse = ({
   createMergeRequestFrom = true,
   createMergeRequestIn = true,
   mergeRequests = [],
+  sourcedMergeRequests = [],
+  forkedFrom = null,
+  // Defaults to the project itself, mirroring its own permission, to match
+  // the backend's non-fork behavior without cache-merge conflicts.
+  defaultMergeRequestTarget = selfTarget({ createMergeRequestIn }),
 } = {}) => ({
   data: {
     project: {
       __typename: 'Project',
       id: 'gid://gitlab/Project/1',
+      defaultMergeRequestTarget,
       userPermissions: {
         __typename: 'ProjectPermissions',
         createMergeRequestFrom,
@@ -38,6 +73,14 @@ const mergeRequestResponse = ({
         __typename: 'MergeRequestConnection',
         nodes: mergeRequests,
       },
+      sourcedMergeRequests:
+        sourcedMergeRequests === null
+          ? null
+          : {
+              __typename: 'MergeRequestConnection',
+              nodes: sourcedMergeRequests,
+            },
+      forkedFrom,
     },
   },
 });
@@ -202,6 +245,208 @@ describe('CommitsMergeRequestButton', () => {
       });
     },
   );
+
+  describe('when the project is a fork', () => {
+    describe('with an open merge request sourced from the branch targeting the upstream project', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              sourcedMergeRequests: [mockSourcedMergeRequest],
+              forkedFrom: forkedFromProject(),
+              defaultMergeRequestTarget: upstreamTarget(),
+            }),
+          ),
+        });
+      });
+
+      it('renders the view merge request button linking to the sourced merge request', () => {
+        expect(findViewMergeRequestButton().attributes('href')).toBe(
+          '/gitlab-org/upstream/-/merge_requests/2',
+        );
+      });
+
+      it('does not render the create merge request button', () => {
+        expect(findCreateMergeRequestButton().exists()).toBe(false);
+      });
+    });
+
+    describe('with an open sourced merge request and no permission to create merge requests upstream', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              sourcedMergeRequests: [mockSourcedMergeRequest],
+              forkedFrom: forkedFromProject(),
+              defaultMergeRequestTarget: upstreamTarget({ createMergeRequestIn: false }),
+            }),
+          ),
+        });
+      });
+
+      it('still renders the view merge request button', () => {
+        expect(findViewMergeRequestButton().exists()).toBe(true);
+      });
+    });
+
+    describe('without an open merge request', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              forkedFrom: forkedFromProject(),
+              defaultMergeRequestTarget: upstreamTarget(),
+            }),
+          ),
+        });
+      });
+
+      it('renders the create merge request button targeting the upstream project', () => {
+        expect(findCreateMergeRequestButton().attributes('href')).toBe(
+          '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature&merge_request%5Btarget_project_id%5D=2',
+        );
+      });
+    });
+
+    describe('when the default merge request target is the fork itself', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              forkedFrom: forkedFromProject(),
+              defaultMergeRequestTarget: selfTarget(),
+            }),
+          ),
+        });
+      });
+
+      it('renders the create merge request button targeting the fork itself', () => {
+        expect(findCreateMergeRequestButton().attributes('href')).toBe(
+          '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature',
+        );
+      });
+    });
+
+    describe('when the user cannot create merge requests in the upstream project', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              forkedFrom: forkedFromProject(),
+              defaultMergeRequestTarget: upstreamTarget({ createMergeRequestIn: false }),
+            }),
+          ),
+        });
+      });
+
+      it('renders no buttons', () => {
+        expectNoButtons();
+      });
+    });
+
+    describe('when the user can create merge requests in the upstream project but not the fork', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              createMergeRequestIn: false,
+              forkedFrom: forkedFromProject(),
+              defaultMergeRequestTarget: upstreamTarget(),
+            }),
+          ),
+        });
+      });
+
+      it('renders the create merge request button', () => {
+        expect(findCreateMergeRequestButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when the user cannot see the default merge request target', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              forkedFrom: null,
+              defaultMergeRequestTarget: null,
+            }),
+          ),
+        });
+      });
+
+      it('gates on the fork itself and omits target_project_id', () => {
+        expect(findCreateMergeRequestButton().attributes('href')).toBe(
+          '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature',
+        );
+      });
+    });
+  });
+
+  describe('when a non-fork project has an open merge request targeting a non-default branch', () => {
+    beforeEach(() => {
+      return createComponent({
+        mergeRequestHandler: jest.fn().mockResolvedValue(
+          mergeRequestResponse({
+            sourcedMergeRequests: [mockSourcedMergeRequest],
+            forkedFrom: null,
+          }),
+        ),
+      });
+    });
+
+    it('still renders the create merge request button', () => {
+      expect(findCreateMergeRequestButton().attributes('href')).toBe(
+        '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature',
+      );
+    });
+
+    it('does not render the view merge request button', () => {
+      expect(findViewMergeRequestButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when the backend predates the sourcedMergeRequests field', () => {
+    describe('with an open merge request within the fork', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              mergeRequests: [mockMergeRequest],
+              sourcedMergeRequests: null,
+              defaultMergeRequestTarget: null,
+              forkedFrom: forkedFromProject(),
+            }),
+          ),
+        });
+      });
+
+      it('renders the view merge request button from the fork-local lookup', () => {
+        expect(findViewMergeRequestButton().attributes('href')).toBe(
+          '/gitlab-org/gitlab/-/merge_requests/1',
+        );
+      });
+    });
+
+    describe('without an open merge request', () => {
+      beforeEach(() => {
+        return createComponent({
+          mergeRequestHandler: jest.fn().mockResolvedValue(
+            mergeRequestResponse({
+              sourcedMergeRequests: null,
+              defaultMergeRequestTarget: null,
+              forkedFrom: forkedFromProject(),
+            }),
+          ),
+        });
+      });
+
+      it('keeps gating on the fork itself and omits target_project_id', () => {
+        expect(findCreateMergeRequestButton().attributes('href')).toBe(
+          '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature',
+        );
+      });
+    });
+  });
 
   describe('when the ref type is unknown', () => {
     describe('and the ref is an existing branch', () => {

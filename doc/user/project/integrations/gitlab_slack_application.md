@@ -125,6 +125,7 @@ Alternatively, you can [configure the integration](https://about.gitlab.com/solu
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590434) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Enabled on GitLab.com and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/592185) in GitLab 19.4.
+- Direct messages and the Slack top bar agent [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606312) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `slack_duo_agent_app`. Disabled by default.
 
 {{< /history >}}
 
@@ -231,8 +232,10 @@ GitLab Duo requires the following additional GitLab for Slack app permissions:
 | `mpim:history`      | Reads conversation history in group direct messages that include the agent. |
 | `reactions:write`   | Adds emoji reactions to messages to indicate agent lifecycle status. |
 
-New installations receive these permissions automatically.
-Existing installations receive these permissions only after you
+New installations receive the permissions that are available for your GitLab instance automatically.
+The `assistant:write`, `im:history`, and `mpim:history` permissions are available only when the
+`slack_duo_agent_app` feature flag is enabled. For more information, see the history.
+Existing installations receive new permissions only after you
 [reinstall the GitLab for Slack app](#reinstall-the-gitlab-for-slack-app).
 
 ## Slash commands

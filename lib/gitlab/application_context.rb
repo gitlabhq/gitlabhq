@@ -47,7 +47,8 @@ module Gitlab
       :organization_source,
       :client_service,
       :client_type,
-      :client_name
+      :client_name,
+      :client_version
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -94,7 +95,8 @@ module Gitlab
       Attribute.new(:organization_source, String),
       Attribute.new(:client_service, String),
       Attribute.new(:client_type, String),
-      Attribute.new(:client_name, String)
+      Attribute.new(:client_name, String),
+      Attribute.new(:client_version, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -176,6 +178,7 @@ module Gitlab
         assign_hash_if_value(hash, :client_service)
         assign_hash_if_value(hash, :client_type)
         assign_hash_if_value(hash, :client_name)
+        assign_hash_if_value(hash, :client_version)
 
         hash[:user] = -> { username } if include_user?
         hash[Labkit::Fields::GL_USER_ID] = -> { user_id } if include_user?

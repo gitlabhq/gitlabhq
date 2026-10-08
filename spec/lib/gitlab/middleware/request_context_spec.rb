@@ -116,7 +116,8 @@ RSpec.describe Gitlab::Middleware::RequestContext, feature_category: :applicatio
       let(:env) do
         Rack::MockRequest.env_for("/").merge(
           'HTTP_X_GITLAB_CLIENT_TYPE' => 'mobile',
-          'HTTP_X_GITLAB_CLIENT_NAME' => 'gitlab-mobile-ios'
+          'HTTP_X_GITLAB_CLIENT_NAME' => 'gitlab-mobile-ios',
+          'HTTP_X_GITLAB_CLIENT_VERSION' => '1.2.0'
         )
       end
 
@@ -131,7 +132,11 @@ RSpec.describe Gitlab::Middleware::RequestContext, feature_category: :applicatio
       it 'exposes it to the app through the application context' do
         subject
 
-        expect(seen_context).to include('meta.client_type' => 'mobile', 'meta.client_name' => 'gitlab-mobile-ios')
+        expect(seen_context).to include(
+          'meta.client_type' => 'mobile',
+          'meta.client_name' => 'gitlab-mobile-ios',
+          'meta.client_version' => '1.2.0'
+        )
       end
     end
   end

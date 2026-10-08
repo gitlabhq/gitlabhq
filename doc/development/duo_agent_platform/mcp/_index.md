@@ -910,20 +910,22 @@ For example, to find sessions that run the `developer` flow, use this query in K
 ### Gating a tool's availability
 
 Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.
-Before `available?` is called, the request sets the tool's credentials with `set_cred(current_user:)`,
-so the check can depend on the current user, licensing, or other request state:
+The method receives the current user as an argument, so the check can depend on the user, licensing, or other request state:
 
 ```ruby
 module Mcp
   module Tools
     class ExampleService < Base::CustomService
-      def available?
+      def available?(current_user)
         Feature.enabled?(:example_tool, current_user)
       end
     end
   end
 end
 ```
+
+Tool instances are shared across concurrent requests, so use the `current_user` argument rather than
+instance state. Toolsets are static, so per-user filtering belongs in `available?(current_user)`.
 
 `available?` filters the `tools/list` response only:
 

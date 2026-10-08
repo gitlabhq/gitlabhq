@@ -29,7 +29,7 @@ module API
 
           tools = tools_hash.filter_map do |name, tool|
             next nil if included && included.exclude?(name)
-            next nil unless tool_available?(tool, current_user)
+            next nil unless tool.available?(current_user)
             next nil if tool.unlisted? && !(include_named_unlisted && Array(allowed_tools).include?(name))
 
             build_tool_data(name, tool, tool_name_prefix)
@@ -86,14 +86,6 @@ module API
           tool_data[:annotations] = (tool.try(:annotations) || {}).merge(toolset: tool.toolset.to_s)
 
           tool_data
-        end
-
-        def tool_available?(tool, current_user)
-          # tool does not have an availability check if it does not inherit `Mcp::Tools::Base::BaseService`
-          return true unless tool.is_a?(::Mcp::Tools::Base::BaseService)
-
-          tool.set_cred(current_user: current_user) if tool.is_a? ::Mcp::Tools::Base::CustomService
-          tool.available?
         end
 
         def logger

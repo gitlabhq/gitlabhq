@@ -84,7 +84,7 @@ module Gitlab
       def client_attributes
         client = ClientIdentity.current || ClientIdentity::SYSTEM
 
-        { client_type: client.type, client_name: client.name }.compact
+        { client_type: client.type, client_name: client.name, client_version: client.version }.compact
       end
 
       def tracked_user_id

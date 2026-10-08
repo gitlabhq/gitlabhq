@@ -1288,7 +1288,7 @@ Supported attributes:
 | `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
 | `note_id`           | integer           | Yes      | The ID of a thread note. |
 | `body`              | string            | No       | The content of the note or reply. Exactly one of `body` or `resolved` must be set. |
-| `resolved`          | boolean           | No       | Resolve or reopen the note. Exactly one of `body` or `resolved` must be set. |
+| `resolved`          | boolean           | No       | Resolve or reopen the note. Exactly one of `body` or `resolved` must be set. If `resolved` is sent with an empty value, the note is returned unchanged. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated note object.
 

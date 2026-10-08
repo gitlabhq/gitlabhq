@@ -230,6 +230,35 @@ describe('line_utils', () => {
       expect(getNewLinesInRange(getTable(), range(3, 4)).lines).toEqual(['first', 'second']);
     });
 
+    it('continues into lines expanded below a hunk', () => {
+      setHTMLFixture(`
+        <table>
+          <tbody>${newRow(14, 'hunk')}${newRow(15, 'hunk end')}</tbody>
+          <tbody>${newRow(16, 'expanded')}${newRow(17, 'expanded')}</tbody>
+        </table>
+      `);
+
+      expect(getNewLinesInRange(getTable(), range(15, 16))).toEqual({
+        lines: ['hunk end', 'expanded'],
+        start: 15,
+        end: 16,
+      });
+    });
+
+    it('continues into the next hunk after a discussion row', () => {
+      setHTMLFixture(`
+        <table>
+          <tbody>
+            ${newRow(3, 'first')}
+            <tr data-discussion-row><td><pre>discussion content</pre></td></tr>
+          </tbody>
+          <tbody>${newRow(4, 'second')}</tbody>
+        </table>
+      `);
+
+      expect(getNewLinesInRange(getTable(), range(3, 4)).lines).toEqual(['first', 'second']);
+    });
+
     it('skips removed lines, which are not part of the new file', () => {
       setHTMLFixture(`
         <table><tbody>

@@ -124,6 +124,10 @@ module Mcp
           settings[:unlisted].present?
         end
 
+        def available?(_current_user)
+          true
+        end
+
         private
 
         # Rack percent-decodes path segments before Grape sees them; this in-process call

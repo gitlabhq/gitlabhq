@@ -183,6 +183,24 @@ For the hardware requirements for the AI Gateway, see [scaling recommendations](
 
 ### GPU requirements by model size
 
+The following requirements are based on NVIDIA A100 GPUs.
+Newer NVIDIA data center GPUs, such as the H100 and H200,
+are expected to work but have not been tested.
+
+| GPU model | Architecture | VRAM     |
+|-----------|--------------|----------|
+| A100      | Ampere       | 40/80 GB |
+| H100      | Hopper       | 80/94 GB |
+| H200      | Hopper       | 141 GB   |
+
+The following table shows minimum configurations with A100 GPUs.
+An H100 (80 GB) needs the same number of GPUs as an A100 (80 GB).
+Based on the minimum VRAM required, an H200 (141 GB) reduces
+the GPU count for larger models:
+
+- 1x H200 for 22B models
+- 4x H200 for Mixtral 8x22B
+
 | Model size                                 | Minimum GPU configuration | Minimum VRAM required |
 |--------------------------------------------|---------------------------|-----------------------|
 | 7B models<br>(for example, Mistral 7B)     | 1x NVIDIA A100 (40 GB)    | 35 GB                 |
@@ -193,6 +211,8 @@ For the hardware requirements for the AI Gateway, see [scaling recommendations](
 Use [Hugging Face's memory utility](https://huggingface.co/spaces/hf-accelerate/model-memory-usage) to verify memory requirements.
 
 ### Response time by model size and GPU
+
+The following benchmarks cover A100 GPUs only.
 
 #### Small machine
 

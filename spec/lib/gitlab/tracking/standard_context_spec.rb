@@ -70,15 +70,19 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       end
 
       it 'reads the application context' do
-        Gitlab::ApplicationContext.with_context(client_type: 'mobile', client_name: 'gitlab-mobile-ios') do
-          expect(snowplow_context.to_json[:data]).to include(client_type: 'mobile', client_name: 'gitlab-mobile-ios')
+        context = { client_type: 'mobile', client_name: 'gitlab-mobile-ios', client_version: '1.2.0' }
+
+        Gitlab::ApplicationContext.with_context(context) do
+          expect(snowplow_context.to_json[:data])
+            .to include(client_type: 'mobile', client_name: 'gitlab-mobile-ios', client_version: '1.2.0')
         end
       end
 
-      it 'omits the name when the client has none' do
+      it 'omits the name and version when the client has none' do
         Gitlab::ApplicationContext.with_context(client_type: 'api') do
           expect(snowplow_context.to_json[:data]).to include(client_type: 'api')
           expect(snowplow_context.to_json[:data]).not_to have_key(:client_name)
+          expect(snowplow_context.to_json[:data]).not_to have_key(:client_version)
         end
       end
     end

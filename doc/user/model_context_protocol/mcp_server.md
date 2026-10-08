@@ -24,6 +24,7 @@ title: GitLab MCP server
 - Toolset selection [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/607755) in GitLab 19.5.
 - `duo_agent_platform` toolset [included by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/630992) in GitLab 19.5.
 - Changed from [beta](../../policy/development_stages_support.md#beta) to [generally available](../../policy/development_stages_support.md#generally-available) in GitLab 19.5.
+- `duo_agent_platform` toolset [listed only](https://gitlab.com/gitlab-org/gitlab/-/work_items/631747) when GitLab Duo Agent Platform is available for the user in GitLab 19.5.
 
 {{< /history >}}
 
@@ -133,9 +134,31 @@ Available toolsets:
 | `work_items` | Yes |
 | `repository` | Yes |
 | `ci` | Yes |
-| `duo_agent_platform` | Yes |
+| `duo_agent_platform` | Yes, if GitLab Duo Agent Platform is available |
 | `wikis` | No (opt-in) |
 | `code_security` | No (opt-in) |
+
+The `duo_agent_platform` tools are listed only when GitLab Duo Agent Platform is available for you.
+This applies even when you request the toolset in the header or set the header to `all`.
+
+On GitLab.com, both of the following must be true:
+
+- You belong to a top-level group on the Premium or Ultimate plan that has GitLab Duo Agent Platform turned on,
+  or you have GitLab Duo Agent Platform through GitLab credits.
+- You are allowed to use GitLab Duo Agent Platform, for example, you have the required seat.
+
+On GitLab Self-Managed and GitLab Dedicated, all of the following must be true:
+
+- GitLab Duo is not set to **Always off** for the instance. With **Off by default**, the tools are listed
+  so that groups that turn GitLab Duo on can use them.
+- The instance has a license that includes GitLab Duo Agent Platform, or has GitLab credits.
+- GitLab Duo Agent Platform is turned on for your organization.
+- You are allowed to use GitLab Duo Agent Platform, for example, you have the required seat.
+
+For more information, see the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites)
+and [how to turn GitLab Duo Agent Platform on or off](../duo_agent_platform/turn_on_off.md).
+
+Listing a tool does not grant access. Each tool still checks your project and namespace permissions when called.
 
 To include an opt-in toolset, add it to the header value explicitly. To request every toolset,
 including all opt-in toolsets, set the header to `all`.

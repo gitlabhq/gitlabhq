@@ -9,7 +9,7 @@ module Gitlab
     # ApplicationContext so every Sidekiq job the request enqueues inherits it.
     # Only allowlisted values are kept: the headers are client-controlled.
     class ClientIdentity
-      Identity = Struct.new(:type, :name)
+      Identity = Struct.new(:type, :name, :version)
 
       TYPES = %w[browser ide cli mobile integration system api].freeze
 
@@ -82,6 +82,12 @@ module Gitlab
         %r{\A(gitlab-runner|git/|GitLab-Shell|gitlab-workhorse|Agent-Flow-via-GitLab-Workhorse)}i
       BROWSER_USER_AGENT_REGEX = %r{\AMozilla/}
 
+      # X-Gitlab-Client-Version is the client's own release, so it cannot be
+      # allowlisted by value. It is kept when it is shaped like a version (an
+      # optional `v`, a leading digit, then digits, letters, `.`, `-`, `+` and
+      # `_`) and fits the 64 characters the gitlab_standard schema allows.
+      VERSION_REGEX = %r{\Av?\d[0-9A-Za-z.+_-]{0,62}\z}
+
       SYSTEM = Identity.new('system', 'gitlab-rails').freeze
       API = Identity.new('api', nil).freeze
 
@@ -90,10 +96,15 @@ module Gitlab
           user_agent = request.user_agent
           identity = from_headers(request.headers['X-Gitlab-Client-Type'], request.headers['X-Gitlab-Client-Name'])
           return from_user_agent(user_agent) unless identity
-          return identity unless identity.type == 'browser' && identity.name.nil?
 
           # The web frontend only declares its type; the browser family comes from the User-Agent.
-          Identity.new('browser', browser_name(user_agent))
+          if identity.type == 'browser' && identity.name.nil?
+            identity = Identity.new('browser', browser_name(user_agent))
+          end
+
+          # The version belongs to the client that declared itself; a bare version header says nothing.
+          version = normalize_version(request.headers['X-Gitlab-Client-Version'])
+          version ? Identity.new(identity.type, identity.name, version) : identity
         end
 
         def from_headers(type_header, name_header)
@@ -127,7 +138,11 @@ module Gitlab
           type = Gitlab::ApplicationContext.current_context_attribute(:client_type)
           return unless type
 
-          Identity.new(type, Gitlab::ApplicationContext.current_context_attribute(:client_name))
+          Identity.new(
+            type,
+            Gitlab::ApplicationContext.current_context_attribute(:client_name),
+            Gitlab::ApplicationContext.current_context_attribute(:client_version)
+          )
         end
 
         private
@@ -154,6 +169,11 @@ module Gitlab
 
           name = NAME_ALIASES.fetch(name, name)
           name if NAMES.key?(name)
+        end
+
+        def normalize_version(value)
+          version = value.to_s.scrub.strip
+          version if version.match?(VERSION_REGEX)
         end
 
         def normalize(value)

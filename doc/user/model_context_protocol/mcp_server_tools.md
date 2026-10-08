@@ -334,6 +334,9 @@ Which Duo flows can I run in gitlab-org/gitlab?
 Starts an asynchronous GitLab Duo Agent Platform session to accomplish a goal in a project.
 Returns a `workflow_id` immediately. Use `get_duo_session` with that ID to track progress and retrieve the final result.
 
+These tools are listed only when GitLab Duo Agent Platform is available for you.
+For more information, see [select tool groups](mcp_server.md#select-tool-groups-toolsets).
+
 The session runs in a CI job that can push commits and open merge requests.
 
 Provide exactly one of `url` or `project_id`. Provide at most one of `flow`, `flow_item_id`,

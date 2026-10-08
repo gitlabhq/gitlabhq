@@ -65,9 +65,7 @@ module Mcp
           IconConfig.gitlab_icons
         end
 
-        # Tool availability check, returns `true` by default.
-        # Tools should override this method if they need to check for specific conditions.
-        def available?
+        def available?(_current_user)
           true
         end
 

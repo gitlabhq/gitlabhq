@@ -27646,7 +27646,7 @@ paths:
       operationId: deleteApiV4AdminSidekiqQueuesQueueName
       summary: Delete jobs from a Sidekiq queue
       description: Deletes jobs from a Sidekiq queue that match the specified metadata.
-        At least one of 31 related parameters must be provided.
+        At least one of 32 related parameters must be provided.
       tags:
       - Sidekiq
       responses:
@@ -27853,6 +27853,13 @@ paths:
           nullable: true
         in: query
       - name: client_name
+        required: false
+        description: Metadata key to match
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: client_version
         required: false
         description: Metadata key to match
         schema:
@@ -100878,6 +100885,10 @@ components:
           type: string
         access_level:
           type: string
+        token_expires_at:
+          type: string
+          format: date-time
+          example: '2025-01-01T00:00:00.000Z'
         version:
           type: string
         revision:

@@ -94,7 +94,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
 
   describe '#available?' do
     it 'returns true' do
-      expect(service.available?).to be true
+      expect(service.available?(build(:user))).to be true
     end
   end
 

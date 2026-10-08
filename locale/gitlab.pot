@@ -72273,6 +72273,48 @@ msgstr ""
 msgid "Scan pushed commits for hardcoded secrets with GitGuardian, and block pushes that contain them. %{docs_link}"
 msgstr ""
 
+msgid "ScanCoverageBanner|%{count} of %{total} projects run application security testing. Add secret detection to the same projects to catch passwords and keys before they're merged."
+msgstr ""
+
+msgid "ScanCoverageBanner|%{count} of %{total} projects scan for secrets. Add application security testing to the same projects to catch vulnerabilities before they're merged."
+msgstr ""
+
+msgid "ScanCoverageBanner|%{scanner_a} covers %{count_a} of %{total} projects and %{scanner_b} covers %{count_b}. Bring every project in the group up to the same coverage."
+msgstr ""
+
+msgid "ScanCoverageBanner|%{scanner} runs on %{count} of your %{total} projects"
+msgstr ""
+
+msgid "ScanCoverageBanner|Add %{scanner} to more projects"
+msgstr ""
+
+msgid "ScanCoverageBanner|Add application security testing"
+msgstr ""
+
+msgid "ScanCoverageBanner|Add secret detection"
+msgstr ""
+
+msgid "ScanCoverageBanner|Apply recommended profile"
+msgstr ""
+
+msgid "ScanCoverageBanner|None of your %{active} projects are covered by application security testing. Set up scanning once to cover them all."
+msgstr ""
+
+msgid "ScanCoverageBanner|None of your active projects are scanned for security issues"
+msgstr ""
+
+msgid "ScanCoverageBanner|Security scanning runs on some projects, not most"
+msgstr ""
+
+msgid "ScanCoverageBanner|You've already set it up. Add it to the other %{remaining} projects to cover the whole group."
+msgstr ""
+
+msgid "ScanCoverageBanner|Your projects check code, but not for leaked secrets"
+msgstr ""
+
+msgid "ScanCoverageBanner|Your projects check for leaked secrets, but not the code itself"
+msgstr ""
+
 msgid "ScanExecutionPolicy|%{boldStart}inject_ci%{boldEnd} strategy was deprecated. It was replaced by %{boldStart}inject_policy%{boldEnd} which enforces custom stages. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 

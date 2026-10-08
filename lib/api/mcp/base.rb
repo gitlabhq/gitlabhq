@@ -110,7 +110,7 @@ module API
         # Workhorse's Duo Workflow token always carries ai_workflows, and the documented MCP
         # clients can't get that scope, so only it may list an unlisted tool by naming it.
         def list_named_unlisted_tools?
-          Array(access_token&.scopes).map(&:to_sym).include?(::Gitlab::Auth::AI_WORKFLOW)
+          Array(access_token.scopes).map(&:to_sym).include?(::Gitlab::Auth::AI_WORKFLOW)
         end
 
         # Returns the prefix for all MCP tool names for this request.

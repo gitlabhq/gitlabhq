@@ -636,7 +636,7 @@ Migration/UnfinishedDependencies:
 
 Migration/RoundTimestamp:
   Enabled: true
-  EnforcedSince: 20261005130000
+  EnforcedSince: 20261007130000
   Include:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'

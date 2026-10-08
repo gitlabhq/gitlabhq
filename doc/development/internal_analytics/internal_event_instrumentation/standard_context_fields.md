@@ -46,7 +46,7 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | `client_type`    | string, null  | Type of client.                                         | `"browser"`, `"ide"`      |
 | `interface`      | string, null  | Interface from which the request originates.            | `"Duo Chat"`              |
 
-Rails fills `client_type` and `client_name` for every backend event from the request that caused it, including events fired from Sidekiq jobs.
+Rails fills `client_type`, `client_name`, and `client_version` for every backend event from the request that caused it, including events fired from Sidekiq jobs.
 For the allowed values and how to add a client, see [Client identity in backend events](client_identity.md).
 
 ### Feature and Plan Information

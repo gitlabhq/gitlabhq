@@ -86,6 +86,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 - Feature flags `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list` removed.
 - Tracked ref filter for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240011) in GitLab 19.2 [with flags](../../../administration/feature_flags/_index.md) named `vulnerabilities_across_contexts` and `project_dependency_tracked_ref`. `project_dependency_tracked_ref` is disabled by default.
 - Malware filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with flags](../../../administration/feature_flags/_index.md) named `dependency_malware_detection` and `malicious_packages_dependency_list_filtering`. Enabled by default.
+- Feature flag `malicious_packages_dependency_list_filtering` removed in GitLab 19.5.
 
 {{< /history >}}
 

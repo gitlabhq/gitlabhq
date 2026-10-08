@@ -43,6 +43,7 @@ DELETE /admin/sidekiq/queues/:queue_name
 | `feature_category`  | string | no       | The feature category of the background job (for example: `team_planning` or `code_review`) |
 | `client_type`       | string | no       | The kind of client whose request scheduled the jobs (for example: `browser`, `ide`, or `mobile`) |
 | `client_name`       | string | no       | The client whose request scheduled the jobs (for example: `vscode` or `gitlab-mobile-ios`) |
+| `client_version`    | string | no       | The release of the client whose request scheduled the jobs (for example: `6.21.0` or `1.2.0`) |
 | `worker_class`      | string | no       | The class of the background job worker (for example: `PostReceive` or `MergeWorker`) |
 
 At least one attribute, other than `queue_name`, is required.

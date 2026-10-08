@@ -17,7 +17,8 @@ module Gitlab
         # this request inherit it through Labkit.
         client = Gitlab::Tracking::ClientIdentity.from_request(request)
 
-        Gitlab::ApplicationContext.with_context({ client_type: client.type, client_name: client.name }.compact) do
+        client_context = { client_type: client.type, client_name: client.name, client_version: client.version }.compact
+        Gitlab::ApplicationContext.with_context(client_context) do
           @app.call(env)
         end
       end
