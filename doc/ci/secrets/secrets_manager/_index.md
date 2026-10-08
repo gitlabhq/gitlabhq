@@ -57,12 +57,24 @@ Status: Limited Availability
 
 {{< /details >}}
 
-- You can start a 30-day trial to try GitLab Secrets Manager with temporary evaluation credits. After the trial expires, GitLab Secrets Manager starts consuming GitLab credits. To avoid a service interruption, purchase a monthly commitment pool of credits or accept the usage billing terms before the trial ends. For more information, see [GitLab Secrets Manager credit usage](credit_usage.md).
-- If you opted into the beta before August 21, 2026, your environment has a grace period with continued access until September 21, 2026. After the grace period, GitLab disables access. To continue access, start a trial before the grace period ends.
+{{< history >}}
+
+- **Enable with GitLab Credits** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254349) in GitLab 19.4.
+
+{{< /history >}}
 
 Prerequisites:
 
 - You must have the Owner role for the top-level group.
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Secure** > **Secrets Manager**.
+1. Select **Enable with GitLab Credits**.
+
+Alternatively, you can start a 30-day trial to try GitLab Secrets Manager with temporary evaluation credits.
+After the trial expires, GitLab Secrets Manager starts consuming GitLab credits.
+To avoid a service interruption, purchase a monthly commitment pool of credits or
+accept the usage billing terms before the trial ends.
 
 1. In the top bar, select **Search or go to** and find your top-level group.
 1. In the left sidebar, select **Secure** > **Secrets Manager**.

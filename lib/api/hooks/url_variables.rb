@@ -7,8 +7,8 @@ module API
     # rubocop: disable API/Base
     class UrlVariables < ::Grape::API
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the hook'
-        requires :key, type: String, desc: 'The key of the variable'
+        requires :hook_id, type: Integer, desc: 'ID of the hook.'
+        requires :key, type: String, desc: 'Key of the URL variable.'
       end
       namespace ':hook_id/url_variables' do
         desc 'Update a URL variable' do
@@ -16,7 +16,7 @@ module API
           tags ['hooks']
         end
         params do
-          requires :value, type: String, desc: 'The value of the variable'
+          requires :value, type: String, desc: 'Value of the URL variable.'
         end
         route_setting :authorization, permissions: :update_webhook_url_variable,
           boundary_type: configuration[:boundary_type]

@@ -120,16 +120,21 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
     );
   }
 
-  async function replyToDiscussion(discussion, noteText) {
+  async function replyToDiscussion(discussion, noteText, shouldResolve = false) {
     const { sourceHeadSha } = useMergeRequestVersions();
-    await notes.saveNote(
-      buildReplyData({
-        discussion,
-        noteText,
-        noteableData: notes.noteableData,
-        sourceHeadSha,
-      }),
-    );
+    const replyData = buildReplyData({
+      discussion,
+      noteText,
+      noteableData: notes.noteableData,
+      sourceHeadSha,
+    });
+
+    if (shouldResolve) {
+      replyData.data.resolve_discussion = !discussion.resolved;
+      replyData.data.return_discussion = true;
+    }
+
+    await notes.saveNote(replyData);
   }
 
   async function saveNote(note, noteText) {

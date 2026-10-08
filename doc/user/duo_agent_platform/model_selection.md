@@ -30,6 +30,7 @@ For some features, you can select a different model, which persists until you ch
 - Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7238) to Claude Sonnet 5.5 Gemini Enterprise Agent Platform on October 5, 2026.
 - [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258913) for Recommend Reviewers Flow introduced in GitLab 19.5.
 - Default LLM for GitLab Duo Agentic Chat, GitLab Duo Developer, and all other agents [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7346) to Claude Sonnet 5.5 Gemini Enterprise Agent Platform on October 7, 2026.
+- Default LLM for Recommend Reviewers Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7370) to Claude Haiku 5.5 Gemini Enterprise Agent Platform on October 8, 2026.
 
 {{< /history >}}
 
@@ -41,7 +42,7 @@ This table lists the default model for each feature in the Agent Platform.
 | Code Review Flow[^earlier-code-review] | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
 | Security Review Flow | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 | Business Logic Security Scan[^bl-security-experiment] | Claude Sonnet 5 Gemini Enterprise Agent Platform |
-| Recommend Reviewers Flow | Claude Haiku 4.5 Gemini Enterprise Agent Platform |
+| Recommend Reviewers Flow | Claude Haiku 5.5 Gemini Enterprise Agent Platform |
 | GitLab Duo Developer | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
 | All other agents | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
 
@@ -63,6 +64,7 @@ This table lists the default model for each feature in the Agent Platform.
 - Claude Sonnet 4.6 and Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7077) as supported models for Business Logic Security Scan on October 2, 2026.
 - Claude Sonnet 5.5 and Claude Sonnet 5.5 Gemini Enterprise Agent Platform [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7238) as supported models for Code Review Flow on October 5, 2026.
 - Claude Haiku 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7364) as a supported model for GitLab Duo Agentic Chat and all other agents on October 7, 2026.
+- Claude Haiku 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7370) as a supported model for Recommend Reviewers Flow on October 8, 2026.
 
 {{< /history >}}
 
@@ -82,7 +84,7 @@ For information about model availability during trials, see
 | Claude Sonnet 5             | {{< yes >}}             | {{< yes >}}      | {{< no >}}           | {{< yes >}}                  | {{< yes >}}              | {{< yes >}}      |
 | Claude Sonnet 5.5           | {{< yes >}}             | {{< yes >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}              | {{< yes >}}      |
 | Claude Haiku 4.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}              | {{< yes >}}      |
-| Claude Haiku 5.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
+| Claude Haiku 5.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}              | {{< yes >}}      |
 | Claude Opus 4.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | Claude Opus 4.6             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |
 | Claude Opus 4.7             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< no >}}               | {{< yes >}}      |

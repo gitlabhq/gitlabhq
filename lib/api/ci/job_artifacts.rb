@@ -4,8 +4,11 @@ module API
   module Ci
     class JobArtifacts < ::API::Base
       include PaginationParams
+      include APIGuard
 
       helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
+
+      allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
       before { authenticate_non_get! }
 

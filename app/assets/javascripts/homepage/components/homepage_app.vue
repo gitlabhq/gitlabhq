@@ -1,12 +1,10 @@
 <script>
 import { __ } from '~/locale';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import GreetingHeader from './greeting_header.vue';
 import ActivityWidget from './activity_widget.vue';
 import QuickAccessWidget from './quick_access_widget.vue';
 import MergeRequestsWidget from './merge_requests_widget.vue';
-import PipelinesWidget from './pipelines_widget.vue';
 import TodosWidget from './todos_widget.vue';
 import PickUpWidget from './pick_up_widget.vue';
 
@@ -19,10 +17,8 @@ export default {
     TodosWidget,
     QuickAccessWidget,
     MergeRequestsWidget,
-    PipelinesWidget,
     PickUpWidget,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     activityPath: {
       type: String,
@@ -60,7 +56,6 @@ export default {
       <aside class="gl-flex gl-flex-col gl-gap-6">
         <merge-requests-widget />
         <quick-access-widget />
-        <pipelines-widget v-if="glFeatures.homepagePipelinesWidget" />
       </aside>
     </div>
   </index-layout>

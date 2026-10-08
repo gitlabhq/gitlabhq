@@ -594,6 +594,8 @@ export default {
               v-if="isFirstNote"
               :note="note"
               :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :full-path="fullPath"
               :discussion-id="discussionId"
               :replies="replies"
               :is-discussion-resolved="isDiscussionResolved"

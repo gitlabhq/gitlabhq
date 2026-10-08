@@ -331,10 +331,10 @@ export default {
         'handle-form-update',
         this.updatedNoteBody,
         this.$refs.editNoteForm,
-        () => {
+        (error, { resolvedStateSaved = false } = {}) => {
           this.isSubmitting = false;
 
-          if (this.shouldToggleResolved(beforeSubmitDiscussionState)) {
+          if (!resolvedStateSaved && this.shouldToggleResolved(beforeSubmitDiscussionState)) {
             this.resolveHandler(beforeSubmitDiscussionState);
           }
         },

@@ -35,9 +35,10 @@ module API
         namespace 'gitaly' do
           params do
             requires :disk_paths, type: Array[String], limit: 500,
-              desc: 'The on-disk paths of the pool repositories. Limited to 500'
-            requires :storage, type: String, desc: 'The storage shard name'
-            optional :upstream_only, type: Boolean, default: false, desc: 'Return only the upstream repository'
+              desc: 'On-disk paths of the pool repositories. Limited to 500.'
+            requires :storage, type: String, desc: 'Name of the storage shard.'
+            optional :upstream_only, type: Boolean, default: false, desc: 'If `true`, returns only the upstream ' \
+                                                                      'repository.'
           end
           desc 'List Gitaly object pool members'
           route_setting :authorization, skip_granular_token_authorization: :gitlab_shell_token_auth

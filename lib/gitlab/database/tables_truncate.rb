@@ -226,9 +226,7 @@ module Gitlab
       end
 
       def with_suppressed_query_analyzers(&block)
-        Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
-          Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer.with_suppressed(&block)
-        end
+        Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed(&block)
       end
     end
   end

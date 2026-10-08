@@ -36,7 +36,7 @@ For more information about usage, see [Configure flow execution](_index.md).
 | `cache` | object | Files and directories to preserve between flow runs. For more information, see [Configure caching](_index.md#configure-caching). |
 | `cache.paths` | string or array of strings | Paths to cache. Required for caching to take effect. |
 | `cache.key` | string or object | Cache key. If omitted, a default key is used. |
-| `cache.key.files` | array of strings | Files used to generate a SHA-based cache key. Maximum 2 files. |
+| `cache.key.files` | array of strings | Files used to generate a SHA-based cache key. Maximum 10 files. For details, see [cache limitations](_index.md#cache-limitations). |
 | `cache.key.prefix` | string | Prefix combined with the file SHA to form the cache key. Requires `files`. |
 
 ## Complete example

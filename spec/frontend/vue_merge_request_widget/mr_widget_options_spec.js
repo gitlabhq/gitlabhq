@@ -63,13 +63,22 @@ describe('MrWidgetOptions', () => {
 
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
 
+  const createStateSubscriptionPayload = (overrides = {}) => ({
+    ...getStateQueryResponse.data.project.mergeRequest,
+    mergeabilityChecks: [],
+    availableAutoMergeStrategies: [],
+    mergeTrainCar: null,
+    project: { ...getStateQueryResponse.data.project, mergeTrains: null },
+    ...overrides,
+  });
+
   const createComponent = ({
     updatedMrData = {},
     options = {},
     data = {},
     stateSubscriptionHandler = jest
       .fn()
-      .mockResolvedValue({ data: { mergeRequestMergeStatusUpdated: {} } }),
+      .mockResolvedValue({ data: { mergeRequestMergeStatusUpdated: null } }),
     mountFn = shallowMountExtended,
   } = {}) => {
     gl.mrWidgetData = { ...mockData, ...updatedMrData };
@@ -766,10 +775,9 @@ describe('MrWidgetOptions', () => {
       stateSubscriptions.forEach((subscription) => {
         subscription.next({
           data: {
-            mergeRequestMergeStatusUpdated: {
-              userPermissions: { canMerge: true },
+            mergeRequestMergeStatusUpdated: createStateSubscriptionPayload({
               mergeabilityChecks: [{ identifier: 'DRAFT_STATUS', status: 'FAILED' }],
-            },
+            }),
           },
         });
       });
@@ -777,6 +785,45 @@ describe('MrWidgetOptions', () => {
       await waitForPromises();
 
       expect(wrapper.text()).toContain('Merge blocked: 1 check failed');
+    });
+  });
+
+  describe('merge status subscription', () => {
+    it('switches to the merged state when a push reports the merge request merged', async () => {
+      const stateSubscriptions = [];
+
+      await createComponent({
+        updatedMrData: {
+          state: 'opened',
+          source_branch_exists: true,
+          target_branch_sha: 'abc123',
+        },
+        stateSubscriptionHandler: () => {
+          const subscription = createMockApolloSubscription();
+          stateSubscriptions.push(subscription);
+          return subscription;
+        },
+      });
+
+      expect(wrapper.findComponent(MergedState).exists()).toBe(false);
+
+      mock.resetHandlers();
+      mock
+        .onGet(mockData.merge_request_widget_path)
+        .reply(HTTP_STATUS_OK, { ...mockData, state: 'merged' });
+      mock.onGet(mockData.merge_request_cached_widget_path).reply(HTTP_STATUS_OK, {});
+
+      stateSubscriptions.forEach((subscription) => {
+        subscription.next({
+          data: {
+            mergeRequestMergeStatusUpdated: createStateSubscriptionPayload({ state: 'merged' }),
+          },
+        });
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.findComponent(MergedState).exists()).toBe(true);
     });
   });
 
@@ -838,9 +885,9 @@ describe('MrWidgetOptions', () => {
         stateSubscriptions.forEach((stateSubscription) => {
           stateSubscription.next({
             data: {
-              mergeRequestMergeStatusUpdated: {
+              mergeRequestMergeStatusUpdated: createStateSubscriptionPayload({
                 detailedMergeStatus: 'MERGEABLE',
-              },
+              }),
             },
           });
         });

@@ -45,6 +45,7 @@ module MergeRequests
       deactivate_pages_deployments(merge_request)
       cancel_auto_merges_targeting_source_branch(merge_request)
       trigger_user_merge_request_updated(merge_request)
+      trigger_merge_request_merge_status_updated(merge_request)
 
       execute_hooks(merge_request, 'merge')
 

@@ -56,10 +56,11 @@ RSpec.describe Gitlab::Ci::Reports::Security::Identifier do
 
   describe '#type_identifier?' do
     where(:external_type, :expected_result) do
-      'cve'  | false
-      'foo'  | false
-      'cwe'  | true
-      'wasc' | true
+      'cve'   | false
+      'foo'   | false
+      'cwe'   | true
+      'wasc'  | true
+      'owasp' | true
     end
 
     with_them do
@@ -72,11 +73,12 @@ RSpec.describe Gitlab::Ci::Reports::Security::Identifier do
   end
 
   describe 'external type check methods' do
-    where(:external_type, :is_cve?, :is_cwe?, :is_wasc?) do
-      'Foo'  | false | false | false
-      'Cve'  | true  | false | false
-      'Cwe'  | false | true  | false
-      'Wasc' | false | false | true
+    where(:external_type, :is_cve?, :is_cwe?, :is_wasc?, :is_owasp?) do
+      'Foo'   | false | false | false | false
+      'Cve'   | true  | false | false | false
+      'Cwe'   | false | true  | false | false
+      'Wasc'  | false | false | true  | false
+      'Owasp' | false | false | false | true
     end
 
     with_them do
@@ -86,6 +88,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::Identifier do
         expect(identifier.cve?).to be(is_cve?)
         expect(identifier.cwe?).to be(is_cwe?)
         expect(identifier.wasc?).to be(is_wasc?)
+        expect(identifier.owasp?).to be(is_owasp?)
       end
     end
   end

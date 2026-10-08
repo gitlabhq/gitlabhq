@@ -122,10 +122,15 @@ export default {
           },
         ) {
           if (mergeRequestMergeStatusUpdated) {
-            const { userPermissions, mergeabilityChecks } = mergeRequestMergeStatusUpdated;
+            const { userPermissions, mergeabilityChecks, state } = mergeRequestMergeStatusUpdated;
+            const stateChanged = state !== this.mr.mergeRequestState;
 
             this.mr.setGraphqlSubscriptionData(mergeRequestMergeStatusUpdated);
             this.mergeChecksState = { userPermissions, mergeabilityChecks };
+
+            // Whether the MR is open and its merged details only come from REST,
+            // which a push never refreshes, so fetch them when the state moves.
+            if (stateChanged) this.checkStatus(undefined, undefined, false);
           }
         },
       },

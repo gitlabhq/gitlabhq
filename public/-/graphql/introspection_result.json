@@ -4597,6 +4597,18 @@
               "deprecationReason": null
             },
             {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp of when the user was created.",
               "args": [],
@@ -55911,6 +55923,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "createdAt",
@@ -120844,6 +120868,18 @@
               "deprecationReason": null
             },
             {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp of when the user was created.",
               "args": [],
@@ -153727,6 +153763,136 @@
               "ofType": null
             }
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowAgentPresence",
+          "description": "Agent attribution for an object, such as a note, created by a GitLab Duo Agent Platform session.",
+          "fields": [
+            {
+              "name": "agentCatalogWebPath",
+              "description": "Web path of the agent in the AI Catalog. Null when the agent has no catalog profile.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "agentName",
+              "description": "Name of the agent that ran the session.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sessionId",
+              "description": "Global ID of the session that created the object.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "AiDuoWorkflowsWorkflowID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sourceLink",
+              "description": "URL or deep link to the location where the session was triggered from. Null unless the current user can read the session.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sourceType",
+              "description": "Type of source that initiated the session.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoWorkflowSourceType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "User the session ran as. For triggered sessions, the account the trigger runs with.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "userPermissions",
+              "description": "Permissions for the current user on the session.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DuoWorkflowAgentPresencePermissions",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowAgentPresencePermissions",
+          "description": "Check permissions for the current user on the session that created the object.",
+          "fields": [
+            {
+              "name": "readDuoWorkflow",
+              "description": "If `true`, the user can perform `read_duo_workflow` on this resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
           "enumValues": null,
           "possibleTypes": null
         },
@@ -210895,6 +211061,104 @@
           "possibleTypes": null
         },
         {
+          "kind": "INPUT_OBJECT",
+          "name": "ImportSourceUserRevokeInput",
+          "description": "Autogenerated input type of ImportSourceUserRevoke",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the mapping of a user on source instance to a user on destination instance.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ImportSourceUserID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ImportSourceUserRevokePayload",
+          "description": "Autogenerated return type of ImportSourceUserRevoke.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "importSourceUser",
+              "description": "Mapping of a user on source instance to a user on destination instance after mutation.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ImportSourceUser",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "ImportSourceUserStatus",
           "description": null,
@@ -242043,6 +242307,18 @@
               "deprecationReason": null
             },
             {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp of when the user was created.",
               "args": [],
@@ -246596,6 +246872,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "createdAt",
@@ -252778,6 +253066,18 @@
               "deprecationReason": null
             },
             {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp of when the user was created.",
               "args": [],
@@ -257958,6 +258258,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "createdAt",
@@ -279639,6 +279951,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
             },
             {
+              "name": "importSourceUserRevoke",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for ImportSourceUserRevoke",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "ImportSourceUserRevokeInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ImportSourceUserRevokePayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "importSourceUserUndoKeepAsPlaceholder",
               "description": null,
               "args": [
@@ -300007,6 +300348,18 @@
           "name": "Note",
           "description": null,
           "fields": [
+            {
+              "name": "agentPresence",
+              "description": "Agent attribution for a note posted by a GitLab Duo Agent Platform session. Available to anyone who can read the note; `userPermissions.readDuoWorkflow` tells whether the session itself can be opened. Returns null when no session posted the note or when the `agent_presence_consolidation` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowAgentPresence",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
             {
               "name": "author",
               "description": "User who wrote the note.",
@@ -428204,6 +428557,18 @@
               "deprecationReason": null
             },
             {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp of when the user was created.",
               "args": [],
@@ -432912,6 +433277,132 @@
         },
         {
           "kind": "OBJECT",
+          "name": "UserContributionCalendar",
+          "description": "A user's contribution calendar: the profile page's activity heatmap for the past year.",
+          "fields": [
+            {
+              "name": "days",
+              "description": "Days with at least one contribution, oldest first.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "UserContributionDay",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "timezone",
+              "description": "Identifier of the timezone the days are counted in: the user's timezone, or the instance default if the user has not set one.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalCount",
+              "description": "Total number of contributions in the past year.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "utcOffset",
+              "description": "Offset of `timezone` from UTC, in seconds, as of the request.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UserContributionDay",
+          "description": "One day with at least one contribution on a user's contribution calendar.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of contributions on the day.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "date",
+              "description": "Date of the contributions, in the user's timezone.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Date",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "UserCore",
           "description": "Core representation of a GitLab user.",
           "fields": [
@@ -434518,6 +435009,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "contributionCalendar",
+              "description": "Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserContributionCalendar",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "createdAt",

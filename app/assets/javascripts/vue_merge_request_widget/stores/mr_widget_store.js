@@ -220,16 +220,15 @@ export default class MergeRequestStore {
   }
 
   setGraphqlSubscriptionData(data) {
-    this.commitsCount = data.commitCount || this.commitsCount;
-    this.detailedMergeStatus = data.detailedMergeStatus || this.detailedMergeStatus;
-    this.autoMergeEnabled = data.autoMergeEnabled ?? this.autoMergeEnabled;
     this.availableAutoMergeStrategies =
       data.availableAutoMergeStrategies || this.availableAutoMergeStrategies;
     this.preferredAutoMergeStrategy = MergeRequestStore.getPreferredAutoMergeStrategy(
       this.availableAutoMergeStrategies,
     );
 
-    this.setState();
+    // The payload is the merge request itself; reshape it like the polled query
+    // so both go through one writer and a push never leaves fields stale.
+    this.setGraphqlData({ ...data.project, mergeRequest: data });
   }
 
   setPipelineStatusData(data, isPostMerge = false) {

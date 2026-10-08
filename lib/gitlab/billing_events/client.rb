@@ -61,15 +61,7 @@ module Gitlab
         timestamp: nil,
         metadata: nil
       )
-        return unless Feature.enabled?(:billing_event_tracking, :instance) || local_persistence_enabled?
-
-        if !quantity.is_a?(Numeric) || quantity <= 0
-          return Gitlab::AppLogger.warn(
-            message: 'BillingEvents: invalid quantity',
-            quantity: quantity,
-            event_type: event_type
-          )
-        end
+        return warn_invalid_quantity(quantity, event_type) if !quantity.is_a?(Numeric) || quantity <= 0
 
         event_id = generate_event_id(idempotency_key)
         root_namespace = namespace&.root_ancestor
@@ -151,6 +143,14 @@ module Gitlab
           event_type: event_type,
           event_id: event_id,
           namespace_id: namespace&.id
+        )
+      end
+
+      def warn_invalid_quantity(quantity, event_type)
+        Gitlab::AppLogger.warn(
+          message: 'BillingEvents: invalid quantity',
+          quantity: quantity,
+          event_type: event_type
         )
       end
 

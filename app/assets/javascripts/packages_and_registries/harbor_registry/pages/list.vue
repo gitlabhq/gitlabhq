@@ -27,7 +27,6 @@ import {
   EMPTY_IMAGES_MESSAGE,
   HARBOR_REGISTRY_HELP_PAGE_PATH,
 } from '~/packages_and_registries/harbor_registry/constants';
-import Tracking from '~/tracking';
 import { getHarborRepositoriesList } from '~/rest_api';
 
 export default {
@@ -48,7 +47,6 @@ export default {
         ),
     ),
   },
-  mixins: [Tracking.mixin()],
   inject: [
     'endpoint',
     'repositoryUrl',

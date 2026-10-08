@@ -3686,7 +3686,7 @@ Grants the ability to create and read offline exports.
 
 #### Placeholder Reassignment
 
-Grants the ability to create, read, and update placeholder reassignments.
+Grants the ability to create, read, revoke, and update placeholder reassignments.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

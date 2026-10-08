@@ -39,7 +39,7 @@ module Gitlab
           end
 
           def type_identifier?
-            cwe? || wasc?
+            cwe? || wasc? || owasp?
           end
 
           def cve?
@@ -52,6 +52,10 @@ module Gitlab
 
           def wasc?
             external_type.to_s.casecmp?('wasc')
+          end
+
+          def owasp?
+            external_type.to_s.casecmp?('owasp')
           end
 
           def vendor

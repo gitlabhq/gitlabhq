@@ -158,7 +158,6 @@
 - :stub_feature_flags
 - :stub_settings_source
 - :suppress_gitlab_schemas_validate_connection
-- :suppress_partitioning_routing_analyzer
 - :system_access
 - :threat_insights
 - :time_freeze

@@ -7,6 +7,10 @@ module Types
 
       authorize :read_import_source_user
 
+      authorize_granular_token permissions: :read_import_source_user,
+        boundary: :user,
+        boundary_type: :user
+
       field :id,
         Types::GlobalIDType[::Import::SourceUser],
         null: false,

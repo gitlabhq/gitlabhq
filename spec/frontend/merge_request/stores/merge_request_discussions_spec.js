@@ -616,6 +616,17 @@ describe('mergeRequestDiscussions store', () => {
         },
       });
     });
+
+    it('sends the new resolved state when the reply toggles it', async () => {
+      const discussion = { id: 'disc-1', reply_id: 'reply-1', resolved: false };
+
+      await store.replyToDiscussion(discussion, 'reply text', true);
+
+      expect(mockNotesStore.saveNote).toHaveBeenCalledWith({
+        endpoint: '/api/notes',
+        data: expect.objectContaining({ resolve_discussion: true, return_discussion: true }),
+      });
+    });
   });
 
   describe('saveNote', () => {

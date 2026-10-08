@@ -5,8 +5,8 @@ module API
     # rubocop: disable API/Base -- It is important that this re-usable module is not a Grape Instance, since it will be re-mounted.
     class CustomHeaders < ::Grape::API
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the hook'
-        requires :key, type: String, desc: 'The name of the custom header',
+        requires :hook_id, type: Integer, desc: 'ID of the hook.'
+        requires :key, type: String, desc: 'Name of the custom header.',
           limit: WebHook::MAX_CUSTOM_HEADER_NAME_LENGTH
       end
       namespace ':hook_id/custom_headers' do
@@ -15,7 +15,7 @@ module API
           tags ['hooks']
         end
         params do
-          requires :value, type: String, desc: 'The value of the custom header'
+          requires :value, type: String, desc: 'Value of the custom header.'
         end
         route_setting :authorization, permissions: :update_webhook_custom_header,
           boundary_type: configuration[:boundary_type]

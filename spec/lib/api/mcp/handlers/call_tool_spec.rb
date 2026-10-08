@@ -54,7 +54,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
             event_name: 'tool_call',
             ai_component: 'mcp_server',
             tool_name: tool_name,
-            session_id: '1',
+            request_id: '1',
             tool_status: 'ok',
             argument_keys: ['param'],
             ::Labkit::Fields::GL_ROOT_NAMESPACE_ID => nil,

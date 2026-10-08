@@ -291,18 +291,6 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
       )
     end
 
-    context 'when billing_event_tracking feature flag is disabled' do
-      before do
-        stub_feature_flags(billing_event_tracking: false)
-      end
-
-      it 'does not track', :aggregate_failures do
-        expect { track }.not_to trigger_internal_events('usage_billing_event')
-
-        expect(Gitlab::Tracking).not_to have_received(:billing_event)
-      end
-    end
-
     context 'with invalid quantity' do
       where(:invalid_quantity) { [0, -1, -0.5, nil, 'string'] }
 

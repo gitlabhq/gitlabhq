@@ -59,6 +59,12 @@ module Mcp
           'manage_pipeline'
         end
 
+        # Unlisted pending removal (https://gitlab.com/gitlab-org/gitlab/-/work_items/631276).
+        override :unlisted?
+        def unlisted?
+          true
+        end
+
         protected
 
         override :perform_default

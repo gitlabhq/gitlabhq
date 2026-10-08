@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/commit/_commit_box.html.haml' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, developers: user) }
 
   before do
     assign(:project, project)
     assign(:commit, project.commit)
     allow(view).to receive_messages(current_user: user, can_collaborate_with_project?: false)
-    project.add_developer(user)
   end
 
   it 'shows the commit SHA' do

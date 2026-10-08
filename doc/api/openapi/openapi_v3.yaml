@@ -8511,13 +8511,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The key of the variable
+        description: Key of the URL variable.
         schema:
           type: string
         in: path
@@ -8551,13 +8551,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The key of the variable
+        description: Key of the URL variable.
         schema:
           type: string
         in: path
@@ -8586,13 +8586,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The name of the custom header
+        description: Name of the custom header.
         schema:
           type: string
         in: path
@@ -8626,13 +8626,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The name of the custom header
+        description: Name of the custom header.
         schema:
           type: string
         in: path
@@ -14917,7 +14917,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: Collection name or ID
+        description: Name or ID of the collection.
         schema:
           oneOf:
           - type: string
@@ -15390,7 +15390,7 @@ paths:
       parameters:
       - name: disk_paths
         required: true
-        description: The on-disk paths of the pool repositories. Limited to 500
+        description: On-disk paths of the pool repositories. Limited to 500.
         schema:
           type: array
           items:
@@ -15399,14 +15399,14 @@ paths:
         in: query
       - name: storage
         required: true
-        description: The storage shard name
+        description: Name of the storage shard.
         schema:
           type: string
           nullable: true
         in: query
       - name: upstream_only
         required: false
-        description: Return only the upstream repository
+        description: If `true`, returns only the upstream repository.
         schema:
           type: boolean
           default: false
@@ -30001,13 +30001,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The key of the variable
+        description: Key of the URL variable.
         schema:
           type: string
         in: path
@@ -30033,13 +30033,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The key of the variable
+        description: Key of the URL variable.
         schema:
           type: string
         in: path
@@ -30060,13 +30060,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The name of the custom header
+        description: Name of the custom header.
         schema:
           type: string
         in: path
@@ -30092,13 +30092,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The name of the custom header
+        description: Name of the custom header.
         schema:
           type: string
         in: path
@@ -30236,7 +30236,7 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the system hook.
         schema:
           type: integer
         in: path
@@ -39265,13 +39265,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The key of the variable
+        description: Key of the URL variable.
         schema:
           type: string
         in: path
@@ -39306,13 +39306,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The key of the variable
+        description: Key of the URL variable.
         schema:
           type: string
         in: path
@@ -39342,13 +39342,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The name of the custom header
+        description: Name of the custom header.
         schema:
           type: string
         in: path
@@ -39383,13 +39383,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: key
         required: true
-        description: The name of the custom header
+        description: Name of the custom header.
         schema:
           type: string
         in: path
@@ -39712,7 +39712,7 @@ paths:
         example: 1
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
@@ -105380,7 +105380,7 @@ components:
       properties:
         value:
           type: string
-          description: The value of the variable
+          description: Value of the URL variable.
           nullable: true
       required:
       - value
@@ -105389,7 +105389,7 @@ components:
       properties:
         value:
           type: string
-          description: The value of the custom header
+          description: Value of the custom header.
           nullable: true
       required:
       - value
@@ -108023,7 +108023,7 @@ components:
       properties:
         connection_id:
           type: integer
-          description: Connection ID
+          description: ID of the connection.
           nullable: true
       required:
       - connection_id
@@ -108032,7 +108032,7 @@ components:
       properties:
         connection_id:
           type: integer
-          description: Connection ID (defaults to active connection)
+          description: ID of the connection. If omitted, defaults to the active connection.
           nullable: true
     putApiV4AdminActiveContextCollectionsIdRequest:
       type: object
@@ -108044,20 +108044,21 @@ components:
           nullable: true
         queue_shard_limit:
           type: integer
-          description: Queue shard limit. At least one of `queue_shard_count`, `queue_shard_limit`
-            must be provided.
+          description: Maximum number of queued items processed from each queue shard
+            at a time. At least one of `queue_shard_count`, `queue_shard_limit` must
+            be provided.
           nullable: true
         connection_id:
           type: integer
-          description: Connection ID (defaults to active connection)
+          description: ID of the connection. If omitted, defaults to the active connection.
           nullable: true
     postApiV4AdminActiveContextDeadQueueReplayRequest:
       type: object
       properties:
         queue:
           type: string
-          description: Target queue name (e.g. retry_queue, second_retry_queue, code,
-            code_backfill)
+          description: Name of the target queue, for example `retry_queue`, `second_retry_queue`,
+            `code`, or `code_backfill`.
           nullable: true
       required:
       - queue
@@ -108070,17 +108071,17 @@ components:
             nullable: true
           - type: integer
             nullable: true
-          description: Namespace path or ID
+          description: ID or path of the namespace.
         state:
           type: string
           enum:
           - pending
           - ready
-          description: State (pending or ready)
+          description: Indexing state to transition the enabled namespace to.
           minLength: 1
         connection_id:
           type: integer
-          description: Connection ID (defaults to active connection)
+          description: ID of the connection. If omitted, defaults to the active connection.
           nullable: true
       required:
       - namespace_id
@@ -113350,8 +113351,7 @@ components:
             nullable: true
           - type: array
             nullable: true
-          description: Object or array that contains parameters passed to the specified
-            JSON-RPC method
+          description: Parameters for the JSON-RPC method specified in `method`.
       required:
       - jsonrpc
       - method
@@ -114722,7 +114722,7 @@ components:
       properties:
         value:
           type: string
-          description: The value of the variable
+          description: Value of the URL variable.
           nullable: true
       required:
       - value
@@ -114731,7 +114731,7 @@ components:
       properties:
         value:
           type: string
-          description: The value of the custom header
+          description: Value of the custom header.
           nullable: true
       required:
       - value
@@ -119906,7 +119906,7 @@ components:
       properties:
         value:
           type: string
-          description: The value of the variable
+          description: Value of the URL variable.
           nullable: true
       required:
       - value
@@ -119915,7 +119915,7 @@ components:
       properties:
         value:
           type: string
-          description: The value of the custom header
+          description: Value of the custom header.
           nullable: true
       required:
       - value

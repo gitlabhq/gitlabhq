@@ -533,9 +533,6 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
           expect(
             Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
           ).to receive(:with_suppressed).and_call_original
-          expect(
-            Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer
-          ).to receive(:with_suppressed).and_call_original
 
           subject
         end

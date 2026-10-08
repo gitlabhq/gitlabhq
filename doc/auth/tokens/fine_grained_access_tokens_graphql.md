@@ -2143,12 +2143,21 @@ Grants the ability to activate, approve, ban, block, create, deactivate, delete,
 
 ### System Migration resources
 
-#### Placeholder Reassignment
+#### Import Source User
 
-Grants the ability to create, read, and update placeholder reassignments.
+Grants the ability to read import source users.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Read | User | Type | `ImportSourceUser` |
+
+#### Placeholder Reassignment
+
+Grants the ability to create, read, revoke, and update placeholder reassignments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Revoke | User | Mutation | `ImportSourceUserRevoke` |
 | Update | Group | Mutation | `ImportSourceUserCancelReassignment` |
 | Update | Group | Mutation | `ImportSourceUserKeepAllAsPlaceholder` |
 | Update | Group | Mutation | `ImportSourceUserKeepAsPlaceholder` |

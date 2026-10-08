@@ -1,18 +1,15 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import Tracking from '~/tracking';
 import eventHub from '../event_hub';
 import updateMixin from '../mixins/update';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
-
-const trackingMixin = Tracking.mixin({ label: 'delete_issue' });
 
 export default {
   name: 'EditActions',
   components: {
     GlButton,
   },
-  mixins: [trackingMixin, updateMixin],
+  mixins: [updateMixin],
   props: {
     formState: {
       type: Object,

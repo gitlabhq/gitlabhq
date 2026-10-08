@@ -109,6 +109,7 @@ Validity checks support the following secret types:
 - GitHub OAuth access tokens
 - GitHub personal access tokens (classic)
 - Google Cloud API keys
+- HashiCorp Terraform user and organization API tokens
 - Heroku API keys
 - npm access tokens
 - OpenAI admin API keys
@@ -152,6 +153,7 @@ The supported URLs are:
 - `https://api.openai.com/v1/organization/admin_api_keys`
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
+- `https://app.terraform.io/api/v2/account/details`
 - `https://registry.npmjs.org/-/whoami`
 - `https://sts.amazonaws.com/`
 - `https://www.googleapis.com/discovery/v1/apis`

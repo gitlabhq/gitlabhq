@@ -123,6 +123,8 @@ to the following APIs:
 - [Search API](../api/search.md)
 - [CI Pipelines API](../api/pipelines.md)
 - [CI Jobs API](../api/jobs.md)
+- [Job Artifacts API](../api/job_artifacts.md)
+- [Deployments API](../api/deployments.md)
 - [Merge Requests API](../api/merge_requests.md)
 - [Epics API](../api/epics.md)
 - [Issues API](../api/issues.md)

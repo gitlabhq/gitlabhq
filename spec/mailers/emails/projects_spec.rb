@@ -27,6 +27,8 @@ RSpec.describe Emails::Projects do
 
   let_it_be(:user, freeze: false) { create(:user) }
 
+  let(:recipient) { user }
+
   describe '#prometheus_alert_fired_email' do
     let(:default_title) { Gitlab::AlertManagement::Payload::Generic::DEFAULT_TITLE }
     let(:payload) { { 'startsAt' => Time.now.rfc3339 } }
@@ -58,7 +60,7 @@ RSpec.describe Emails::Projects do
     end
 
     context 'with empty payload' do
-      let(:payload) { {} }
+      let_it_be(:alert) { create(:alert_management_alert, :from_payload, payload: {}, project: project) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -78,7 +80,10 @@ RSpec.describe Emails::Projects do
     end
 
     context 'with description' do
-      let(:payload) { { 'description' => 'alert description' } }
+      let_it_be(:alert) do
+        create(:alert_management_alert, :from_payload, payload: { 'description' => 'alert description' },
+          project: project)
+      end
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -100,8 +105,10 @@ RSpec.describe Emails::Projects do
 
     context 'with environment' do
       let_it_be(:environment) { create(:environment, project: project) }
-
-      let(:payload) { { 'gitlab_environment_name' => environment.name } }
+      let_it_be(:alert) do
+        create(:alert_management_alert, :from_payload, payload: { 'gitlab_environment_name' => environment.name },
+          project: project)
+      end
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -141,8 +148,6 @@ RSpec.describe Emails::Projects do
   end
 
   describe '#repository_rewrite_history_success_email' do
-    let(:recipient) { user }
-
     subject { Notify.repository_rewrite_history_success_email(project, user) }
 
     it_behaves_like 'an email sent to a user'
@@ -160,7 +165,6 @@ RSpec.describe Emails::Projects do
   end
 
   describe '#repository_rewrite_history_failure_email' do
-    let(:recipient) { user }
     let(:error) { 'Some error' }
 
     subject { Notify.repository_rewrite_history_failure_email(project, user, error) }
@@ -181,8 +185,6 @@ RSpec.describe Emails::Projects do
   end
 
   describe '#repository_push_email' do
-    let(:recipient) { user }
-
     subject { Notify.repository_push_email(project.id, { author_id: user.id, ref: 'main', action: :create }) }
 
     it_behaves_like 'it should not have Gmail Actions links'
@@ -199,7 +201,6 @@ RSpec.describe Emails::Projects do
   end
 
   describe '.inactive_project_deletion_warning_email' do
-    let(:recipient) { user }
     let(:deletion_date) { "2022-01-10" }
 
     subject { Notify.inactive_project_deletion_warning_email(project, user, deletion_date) }
@@ -227,8 +228,6 @@ RSpec.describe Emails::Projects do
   end
 
   describe '.project_was_exported_email' do
-    let(:recipient) { user }
-
     subject { Notify.project_was_exported_email(user, project) }
 
     it_behaves_like 'an email sent to a user'
@@ -246,7 +245,6 @@ RSpec.describe Emails::Projects do
   end
 
   describe '.project_was_moved_email' do
-    let(:recipient) { user }
     let(:old_path_with_namespace) { project.path_with_namespace }
 
     subject { Notify.project_was_moved_email(project.id, user.id, old_path_with_namespace) }
@@ -265,8 +263,6 @@ RSpec.describe Emails::Projects do
   end
 
   describe '.project_was_not_exported_email' do
-    let(:recipient) { user }
-
     errors =  ['Some error']
 
     subject { Notify.project_was_not_exported_email(user, project, errors) }

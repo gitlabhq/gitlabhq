@@ -860,6 +860,70 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
     end
   end
 
+  describe 'with an ai_workflows OAuth token' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:environment) { create(:environment, project: project) }
+    let_it_be(:deployment) do
+      create(:deployment, :success, project: project, environment: environment, deployable: nil, sha: project.commit.sha)
+    end
+
+    let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+    let(:deployments_path) { "/projects/#{project.id}/deployments" }
+    let(:deployment_path) { "#{deployments_path}/#{deployment.id}" }
+
+    describe 'reading deployments' do
+      it 'lists deployments' do
+        get api(deployments_path, oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to contain_exactly(deployment.id)
+      end
+
+      it 'shows a deployment' do
+        get api(deployment_path, oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(deployment.id)
+      end
+
+      it 'lists the merge requests of a deployment' do
+        get api("#{deployment_path}/merge_requests", oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq([])
+      end
+    end
+
+    describe 'writing deployments' do
+      it 'rejects create with insufficient_scope and creates nothing' do
+        expect do
+          post api(deployments_path, oauth_access_token: token),
+            params: { environment: 'production', sha: project.commit.sha, ref: 'master', tag: false, status: 'success' }
+        end.not_to change { Deployment.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
+
+      it 'rejects update with insufficient_scope and keeps the status' do
+        expect do
+          put api(deployment_path, oauth_access_token: token), params: { status: 'failed' }
+        end.not_to change { deployment.reload.status }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
+
+      it 'rejects delete with insufficient_scope and keeps the deployment' do
+        expect { delete api(deployment_path, oauth_access_token: token) }
+          .not_to change { Deployment.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
+    end
+  end
+
   context 'prevent N + 1 queries' do
     context 'when the endpoint returns multiple records' do
       let(:project) { create(:project, :repository) }

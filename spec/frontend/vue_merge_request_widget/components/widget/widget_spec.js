@@ -393,6 +393,23 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findToggleButton().exists()).toBe(false);
     });
 
+    it('collapses the expanded section when it stops being collapsible', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+        },
+      });
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findExpandedSection().exists()).toBe(true);
+
+      await wrapper.setProps({ isCollapsible: false });
+
+      expect(findExpandedSection().exists()).toBe(false);
+    });
+
     it('fetches expanded data when clicked for the first time', async () => {
       const mockDataCollapsed = {
         headers: {},

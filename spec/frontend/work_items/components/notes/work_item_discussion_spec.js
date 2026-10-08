@@ -10,12 +10,18 @@ import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
 import WorkItemNoteReplying from '~/work_items/components/notes/work_item_note_replying.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import toggleWorkItemNoteResolveDiscussion from '~/work_items/graphql/notes/toggle_work_item_note_resolve_discussion.mutation.graphql';
+import { resolveDuoQuestionDecision } from 'ee_else_ce/work_items/utils/duo_question_decision';
+import waitForPromises from 'helpers/wait_for_promises';
 import {
   mockWorkItemDiscussion,
   mockToggleResolveDiscussionResponse,
   mockWorkItemNotesResponseWithComments,
 } from 'ee_else_ce_jest/work_items/mock_data';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
+
+jest.mock('ee_else_ce/work_items/utils/duo_question_decision', () => ({
+  resolveDuoQuestionDecision: jest.fn(),
+}));
 
 const mockWorkItemNotesWidgetResponseWithComments =
   mockWorkItemNotesResponseWithComments().data.namespace.workItem.widgets.find(
@@ -278,6 +284,111 @@ describe('Work Item Discussion', () => {
       await nextTick();
 
       expect(findToggleRepliesWidget().props('collapsed')).toBe(false);
+    });
+  });
+
+  describe('Duo question decision', () => {
+    const discussion = mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0];
+    const [questionNote, ...replies] = discussion.notes.nodes;
+    const answerNote = { id: 'gid://gitlab/Note/99', body: 'Ship it' };
+    const createdNote = {
+      id: answerNote.id,
+      discussion: { notes: { nodes: [...discussion.notes.nodes, answerNote] } },
+    };
+    // Only `resolved` matters here, and an empty notes list keeps the cache write valid.
+    const resolveResponse = (resolved) => ({
+      data: {
+        discussionToggleResolve: {
+          discussion: {
+            id: discussion.id,
+            resolved,
+            resolvable: true,
+            resolvedBy: null,
+            userPermissions: { resolveNote: true },
+            notes: { nodes: [] },
+          },
+          errors: [],
+        },
+      },
+    });
+
+    const expectDecisionResolvedWith = (answer) =>
+      expect(resolveDuoQuestionDecision).toHaveBeenCalledWith({
+        apolloClient: expect.any(Object),
+        fullPath: 'gitlab-org',
+        workItemIid: '1',
+        discussionId: discussion.id,
+        questionNote,
+        replies,
+        answerNote: answer,
+      });
+
+    beforeEach(() => {
+      // The optimistic response records the current user as the resolver.
+      window.gon.current_user_id = 'gid://gitlab/User/1';
+      window.gon.current_user_fullname = 'Administrator';
+      createComponent({ discussion });
+    });
+
+    describe('when the thread is resolved from its Resolve button', () => {
+      it('resolves the decision once the thread is resolved', async () => {
+        toggleWorkItemResolveDiscussionHandler.mockResolvedValueOnce(resolveResponse(true));
+        findThreadAtIndex(0).vm.$emit('resolve');
+        await waitForPromises();
+
+        expectDecisionResolvedWith(undefined);
+      });
+
+      it.each`
+        scenario                        | mock
+        ${'the thread is unresolved'}   | ${(handler) => handler.mockResolvedValueOnce(resolveResponse(false))}
+        ${'resolving the thread fails'} | ${(handler) => handler.mockRejectedValueOnce(new Error('nope'))}
+      `('leaves the decision alone when $scenario', async ({ mock }) => {
+        mock(toggleWorkItemResolveDiscussionHandler);
+        findThreadAtIndex(0).vm.$emit('resolve');
+        await waitForPromises();
+
+        expect(resolveDuoQuestionDecision).not.toHaveBeenCalled();
+      });
+    });
+
+    it('leaves the decision alone when the thread fails to resolve along with a reply', async () => {
+      toggleWorkItemResolveDiscussionHandler.mockRejectedValueOnce(new Error('nope'));
+      findWorkItemAddNote().vm.$emit('resolve', { withReply: true });
+      findWorkItemAddNote().vm.$emit('replied', createdNote);
+      await waitForPromises();
+
+      expect(resolveDuoQuestionDecision).not.toHaveBeenCalled();
+    });
+
+    describe('when the thread is resolved along with a reply', () => {
+      beforeEach(async () => {
+        toggleWorkItemResolveDiscussionHandler.mockResolvedValueOnce(resolveResponse(true));
+        findWorkItemAddNote().vm.$emit('resolve', { withReply: true });
+        await waitForPromises();
+      });
+
+      it('waits for the reply before resolving the decision', () => {
+        expect(resolveDuoQuestionDecision).not.toHaveBeenCalled();
+      });
+
+      it('resolves the decision with the reply as its answer', async () => {
+        findWorkItemAddNote().vm.$emit('replied', createdNote);
+        await waitForPromises();
+
+        expectDecisionResolvedWith(answerNote);
+      });
+
+      it.each`
+        scenario                                          | note
+        ${'the reply fails to post'}                      | ${undefined}
+        ${'the reply is missing from its own discussion'} | ${{ ...createdNote, discussion }}
+      `('resolves the decision from the thread when $scenario', async ({ note }) => {
+        findWorkItemAddNote().vm.$emit('replied', note);
+        await waitForPromises();
+
+        expectDecisionResolvedWith(undefined);
+      });
     });
   });
 

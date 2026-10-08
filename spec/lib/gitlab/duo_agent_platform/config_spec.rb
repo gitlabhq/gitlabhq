@@ -404,19 +404,10 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
       end
     end
 
-    context 'with more than two files in cache key' do
+    context 'with multiple files in cache key' do
+      let(:files) { Array.new(file_count) { |i| "file#{i + 1}.txt" } }
       let(:config_content) do
-        <<~YAML
-          cache:
-            key:
-              files:
-                - file1.txt
-                - file2.txt
-                - file3.txt
-                - file4.txt
-            paths:
-              - node_modules
-        YAML
+        { 'cache' => { 'key' => { 'files' => files }, 'paths' => ['node_modules'] } }.to_yaml
       end
 
       before do
@@ -425,14 +416,40 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
                                        .and_return(config_content)
       end
 
-      it 'only uses first two files' do
-        expected = {
-          'key' => {
-            'files' => ['file1.txt', 'file2.txt']
-          },
-          'paths' => ['node_modules']
-        }
-        expect(config.cache_config).to eq(expected)
+      context 'with exactly the CI limit of files' do
+        let(:file_count) { 10 }
+
+        it 'uses all files without logging a warning' do
+          expect(Gitlab::AppLogger).not_to receive(:warn)
+
+          expect(config.cache_config['key']['files']).to eq(files)
+        end
+      end
+
+      context 'with more files than the CI limit' do
+        let(:file_count) { 12 }
+
+        it 'uses the first ten files and logs the limit', :aggregate_failures do
+          expect(Gitlab::AppLogger).to receive(:warn)
+            .with(message: 'Cache key files truncated', original_count: 12, truncated_count: 10)
+
+          expect(config.cache_config['key']['files']).to eq(files.first(10))
+        end
+      end
+
+      context 'when increase_ci_cache_key_files_limit is disabled' do
+        let(:file_count) { 4 }
+
+        before do
+          stub_feature_flags(increase_ci_cache_key_files_limit: false)
+        end
+
+        it 'uses the first two files and logs the limit', :aggregate_failures do
+          expect(Gitlab::AppLogger).to receive(:warn)
+            .with(message: 'Cache key files truncated', original_count: 4, truncated_count: 2)
+
+          expect(config.cache_config['key']['files']).to eq(%w[file1.txt file2.txt])
+        end
       end
     end
 
@@ -1423,18 +1440,10 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
       end
     end
 
-    context 'with invalid cache key - too many files' do
+    context 'with more files than the CI limit in cache key' do
       let(:config_content) do
-        <<~YAML
-          cache:
-            key:
-              files:
-                - file1.txt
-                - file2.txt
-                - file3.txt
-            paths:
-              - node_modules
-        YAML
+        files = Array.new(11) { |i| "file#{i + 1}.txt" }
+        { 'cache' => { 'key' => { 'files' => files }, 'paths' => ['node_modules'] } }.to_yaml
       end
 
       before do
@@ -1443,9 +1452,9 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
                                        .and_return(config_content)
       end
 
-      it 'passes schema validation but cache_config truncates to 2 files' do
+      it 'passes schema validation but cache_config truncates to 10 files' do
         expect(config.valid_format?).to be true
-        expect(config.cache_config['key']['files'].length).to eq(2)
+        expect(config.cache_config['key']['files'].length).to eq(10)
       end
     end
 

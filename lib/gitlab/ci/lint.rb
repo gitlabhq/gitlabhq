@@ -212,10 +212,10 @@ module Gitlab
         jobs = []
         return jobs unless result&.valid?
 
-        result.stages.each do |stage_name|
-          result.builds.each do |job|
-            next unless job[:stage] == stage_name
+        builds_by_stage = result.builds.group_by { |job| job[:stage] }
 
+        result.stages.each do |stage_name|
+          builds_by_stage.fetch(stage_name, []).each do |job|
             jobs << {
               name: job[:name],
               stage: stage_name,

@@ -6,7 +6,6 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { s__ } from '~/locale';
-import Tracking from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AccessorUtilities from '~/lib/utils/accessor';
 import {
@@ -48,7 +47,7 @@ export default {
       () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
     ),
   },
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin()],
   settingsDisclosurePortalName: SETTINGS_DISCLOSURE_PORTAL_NAME,
   i18n: {
     primaryNavigation: s__('Navigation|Primary navigation'),

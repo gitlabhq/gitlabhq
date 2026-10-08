@@ -457,7 +457,6 @@ type:HelmFileMetadata
 type:Ide
 type:ImagePullSecrets
 type:ImportExportUploadUploadRegistry
-type:ImportSourceUser
 type:IncidentManagementOncallRotation
 type:IncidentManagementOncallSchedule
 type:IncidentManagementOncallShift

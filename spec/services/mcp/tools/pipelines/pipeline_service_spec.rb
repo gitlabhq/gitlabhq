@@ -14,6 +14,12 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
     end
   end
 
+  describe '#unlisted?' do
+    it 'is unlisted while it awaits removal' do
+      expect(service.unlisted?).to be(true)
+    end
+  end
+
   describe '#description' do
     it 'returns the correct description' do
       description = service.description

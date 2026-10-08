@@ -2,10 +2,18 @@ subscription getStateSubscription($issuableId: IssuableID!) {
   mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
     ... on MergeRequest {
       id
+      project {
+        id
+        archived
+        onlyAllowMergeIfPipelineSucceeds
+      }
       detailedMergeStatus
       commitCount
       availableAutoMergeStrategies
       autoMergeEnabled
+      mergeError
+      state
+      draft
       userPermissions {
         canMerge
       }

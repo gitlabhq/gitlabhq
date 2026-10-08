@@ -38,7 +38,6 @@ import {
   IS_EE,
   IS_JH,
   ROOT_PATH,
-  WEBPACK_PUBLIC_PATH,
   copyFilesPatterns,
   IS_PRODUCTION,
   IS_DEV_SERVER,
@@ -166,11 +165,9 @@ export default {
     __dirname: 'mock',
     __filename: 'mock',
   },
-  lazyCompilation: {
-    imports: true,
-    entries: false,
-    prefix: `${WEBPACK_PUBLIC_PATH}_rspack/lazy/trigger`,
-  },
+  // Must stay explicit: `rspack serve` turns lazy compilation on when this is undefined.
+  // Lazily compiled imports stall on a full rebuild the first time they are used.
+  lazyCompilation: false,
   devServer: {
     devMiddleware: {
       stats: 'errors-only',

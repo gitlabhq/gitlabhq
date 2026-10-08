@@ -423,6 +423,10 @@ export function replyToDiscussion({ endpoint, data: reply }) {
 
       this.startTaskList();
       this.updateResolvableDiscussionsCounts();
+
+      if (reply.resolve_discussion && data.discussion.resolved) {
+        this.collapseDiscussion(data.discussion.id);
+      }
     } else {
       this[types.ADD_NEW_REPLY_TO_DISCUSSION](data);
     }

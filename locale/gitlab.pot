@@ -44073,12 +44073,6 @@ msgstr ""
 msgid "HomePageMergeRequestsWidget|No merge requests to review."
 msgstr ""
 
-msgid "HomePagePipelinesWidget|Pipelines for your merge requests will appear here."
-msgstr ""
-
-msgid "HomePagePipelinesWidget|Your pipelines are not available. Please refresh the page to try again."
-msgstr ""
-
 msgid "HomePageProjectsWidget|Your projects are not available. Please refresh the page to try again."
 msgstr ""
 
@@ -70488,6 +70482,9 @@ msgstr ""
 msgid "RiskAssessment|Could not be measured:"
 msgstr ""
 
+msgid "RiskAssessment|Could not start a new risk assessment."
+msgstr ""
+
 msgid "RiskAssessment|Critical risk"
 msgstr ""
 
@@ -70545,6 +70542,9 @@ msgstr ""
 msgid "RiskAssessment|Minor increase"
 msgstr ""
 
+msgid "RiskAssessment|New commits were pushed after this assessment and it reflects an earlier version of the changes."
+msgstr ""
+
 msgid "RiskAssessment|New commits were pushed after this assessment. It reflects an earlier version of the changes."
 msgstr ""
 
@@ -70567,6 +70567,9 @@ msgid "RiskAssessment|Public API contract, REST or GraphQL"
 msgstr ""
 
 msgid "RiskAssessment|Rationale"
+msgstr ""
+
+msgid "RiskAssessment|Refresh"
 msgstr ""
 
 msgid "RiskAssessment|Reversibility"
@@ -89728,6 +89731,9 @@ msgstr ""
 msgid "UsageBilling|Line %{lineNumber}: expected 3 comma-separated values (username, cap, enabled)."
 msgstr ""
 
+msgid "UsageBilling|Line %{lineNumber}: the CSV header should be placed on the first line."
+msgstr ""
+
 msgid "UsageBilling|Line %{lineNumber}: username is required."
 msgstr ""
 
@@ -95354,6 +95360,12 @@ msgstr ""
 msgid "WorkItemDecisionLog|Source link"
 msgstr ""
 
+msgid "WorkItemDecisionLog|The question was resolved without an answer."
+msgstr ""
+
+msgid "WorkItemDecisionLog|The thread was resolved, but the decision log could not be updated. To try again, reopen the thread and resolve it."
+msgstr ""
+
 msgid "WorkItemDecisionLog|View source"
 msgstr ""
 
@@ -95375,6 +95387,9 @@ msgstr ""
 msgid "WorkItemDuoQuestion|Choose one or more of these options, or answer in your own words:"
 msgstr ""
 
+msgid "WorkItemDuoQuestion|Hide other suggested answers"
+msgstr ""
+
 msgid "WorkItemDuoQuestion|Hide suggested answers"
 msgstr ""
 
@@ -95385,6 +95400,9 @@ msgid "WorkItemDuoQuestion|Recommended"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Send answer"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Show other suggested answers"
 msgstr ""
 
 msgid "WorkItemDuoQuestion|Show suggested answers"

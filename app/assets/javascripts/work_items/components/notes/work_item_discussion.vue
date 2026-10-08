@@ -4,6 +4,7 @@ import { ASC } from '~/notes/constants';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import toggleWorkItemNoteResolveDiscussion from '~/work_items/graphql/notes/toggle_work_item_note_resolve_discussion.mutation.graphql';
+import { resolveDuoQuestionDecision } from 'ee_else_ce/work_items/utils/duo_question_decision';
 import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_replies_wrapper.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
@@ -116,6 +117,7 @@ export default {
       replyingText: '',
       showForm: false,
       isResolving: false,
+      pendingResolve: null,
     };
   },
   computed: {
@@ -209,10 +211,18 @@ export default {
     threadKey(note) {
       return `${note.id}-thread`; // eslint-disable-line @gitlab/require-i18n-strings
     },
-    onReplied() {
+    async onReplied(note) {
       this.isExpanded = true;
       this.isReplying = false;
       this.replyingText = '';
+
+      const resolving = this.pendingResolve;
+      this.pendingResolve = null;
+      if (!resolving || !(await resolving)) return;
+
+      // The thread is resolved even when the reply failed, so the decision still resolves from
+      // the answers already in the thread, as it would from the Resolve button.
+      this.resolveDuoDecision(note?.discussion?.notes?.nodes?.find(({ id }) => id === note.id));
     },
     onReplying(commentText) {
       this.isReplying = true;
@@ -234,10 +244,22 @@ export default {
         resolvedBy,
       };
     },
-    async resolveDiscussion() {
+    async resolveDiscussion({ withReply = false } = {}) {
+      const resolving = this.toggleResolveDiscussion();
+
+      // The reply form resolves the thread before posting its reply, and a Duo question's
+      // decision is only resolved once its answer exists, so it waits for `onReplied`.
+      if (withReply) {
+        this.pendingResolve = resolving;
+        return;
+      }
+
+      if (await resolving) this.resolveDuoDecision();
+    },
+    async toggleResolveDiscussion() {
       this.isResolving = true;
       try {
-        await this.$apollo.mutate({
+        const { data } = await this.$apollo.mutate({
           mutation: toggleWorkItemNoteResolveDiscussion,
           variables: { id: this.discussionId, resolve: !this.isDiscussionResolved },
           optimisticResponse: {
@@ -248,11 +270,25 @@ export default {
             },
           },
         });
+
+        return Boolean(data?.discussionToggleResolve?.discussion?.resolved);
       } catch (error) {
         this.$emit('error', error.message);
+        return false;
       } finally {
         this.isResolving = false;
       }
+    },
+    resolveDuoDecision(answerNote) {
+      return resolveDuoQuestionDecision({
+        apolloClient: this.$apollo.getClient(),
+        fullPath: this.fullPath,
+        workItemIid: this.workItemIid,
+        discussionId: this.discussionId,
+        questionNote: this.firstNote,
+        replies: this.replyNotes,
+        answerNote,
+      });
     },
   },
 };

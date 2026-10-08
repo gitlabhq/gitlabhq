@@ -1,6 +1,11 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import createDefaultClient from '~/lib/graphql';
 import TimeTracker from './components/time_tracking/time_tracker.vue';
+
+Vue.use(VueApollo);
 
 export default class SidebarMilestone {
   constructor() {
@@ -14,6 +19,9 @@ export default class SidebarMilestone {
     initVueApp({
       el,
       name: 'SidebarMilestoneRoot',
+      apolloProvider: new VueApollo({
+        defaultClient: createDefaultClient(),
+      }),
       component: TimeTracker,
       props: {
         limitToHours: parseBoolean(limitToHours),

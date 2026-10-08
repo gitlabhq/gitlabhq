@@ -9,7 +9,6 @@ import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
-import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -31,8 +30,6 @@ import {
   i18n,
   NEW_WORK_ITEM_IID,
   DEFAULT_DESCRIPTION_TEMPLATE_NAME,
-  TRACKING_CATEGORY_SHOW,
-  VIEW_CONTEXT,
   CREATION_CONTEXT_LIST_ROUTE,
   ROUTES,
   WIDGET_TYPE_DESCRIPTION,
@@ -61,10 +58,7 @@ export default {
     WorkItemDescriptionRendered,
     WorkItemDescriptionTemplateListbox,
   },
-  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
-  inject: {
-    viewContext: { default: VIEW_CONTEXT.fullScreen },
-  },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     description: {
       type: String,
@@ -355,15 +349,6 @@ export default {
     },
     hasConflicts() {
       return Boolean(this.conflictedDescription);
-    },
-    // eslint-disable-next-line vue/no-unused-properties
-    tracking() {
-      return {
-        category: TRACKING_CATEGORY_SHOW,
-        label: 'item_description',
-        property: `type_${this.workItemType}`,
-        extra: { viewContext: this.viewContext },
-      };
     },
     useWorkItemFeaturesField() {
       return Boolean(this.glFeatures.workItemFeaturesField);

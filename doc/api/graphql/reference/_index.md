@@ -11911,6 +11911,32 @@ Fields:
 | <a id="mutation-importsourceuserretryfailedreassignment-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-importsourceuserretryfailedreassignment-importsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
 
+### `Mutation.importSourceUserRevoke`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `ImportSourceUserRevokeInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-importsourceuserrevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-importsourceuserrevoke-id"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-importsourceuserrevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-importsourceuserrevoke-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-importsourceuserrevoke-importsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
 ### `Mutation.importSourceUserUndoKeepAsPlaceholder`
 
 {{< details >}}
@@ -34369,6 +34395,7 @@ Fields:
 | <a id="addonuser-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="addonuser-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="addonuser-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="addonuser-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="addonuser-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="addonuser-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="addonuser-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -37960,6 +37987,7 @@ Fields:
 | <a id="autocompleteduser-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="autocompleteduser-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="autocompleteduser-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean!`](#boolean) | Indicates if the user has composite identity enforcement enabled. |
+| <a id="autocompleteduser-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="autocompleteduser-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="autocompleteduser-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="autocompleteduser-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -42196,6 +42224,7 @@ Fields:
 | <a id="currentuser-codesuggestionscontexts"></a>`codeSuggestionsContexts` {{< icon name="warning-solid" >}} | [`[String!]!`](#string) | Introduced in GitLab 17.9. Status: Experiment. List of additional contexts enabled for Code Suggestions. |
 | <a id="currentuser-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="currentuser-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="currentuser-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="currentuser-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="currentuser-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="currentuser-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -44985,6 +45014,32 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-workflowlinks-linktype"></a>`linkType` | [`DuoWorkflowWorkflowLinkType`](#duoworkflowworkflowlinktype) | Filter links by their link type. |
+
+### `DuoWorkflowAgentPresence`
+
+Agent attribution for an object, such as a note, created by a GitLab Duo Agent Platform session.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowagentpresence-agentcatalogwebpath"></a>`agentCatalogWebPath` | [`String`](#string) | Web path of the agent in the AI Catalog. Null when the agent has no catalog profile. |
+| <a id="duoworkflowagentpresence-agentname"></a>`agentName` | [`String`](#string) | Name of the agent that ran the session. |
+| <a id="duoworkflowagentpresence-sessionid"></a>`sessionId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Global ID of the session that created the object. |
+| <a id="duoworkflowagentpresence-sourcelink"></a>`sourceLink` | [`String`](#string) | URL or deep link to the location where the session was triggered from. Null unless the current user can read the session. |
+| <a id="duoworkflowagentpresence-sourcetype"></a>`sourceType` | [`DuoWorkflowSourceType`](#duoworkflowsourcetype) | Type of source that initiated the session. |
+| <a id="duoworkflowagentpresence-user"></a>`user` | [`UserCore`](#usercore) | User the session ran as. For triggered sessions, the account the trigger runs with. |
+| <a id="duoworkflowagentpresence-userpermissions"></a>`userPermissions` | [`DuoWorkflowAgentPresencePermissions!`](#duoworkflowagentpresencepermissions) | Permissions for the current user on the session. |
+
+### `DuoWorkflowAgentPresencePermissions`
+
+Check permissions for the current user on the session that created the object.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowagentpresencepermissions-readduoworkflow"></a>`readDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_duo_workflow` on this resource. |
 
 ### `DuoWorkflowBranch`
 
@@ -52699,6 +52754,7 @@ Fields:
 | <a id="mergerequestassignee-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestassignee-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestassignee-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="mergerequestassignee-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="mergerequestassignee-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestassignee-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestassignee-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -53181,6 +53237,7 @@ Fields:
 | <a id="mergerequestauthor-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthor-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestauthor-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="mergerequestauthor-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="mergerequestauthor-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestauthor-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestauthor-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -53751,6 +53808,7 @@ Fields:
 | <a id="mergerequestparticipant-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipant-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestparticipant-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="mergerequestparticipant-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="mergerequestparticipant-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestparticipant-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestparticipant-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -54266,6 +54324,7 @@ Fields:
 | <a id="mergerequestreviewer-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewer-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestreviewer-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="mergerequestreviewer-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="mergerequestreviewer-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestreviewer-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestreviewer-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -56222,6 +56281,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="note-agentpresence"></a>`agentPresence` {{< icon name="warning-solid" >}} | [`DuoWorkflowAgentPresence`](#duoworkflowagentpresence) | Introduced in GitLab 19.5. Status: Experiment. Agent attribution for a note posted by a GitLab Duo Agent Platform session. Available to anyone who can read the note; `userPermissions.readDuoWorkflow` tells whether the session itself can be opened. Returns null when no session posted the note or when the `agent_presence_consolidation` feature flag is disabled. |
 | <a id="note-author"></a>`author` | [`UserCore`](#usercore) | User who wrote the note. |
 | <a id="note-authoriscontributor"></a>`authorIsContributor` | [`Boolean`](#boolean) | Indicates whether the note author is a contributor. |
 | <a id="note-awardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the note. (see [Connections](#connections)) |
@@ -65370,6 +65430,30 @@ Fields:
 | <a id="usercallout-dismissedat"></a>`dismissedAt` | [`Time`](#time) | Date when the callout was dismissed. |
 | <a id="usercallout-featurename"></a>`featureName` | [`UserCalloutFeatureNameEnum`](#usercalloutfeaturenameenum) | Name of the feature that the callout is for. |
 
+### `UserContributionCalendar`
+
+A user's contribution calendar: the profile page's activity heatmap for the past year.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercontributioncalendar-days"></a>`days` | [`[UserContributionDay!]!`](#usercontributionday) | Days with at least one contribution, oldest first. |
+| <a id="usercontributioncalendar-timezone"></a>`timezone` | [`String!`](#string) | Identifier of the timezone the days are counted in: the user's timezone, or the instance default if the user has not set one. |
+| <a id="usercontributioncalendar-totalcount"></a>`totalCount` | [`Int!`](#int) | Total number of contributions in the past year. |
+| <a id="usercontributioncalendar-utcoffset"></a>`utcOffset` | [`Int!`](#int) | Offset of `timezone` from UTC, in seconds, as of the request. |
+
+### `UserContributionDay`
+
+One day with at least one contribution on a user's contribution calendar.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usercontributionday-count"></a>`count` | [`Int!`](#int) | Number of contributions on the day. |
+| <a id="usercontributionday-date"></a>`date` | [`Date!`](#date) | Date of the contributions, in the user's timezone. |
+
 ### `UserCore`
 
 Core representation of a GitLab user.
@@ -65385,6 +65469,7 @@ Fields:
 | <a id="usercore-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="usercore-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="usercore-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="usercore-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="usercore-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="usercore-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="usercore-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
@@ -79240,6 +79325,7 @@ Fields:
 | <a id="user-callouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="user-commitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="user-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
+| <a id="user-contributioncalendar"></a>`contributionCalendar` {{< icon name="warning-solid" >}} | [`UserContributionCalendar`](#usercontributioncalendar) | Introduced in GitLab 19.5. Status: Experiment. Contribution calendar of the user: the profile page activity heatmap for the past year. Null when the current user cannot read the profile. |
 | <a id="user-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="user-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="user-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |

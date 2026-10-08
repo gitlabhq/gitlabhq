@@ -305,7 +305,7 @@ export default {
         // The server builds `messages` while parsing the note, before commands apply,
         // so it can claim work that a failed apply rolled back. Show only the errors.
         this.messages = this.errorMessages ? '' : messages?.join(' ');
-        this.$emit('replied');
+        this.$emit('replied', data.createNote.note);
         clearDraft(this.autosaveKey);
         clearDraft(this.autosaveKeyInternalNote);
         this.cancelEditing();
@@ -493,7 +493,7 @@ export default {
             :uploads-path="uploadsPath"
             @focus="$emit('focus')"
             @blur="$emit('blur')"
-            @toggle-resolve-discussion="$emit('resolve')"
+            @toggle-resolve-discussion="$emit('resolve', { withReply: true })"
             @submit-form="updateWorkItem"
             @cancel-editing="cancelEditing"
             @error="$emit('error', $event)"

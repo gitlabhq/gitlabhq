@@ -43,6 +43,11 @@ RSpec.describe 'Querying import source users for the current user', feature_cate
 
   subject(:response_ids) { graphql_data_at('currentUser', 'importSourceUsers', 'nodes', 'id') }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_user, :read_import_source_user] do
+    let(:boundary_object) { :user }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   context 'when user is signed in' do
     before do
       post_graphql(query, current_user: current_user)

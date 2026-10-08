@@ -86,4 +86,22 @@ RSpec.describe Import::SourceUserPolicy, feature_category: :importers do
       it { is_expected.to be_disallowed(:read_import_source_user) }
     end
   end
+
+  describe 'revoke_placeholder_reassignment' do
+    let(:import_source_user) { build_stubbed(:import_source_user, :completed, namespace: group) }
+
+    context 'when user is the user contributions were reassigned to' do
+      let(:user) { import_source_user.reassign_to_user }
+
+      it { is_expected.to be_allowed(:revoke_placeholder_reassignment) }
+    end
+
+    context 'when user is an owner of the namespace' do
+      before_all do
+        group.add_owner(user)
+      end
+
+      it { is_expected.to be_disallowed(:revoke_placeholder_reassignment) }
+    end
+  end
 end

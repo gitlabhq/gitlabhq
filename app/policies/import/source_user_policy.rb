@@ -17,5 +17,9 @@ module Import
     rule { admin_source_user_namespace | reassign_to_user }.policy do
       enable :read_import_source_user
     end
+
+    rule { reassign_to_user }.policy do
+      enable :revoke_placeholder_reassignment
+    end
   end
 end

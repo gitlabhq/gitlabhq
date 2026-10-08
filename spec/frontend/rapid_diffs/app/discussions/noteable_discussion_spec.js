@@ -272,7 +272,7 @@ describe('NoteableDiscussion', () => {
       const discussion = createDiscussion({ isReplying: true });
       createComponent({ props: { discussion } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note');
+      expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note', undefined);
       expect(wrapper.emitted('stop-replying')).toStrictEqual([[]]);
     });
 
@@ -645,30 +645,19 @@ describe('NoteableDiscussion', () => {
       },
     );
 
-    it.each`
-      shouldResolve | expectToggle
-      ${true}       | ${true}
-      ${false}      | ${false}
-    `(
-      'toggleResolveNote called=$expectToggle when shouldResolve=$shouldResolve',
-      async ({ shouldResolve, expectToggle }) => {
-        const toggleResolveNote = jest.fn().mockResolvedValue();
-        const discussion = createDiscussion(
-          { isReplying: true, resolvable: true, resolved: false },
-          resolvableNote,
-        );
-        createComponent({
-          props: { discussion, toggleResolveNote },
-        });
-        await wrapper.findComponent(NoteForm).props('saveNote')('test note', shouldResolve);
-        expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note');
-        if (expectToggle) {
-          expect(toggleResolveNote).toHaveBeenCalledWith(discussion);
-        } else {
-          expect(toggleResolveNote).not.toHaveBeenCalled();
-        }
-      },
-    );
+    it('saves the resolved state with the reply', async () => {
+      const toggleResolveNote = jest.fn().mockResolvedValue();
+      const discussion = createDiscussion(
+        { isReplying: true, resolvable: true, resolved: false },
+        resolvableNote,
+      );
+      createComponent({
+        props: { discussion, toggleResolveNote },
+      });
+      await wrapper.findComponent(NoteForm).props('saveNote')('test note', true);
+      expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note', true);
+      expect(toggleResolveNote).not.toHaveBeenCalled();
+    });
   });
   describe('code suggestions', () => {
     const suggestionsStub = (Component, template) =>

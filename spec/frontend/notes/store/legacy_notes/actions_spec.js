@@ -840,6 +840,30 @@ describe('Actions Notes Store', () => {
       );
     });
 
+    it('collapses the discussion when the reply resolves it', () => {
+      const discussion = { id: 'discussion-1', notes: [], resolved: true };
+      axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });
+
+      discussionsStore.discussions = [discussion];
+      return testAction(
+        store.replyToDiscussion,
+        { endpoint: TEST_HOST, data: { resolve_discussion: true } },
+        {},
+        [
+          {
+            type: store[types.UPDATE_DISCUSSION],
+            payload: expect.objectContaining({ id: 'discussion-1' }),
+          },
+        ],
+        [
+          { type: store.updateOrCreateNotes, payload: [] },
+          { type: store.startTaskList },
+          { type: store.updateResolvableDiscussionsCounts },
+          { type: store.collapseDiscussion, payload: 'discussion-1' },
+        ],
+      );
+    });
+
     it('adds a reply to a discussion', () => {
       const res = {};
       axiosMock.onAny().reply(HTTP_STATUS_OK, res);

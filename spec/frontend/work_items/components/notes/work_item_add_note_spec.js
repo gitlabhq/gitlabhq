@@ -185,7 +185,9 @@ describe('Work item add note', () => {
         });
         await waitForPromises();
 
-        expect(wrapper.emitted('replied')).toEqual([[]]);
+        expect(wrapper.emitted('replied')).toEqual([
+          [expect.objectContaining({ id: createWorkItemNoteResponse().data.createNote.note.id })],
+        ]);
       });
 
       it('clears a draft after successful mutation', async () => {
@@ -583,6 +585,14 @@ describe('Work item add note', () => {
       findResolveDiscussionButton().vm.$emit('on-click');
 
       expect(wrapper.emitted('resolve')).toHaveLength(1);
+    });
+
+    it('emits `resolve` with the reply when the comment form resolves on submit', async () => {
+      await createComponent({ isDiscussionResolvable: true });
+
+      findCommentForm().vm.$emit('toggle-resolve-discussion');
+
+      expect(wrapper.emitted('resolve')).toEqual([[{ withReply: true }]]);
     });
 
     it('passes correct props to resolve discussion button', async () => {

@@ -316,6 +316,44 @@ describe('issue_note_form component', () => {
 
       expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
     });
+
+    describe('when the checkbox changes the resolved state', () => {
+      const submitAndRunCallback = async (...callbackArgs) => {
+        createComponentWrapper({
+          discussion: {
+            ...discussionMock,
+            notes: discussionMock.notes.map((n) => ({
+              ...n,
+              resolvable: true,
+              current_user: { ...n.current_user, can_resolve_discussion: true },
+            })),
+          },
+        });
+
+        await wrapper.findComponent(GlFormCheckbox).find('input').setChecked();
+        textarea.setValue('Foo');
+        wrapper.findComponent('.js-vue-issue-save').vm.$emit('click');
+
+        const [, , callback] = wrapper.emitted('handle-form-update')[0];
+        callback(...callbackArgs);
+      };
+
+      beforeEach(() => {
+        useNotes().toggleResolveNote.mockResolvedValue();
+      });
+
+      it('toggles the resolved state after the note saves', async () => {
+        await submitAndRunCallback();
+
+        expect(useNotes().toggleResolveNote).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not toggle the resolved state when the save request already did', async () => {
+        await submitAndRunCallback(undefined, { resolvedStateSaved: true });
+
+        expect(useNotes().toggleResolveNote).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('with batch comments', () => {

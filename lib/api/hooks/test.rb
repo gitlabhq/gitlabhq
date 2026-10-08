@@ -7,7 +7,7 @@ module API
     # rubocop: disable API/Base
     class Test < ::Grape::API
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the hook'
+        requires :hook_id, type: Integer, desc: 'ID of the system hook.'
       end
       desc 'Create a test run' do
         detail 'Creates a test run for a webhook. Executes the webhook with mock data.'

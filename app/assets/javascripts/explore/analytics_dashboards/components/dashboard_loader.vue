@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import { GlSkeletonLoader, GlAlert, GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import {
@@ -17,11 +17,25 @@ import {
 import getDashboardQuery from '../graphql/get_dashboard.query.graphql';
 import getSystemDashboardQuery from '../graphql/get_system_dashboard.query.graphql';
 
+// What the API answers for a dashboard the user may not see, such as one behind a disabled
+// feature flag or a missing licence. It is deliberately the same answer as for one that is missing.
+const RESOURCE_NOT_AVAILABLE_ERROR =
+  "The resource that you are attempting to access does not exist or you don't have permission to perform this action";
+
+const isResourceNotAvailable = ({ graphQLErrors = [] }) =>
+  graphQLErrors.length > 0 &&
+  graphQLErrors.every(({ message }) => message === RESOURCE_NOT_AVAILABLE_ERROR);
+
 export default {
   name: 'DashboardLoader',
-  components: { GlSkeletonLoader, GlAlert },
-  inject: ['breadcrumbState'],
+  components: { GlSkeletonLoader, GlAlert, GlEmptyState },
+  inject: ['breadcrumbState', 'exploreAnalyticsDashboardsPath'],
   emits: ['loaded'],
+  i18n: {
+    notFound: s__('Analytics|Dashboard not found'),
+    notFoundDescription: s__('Analytics|No dashboard matches the specified URL path.'),
+    notFoundActionBtn: s__('Analytics|View available dashboards'),
+  },
   data() {
     return {
       dashboard: null,
@@ -40,6 +54,9 @@ export default {
     },
     isLoading() {
       return Boolean(this.$apollo.queries.dashboard?.loading);
+    },
+    isNotFound() {
+      return !this.dashboard;
     },
     config() {
       if (!this.dashboard?.config) return {};
@@ -66,6 +83,8 @@ export default {
   },
   watch: {
     dashboard() {
+      if (!this.dashboard) return;
+
       this.breadcrumbState.update({ name: this.config.title, slug: this.slug });
       // Emit the processed config so consumers receive panels with unique ids,
       // matching what the slot-scoped config renders.
@@ -73,6 +92,12 @@ export default {
     },
   },
   methods: {
+    // The breadcrumb state outlives this page, so it would otherwise keep the last dashboard's name.
+    // Dashboard cleared so a slug changed in place does not keep showing the previous dashboard.
+    showNotFound() {
+      this.dashboard = null;
+      this.breadcrumbState.update({ name: this.$options.i18n.notFound, slug: this.slug });
+    },
     assignPanelIds(panels = []) {
       const withIds = panels.map(({ id, ...panel }) => ({
         ...panel,
@@ -108,7 +133,15 @@ export default {
       update({ customDashboard = {}, customSystemDashboard = {} }) {
         return this.isSystemDashboard ? customSystemDashboard : customDashboard;
       },
+      result() {
+        if (!this.dashboard) this.showNotFound();
+      },
       error(err) {
+        if (isResourceNotAvailable(err)) {
+          this.showNotFound();
+          return;
+        }
+
         this.error = s__('AnalyticsDashboards|Failed to load dashboard. Please try again.');
         captureException(err);
       },
@@ -121,6 +154,15 @@ export default {
   <gl-alert v-else-if="error" class="gl-mt-5" variant="danger" :dismissible="false">
     {{ error }}
   </gl-alert>
+  <gl-empty-state
+    v-else-if="isNotFound"
+    :title="$options.i18n.notFound"
+    :description="$options.i18n.notFoundDescription"
+    :primary-button-text="$options.i18n.notFoundActionBtn"
+    :primary-button-link="exploreAnalyticsDashboardsPath"
+    illustration-name="empty-dashboard-md"
+    data-testid="dashboard-not-found"
+  />
   <div v-else>
     <slot
       name="dashboard"

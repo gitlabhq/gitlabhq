@@ -1369,9 +1369,8 @@ List all failed pipelines on the main branch for project gitlab-org/gitlab
 
 {{< /history >}}
 
-Runs, retries, cancels, or renames a CI/CD pipeline in a GitLab project. To delete a
-pipeline, use the `manage_pipeline` tool instead. To list pipelines, use the
-`list_pipelines` tool instead.
+Runs, retries, cancels, or renames a CI/CD pipeline in a GitLab project. To list pipelines,
+use the `list_pipelines` tool instead.
 
 | Parameter     | Type    | Required    | Description |
 |---------------|---------|-------------|-------------|
@@ -1417,8 +1416,14 @@ Examples:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.10.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247806) the `list` action in favor of the `list_pipelines` tool in GitLab 19.3.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/605855) the `create`, `retry`, and `cancel` actions in favor of the `save_pipeline` tool in GitLab 19.3.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/631276) in GitLab 19.5. To rename a pipeline, use [`save_pipeline`](#save_pipeline) with `action: "update"`.
 
 {{< /history >}}
+
+> [!warning]
+> This tool is no longer listed but remains callable by agents that have an outdated tools list
+> or have stored the tool name. To rename a pipeline, use [`save_pipeline`](#save_pipeline) with
+> `action: "update"` instead. Pipeline deletion has no replacement yet.
 
 Updates pipeline metadata or deletes a pipeline in a GitLab project. To create, retry, or cancel a
 pipeline, use the `save_pipeline` tool instead. To list pipelines, use the `list_pipelines` tool

@@ -73,7 +73,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'accept_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => true,
                                     'toolset' => 'merge_requests' },
         'add_commit' => { 'readOnlyHint' => false, 'destructiveHint' => true, 'toolset' => 'repository' },
-        'manage_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true, 'toolset' => 'ci' },
         'save_pipeline' => { 'readOnlyHint' => false, 'destructiveHint' => true, 'toolset' => 'ci' },
         # read-only
         'get_artifact_file' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
@@ -294,7 +293,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
         %w[create_issue get_workitem_notes get_issue get_merge_request_conflicts
           get_merge_request_commits get_merge_request_pipelines
-          get_merge_request_diffs get_pipeline_jobs get_merge_request_notes].each do |tool_name|
+          get_merge_request_diffs get_pipeline_jobs get_merge_request_notes
+          manage_pipeline].each do |tool_name|
           expect(tool_names).not_to include(tool_name)
           expect(manager.get_tool(name: tool_name)).to be_present
         end

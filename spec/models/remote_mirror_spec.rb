@@ -558,6 +558,28 @@ RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management 
     end
   end
 
+  describe '#backoff_delay' do
+    let_it_be(:project) { create(:project) }
+
+    let(:remote_mirror) { build(:remote_mirror, project: project) }
+
+    where(:only_protected_branches, :no_delay, :expected) do
+      true  | false | RemoteMirror::PROTECTED_BACKOFF_DELAY
+      false | false | RemoteMirror::UNPROTECTED_BACKOFF_DELAY
+      true  | true  | RemoteMirror::NO_DELAY_BACKOFF_DELAY
+      false | true  | RemoteMirror::NO_DELAY_BACKOFF_DELAY
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(remote_mirror_no_delay: no_delay)
+        remote_mirror.only_protected_branches = only_protected_branches
+      end
+
+      it { expect(remote_mirror.backoff_delay).to eq(expected) }
+    end
+  end
+
   describe '#sync' do
     let(:remote_mirror) { create(:project, :small_repo, :remote_mirror).remote_mirrors.first }
 

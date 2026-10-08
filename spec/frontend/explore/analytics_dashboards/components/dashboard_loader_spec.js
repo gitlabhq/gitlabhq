@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import { GlSkeletonLoader, GlAlert, GlEmptyState } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -37,7 +37,10 @@ describe('DashboardLoader', () => {
   const createComponent = ({ requestHandlers, routeParams = { slug: '3' }, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(DashboardLoader, {
       apolloProvider: requestHandlers || mockResolvedQuery(),
-      provide: { breadcrumbState: mockBreadcrumbState },
+      provide: {
+        breadcrumbState: mockBreadcrumbState,
+        exploreAnalyticsDashboardsPath: '/explore/analytics_dashboards',
+      },
       mocks: { $route: { params: routeParams } },
       stubs,
       scopedSlots: {
@@ -57,6 +60,7 @@ describe('DashboardLoader', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findDashboardSlot = () => wrapper.findByTestId('dashboard-slot');
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findNotFound = () => wrapper.findComponent(GlEmptyState);
   const getSlotProp = (name) => {
     const value = wrapper.findByTestId(`slot-${name}`).text();
     return name === 'config' ? JSON.parse(value) : value;
@@ -362,9 +366,93 @@ describe('DashboardLoader', () => {
       expect(findAlert().exists()).toBe(false);
     });
 
-    it('renders the dashboard slot with an empty config', () => {
-      expect(findDashboardSlot().exists()).toBe(true);
-      expect(getSlotProp('config')).toEqual({});
+    it('renders the not found state with a link back to the dashboards list', () => {
+      expect(findNotFound().props()).toMatchObject({
+        title: 'Dashboard not found',
+        primaryButtonLink: '/explore/analytics_dashboards',
+      });
+    });
+
+    it('does not render the dashboard slot', () => {
+      expect(findDashboardSlot().exists()).toBe(false);
+    });
+
+    it('does not emit the loaded event', () => {
+      expect(wrapper.emitted('loaded')).toBeUndefined();
+    });
+
+    it('names the breadcrumb after the not found state', () => {
+      expect(mockBreadcrumbState.update).toHaveBeenCalledWith({
+        name: 'Dashboard not found',
+        slug: 'does_not_exist',
+      });
+    });
+  });
+
+  describe('when the user may not see the system dashboard', () => {
+    beforeEach(async () => {
+      const apolloProvider = createMockApollo([
+        [
+          getSystemDashboardQuery,
+          jest.fn().mockResolvedValue({
+            data: { customSystemDashboard: null },
+            errors: [
+              {
+                message:
+                  "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+              },
+            ],
+          }),
+        ],
+      ]);
+
+      createComponent({ requestHandlers: apolloProvider, routeParams: { slug: 'dap_impact' } });
+
+      await waitForPromises();
+    });
+
+    it('renders the not found state instead of an error', () => {
+      expect(findNotFound().exists()).toBe(true);
+      expect(findAlert().exists()).toBe(false);
+      expect(findDashboardSlot().exists()).toBe(false);
+    });
+
+    it('names the breadcrumb after the not found state', () => {
+      expect(mockBreadcrumbState.update).toHaveBeenCalledWith({
+        name: 'Dashboard not found',
+        slug: 'dap_impact',
+      });
+    });
+
+    it('does not report the error to Sentry', () => {
+      expect(sentryBrowserWrapper.captureException).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when the system dashboard query returns another GraphQL error', () => {
+    beforeEach(async () => {
+      const apolloProvider = createMockApollo([
+        [
+          getSystemDashboardQuery,
+          jest.fn().mockResolvedValue({
+            data: { customSystemDashboard: null },
+            errors: [{ message: 'Something went wrong' }],
+          }),
+        ],
+      ]);
+
+      createComponent({ requestHandlers: apolloProvider, routeParams: { slug: 'dap_impact' } });
+
+      await waitForPromises();
+    });
+
+    it('renders the error alert instead of the not found state', () => {
+      expect(findAlert().exists()).toBe(true);
+      expect(findNotFound().exists()).toBe(false);
+    });
+
+    it('reports the error to Sentry', () => {
+      expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });

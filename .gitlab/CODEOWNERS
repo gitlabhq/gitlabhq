@@ -1544,6 +1544,7 @@ lib/gitlab/checks/
 /app/controllers/concerns/access_tokens_actions.rb
 /app/controllers/concerns/authenticates_with_two_factor.rb
 /app/controllers/concerns/authenticates_with_two_factor_for_admin_mode.rb
+/app/controllers/concerns/authn/
 /app/controllers/concerns/enforces_admin_authentication.rb
 /app/controllers/concerns/enforces_two_factor_authentication.rb
 /app/controllers/concerns/oauth_applications.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
@@ -1551,6 +1552,7 @@ lib/gitlab/checks/
 /app/controllers/concerns/renders_ldap_servers.rb
 /app/controllers/concerns/sessionless_authentication.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/controllers/groups/settings/access_tokens_controller.rb
+/app/controllers/iam/
 /app/controllers/ldap/
 /app/controllers/oauth/applications_controller.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/controllers/oauth/token_info_controller.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
@@ -1574,6 +1576,7 @@ lib/gitlab/checks/
 /app/models/authn/oauth_consent.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/models/concerns/admin_changed_password_notifier.rb
 /app/models/concerns/async_devise_email.rb
+/app/models/concerns/authn/
 /app/models/concerns/encrypted_user_password.rb
 /app/models/concerns/token_authenticatable.rb
 /app/models/doorkeeper/access_grant.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
@@ -1592,6 +1595,8 @@ lib/gitlab/checks/
 /app/serializers/project_access_token_entity.rb
 /app/serializers/project_access_token_serializer.rb
 /app/services/access_token_validation_service.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
+/app/services/authn/
+/app/services/concerns/authn/
 /app/services/group_access_tokens/
 /app/services/personal_access_tokens/ @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /app/services/project_access_tokens/
@@ -1612,6 +1617,7 @@ lib/gitlab/checks/
 /app/views/groups/settings/_resource_access_token_notify_inherited_settings.html.haml
 /app/views/groups/settings/_two_factor_auth.html.haml
 /app/views/groups/settings/access_tokens/
+/app/views/iam/
 /app/views/layouts/devise.html.haml
 /app/views/layouts/devise_empty.html.haml
 /app/views/layouts/mailer/devise.html.haml
@@ -1647,12 +1653,14 @@ lib/gitlab/checks/
 /config/initializers/doorkeeper.rb @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/doorkeeper_openid_connect.rb
 /config/initializers/gitlab_shell_secret_token.rb
+/config/initializers/iam_service_proxy.rb
 /config/initializers/omniauth.rb
 /config/initializers/warden.rb
 /config/initializers/webauthn.rb
 /config/initializers_before_autoloader/100_patch_omniauth_oauth2.rb
 /config/initializers_before_autoloader/100_patch_omniauth_saml.rb
 /config/routes/device_auth.rb
+/config/routes/iam.rb
 /config/weak_password_digests.yml
 /ee/app/assets/javascripts/access_tokens/
 /ee/app/assets/javascripts/groups/settings/components/
@@ -1685,6 +1693,7 @@ lib/gitlab/checks/
 /ee/app/controllers/smartcard_controller.rb
 /ee/app/finders/auth/
 /ee/app/finders/authn/enterprise_users_finder.rb
+/ee/app/finders/authn/group_saml_users_finder.rb
 /ee/app/helpers/credentials_inventory_helper.rb
 /ee/app/helpers/ee/access_tokens_helper.rb
 /ee/app/helpers/ee/auth_helper.rb
@@ -1700,6 +1709,7 @@ lib/gitlab/checks/
 /ee/app/models/system_access/group_microsoft_graph_access_token.rb
 /ee/app/models/system_access/instance_microsoft_graph_access_token.rb
 /ee/app/models/system_access/microsoft_graph_access_token.rb
+/ee/app/services/ee/authn/
 /ee/app/services/ee/personal_access_tokens/
 /ee/app/services/ee/resource_access_tokens/
 /ee/app/services/groups/enterprise_users/base_service.rb
@@ -1739,12 +1749,14 @@ lib/gitlab/checks/
 /ee/config/routes/oauth.rb
 /ee/config/routes/smartcard.rb
 /ee/config/saas_features/group_credentials_inventory.yml
+/ee/lib/api/authn/
 /ee/lib/api/entities/service_account.rb
 /ee/lib/api/group_enterprise_users.rb
 /ee/lib/api/group_service_accounts.rb
 /ee/lib/api/ldap.rb
 /ee/lib/api/service_accounts.rb
 /ee/lib/authn/
+/ee/lib/ee/authn/
 /ee/lib/ee/gitlab/auth/
 /ee/lib/ee/gitlab/auth/ldap/sync/ @gitlab-org/fulfillment/seat-management/engineers
 /ee/lib/ee/gitlab/omniauth_initializer.rb
@@ -1755,6 +1767,7 @@ lib/gitlab/checks/
 /ee/lib/omni_auth/
 /ee/lib/users/user_password_reset_auditor.rb
 /lib/api/admin/token.rb
+/lib/api/authn/
 /lib/api/entities/impersonation_token.rb
 /lib/api/entities/impersonation_token_with_token.rb
 /lib/api/entities/personal_access_token.rb
@@ -1769,12 +1782,7 @@ lib/gitlab/checks/
 /lib/api/resource_access_tokens/
 /lib/api/resource_access_tokens.rb
 /lib/api/support/token_with_expiration.rb
-/lib/authn/agnostic_token_identifier.rb
-/lib/authn/token_field/
-/lib/authn/tokens/feed_token.rb
-/lib/authn/tokens/gitlab_session.rb
-/lib/authn/tokens/oauth_application_secret.rb
-/lib/authn/tokens/personal_access_token.rb
+/lib/authn/
 /lib/bitbucket/app_password_connection.rb
 /lib/bitbucket/oauth_connection.rb
 /lib/gitlab/api_authentication/
@@ -1811,6 +1819,7 @@ lib/gitlab/checks/
 /lib/gitlab/devise_failure.rb
 /lib/gitlab/doorkeeper_secret_storing/
 /lib/gitlab/encrypted_ldap_command.rb
+/lib/gitlab/middleware/iam_service_proxy.rb
 /lib/gitlab/middleware/unauthenticated_session_expiry.rb
 /lib/gitlab/omniauth_initializer.rb
 /lib/gitlab/url_blockers/ip_allowlist_entry.rb
@@ -1818,6 +1827,7 @@ lib/gitlab/checks/
 /lib/omni_auth/strategies/bitbucket.rb
 /lib/security/weak_passwords.rb
 /lib/system_check/ldap_check.rb
+/vendor/gems/gitlab-iam-grpc/
 
 # Necessary for GitLab availability
 [Verify] @gitlab-org/maintainers/cicd-verify @stanhu @ayufan

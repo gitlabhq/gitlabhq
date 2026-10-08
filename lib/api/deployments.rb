@@ -4,6 +4,9 @@ module API
   # Deployments RESTful API endpoints
   class Deployments < ::API::Base
     include PaginationParams
+    include APIGuard
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     deployments_tags = %w[deploy_resources]
     before { authenticate! }

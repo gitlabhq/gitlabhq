@@ -185,7 +185,7 @@ module API
           optional :id, types: [Integer, String], coerce_with: ->(value) { value },
             desc: 'ID of the JSON-RPC request returned in the response.',
             allow_blank: false
-          optional :params, desc: 'Object or array that contains parameters passed to the specified JSON-RPC method',
+          optional :params, desc: 'Parameters for the JSON-RPC method specified in `method`.',
             types: [Hash, Array]
         end
 

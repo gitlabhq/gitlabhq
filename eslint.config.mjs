@@ -670,7 +670,6 @@ export default [
               localName: 'glAbilitiesMixin',
               factory: true,
               members: ['glAbilities'],
-              reportUnused: false,
             },
             {
               source: '~/vue_shared/mixins/gl_licensed_features_mixin',
@@ -707,7 +706,6 @@ export default [
               localName: 'Tracking',
               factory: 'mixin',
               members: ['track', 'trackingCategory', 'trackingOptions'],
-              reportUnused: false,
             },
           ],
         },

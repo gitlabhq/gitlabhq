@@ -46,7 +46,10 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   } = {}) => {
     wrapper = shallowMountExtended(ExploreAnalyticsDashboard, {
       apolloProvider: requestHandlers || mockResolvedQuery(),
-      provide: { breadcrumbState: mockBreadcrumbState },
+      provide: {
+        breadcrumbState: mockBreadcrumbState,
+        exploreAnalyticsDashboardsPath: '/explore/analytics_dashboards',
+      },
       mocks: { $route: { params: routeParams } },
       stubs: { DashboardLoader, ...stubs },
       scopedSlots,

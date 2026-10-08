@@ -15,7 +15,6 @@ import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
-import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
@@ -60,7 +59,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin(), glAbilitiesMixin(), glListenersMixin],
+  mixins: [InternalEvents.mixin(), glListenersMixin],
   inject: [
     'canCollaborate',
     'canEditTree',

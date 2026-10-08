@@ -131,6 +131,12 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       subject
     end
 
+    it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+      expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
+
+      subject
+    end
+
     context 'when there are issues to be closed' do
       let_it_be(:issue) { create(:issue, project: project) }
 

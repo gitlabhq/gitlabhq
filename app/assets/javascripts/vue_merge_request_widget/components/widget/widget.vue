@@ -242,6 +242,9 @@ export default {
     isLoadingCollapsedContent(newValue) {
       this.$emit('is-loading', newValue);
     },
+    isCollapsible(newValue) {
+      if (!newValue) this.isCollapsed = true;
+    },
   },
   created() {
     if (this.telemetry) {

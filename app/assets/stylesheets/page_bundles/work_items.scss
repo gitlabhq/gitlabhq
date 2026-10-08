@@ -628,6 +628,7 @@ pre[data-lang-params='duo-question'] {
   }
 
   .multiple-choice-selector-item {
+    @apply gl-overflow-hidden;
     @apply gl-rounded-lg;
     @apply gl-border-1;
     @apply gl-border-solid;

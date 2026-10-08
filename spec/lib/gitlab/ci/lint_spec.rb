@@ -22,6 +22,38 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
 
   let(:lint) { described_class.new(project: project, **kwargs) }
 
+  shared_examples 'returns jobs ordered by stage' do
+    let(:content) do
+      <<~YAML
+      stages: [build, test, deploy]
+      deploy:
+        stage: deploy
+        script: deploy
+      rspec:
+        stage: test
+        script: rspec
+      compile:
+        stage: build
+        script: compile
+      jest:
+        stage: test
+        script: jest
+      YAML
+    end
+
+    it 'orders jobs by stage, then by definition order' do
+      expect(subject.jobs.map { |job| job[:name] }).to eq(%w[compile rspec jest deploy])
+    end
+
+    it 'computes the builds only once' do
+      expect_next_instance_of(Gitlab::Ci::YamlProcessor::Result) do |result|
+        expect(result).to receive(:builds).once.and_call_original
+      end
+
+      subject
+    end
+  end
+
   describe '#initialize' do
     described_class::SURFACES.each do |surface|
       it "accepts the #{surface} surface" do
@@ -356,6 +388,8 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         end
 
         it_behaves_like 'sets config metadata'
+
+        it_behaves_like 'returns jobs ordered by stage'
 
         include_context 'advanced validations' do
           it 'does not catch advanced logical errors' do
@@ -984,6 +1018,8 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         it_behaves_like 'sets config metadata'
 
         it_behaves_like 'sets merged_yaml when the pipeline would be skipped'
+
+        it_behaves_like 'returns jobs ordered by stage'
 
         include_context 'advanced validations' do
           it 'does not catch advanced logical errors' do
