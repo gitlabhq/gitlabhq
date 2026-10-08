@@ -66,3 +66,19 @@ housekeeper:squash-migrations:
     # Runs only at required stops, so an approved but stale MR still needs the
     # new squash.
     EXTRA_FLAGS: "--push-when-approved"
+
+# Monthly, early in each milestone. See keeps/cleanup_gl_introduced.rb.
+housekeeper:cleanup-gl-introduced:
+  extends:
+    - .housekeeping-keep
+    - .ruby-node-cache
+  # The keep runs Prettier on the files it changes.
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "cleanup_gl_introduced"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::CleanupGlIntroduced"

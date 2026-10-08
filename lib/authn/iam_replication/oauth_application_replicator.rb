@@ -17,7 +17,8 @@ module Authn
         @client = client || ::Authn::IamService::GrpcClient.new(timeout: timeout)
       end
 
-      # Returns :delivered, :skipped if the record is gone, or :unsupported_secret_digest.
+      # Returns a ::Authn::IamReplication::Results value: DELIVERED, SKIPPED if the record is gone,
+      # or UNSUPPORTED_SECRET_DIGEST.
       # Raises on transport failure; callers decide what to record.
       def deliver(outbox_event)
         case outbox_event.event_type
@@ -25,22 +26,24 @@ module Authn
           application = ::Authn::OauthApplication.find_by_id(outbox_event.entity_id)
 
           # Absent means the record was removed after this row was written
-          return :skipped unless application
+          return ::Authn::IamReplication::Results::SKIPPED unless application
 
           upsert(application)
         when 'delete'
           delete_upstream(outbox_event.payload.symbolize_keys.fetch(:uid))
-          :delivered
+          ::Authn::IamReplication::Results::DELIVERED
         else
           raise ArgumentError, "unhandled event_type: #{outbox_event.event_type}"
         end
       end
 
       def upsert(application)
-        return :unsupported_secret_digest unless SHA512_HEX_DIGEST.match?(application.secret)
+        unless SHA512_HEX_DIGEST.match?(application.secret)
+          return ::Authn::IamReplication::Results::UNSUPPORTED_SECRET_DIGEST
+        end
 
         client.upsert_oauth_application(**upsert_attributes(application))
-        :delivered
+        ::Authn::IamReplication::Results::DELIVERED
       end
 
       private

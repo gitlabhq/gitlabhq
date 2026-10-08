@@ -86,6 +86,7 @@ describe('Create work item page component', () => {
     expect(findCreateWorkItem().props()).toMatchObject({
       creationContext: CREATION_CONTEXT_NEW_ROUTE,
       isGroup: false,
+      hideNamespaceSelector: true,
       preselectedWorkItemType: '',
     });
   });
@@ -144,15 +145,6 @@ describe('Create work item page component', () => {
     });
   });
 
-  it('passes alwaysShowWorkItemTypeSelect prop as `true` to the CreateWorkItem component when isGroup is false', () => {
-    const pushMock = jest.fn();
-    createComponent({ $router: { push: pushMock } });
-
-    expect(findCreateWorkItem().props()).toMatchObject({
-      alwaysShowWorkItemTypeSelect: true,
-    });
-  });
-
   it('visits work item detail page after create if router is not present', () => {
     createComponent();
 
@@ -193,26 +185,17 @@ describe('Create work item page component', () => {
     });
   });
 
-  describe('project selector', () => {
+  describe('namespace selector', () => {
     it.each`
-      workItemType  | isGroup  | showProjectSelector
-      ${'Issue'}    | ${true}  | ${true}
-      ${'Incident'} | ${true}  | ${true}
-      ${'Task'}     | ${true}  | ${true}
-      ${'Epic'}     | ${true}  | ${false}
-      ${'Issue'}    | ${false} | ${false}
-      ${'Incident'} | ${false} | ${false}
-      ${'Task'}     | ${false} | ${false}
-      ${'Epic'}     | ${false} | ${false}
+      isGroup  | hideNamespaceSelector
+      ${true}  | ${false}
+      ${false} | ${true}
     `(
-      'only renders when group and non-epic',
-      async ({ workItemType, isGroup, showProjectSelector }) => {
+      'passes hideNamespaceSelector as $hideNamespaceSelector when isGroup is $isGroup',
+      ({ isGroup, hideNamespaceSelector }) => {
         createComponent({ provide: { isGroup } });
 
-        findCreateWorkItem().vm.$emit('update-type', workItemType);
-        await nextTick();
-
-        expect(findCreateWorkItem().props('showProjectSelector')).toBe(showProjectSelector);
+        expect(findCreateWorkItem().props('hideNamespaceSelector')).toBe(hideNamespaceSelector);
       },
     );
   });

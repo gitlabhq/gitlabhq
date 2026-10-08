@@ -1041,6 +1041,8 @@ strikethrough
 strikethroughs
 stunnel
 stylelint
+subagent
+subagents
 subchart
 subcharts
 subcommand

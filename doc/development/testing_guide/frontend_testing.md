@@ -2983,12 +2983,51 @@ If you are stubbing an `ee` feature flag, then use:
   stub_licensed_features(my_feature_flag: false)
 ```
 
+#### Browser console errors in feature specs
+
+A `:js` feature spec fails with `BrowserConsoleError` when the browser console logs an error during the example.
+The check runs after every example, also when the spec's own assertions pass.
+
+An error in the console often points to a real bug. Vue 2 can hide a component error: it logs the error and the
+rest of the page still works. Vue 3 does not always recover from the same error, so the page breaks.
+
+When a spec fails with `BrowserConsoleError`:
+
+1. Read the console messages in the failure output.
+1. Fix the error in the application code.
+1. If you cannot fix it in the same merge request, add an entry to `spec/support/browser_console_allowlist.yml`.
+   Open an issue for the fix and add its URL to the entry.
+
+An entry looks like this:
+
+```yaml
+- message: "TypeError: Cannot read properties of null (reading 'text')"
+  issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/628981
+  specs:
+  - spec/features/milestones/user_creates_milestone_spec.rb
+```
+
+- `message`: the error text. The entry matches when this text occurs in the console message.
+  The comparison ignores the URL and line prefix, quotes and backslashes.
+  To match several console messages logged in a row, use `messages` with a list instead. For example,
+  vue-apollo logs a GraphQL error as a `GraphQL execution errors for ...` message followed by `Object`.
+- `specs`: the spec files or globs where the error is allowed. The entry does not hide the same error in other specs.
+- `issue`: optional. The URL of the issue that tracks the fix.
+
+When an example fails for another reason, the failure output lists all console errors, also the allowed ones.
+
+Remove the entry when you fix the error.
+`spec/support_specs/browser_console_allowlist_spec.rb` validates the file.
+
+Errors that come from the test environment and not from the application, such as blocked third-party scripts,
+are ignored for all specs by `BROWSER_CONSOLE_ERROR_FILTER` in `spec/support/helpers/browser_console_helpers.rb`.
+
+> [!note]
+> Logs are only captured when using the Chrome driver. The check does not run on `WEBDRIVER=firefox`.
+
 #### Asserting browser console errors
 
-By default, feature specs won't fail if a browser console error is found. Sometimes we want to cover that there are not
-unexpected console errors which could indicate an integration problem.
-
-To set a feature spec to fail if it encounters browser console errors, use `expect_page_to_have_no_console_errors` from
+To check the console at a specific point in an example, use `expect_page_to_have_no_console_errors` from
 the `BrowserConsoleHelpers` support module:
 
 ```ruby
@@ -3024,8 +3063,8 @@ end
 
 Update the `BROWSER_CONSOLE_ERROR_FILTER` constant in `spec/support/helpers/browser_console_helpers.rb` to change
 the list of console errors that should be globally ignored. This filter is shared with the automatic check that
-runs after any failed `:js` example, so updating it changes both what `expect_page_to_have_no_console_errors`
-allows and what can raise a `BrowserConsoleError` alongside an unrelated failure.
+runs after every `:js` example, so updating it changes both what `expect_page_to_have_no_console_errors`
+allows and what can raise a `BrowserConsoleError`.
 
 ### Debugging
 

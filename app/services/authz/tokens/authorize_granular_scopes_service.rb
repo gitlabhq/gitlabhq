@@ -61,6 +61,8 @@ module Authz
       end
 
       def feature_enabled?
+        return Feature.enabled?(:granular_oauth_tokens, token.user) if token.is_a?(::OauthAccessToken)
+
         Feature.enabled?(:granular_personal_access_tokens, token.user)
       end
 

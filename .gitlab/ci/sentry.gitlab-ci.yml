@@ -1,6 +1,6 @@
 .sentry-set-commits: &sentry-set-commits
   stage: notify
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3.21
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3
   rules:
     - if: '$SENTRY_AUTH_TOKEN == null || $SENTRY_AUTH_TOKEN == ""'
       when: never

@@ -3663,6 +3663,9 @@ msgstr ""
 msgid "AICatalog|Trigger filters are not supported for this item type."
 msgstr ""
 
+msgid "AICatalog|Trigger goals are not supported for this item type."
+msgstr ""
+
 msgid "AICatalog|Trigger types are not supported for this item type."
 msgstr ""
 
@@ -42587,6 +42590,9 @@ msgstr ""
 msgid "GroupRoadmap|Loading epics"
 msgstr ""
 
+msgid "GroupRoadmap|Maximum number of milestones loaded (%{count})"
+msgstr ""
+
 msgid "GroupRoadmap|New epic"
 msgstr ""
 
@@ -74111,6 +74117,9 @@ msgstr ""
 msgid "SecretsManagerTrial|Contact your subscription owner to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing and avoid a service disruption. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
 msgstr ""
 
+msgid "SecretsManagerTrial|Contact your subscription owner to update your license so it includes GitLab Secrets Manager."
+msgstr ""
+
 msgid "SecretsManagerTrial|GitLab Secrets Manager is disabled"
 msgstr ""
 
@@ -89501,6 +89510,9 @@ msgstr ""
 msgid "UsageBilling|Automated flow"
 msgstr ""
 
+msgid "UsageBilling|Billed usage"
+msgstr ""
+
 msgid "UsageBilling|Blocked usage"
 msgstr ""
 
@@ -89733,6 +89745,26 @@ msgstr ""
 
 msgid "UsageBilling|No users found."
 msgstr ""
+
+msgid "UsageBilling|Non-billable usage (Beta)"
+msgstr ""
+
+msgid "UsageBilling|Non-billable usage (Internal)"
+msgstr ""
+
+msgid "UsageBilling|Non-billable usage (No reason provided)"
+msgstr ""
+
+msgid "UsageBilling|Non-billable usage (Orbit promotional)"
+msgstr ""
+
+msgid "UsageBilling|Non-billable usage (Other)"
+msgstr ""
+
+msgid "UsageBilling|Non-billable: %{count} credit"
+msgid_plural "UsageBilling|Non-billable: %{count} credits"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "UsageBilling|On Demand"
 msgstr ""

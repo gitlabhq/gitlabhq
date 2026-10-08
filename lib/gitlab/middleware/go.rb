@@ -172,13 +172,13 @@ module Gitlab
           auth_result.can_perform_action_on_project?(:read_project, project)
       end
 
-      # Mirrors Gitlab::GitAccess#check_authentication_abilities!: granular PATs carry no legacy
+      # Mirrors Gitlab::GitAccess#check_authentication_abilities!: granular tokens carry no legacy
       # authentication abilities, so they are checked against their granular scopes instead. The
       # permission is `download_code` because `go get` clones the repository next.
       def token_authorized?(auth_result, project)
-        token = auth_result.personal_access_token
+        token = auth_result.access_token
         return false unless granular_scopes_authorized?(token, project)
-        return true if token&.granular?
+        return true if token.try(:granular?)
 
         legacy_token_authorized?(auth_result)
       end

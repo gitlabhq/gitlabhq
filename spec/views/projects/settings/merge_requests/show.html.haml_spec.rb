@@ -7,7 +7,8 @@ RSpec.describe 'projects/settings/merge_requests/show', feature_category: :code_
   include ProjectForksHelper
 
   let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:user) { create(:admin) }
+
+  let(:user) { build_stubbed(:admin) }
 
   before do
     assign(:project, project)

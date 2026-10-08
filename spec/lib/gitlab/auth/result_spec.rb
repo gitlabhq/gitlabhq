@@ -69,6 +69,53 @@ RSpec.describe Gitlab::Auth::Result do
     end
   end
 
+  describe '#oauth_access_token' do
+    context 'when a token is not present' do
+      it 'returns nil' do
+        expect(result.oauth_access_token).to be_nil
+      end
+    end
+
+    context 'when a token is present' do
+      let(:oauth_access_token) { build(:oauth_access_token) }
+
+      subject(:result) { described_class.new(actor, nil, nil, [], oauth_access_token: oauth_access_token) }
+
+      it 'returns the token' do
+        expect(result.oauth_access_token).to eq(oauth_access_token)
+      end
+    end
+  end
+
+  describe '#access_token' do
+    let(:pat) { build(:personal_access_token) }
+    let(:oauth_access_token) { build(:oauth_access_token) }
+
+    context 'when no token is present' do
+      it 'returns nil' do
+        expect(result.access_token).to be_nil
+      end
+    end
+
+    context 'when only an OAuth access token is present' do
+      subject(:result) { described_class.new(actor, nil, nil, [], oauth_access_token: oauth_access_token) }
+
+      it 'returns the OAuth access token' do
+        expect(result.access_token).to eq(oauth_access_token)
+      end
+    end
+
+    context 'when both tokens are present' do
+      subject(:result) do
+        described_class.new(actor, nil, nil, [], personal_access_token: pat, oauth_access_token: oauth_access_token)
+      end
+
+      it 'returns the personal access token' do
+        expect(result.access_token).to eq(pat)
+      end
+    end
+  end
+
   describe '#can_perform_action_on_project?' do
     let(:project) { double }
 

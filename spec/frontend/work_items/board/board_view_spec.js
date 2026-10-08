@@ -168,6 +168,24 @@ describe('BoardView', () => {
       groupValuesHandler.mockResolvedValue(buildNamespaceStatusesResponse([mockStatus]));
     });
 
+    it.each`
+      isGroup  | hideNamespaceSelector
+      ${true}  | ${false}
+      ${false} | ${true}
+    `(
+      'passes hideNamespaceSelector as $hideNamespaceSelector to the modal when queryVariables.isGroup is $isGroup',
+      async ({ isGroup, hideNamespaceSelector }) => {
+        createComponent({ props: { queryVariables: { ...queryVariables, isGroup } } });
+        await waitForPromises();
+        wrapper.findComponent(BoardColumn).vm.$emit('create-item', mockStatus);
+        await waitForPromises();
+
+        expect(wrapper.findComponent(CreateWorkItemModal).props('hideNamespaceSelector')).toBe(
+          hideNamespaceSelector,
+        );
+      },
+    );
+
     it('inserts the created item using the REST query when the flag is enabled', async () => {
       const restQueryHandler = jest
         .fn()

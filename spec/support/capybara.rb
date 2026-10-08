@@ -278,8 +278,16 @@ RSpec.configure do |config|
   end
 
   config.after(:example, :js) do |example|
-    if example.exception && !example.exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
-      raise_if_unexpected_browser_console_output
+    # A passing example can hide a swallowed Vue render error. Check the console for every example.
+    # Raise only after the cleanup below, so in-flight requests never leak into the next example.
+    console_error = nil
+    begin
+      unless example.exception.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
+        # A failed example shows every console error, allowlisted or not, to help debugging.
+        raise_if_unexpected_browser_console_output(example.exception ? nil : example)
+      end
+    rescue StandardError => e
+      console_error = e
     end
 
     # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
@@ -287,8 +295,10 @@ RSpec.configure do |config|
     # calling it explicitly here, we prevent any new requests from being fired
     # See https://github.com/teamcapybara/capybara/blob/ffb41cfad620de1961bb49b1562a9fa9b28c0903/lib/capybara/rspec.rb#L20-L25
     # We don't reset the session when the example failed, because we need capybara-screenshot to have access to it.
-    Capybara.reset_sessions! unless example.exception
+    Capybara.reset_sessions! unless example.exception || console_error
     block_and_wait_for_requests_complete
     block_and_wait_for_action_cable_requests_complete
+
+    raise console_error if console_error
   end
 end

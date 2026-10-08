@@ -69,7 +69,7 @@ RSpec.describe Gitlab::GitAccessSnippet, feature_category: :source_code_manageme
     end
   end
 
-  describe '#check_granular_pat_permissions!' do
+  describe '#check_granular_token_permissions!' do
     let(:access) do
       described_class.new(actor, snippet, protocol,
         authentication_abilities: authentication_abilities,

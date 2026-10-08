@@ -15,6 +15,8 @@ RSpec.shared_examples 'a redactable connection' do
 
       expect(r_state.redacted { raise 'Should not be called!' }).to be_present
     end
+
+    it_behaves_like 'a connection that counts its nodes'
   end
 
   let_it_be(:constant_redactor, freeze: false) do
@@ -49,6 +51,12 @@ RSpec.shared_examples 'a redactable connection' do
       connection.nodes
       connection.nodes
       connection.nodes
+    end
+
+    it 'counts the nodes left after redaction once' do
+      3.times { connection.nodes }
+
+      expect(connection.context.namespace(:gl_logging)[:connection_nodes]).to eq(connection.nodes.size)
     end
   end
 end

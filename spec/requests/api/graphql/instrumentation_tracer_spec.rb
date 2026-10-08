@@ -102,6 +102,62 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
         post_graphql_mutation(mutation, current_user: user)
       end
     end
+
+    describe "connection nodes" do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:projects) { create_list(:project, 2, developers: user) }
+      let_it_be(:issues) { create_list(:issue, 3, project: projects.first) }
+
+      def logged_connection_nodes(count)
+        a_hash_including(Labkit::Fields::GRAPHQL_CONNECTION_NODES => count)
+      end
+
+      def capture_request_log
+        payloads = []
+        subscriber = ->(*, payload) { payloads << payload }
+        ActiveSupport::Notifications.subscribed(subscriber, 'process_action.action_controller') { yield }
+
+        payloads.last.dig(:metadata, :graphql)
+      end
+
+      where(:selection, :expected_nodes) do
+        'echo(text: "test")'                                                                                     | 0
+        'projects(membership: true) { nodes { id } }'                                                            | 2
+        'projects(membership: true) { nodes { id } edges { node { id } } }'                                      | 2
+        'projects(membership: true, search: "no-such-project") { nodes { id } }'                                 | 0
+        'projects(membership: true) { nodes { issues { nodes { id } } } }'                                       | 5
+        'a: projects(membership: true) { nodes { id } } b: projects(membership: true, first: 1) { nodes { id } }' | 3
+      end
+
+      with_them do
+        it "logs the number of nodes returned across all connections" do
+          expect(Gitlab::GraphqlLogger).to receive(:info).with(logged_connection_nodes(expected_nodes))
+
+          request_log = capture_request_log { post_graphql("{ #{selection} }", current_user: user) }
+
+          expect(graphql_errors).to be_nil
+          expect(request_log).to contain_exactly(logged_connection_nodes(expected_nodes))
+        end
+      end
+
+      it "counts each query of a multiplex separately" do
+        queries = [
+          { query: '{ projects(membership: true) { nodes { id } } }' },
+          { query: '{ projects(membership: true, first: 1) { nodes { id } } }' }
+        ]
+
+        expect(Gitlab::GraphqlLogger).to receive(:info).with(logged_connection_nodes(2))
+        expect(Gitlab::GraphqlLogger).to receive(:info).with(logged_connection_nodes(1))
+
+        request_log = capture_request_log { post_multiplex(queries, current_user: user) }
+
+        expect(request_log).to contain_exactly(
+          logged_connection_nodes(2),
+          logged_connection_nodes(1)
+        )
+      end
+    end
   end
 
   describe "metrics" do

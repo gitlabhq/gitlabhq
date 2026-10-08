@@ -502,7 +502,7 @@ Geo finds the current Puma or Sidekiq node's Geo [site](../../glossary.md) name 
 `/etc/gitlab/gitlab.rb` with the following logic:
 
 1. Get the "Geo node name" (there is
-   [an issue to rename the settings to "Geo site name"](https://gitlab.com/gitlab-org/gitlab/-/issues/335944)):
+   [an issue to rename the settings to "Geo site name"](https://gitlab.com/gitlab-org/gitlab/-/work_items/335944)):
    - Linux package: get the `gitlab_rails['geo_node_name']` setting.
    - GitLab Helm charts: get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/)).
 1. If that is not defined, then get the `external_url` setting.
@@ -542,7 +542,7 @@ If at all possible, all Geo nodes across all sites should be deployed with the s
 
 If different operating systems or different operating system versions are deployed across Geo sites, you must perform a locale data compatibility check before setting up Geo. You must also check `glibc` when using a mixture of GitLab deployment methods. The locale might be different between a Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services. See the [documentation on upgrading operating systems for PostgreSQL](../../../postgresql/upgrading_os.md), including how to check `glibc` version compatibility.
 
-Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, it causes erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723).
+Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, it causes erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/work_items/360723).
 
 For example, Ubuntu 18.04 (and earlier) and RHEL/CentOS 7 (and earlier) are incompatible with their later releases.
 See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Locale_data_changes).
@@ -687,7 +687,7 @@ In this case, make sure to update the changed URL on all your sites:
 
 ### Message: `ERROR: canceling statement due to conflict with recovery` during backup
 
-Running a backup on a Geo secondary [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/211668).
+Running a backup on a Geo secondary [is not supported](https://gitlab.com/gitlab-org/gitlab/-/work_items/211668).
 
 When running a backup on a secondary you might encounter the following error message:
 
@@ -710,12 +710,12 @@ sudo touch /etc/gitlab/skip-auto-backup
 
 From GitLab 16.11 to GitLab 17.2, a missing PostgreSQL index causes high CPU
 usage and slow artifact verification progress. Additionally, the Geo secondary
-sites might report as unhealthy. [Issue 471727](https://gitlab.com/gitlab-org/gitlab/-/issues/471727) describes the behavior in detail.
+sites might report as unhealthy. [Issue 471727](https://gitlab.com/gitlab-org/gitlab/-/work_items/471727) describes the behavior in detail.
 
 To determine if you might be experiencing this issue, follow the steps to
-[confirm if you are affected](https://gitlab.com/gitlab-org/gitlab/-/issues/471727#to-confirm-if-you-are-affected).
+[confirm if you are affected](https://gitlab.com/gitlab-org/gitlab/-/work_items/471727#to-confirm-if-you-are-affected).
 
-If you are affected, follow the steps in the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/471727#workaround)
+If you are affected, follow the steps in the [workaround](https://gitlab.com/gitlab-org/gitlab/-/work_items/471727#workaround)
 to manually create the index. Creating the index causes PostgreSQL to
 consume slightly more resources until it finishes. Afterward, CPU usage might
 remain high while verification continues, but queries should complete
@@ -758,7 +758,7 @@ To determine if you might be experiencing this issue and remove the duplicate en
 
 1. Wait for the background jobs to create the registry rows again and resync.
 
-Follow [issue 479852](https://gitlab.com/gitlab-org/gitlab/-/issues/479852) to get feedback on the fix.
+Follow [issue 479852](https://gitlab.com/gitlab-org/gitlab/-/work_items/479852) to get feedback on the fix.
 
 ### Error `end of file reached` when running Geo Rake check task on secondary
 
@@ -848,7 +848,7 @@ The following example sets the job to run every 30 minutes. Adjust the cron sche
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590853) in GitLab 19.0 [with a feature flag](../../../feature_flags/_index.md) named `geo_job_artifact_verification_summaries`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/590853) in GitLab 19.0 [with a feature flag](../../../feature_flags/_index.md) named `geo_job_artifact_verification_summaries`. Disabled by default.
 
 {{< /history >}}
 

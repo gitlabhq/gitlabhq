@@ -84,11 +84,17 @@ module Gitlab
             # or in a separate tracer.
             # https://gitlab.com/gitlab-org/gitlab/-/issues/343802
 
-            RequestStore.store[:graphql_logs] ||= []
-            RequestStore.store[:graphql_logs] << results.except(:time_started, :duration_s).merge({
+            request_log = results.except(:time_started, :duration_s).merge({
               variables: process_variables(query.provided_variables, query.operation_name),
               operation_name: query.operation_name
             })
+
+            # The tracer adds fields known only after execution. Multiplexed queries
+            # share context values, so use a namespace, which is per query.
+            query.context.namespace(:gl_logging)[:request_log] = request_log
+
+            RequestStore.store[:graphql_logs] ||= []
+            RequestStore.store[:graphql_logs] << request_log
           end
 
           def process_variables(variables, operation_name)

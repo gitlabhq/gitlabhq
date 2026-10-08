@@ -6,17 +6,20 @@
   "AiCatalogCustomAndFoundationalItem": [
     "AiCatalogAgent",
     "AiCatalogFlow",
+    "AiCatalogSkill",
     "AiCatalogThirdPartyFlow",
     "AiFoundationalChatAgent"
   ],
   "AiCatalogItem": [
     "AiCatalogAgent",
     "AiCatalogFlow",
+    "AiCatalogSkill",
     "AiCatalogThirdPartyFlow"
   ],
   "AiCatalogItemVersion": [
     "AiCatalogAgentVersion",
     "AiCatalogFlowVersion",
+    "AiCatalogSkillVersion",
     "AiCatalogThirdPartyFlowVersion"
   ],
   "AlertManagementIntegration": [

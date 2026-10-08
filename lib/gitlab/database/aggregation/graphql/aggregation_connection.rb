@@ -5,6 +5,8 @@ module Gitlab
     module Aggregation
       module Graphql
         class AggregationConnection < GraphQL::Pagination::Connection
+          prepend ::Gitlab::Graphql::ConnectionNodesCount
+
           # A page that reaches the end already proves the total, which spares a second
           # full aggregation for the COUNT. An empty page past offset 0 proves nothing.
           def count

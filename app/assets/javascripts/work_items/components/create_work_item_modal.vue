@@ -42,11 +42,6 @@ export default {
   },
   mixins: [GlToastMixin],
   props: {
-    alwaysShowWorkItemTypeSelect: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     confidential: {
       type: Boolean,
       required: false,
@@ -70,6 +65,16 @@ export default {
       required: false,
       default: false,
     },
+    hideNamespaceSelector: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hideTypeSelector: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isGroup: {
       type: Boolean,
       required: false,
@@ -79,11 +84,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    showProjectSelector: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     title: {
       type: String,
@@ -130,16 +130,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    namespaceFullName: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    allowAnyNamespace: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     allowProjectsOnly: {
       type: Boolean,
@@ -207,9 +197,7 @@ export default {
       });
     },
     newWorkItemButtonText() {
-      return this.alwaysShowWorkItemTypeSelect && this.selectedWorkItemTypeName
-        ? s__('WorkItem|New item')
-        : this.newWorkItemText;
+      return s__('WorkItem|New item');
     },
     newWorkItemText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
@@ -423,25 +411,23 @@ export default {
         </div>
       </div>
       <create-work-item
-        :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :creation-context="creationContext"
         :confidential="confidential"
         :description="description"
         :full-path="fullPath"
         hide-form-title
+        :hide-namespace-selector="hideNamespaceSelector"
+        :hide-type-selector="hideTypeSelector"
         modal-button-alignment
         :is-group="isGroup"
         :parent-id="parentId"
-        :show-project-selector="showProjectSelector"
         :title="title"
         :preselected-work-item-type="selectedWorkItemTypeName"
         :related-item="relatedItem"
         :merge-request-id="mergeRequestId"
         :merge-request-link-type="mergeRequestLinkType"
         :should-discard-draft="shouldDiscardDraft"
-        :namespace-full-name="namespaceFullName"
         :is-modal="true"
-        :allow-any-namespace="allowAnyNamespace"
         :allow-projects-only="allowProjectsOnly"
         :create-source="createSource"
         @change-type="selectedWorkItemTypeName = $event"

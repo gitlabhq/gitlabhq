@@ -128,7 +128,7 @@ To create an agent:
    For example, for the agent to create issues automatically, select **Create issue**.
 
    > [!note]
-   > Some tools require the IDE extension and are not available in Web UI.
+   > Some tools require the IDE extension and are not available in the GitLab UI.
    > For more information, see the list of [agent tools](tools.md).
 1. Select **Create agent**.
 
@@ -153,7 +153,9 @@ To create an agent:
    select which tools the agent can access.
    For example, for the agent to create issues automatically, select **Create issue**.
 
-   For a list of available tools, see the [built-in tool definitions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
+   > [!note]
+   > Some tools require the IDE extension and are not available in the GitLab UI.
+   > For more information, see the list of [agent tools](tools.md).
 1. Select **Create agent**.
 
 {{< /tab >}}

@@ -99,7 +99,7 @@ RSpec.describe Gitlab::GitAccessWiki do
     end
   end
 
-  describe '#check_granular_pat_permissions!', feature_category: :source_code_management do
+  describe '#check_granular_token_permissions!', feature_category: :source_code_management do
     let(:access) do
       described_class.new(user, wiki, 'web',
         authentication_abilities: authentication_abilities,

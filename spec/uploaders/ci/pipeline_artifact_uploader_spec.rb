@@ -125,7 +125,7 @@ RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integ
 
     it 'derives the key from db_key_base and the project id' do
       expect(uploader.send(:encryption_key)).to eq(
-        OpenSSL::HMAC.digest('SHA256', Gitlab::Application.credentials.db_key_base,
+        OpenSSL::HMAC.digest('SHA256', Settings.db_key_base_keys.last,
           "pipeline_artifact:#{pipeline_artifact.project_id}")
       )
     end

@@ -7253,6 +7253,11 @@
     "dottedExample": "/api/v4/admin_member_roles/john.doe"
   },
   {
+    "template": "/api/:version/ai/billable_usage/events/com.snowplowanalytics.snowplow/tp2",
+    "example": "/api/v4/ai/billable_usage/events/com.snowplowanalytics.snowplow/tp2",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/ai/duo_workflows/agent_workflows",
     "example": "/api/v4/ai/duo_workflows/agent_workflows",
     "acceptsFormat": true

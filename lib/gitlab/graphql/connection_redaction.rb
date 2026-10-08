@@ -17,6 +17,11 @@ module Gitlab
         end
       end
 
+      # Prepended after this module, so it counts the redacted nodes.
+      def self.prepended(base)
+        base.prepend(ConnectionNodesCount)
+      end
+
       delegate :redactor=, to: :redaction_state
 
       def nodes

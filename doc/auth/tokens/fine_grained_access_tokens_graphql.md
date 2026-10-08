@@ -113,10 +113,10 @@ Grants the ability to create, delete, read, and update policies in the policy st
 | Create <sup>1</sup> | Instance | Mutation | `GovernPolicyCreate` |
 | Delete | Group | Mutation | `GovernPolicyDelete` |
 | Delete | Instance | Mutation | `GovernPolicyDelete` |
-| Read | Group | Type | `GovernPolicyEvaluation` |
 | Read | Group | Field | `PolicyStore.policies` |
-| Read | Instance | Type | `GovernPolicyEvaluation` |
+| Read | Group | Field | `PolicyStore.policyEvaluations` |
 | Read | Instance | Field | `PolicyStore.policies` |
+| Read | Instance | Field | `PolicyStore.policyEvaluations` |
 | Update <sup>1</sup> | Group | Mutation | `GovernPolicyUpdate` |
 | Update <sup>1</sup> | Instance | Mutation | `GovernPolicyUpdate` |
 
@@ -774,6 +774,8 @@ Grants the ability to create, delete, read, report, restore, and update AI catal
 | Create | Project | Mutation | `AiCatalogFlowCreate` |
 | Delete | Project | Mutation | `AiCatalogAgentDelete` |
 | Delete | Project | Mutation | `AiCatalogFlowDelete` |
+| Read | Project | Type | `AiCatalogSkill` |
+| Read | Project | Type | `AiCatalogSkillVersion` |
 | Read | Project | Mutation | `AiCatalogItemStar` |
 | Read | User | Mutation | `AiCatalogItemStar` |
 | Read | User | Field | `Query.aiCatalogBuiltInTools` |
@@ -1040,12 +1042,13 @@ Grants the ability to update commit emails.
 
 #### Custom Emoji
 
-Grants the ability to create and delete custom emojis.
+Grants the ability to create, delete, and read custom emojis.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Group | Mutation | `CreateCustomEmoji` |
 | Delete | Group | Mutation | `DestroyCustomEmoji` |
+| Read | Group | Type | `CustomEmoji` |
 
 #### Group
 

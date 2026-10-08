@@ -425,9 +425,6 @@ export default {
     showMoveButton() {
       return this.workItemTypeConfiguration?.supportsMoveAction && this.canMove;
     },
-    showProjectSelector() {
-      return this.workItemTypeConfiguration?.showProjectSelector;
-    },
     toggleSidebarLabel() {
       return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
     },
@@ -847,14 +844,11 @@ export default {
     </gl-modal>
 
     <create-work-item-modal
-      :always-show-work-item-type-select="!isGroup"
       :creation-context="$options.CREATION_CONTEXT_RELATED_ITEM"
       :full-path="fullPath"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
       :preselected-work-item-type="workItemType"
-      :show-project-selector="showProjectSelector"
-      :namespace-full-name="namespaceFullName"
       :is-group="isGroup"
       hide-button
       @work-item-created="$emit('work-item-created')"

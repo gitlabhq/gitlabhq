@@ -30,6 +30,9 @@ module Authn
     # applications should have device_code_enabled set to false.
     attribute :device_code_enabled, default: -> { false }
 
+    # Authorization and refresh need granular while a set is declared, and no other application may carry it.
+    before_validation :sync_granular_scope
+
     # Hashes raw token
     def self.encode(raw_token_value)
       ::Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(raw_token_value)
@@ -68,7 +71,7 @@ module Authn
     end
 
     def granular?
-      granular_scopes.any?
+      oauth_application_granular_scopes.any?
     end
 
     def iam_routing_enabled?
@@ -77,6 +80,16 @@ module Authn
 
     def iam_outbox_delete_payload
       { uid: uid }
+    end
+
+    private
+
+    def sync_granular_scope
+      marker = ::Gitlab::Auth::GRANULAR_SCOPE.to_s
+      declared = granular?
+      return if declared == includes_scope?(marker)
+
+      self.scopes = declared ? scopes.to_a | [marker] : scopes.to_a - [marker]
     end
   end
 end

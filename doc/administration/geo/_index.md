@@ -128,7 +128,7 @@ This is a brief summary of how Geo works in your GitLab environment. For more de
 
 Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This makes working with large repositories over large distances much faster.
 
-![Geo overview](img/geo_overview_v11_5.png)
+![Diagram showing a Geo primary site replicating data to a secondary site.](img/geo_overview_v11_5.png)
 
 When Geo is enabled, the:
 

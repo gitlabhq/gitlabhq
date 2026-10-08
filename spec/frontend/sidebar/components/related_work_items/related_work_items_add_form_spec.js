@@ -265,8 +265,6 @@ describe('RelatedWorkItemsAddForm', () => {
       createComponent();
 
       expect(findCreateModal().props()).toMatchObject({
-        alwaysShowWorkItemTypeSelect: true,
-        allowAnyNamespace: true,
         allowProjectsOnly: true,
       });
     });

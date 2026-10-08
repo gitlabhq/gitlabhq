@@ -2320,9 +2320,9 @@ export default {
               </gl-button>
               <create-work-item-modal
                 v-if="showProjectNewWorkItem"
-                always-show-work-item-type-select
                 :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                 :full-path="rootPageFullPath"
+                :hide-namespace-selector="!isGroup"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
                 :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
@@ -2372,9 +2372,9 @@ export default {
             />
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              always-show-work-item-type-select
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
@@ -2609,9 +2609,9 @@ export default {
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              always-show-work-item-type-select
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
@@ -2634,12 +2634,11 @@ export default {
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              always-show-work-item-type-select
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              :show-project-selector="!hasEpicsFeature"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2684,9 +2683,10 @@ export default {
       @open-group-by-settings="openGroupByDisplaySettings"
     >
       <template #empty-state>
-        <empty-state-without-any-issues
-          :show-new-issue-dropdown="showGroupNewWorkItem"
-          :has-projects="hasProjects"
+        <empty-state-with-any-issues
+          v-if="hasWorkItems || hasWorkItemsFailed"
+          :has-search="hasSearch"
+          :with-tabs="false"
         >
           <template #new-issue-button>
             <create-work-item-modal
@@ -2696,7 +2696,31 @@ export default {
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              :show-project-selector="!hasEpicsFeature"
+              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
+              @work-item-created="handleWorkItemCreated"
+            />
+            <new-resource-dropdown
+              v-if="showGroupNewWorkItem"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
+            />
+          </template>
+        </empty-state-with-any-issues>
+        <empty-state-without-any-issues
+          v-else
+          :show-new-issue-dropdown="showGroupNewWorkItem"
+          :has-projects="hasProjects"
+        >
+          <template #new-issue-button>
+            <create-work-item-modal
+              v-if="showProjectNewWorkItem"
+              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+              :full-path="rootPageFullPath"
+              :hide-namespace-selector="!isGroup"
+              :is-group="isGroup"
+              :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
               @work-item-created="handleWorkItemCreated"
             />

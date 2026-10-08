@@ -19,8 +19,18 @@ RSpec.describe Projects::Settings::BranchRulesHelper, feature_category: :source_
         show_status_checks: 'false',
         show_approvers: 'false',
         show_code_owners: 'false',
-        can_admin_protected_branches: 'false'
+        can_admin_protected_branches: 'false',
+        can_read_protected_branches: 'false'
       })
+    end
+
+    context 'when user can read protected branches' do
+      before do
+        allow(helper).to receive(:can?).and_call_original
+        allow(helper).to receive(:can?).with(anything, :read_protected_branch, project).and_return(true)
+      end
+
+      it { is_expected.to include(can_read_protected_branches: 'true') }
     end
   end
 end

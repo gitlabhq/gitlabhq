@@ -26,7 +26,7 @@ RSpec.describe 'groups/new.html.haml' do
   end
 
   context 'when a subgroup' do
-    let_it_be(:group) { create(:group, :nested) }
+    let(:group) { build_stubbed(:group, :nested) }
 
     it 'renders the visibility level section' do
       expect(rendered).to have_content('Visibility level')

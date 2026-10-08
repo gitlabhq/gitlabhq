@@ -6157,6 +6157,55 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect { get api(path, admin, admin_mode: true) }.not_to exceed_all_query_limit(control)
     end
 
+    context 'when no impersonation token is granular' do
+      it 'does not return granular_scopes or load them' do
+        recorder = ActiveRecord::QueryRecorder.new { get api(path, admin, admin_mode: true) }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to all(exclude('granular_scopes'))
+        expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+      end
+    end
+
+    context 'when an impersonation token is granular' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:granular_impersonation_token) do
+        create(:granular_pat, :impersonation, user: user, permissions: ['read_personal_access_token'],
+          boundary: ::Authz::Boundary.for(::Authz::GranularScope::Access::USER),
+          additional_scopes: [{ boundary: ::Authz::Boundary.for(project), permissions: ['read_job'] }])
+      end
+
+      it 'returns granular_scopes for the granular token only' do
+        get api(path, admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        granular_response = json_response.find { |token| token['id'] == granular_impersonation_token.id }
+        legacy_response = json_response.find { |token| token['id'] == impersonation_token.id }
+
+        expect(granular_response['granular_scopes']).to contain_exactly(
+          a_hash_including('access' => 'user', 'permissions' => ['read_personal_access_token'],
+            'project_id' => nil, 'group_id' => nil),
+          a_hash_including('permissions' => ['read_job'], 'project_id' => project.id, 'group_id' => nil)
+        )
+        expect(legacy_response).not_to have_key('granular_scopes')
+      end
+
+      it 'avoids N+1 queries when listing granular impersonation tokens' do
+        # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+        User.find(admin.id).update_column(:last_activity_on, Date.current)
+
+        get api(path, admin, admin_mode: true) # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, admin, admin_mode: true) }
+
+        create(:granular_pat, :impersonation, user: user, permissions: ['read_job'],
+          boundary: ::Authz::Boundary.for(create(:project)))
+
+        expect { get api(path, admin, admin_mode: true) }.not_to exceed_all_query_limit(control)
+      end
+    end
+
     it 'includes last_used_ips in response' do
       get api(path, admin, admin_mode: true)
 
@@ -6261,6 +6310,14 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['impersonation']).to eq(impersonation)
     end
 
+    it 'does not return granular_scopes or load them for a token created with scopes' do
+      recorder = ActiveRecord::QueryRecorder.new { post api(path, admin, admin_mode: true), params: params }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response).not_to have_key('granular_scopes')
+      expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+    end
+
     context 'when creating an impersonation token with granular scopes' do
       using RSpec::Parameterized::TableSyntax
 
@@ -6280,6 +6337,9 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(json_response['granular']).to be(true)
           expect(json_response['impersonation']).to be(true)
           expect(json_response['token']).to be_present
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => access, 'permissions' => ['read_job'], 'project_id' => nil, 'group_id' => nil)
+          )
 
           created_token = user.personal_access_tokens.find(json_response['id'])
           expect(created_token.impersonation).to be(true)
@@ -6369,6 +6429,64 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(created_token.granular_scopes.map(&:namespace_id)).to contain_exactly(
             group.id, project.project_namespace.id
           )
+        end
+
+        it 'returns the granular scopes with their project and group IDs' do
+          post api(path, admin, admin_mode: true), params: granular_params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => project.id, 'group_id' => nil),
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => nil, 'group_id' => group.id)
+          )
+        end
+
+        context 'when presenting the granular scopes of the new token', :enable_admin_mode do
+          let_it_be(:second_project) { create(:project, developers: [user]) }
+
+          # CreateGranularService writes a row for every scope, so each token is created through it before
+          # its request, and the request presents that token as the service returned it. The requests then
+          # differ only in the number of scopes they present.
+          def create_through_service(projects)
+            scopes = projects.map do |project|
+              ::Authz::GranularScope.new(access: access, permissions: ['read_job'],
+                namespace: ::Authz::Boundary.for(project).namespace)
+            end
+
+            ::Authn::PersonalAccessTokens::CreateGranularService.new(
+              current_user: admin, target_user: user, organization: current_organization, granular_scopes: scopes,
+              params: { name: name, impersonation: true }
+            ).execute
+          end
+
+          def post_presenting(service_response)
+            allow_next_instance_of(::Authn::PersonalAccessTokens::CreateGranularService) do |service|
+              allow(service).to receive(:execute).and_return(service_response)
+            end
+
+            post api(path, admin, admin_mode: true), params: granular_params
+          end
+
+          it 'avoids N+1 queries' do
+            # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+            User.find(admin.id).update_column(:last_activity_on, Date.current)
+
+            # Every token is created before the first request stubs the service.
+            warm_up = create_through_service([project])
+            one_scope = create_through_service([project])
+            two_scopes = create_through_service([project, second_project])
+
+            post_presenting(warm_up)
+
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_presenting(one_scope) }
+
+            expect { post_presenting(two_scopes) }.not_to exceed_all_query_limit(control)
+            expect(json_response['granular_scopes'].pluck('project_id')).to contain_exactly(
+              project.id, second_project.id
+            )
+          end
         end
 
         context 'when the impersonated user cannot read the given group' do
@@ -6511,6 +6629,54 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['token']).not_to be_present
       expect(json_response['impersonation']).to be_truthy
+    end
+
+    context 'when the impersonation token is not granular' do
+      it 'does not return granular_scopes or load them' do
+        recorder = ActiveRecord::QueryRecorder.new { get api(path, admin, admin_mode: true) }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to have_key('granular_scopes')
+        expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+      end
+    end
+
+    context 'when the impersonation token is granular' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:granular_impersonation_token) do
+        create(:granular_pat, :impersonation, user: user, permissions: ['read_personal_access_token'],
+          boundary: ::Authz::Boundary.for(::Authz::GranularScope::Access::USER),
+          additional_scopes: [{ boundary: ::Authz::Boundary.for(project), permissions: ['read_job'] }])
+      end
+
+      let(:path) { "/users/#{user.id}/impersonation_tokens/#{granular_impersonation_token.id}" }
+
+      it 'returns granular_scopes with the project_id of a project scope' do
+        get api(path, admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['granular_scopes']).to contain_exactly(
+          a_hash_including('access' => 'user', 'permissions' => ['read_personal_access_token'],
+            'project_id' => nil, 'group_id' => nil),
+          a_hash_including('permissions' => ['read_job'], 'project_id' => project.id, 'group_id' => nil)
+        )
+      end
+
+      it 'avoids N+1 queries when the token has multiple project-scoped granular scopes' do
+        # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+        User.find(admin.id).update_column(:last_activity_on, Date.current)
+
+        get api(path, admin, admin_mode: true) # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, admin, admin_mode: true) }
+
+        other_scope = create(:granular_scope, boundary: ::Authz::Boundary.for(create(:project)),
+          permissions: ['read_job'], organization: granular_impersonation_token.organization)
+        create(:personal_access_token_granular_scope, personal_access_token: granular_impersonation_token,
+          granular_scope: other_scope, organization: granular_impersonation_token.organization)
+
+        expect { get api(path, admin, admin_mode: true) }.not_to exceed_all_query_limit(control)
+      end
     end
   end
 

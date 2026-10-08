@@ -52,7 +52,7 @@ module Authn
       def record_failure(rows, latest, error)
         rows.update_all(l0_last_error: ::Authn::IamService::GrpcClient.error_label(error), updated_at: Time.current)
         rows.update_counters(l0_attempts: 1)
-        log(latest, result: :error, attempts: latest.l0_attempts + 1)
+        log(latest, result: ::Authn::IamReplication::Results::ERROR, attempts: latest.l0_attempts + 1)
       end
 
       def log(outbox_event, result:, attempts:)

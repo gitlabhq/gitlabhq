@@ -124,10 +124,16 @@ RSpec.describe SecretsInitializer do
       it 'generates different hashes for secret_key_base, otp_key_base, and db_key_base' do
         initializer.execute!
 
-        keys = Rails.application.credentials.values_at(:secret_key_base, :otp_key_base, :db_key_base)
+        keys = Rails.application.credentials.values_at(:secret_key_base, :otp_key_base, :db_key_base).flatten
 
         expect(keys.uniq).to eq(keys)
         expect(keys).to all(match(hex_key))
+      end
+
+      it 'generates db_key_base as an array with a single key' do
+        initializer.execute!
+
+        expect(Rails.application.credentials.db_key_base).to match([hex_key])
       end
 
       it 'generates an RSA key for openid_connect_signing_key' do

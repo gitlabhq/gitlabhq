@@ -18,6 +18,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   let(:auth_result_type) { nil }
   let(:gitaly_context) { { 'key' => 'value' } }
   let(:personal_access_token) { nil }
+  let(:oauth_access_token) { nil }
   let(:changes) { Gitlab::GitAccess::ANY }
   let(:push_access_check) { access.check('git-receive-pack', changes) }
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
@@ -346,9 +347,9 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     context 'with a granular personal access token' do
       let(:personal_access_token) { build(:granular_pat) }
 
-      it 'delegates to check_granular_pat_permissions!' do
+      it 'delegates to check_granular_token_permissions!' do
         instance = access
-        expect(instance).to receive(:check_granular_pat_permissions!)
+        expect(instance).to receive(:check_granular_token_permissions!)
 
         instance.send(:check_authentication_abilities!)
       end
@@ -357,7 +358,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     context 'without a personal access token' do
       it 'delegates to check_legacy_authentication_abilities!' do
         instance = access
-        expect(instance).not_to receive(:check_granular_pat_permissions!)
+        expect(instance).not_to receive(:check_granular_token_permissions!)
         expect(instance).to receive(:check_legacy_authentication_abilities!)
 
         instance.send(:check_authentication_abilities!)
@@ -367,12 +368,46 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     context 'with a non-granular personal access token' do
       let(:personal_access_token) { build(:personal_access_token) }
 
-      it 'delegates to both check_granular_pat_permissions! and check_legacy_authentication_abilities!' do
+      it 'delegates to both check_granular_token_permissions! and check_legacy_authentication_abilities!' do
         instance = access
-        expect(instance).to receive(:check_granular_pat_permissions!)
+        expect(instance).to receive(:check_granular_token_permissions!)
         expect(instance).to receive(:check_legacy_authentication_abilities!)
 
         instance.send(:check_authentication_abilities!)
+      end
+    end
+
+    context 'with a granular OAuth access token' do
+      let(:oauth_access_token) { build(:oauth_access_token, :granular) }
+
+      it 'delegates to check_granular_token_permissions! only' do
+        instance = access
+        expect(instance).to receive(:check_granular_token_permissions!)
+        expect(instance).not_to receive(:check_legacy_authentication_abilities!)
+
+        instance.send(:check_authentication_abilities!)
+      end
+    end
+
+    context 'with a non-granular OAuth access token' do
+      let(:oauth_access_token) { build(:oauth_access_token, scopes: ['api']) }
+
+      it 'delegates to both check_granular_token_permissions! and check_legacy_authentication_abilities!' do
+        instance = access
+        expect(instance).to receive(:check_granular_token_permissions!)
+        expect(instance).to receive(:check_legacy_authentication_abilities!)
+
+        instance.send(:check_authentication_abilities!)
+      end
+    end
+
+    context 'with an IAM OAuth token' do
+      let(:oauth_access_token) { instance_double(Authn::Tokens::IamOauthToken) }
+
+      it 'grants access based on authentication abilities' do
+        project.add_developer(user)
+
+        expect { pull_access_check }.not_to raise_error
       end
     end
   end
@@ -423,7 +458,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     end
   end
 
-  describe '#check_granular_pat_permissions!' do
+  describe '#check_granular_token_permissions!' do
     before do
       project.add_developer(user)
     end
@@ -472,22 +507,19 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
       end
     end
 
-    context 'with a granular personal access token' do
-      let(:boundary) { Authz::Boundary.for(project) }
-      let(:personal_access_token) { create(:granular_pat, user: user, boundary: boundary, permissions: permissions) }
-
+    shared_examples 'granular token git access checks' do |token_type|
       context 'when token has no code permissions' do
         let(:permissions) { [] }
 
         it 'denies git pull' do
           expect { pull_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: This operation requires a fine-grained personal access token ' \
+            "Access denied: This operation requires a fine-grained #{token_type} " \
             "with the following project permissions: [Code: Download].")
         end
 
         it 'denies git push' do
           expect { push_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: This operation requires a fine-grained personal access token ' \
+            "Access denied: This operation requires a fine-grained #{token_type} " \
             "with the following project permissions: [Code: Push].")
         end
       end
@@ -501,7 +533,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
         it 'denies git push' do
           expect { push_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: This operation requires a fine-grained personal access token ' \
+            "Access denied: This operation requires a fine-grained #{token_type} " \
             "with the following project permissions: [Code: Push].")
         end
       end
@@ -515,7 +547,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
         it 'denies git pull' do
           expect { pull_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: This operation requires a fine-grained personal access token ' \
+            "Access denied: This operation requires a fine-grained #{token_type} " \
             "with the following project permissions: [Code: Download].")
         end
       end
@@ -568,6 +600,69 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         end
       end
     end
+
+    context 'with a granular personal access token' do
+      let(:boundary) { Authz::Boundary.for(project) }
+      let(:personal_access_token) { create(:granular_pat, user: user, boundary: boundary, permissions: permissions) }
+
+      it_behaves_like 'granular token git access checks', 'personal access token'
+    end
+
+    context 'with a granular OAuth access token' do
+      let_it_be(:application) { create(:oauth_application) }
+
+      let(:authentication_abilities) { [] }
+      let(:oauth_access_token) do
+        create(:oauth_access_token, :granular, resource_owner: user, application: application)
+      end
+
+      let!(:consent_grant) do
+        create(:oauth_consent_grant, user: user, application: application,
+          boundary: Authz::Boundary.for(project), permissions: permissions)
+      end
+
+      it_behaves_like 'granular token git access checks', 'oauth access token'
+
+      context 'when the consent grant is revoked' do
+        let(:permissions) { :download_code }
+
+        before do
+          consent_grant.revoked!
+        end
+
+        it 'denies git pull' do
+          expect { pull_access_check }.to raise_error(described_class::ForbiddenError,
+            'Access denied: This operation requires a fine-grained oauth access token ' \
+            "with the following project permissions: [Code: Download].")
+        end
+      end
+    end
+
+    context 'with a non-granular OAuth access token' do
+      let(:oauth_access_token) { create(:oauth_access_token, resource_owner: user, scopes: ['api']) }
+
+      it 'grants access based on authentication abilities' do
+        expect { pull_access_check }.not_to raise_error
+      end
+
+      context 'when granular tokens are enforced for the namespace' do
+        let(:group) { create(:group) }
+        let(:project) { create(:project, :repository, group: group) }
+
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement_saas: group)
+
+          group.namespace_settings.update!(
+            enforce_granular_tokens: true,
+            granular_tokens_enforced_after: Date.current
+          )
+        end
+
+        it 'grants access based on authentication abilities' do
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+    end
   end
 
   describe '#permission_for_command' do
@@ -601,6 +696,15 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   describe '#has_authentication_ability?' do
     context 'with a granular personal access token' do
       let(:personal_access_token) { build(:granular_pat) }
+      let(:authentication_abilities) { [] }
+
+      it 'returns true regardless of authentication_abilities' do
+        expect(access.send(:has_authentication_ability?, :download_code)).to be(true)
+      end
+    end
+
+    context 'with a granular OAuth access token' do
+      let(:oauth_access_token) { build(:oauth_access_token, :granular) }
       let(:authentication_abilities) { [] }
 
       it 'returns true regardless of authentication_abilities' do
@@ -1773,7 +1877,8 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
       authentication_abilities: authentication_abilities,
       repository_path: repository_path,
       redirected_path: redirected_path, auth_result_type: auth_result_type, gitaly_context: gitaly_context,
-      personal_access_token: personal_access_token)
+      personal_access_token: personal_access_token,
+      oauth_access_token: oauth_access_token)
   end
 
   def push_access_check_build(access_project, changes)

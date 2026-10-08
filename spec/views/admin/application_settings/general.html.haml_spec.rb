@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'admin/application_settings/general.html.haml' do
-  let_it_be(:user) { create(:admin) }
-
+  let(:user) { build_stubbed(:admin) }
   let(:app_settings) { Gitlab::CurrentSettings.current_application_settings }
 
   before do

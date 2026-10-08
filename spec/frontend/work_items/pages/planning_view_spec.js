@@ -2,13 +2,13 @@ import Vue, { computed, nextTick, ref } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import MockAdapter from 'axios-mock-adapter';
-import { GlAlert, GlIntersectionObserver } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlIntersectionObserver } from '@gitlab/ui';
 import { createMockSubscription } from 'mock-apollo-client';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { resolvers } from '~/graphql_shared/issuable_client';
@@ -2701,6 +2701,21 @@ describe('planning-view', () => {
 
       expect(findCreateWorkItemModal().props('creationContext')).toBe(CREATION_CONTEXT_LIST_ROUTE);
     });
+
+    it.each`
+      isGroup  | hideNamespaceSelector
+      ${true}  | ${false}
+      ${false} | ${true}
+    `(
+      'passes hideNamespaceSelector as $hideNamespaceSelector when isGroup is $isGroup',
+      async ({ isGroup, hideNamespaceSelector }) => {
+        await mountComponent({ provide: { isGroup } });
+
+        expect(findCreateWorkItemModal().props('hideNamespaceSelector')).toBe(
+          hideNamespaceSelector,
+        );
+      },
+    );
   });
 
   describe('empty states', () => {
@@ -3204,6 +3219,44 @@ describe('planning-view', () => {
           it('refetches hasWorkItems and the counts so the columns replace the empty state', () => {
             expect(emptyHasWorkItemsHandler).toHaveBeenCalledTimes(1);
             expect(defaultCountsOnlyHandler).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+
+      describe('when the board shows its empty state for a namespace with work items', () => {
+        const findBoardEmptyStateModal = () =>
+          findEmptyStateWithAnyIssues().findComponent(CreateWorkItemModal);
+
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: stubComponent(boardViewStub, {
+                template: '<div><slot name="empty-state"></slot></div>',
+              }),
+              EmptyStateWithAnyIssues,
+              GlEmptyState: stubComponent(GlEmptyState, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+            },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('fills the board empty state with the no results state', () => {
+          expect(findBoardView().props('hasWorkItems')).toBe(true);
+          expect(findEmptyStateWithAnyIssues().props('withTabs')).toBe(false);
+          expect(findEmptyStateWithAnyIssues().findComponent(GlEmptyState).props()).toMatchObject({
+            title: 'No results found',
+            description: 'To widen your search, change or remove filters above.',
+          });
+          expect(findEmptyStateWithoutAnyIssues().exists()).toBe(false);
+        });
+
+        it('offers the list create modal with the board create source', () => {
+          expect(findBoardEmptyStateModal().props()).toMatchObject({
+            creationContext: CREATION_CONTEXT_LIST_ROUTE,
+            createSource: 'work_item_board',
           });
         });
       });

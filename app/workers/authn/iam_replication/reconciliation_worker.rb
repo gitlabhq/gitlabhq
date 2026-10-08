@@ -72,7 +72,7 @@ module Authn
         error.reason
       rescue StandardError => error
         Gitlab::ErrorTracking.track_exception(error, entity_type: entity_type, entity_id: record.id)
-        :error
+        ::Authn::IamReplication::Results::ERROR
       end
 
       def log_skipped_row(record, reason)

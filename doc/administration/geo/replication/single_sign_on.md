@@ -125,7 +125,7 @@ If you have configured SAML on the primary site correctly, then it should work o
 
 {{< history >}}
 
-- OIDC with separate URL with proxying enabled [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396745) in GitLab 19.3
+- OIDC with separate URL with proxying enabled [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/396745) in GitLab 19.3
   [with a feature flag](../../feature_flags/_index.md) named `geo_oidc_proxied_redirect_uri`. Disabled by default.
 
 {{< /history >}}

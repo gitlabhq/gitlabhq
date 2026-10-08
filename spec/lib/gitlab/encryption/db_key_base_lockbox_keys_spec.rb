@@ -21,8 +21,8 @@ RSpec.describe Gitlab::Encryption::DbKeyBaseLockboxKeys, feature_category: :syst
   end
 
   context 'with a single key' do
-    it 'derives the key from the raw credential' do
-      expect(keys.db_key_base_lockbox_key(context)).to eq(derived(Gitlab::Application.credentials.db_key_base))
+    it 'derives the key from the current key' do
+      expect(keys.db_key_base_lockbox_key(context)).to eq(derived(Settings.db_key_base_keys.last))
     end
 
     it 'has no previous versions' do

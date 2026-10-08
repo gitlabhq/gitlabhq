@@ -51,8 +51,8 @@ Example request:
 
 ```shell
 curl --request DELETE \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/admin/sidekiq/queues/:queue_name"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/admin/sidekiq/queues/:queue_name"
 ```
 
 Example response:

@@ -69,11 +69,7 @@ RSpec.describe PagesDomainPresenter, feature_category: :pages do
     end
 
     context "when domain is not persisted" do
-      let(:domain) { create(:pages_domain) }
-
-      before do
-        domain.destroy!
-      end
+      let(:domain) { build(:pages_domain) }
 
       it { is_expected.to be(false) }
     end

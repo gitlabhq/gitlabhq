@@ -1730,6 +1730,138 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
     end
   end
 
+  context 'when authenticating with an OAuth access token' do
+    let_it_be_with_reload(:oauth_group) { create(:group) }
+    let_it_be(:oauth_project) { create(:project, :empty_repo, group: oauth_group) }
+    let_it_be(:lfs_object) { create(:lfs_object, :with_file) }
+    let_it_be(:application) { create(:oauth_application) }
+
+    let(:authorization) do
+      ActionController::HttpAuthentication::Basic.encode_credentials('oauth2', oauth_token.plaintext_token)
+    end
+
+    let(:headers) { { 'Authorization' => authorization } }
+    let(:existing_object) { { 'oid' => lfs_object.oid, 'size' => lfs_object.size } }
+    let(:new_object) do
+      { 'oid' => 'b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80', 'size' => 1575078 }
+    end
+
+    before_all do
+      oauth_project.add_developer(user)
+      oauth_project.lfs_objects << lfs_object
+    end
+
+    before do
+      stub_lfs_setting(enabled: true)
+    end
+
+    def download_batch
+      post_lfs_json(batch_url(oauth_project), download_body(existing_object), headers)
+    end
+
+    def upload_batch
+      post_lfs_json(batch_url(oauth_project), upload_body(new_object), headers)
+    end
+
+    context 'with a legacy OAuth access token' do
+      let(:oauth_token) { create(:oauth_access_token, resource_owner: user, application: application, scopes: %w[api]) }
+
+      it 'allows LFS download and upload', :aggregate_failures do
+        download_batch
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['objects'].first['actions']).to have_key('download')
+
+        upload_batch
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['objects'].first['actions']).to have_key('upload')
+      end
+
+      context 'when the namespace enforces granular tokens' do
+        before do
+          oauth_group.namespace_settings.update!(
+            enforce_granular_tokens: true,
+            granular_tokens_enforced_after: Date.current
+          )
+        end
+
+        it 'allows LFS download and upload', :aggregate_failures do
+          download_batch
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          upload_batch
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    context 'with a granular OAuth access token' do
+      let(:oauth_token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+
+      before do
+        scopes = Doorkeeper.configuration.scopes + Doorkeeper::OAuth::Scopes.from_array([Gitlab::Auth::GRANULAR_SCOPE])
+        allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+
+        create(:oauth_consent_grant, user: user, application: application,
+          boundary: ::Authz::Boundary.for(oauth_project), permissions: permissions)
+      end
+
+      context 'with download_code permission' do
+        let(:permissions) { :download_code }
+
+        it 'allows LFS download' do
+          download_batch
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['objects'].first['actions']).to have_key('download')
+        end
+
+        it 'denies LFS upload' do
+          upload_batch
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with download_code and push_code permissions' do
+        let(:permissions) { [:download_code, :push_code] }
+
+        it 'allows LFS download' do
+          download_batch
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['objects'].first['actions']).to have_key('download')
+        end
+
+        it 'allows LFS upload' do
+          upload_batch
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['objects'].first['actions']).to have_key('upload')
+        end
+      end
+
+      context 'without any code permissions' do
+        let(:permissions) { [] }
+
+        it 'denies LFS download' do
+          download_batch
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'denies LFS upload' do
+          upload_batch
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'Current.organization resolution' do
     let_it_be(:organization) { create(:organization) }
     let_it_be(:group) { create(:group, :public, organization: organization) }

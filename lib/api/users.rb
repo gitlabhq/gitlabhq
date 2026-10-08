@@ -1216,8 +1216,10 @@ module API
             assignable_when: [:admin]
           get feature_category: :system_access do
             tokens = finder(declared_params(include_missing: false)).execute.preload_users.preload_last_used_ips
+            paginated_tokens = paginate(tokens)
 
-            present paginate(tokens), with: Entities::ImpersonationToken
+            present paginated_tokens, with: Entities::ImpersonationToken,
+              **granular_scopes_options_for(paginated_tokens)
           end
 
           desc 'Create an impersonation token' do
@@ -1251,7 +1253,10 @@ module API
               response = create_granular_token(current_user, granular_scopes, token_params, target_user: target_user)
 
               if response.success?
-                present response.payload[:personal_access_token], with: Entities::ImpersonationTokenWithToken
+                impersonation_token = response.payload[:personal_access_token]
+
+                present impersonation_token, with: Entities::ImpersonationTokenWithToken,
+                  **granular_scopes_options_for([impersonation_token])
               else
                 render_api_error!(response.message, response.reason || :unprocessable_entity)
               end
@@ -1278,7 +1283,10 @@ module API
           route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance,
             assignable_when: [:admin]
           get ':impersonation_token_id', feature_category: :system_access do
-            present find_impersonation_token, with: Entities::ImpersonationToken
+            impersonation_token = find_impersonation_token
+
+            present impersonation_token, with: Entities::ImpersonationToken,
+              **granular_scopes_options_for([impersonation_token])
           end
 
           desc 'Revoke an impersonation token' do

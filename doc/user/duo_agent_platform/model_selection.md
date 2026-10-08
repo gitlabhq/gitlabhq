@@ -161,6 +161,7 @@ Prerequisites:
 
 - Restricting Agentic Chat to specific models [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22028) in GitLab 19.1 [with a feature flag](../../administration/feature_flags/_index.md) named `model_selection_allowlist`. Enabled by default.
 - Restricting Agentic Chat to specific models [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/600369) in GitLab 19.2. Feature flag `model_selection_allowlist` removed.
+- Restricting Agentic Chat to specific models [extended](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259163) to external agents and third-party tools in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `third_party_agent_token_model_allowlist`. Disabled by default.
 
 {{< /history >}}
 
@@ -192,6 +193,22 @@ To select a model for Agentic Chat:
    > [!note]
    > To restrict Agentic Chat to specific models, you must select a GitLab-managed
    > model as the default model.
+
+> [!flag]
+> The availability of this restriction for external agents and third-party tools is controlled by a feature flag.
+> For more information, see the history.
+
+The restriction also applies to [external agents](agents/external.md)
+that use GitLab-managed credentials.
+It also applies to third-party tools, such as OpenCode, that use a GitLab AI Gateway token.
+If one of these agents or tools requests a model that is not in the list, the request fails with an HTTP 403 error.
+Add the models that these agents use to the list.
+Some agents use more than one model.
+For example, Claude Code also uses a smaller model for background tasks.
+
+> [!note]
+> A change to the list applies to new tokens.
+> Existing tokens can stay valid for up to one hour.
 
 ### Select a model for other agentic features
 

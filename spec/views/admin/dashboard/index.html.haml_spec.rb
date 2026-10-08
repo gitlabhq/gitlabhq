@@ -7,8 +7,7 @@ RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_ca
   include StubVersion
 
   let(:kas_enabled) { false }
-
-  let_it_be(:user) { create(:admin) }
+  let(:user) { build_stubbed(:admin) }
 
   before do
     counts = Admin::DashboardController::COUNTED_ITEMS.index_with { 100 }

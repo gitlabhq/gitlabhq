@@ -6,6 +6,7 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord -- requires AR methods to build the keyset pagination conditions
       class ClickHouseConnection < GraphQL::Pagination::Connection
         include Gitlab::Utils::StrongMemoize
+        prepend ::Gitlab::Graphql::ConnectionNodesCount
 
         # Timestamps are stored with 6 digit microseconds precision in both PG and in CH (our schema)
         TIME_PATTERN = "%Y-%m-%d %H:%M:%S.%6N"

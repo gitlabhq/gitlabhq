@@ -1334,6 +1334,31 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
 
       expect { run(argv + ['--baseline-path', 'rspec/baseline.json']) }.to output.to_stdout
     end
+
+    context 'when both the artifact and the knapsack baselines are available' do
+      let(:knapsack) { { per_file: { 'spec/models/user_spec.rb' => { runtime_s: 648.0, example_count: nil } } } }
+      let(:artifact) { { per_file: { 'spec/models/user_spec.rb' => { runtime_s: 830.0, example_count: 1 } } } }
+      let(:argv) { super() + ['--dry-run'] }
+
+      before do
+        stub_report('rspec/rspec-1.json', [rspec_example(file_path: './spec/models/user_spec.rb', run_time: 814.0)])
+        allow(self).to receive(:fetch_master_baseline).and_return(artifact)
+      end
+
+      it 'measures the delta against the like-for-like artifact baseline' do
+        expect { run(argv) }.to output(/Added runtime: −16s/).to_stdout
+      end
+
+      it 'does not report the misleading delta against the knapsack average' do
+        expect { run(argv) }.not_to output(/Added runtime: \+2m 46s/).to_stdout
+      end
+
+      it 'falls back to the knapsack baseline when no artifact baseline exists' do
+        allow(self).to receive(:fetch_master_baseline).and_return(nil)
+
+        expect { run(argv) }.to output(/Added runtime: \+2m 46s/).to_stdout
+      end
+    end
   end
 
   describe '#run_safely' do

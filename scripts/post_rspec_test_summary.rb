@@ -813,10 +813,14 @@ def run(argv = ARGV)
 
   project_id = URI.encode_www_form_component(ENV.fetch('CI_PROJECT_ID', ''))
 
-  # Fetch the baseline: prefer the knapsack Pages report (always up-to-date,
-  # no auth required) and fall back to the artifact-based master baseline.
-  baseline = fetch_knapsack_baseline(opts[:knapsack_url])
-  baseline ||= fetch_master_baseline(project_id, opts[:job_name], opts[:artifact_path])
+  # Fetch the baseline: prefer the artifact-based master baseline (built from
+  # the same single-job sequential runs as MR pipelines, so the comparison is
+  # like-for-like) and fall back to the knapsack Pages report when no artifact
+  # baseline is available (e.g. the first run after a new job is introduced).
+  # Knapsack stores distributed-run averages, which are not comparable to the
+  # wall-clock time of running a whole file sequentially in one job.
+  baseline = fetch_master_baseline(project_id, opts[:job_name], opts[:artifact_path])
+  baseline ||= fetch_knapsack_baseline(opts[:knapsack_url])
   changed_result = fetch_changed_spec_files(project_id, mr_iid)
   changed_files = changed_result[:files]
   truncated = changed_result[:truncated]

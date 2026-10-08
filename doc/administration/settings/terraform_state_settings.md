@@ -61,9 +61,10 @@ the entire instance, including CI/CD variables, integration and webhook
 credentials, and authentication tokens.
 
 > [!warning]
-> If you change `db_key_base`, existing Terraform state files become unreadable.
-> GitLab raises an error if more than one `db_key_base` is configured and no
-> re-encryption tool exists.
+> If you replace `db_key_base` instead of appending a new key to it, existing Terraform
+> state files become unreadable. If you remove a key, Terraform state
+> files encrypted with that key become unreadable.
+> No re-encryption tool exists yet.
 
 Key rotation is proposed in
 [issue 25332](https://gitlab.com/gitlab-org/gitlab/-/issues/25332).

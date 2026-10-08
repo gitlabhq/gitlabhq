@@ -47,12 +47,11 @@ describe('CreateWorkItemModal', () => {
     hideButton = false,
     preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     relatedItem = null,
-    alwaysShowWorkItemTypeSelect = false,
-    namespaceFullName = 'GitLab.org / GitLab',
+    hideNamespaceSelector = false,
+    hideTypeSelector = false,
     mergeRequestLinkType = null,
     mergeRequestTitle = '',
     mergeRequestReference = '',
-    allowAnyNamespace = false,
     suppressCreatedToast = false,
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
@@ -63,12 +62,11 @@ describe('CreateWorkItemModal', () => {
         asDropdownItem,
         hideButton,
         relatedItem,
-        alwaysShowWorkItemTypeSelect,
-        namespaceFullName,
+        hideNamespaceSelector,
+        hideTypeSelector,
         mergeRequestLinkType,
         mergeRequestTitle,
         mergeRequestReference,
-        allowAnyNamespace,
         suppressCreatedToast,
       },
       mocks: {
@@ -92,16 +90,30 @@ describe('CreateWorkItemModal', () => {
   });
 
   describe('namespace selection', () => {
-    it('limits the form to the current namespace by default', () => {
+    it('shows the namespace selector in the form by default', () => {
       createComponent();
 
-      expect(findForm().props('allowAnyNamespace')).toBe(false);
+      expect(findForm().props('hideNamespaceSelector')).toBe(false);
     });
 
-    it('lets the form select any namespace when allowAnyNamespace is set', () => {
-      createComponent({ allowAnyNamespace: true });
+    it('hides the namespace selector in the form when hideNamespaceSelector is set', () => {
+      createComponent({ hideNamespaceSelector: true });
 
-      expect(findForm().props('allowAnyNamespace')).toBe(true);
+      expect(findForm().props('hideNamespaceSelector')).toBe(true);
+    });
+  });
+
+  describe('type selection', () => {
+    it('shows the type selector in the form by default', () => {
+      createComponent();
+
+      expect(findForm().props('hideTypeSelector')).toBe(false);
+    });
+
+    it('hides the type selector in the form when hideTypeSelector is set', () => {
+      createComponent({ hideTypeSelector: true });
+
+      expect(findForm().props('hideTypeSelector')).toBe(true);
     });
   });
 
@@ -227,7 +239,6 @@ describe('CreateWorkItemModal', () => {
       await nextTick();
 
       expect(findCreateModal().props('visible')).toBe(true);
-      expect(findForm().props('namespaceFullName')).toBe('GitLab.org / GitLab');
       expect(mockEvent.preventDefault).toHaveBeenCalled();
     });
 
@@ -264,8 +275,8 @@ describe('CreateWorkItemModal', () => {
       expect(findTrigger().exists()).toBe(false);
     });
 
-    it('has text of "New item" when the `alwaysShowWorkItemTypeSelect` prop is `true` and we also have a `preselectedWorkItemType`', () => {
-      createComponent({ alwaysShowWorkItemTypeSelect: true, preselectedWorkItemType: 'ISSUE' });
+    it('has text of "New item" regardless of preselectedWorkItemType', () => {
+      createComponent({ preselectedWorkItemType: 'ISSUE' });
 
       expect(findTrigger().text()).toBe('New item');
     });
@@ -342,7 +353,7 @@ describe('CreateWorkItemModal', () => {
       findForm().vm.$emit('work-item-created', { webUrl: '/', workItem: {} });
 
       expect(wrapper.find('h2').text()).toBe('New key result');
-      expect(findTrigger().text()).toBe('New key result');
+      expect(findTrigger().text()).toBe('New item');
       expect(showToast).toHaveBeenCalledWith('Key Result created.', expect.any(Object));
     });
   });

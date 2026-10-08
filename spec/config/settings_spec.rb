@@ -130,6 +130,10 @@ RSpec.describe Settings, feature_category: :system_access do
       described_class.instance_variable_set(:@db_key_base_keys, nil)
     end
 
+    after do
+      described_class.instance_variable_set(:@db_key_base_keys, nil)
+    end
+
     describe 'memoization' do
       let(:raw_keys) { 'a' }
 
@@ -164,9 +168,9 @@ RSpec.describe Settings, feature_category: :system_access do
     context 'when db key base secret is an array with several elements' do
       let(:raw_keys) { %w[a b] }
 
-      it 'raises a MultipleDbKeyBaseError error' do
-        expect { described_class.db_key_base_keys }
-          .to raise_error(MultipleDbKeyBaseError, "Defining multiple `db_key_base` keys isn't supported yet.")
+      it 'returns the array' do
+        expect(described_class.db_key_base_keys)
+          .to eq(%w[a b])
       end
     end
   end

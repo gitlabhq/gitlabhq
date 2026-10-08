@@ -7,8 +7,8 @@ import {
   HIGHLIGHT_TOP_CLASS_NAME,
   HIGHLIGHT_BOTTOM_CLASS_NAME,
   MAX_BLAME_LINES,
-} from '~/vue_shared/components/blob_viewers/constants';
-import SimpleViewer from '~/vue_shared/components/blob_viewers/simple_viewer.vue';
+} from '~/blob/components/blob_viewers/constants';
+import SimpleViewer from '~/blob/components/blob_viewers/simple_viewer.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';

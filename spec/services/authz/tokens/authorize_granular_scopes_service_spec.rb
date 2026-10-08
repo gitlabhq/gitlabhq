@@ -260,12 +260,20 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
 
       it_behaves_like 'successful response'
 
+      context 'when the `granular_oauth_tokens` feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_oauth_tokens: false)
+        end
+
+        it_behaves_like 'error response', 'Access denied: Fine-grained oauth access tokens are not yet supported.'
+      end
+
       context 'when the `granular_personal_access_tokens` feature flag is disabled' do
         before do
           stub_feature_flags(granular_personal_access_tokens: false)
         end
 
-        it_behaves_like 'error response', 'Access denied: Fine-grained oauth access tokens are not yet supported.'
+        it_behaves_like 'successful response'
       end
 
       context 'when the consent grant does not include the required permission' do

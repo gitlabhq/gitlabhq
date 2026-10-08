@@ -38,6 +38,44 @@ RSpec.describe 'getting custom emoji within namespace', feature_category: :share
       expect(graphql_data['group']).to be_nil
     end
 
+    describe 'granular PAT authorization' do
+      let(:query) do
+        graphql_query_for(
+          'group',
+          { fullPath: group.full_path },
+          query_graphql_field('customEmoji', {}, 'count nodes { name }')
+        )
+      end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_group, :read_custom_emoji] do
+        let(:user) { current_user }
+        let(:boundary_object) { group }
+        let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+      end
+
+      it 'returns no emojis for a granular token without read_custom_emoji' do
+        assignable = ::Authz::PermissionGroups::Assignable.for_permission(:read_group).first.name
+        pat = create(:granular_pat, user: current_user, boundary: ::Authz::Boundary.for(group),
+          permissions: [assignable])
+
+        post_graphql(query, token: { personal_access_token: pat })
+
+        expect(graphql_data_at(:group, :custom_emoji, :nodes)).to eq([])
+      end
+
+      it 'returns the emojis for a granular token with read_custom_emoji' do
+        assignables = [:read_group, :read_custom_emoji].map do |permission|
+          ::Authz::PermissionGroups::Assignable.for_permission(permission).first.name
+        end
+        pat = create(:granular_pat, user: current_user, boundary: ::Authz::Boundary.for(group),
+          permissions: assignables)
+
+        post_graphql(query, token: { personal_access_token: pat })
+
+        expect(graphql_data_at(:group, :custom_emoji, :nodes)).to eq([{ 'name' => custom_emoji.name }])
+      end
+    end
+
     context 'when asset proxy is configured' do
       before do
         stub_asset_proxy_enabled(

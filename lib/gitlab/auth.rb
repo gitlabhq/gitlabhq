@@ -288,7 +288,7 @@ module Gitlab
           user = User.id_in(token.resource_owner_id).first
           return unless user && (user.can_log_in_with_non_expired_password? || valid_composite_identity?(user))
 
-          Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))
+          Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes), oauth_access_token: token)
         end
       end
 
@@ -482,8 +482,7 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES -
-          [GRANULAR_SCOPE]
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES
       end
 
       def registry_scopes

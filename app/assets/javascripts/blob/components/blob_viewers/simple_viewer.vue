@@ -4,9 +4,13 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
-import Blame from '../source_viewer/components/blame_info.vue';
-import { calculateBlameOffset, shouldRender, toggleBlameLineBorders } from '../source_viewer/utils';
-import blameDataQuery from '../source_viewer/queries/blame_data.query.graphql';
+import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
+import {
+  calculateBlameOffset,
+  shouldRender,
+  toggleBlameLineBorders,
+} from '~/vue_shared/components/source_viewer/utils';
+import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import ViewerMixin from './mixins';
 import {
   HIGHLIGHT_CLASS_NAME,

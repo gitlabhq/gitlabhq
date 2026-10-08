@@ -7,21 +7,20 @@ Gitlab::Seeder.quiet do
 
   next if Authn::OauthApplication.exists?(name: name, owner: owner)
 
-  application = Authn::OauthApplication.create!(
-    name: name,
-    redirect_uri: 'https://example.com/oauth/callback',
-    scopes: 'api',
-    owner: owner,
-    organization: organization
-  )
-
   granular_scope = Authz::GranularScope.create!(
     organization: organization,
     access: :user,
     permissions: [:update_saved_reply]
   )
 
-  application.oauth_application_granular_scopes.create!(granular_scope: granular_scope)
+  Authn::OauthApplication.create!(
+    name: name,
+    redirect_uri: 'https://example.com/oauth/callback',
+    scopes: 'api',
+    owner: owner,
+    organization: organization,
+    granular_scopes: [granular_scope]
+  )
 rescue StandardError => e
   warn "\nError seeding OAuth application granular scopes: #{e}"
 end

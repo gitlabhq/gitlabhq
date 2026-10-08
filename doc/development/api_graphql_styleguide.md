@@ -54,6 +54,13 @@ behaves like this:
 | 19.5.x, field exists | Normal value |
 | 19.5.x, field removed or misspelled | `undefinedField` error |
 
+You don't need to remove the directive later.
+After the backend moves past the tagged milestone, the directive no longer has an effect.
+Every milestone, the `Keeps::CleanupGlIntroduced` housekeeper keep opens a merge request
+that removes directives older than the previous milestone from the frontend `*.graphql` files.
+The keep does not change other files. If you add the directive in another place, for example
+in a query string in a JavaScript file, you must remove it manually.
+
 The directive covers the tagged node's whole subtree. When the backend strips a tagged node, nothing inside it is
 validated: an unknown field or type inside the subtree returns `null` instead of an error.
 

@@ -64,6 +64,14 @@ module Gitlab
       def personal_access_token
         authentication_context[:personal_access_token]
       end
+
+      def oauth_access_token
+        authentication_context[:oauth_access_token]
+      end
+
+      def access_token
+        personal_access_token || oauth_access_token
+      end
     end
   end
 end

@@ -58,6 +58,35 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     end
   end
 
+  describe 'syncing the granular scope' do
+    it 'adds granular when an application is created with a declared set' do
+      granular_application = create(:oauth_application, :granular, scopes: 'read_api')
+
+      expect(granular_application.reload.scopes.to_a).to contain_exactly('read_api', 'granular')
+    end
+
+    it 'adds granular when a set is declared on an existing application' do
+      granular_scope = build(:granular_scope, namespace: nil, access: :user)
+
+      expect { application.update!(granular_scopes: [granular_scope]) }
+        .to change { application.reload.scopes.to_a }.from([]).to(['granular'])
+    end
+
+    it 'keeps granular when the application form saves the scopes without it' do
+      granular_application = create(:oauth_application, :granular)
+
+      granular_application.update!(scopes: 'read_api')
+
+      expect(granular_application.reload.scopes.to_a).to contain_exactly('read_api', 'granular')
+    end
+
+    it 'removes granular from an application without declared granular scopes' do
+      new_application = create(:oauth_application, scopes: 'read_api granular')
+
+      expect(new_application.reload.scopes.to_a).to eq(['read_api'])
+    end
+  end
+
   describe '#iam_routing_enabled?' do
     let(:other_application) { create(:oauth_application) }
 

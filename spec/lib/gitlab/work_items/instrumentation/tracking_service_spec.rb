@@ -147,6 +147,44 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::TrackingService, feature_cate
     end
   end
 
+  describe '.plan_event_properties' do
+    before do
+      allow(described_class).to receive(:current_source).and_return('ai_workflows')
+    end
+
+    it 'omits workflow_id when the context has none' do
+      expect(described_class.plan_event_properties(work_item)).to eq(source: 'ai_workflows', work_item_id: work_item.id)
+    end
+
+    it 'adds the numeric workflow id from the context' do
+      ::Gitlab::ApplicationContext.with_context(duo_workflow_id: '42') do
+        expect(described_class.plan_event_properties(work_item)).to eq(source: 'ai_workflows',
+          work_item_id: work_item.id, workflow_id: 42)
+      end
+    end
+
+    it 'ignores a workflow id larger than a bigint' do
+      ::Gitlab::ApplicationContext.with_context(duo_workflow_id: '9' * 40) do
+        expect(described_class.plan_event_properties(work_item)).to eq(source: 'ai_workflows',
+          work_item_id: work_item.id)
+      end
+    end
+
+    it 'ignores a zero workflow id' do
+      ::Gitlab::ApplicationContext.with_context(duo_workflow_id: '0') do
+        expect(described_class.plan_event_properties(work_item)).to eq(source: 'ai_workflows',
+          work_item_id: work_item.id)
+      end
+    end
+
+    it 'ignores a non-numeric workflow id' do
+      ::Gitlab::ApplicationContext.with_context(duo_workflow_id: '42abc') do
+        expect(described_class.plan_event_properties(work_item)).to eq(source: 'ai_workflows',
+          work_item_id: work_item.id)
+      end
+    end
+  end
+
   describe '.current_source' do
     after do
       ::Current.token_info = nil

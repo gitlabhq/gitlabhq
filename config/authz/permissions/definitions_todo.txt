@@ -391,7 +391,6 @@ read_crm_contact
 read_crm_contacts
 read_crm_organization
 read_cross_project
-read_custom_emoji
 read_custom_field
 read_customizable_dashboards
 read_dedicated_hosted_runner_usage

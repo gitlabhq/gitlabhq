@@ -634,6 +634,19 @@ Migration/UnfinishedDependencies:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
 
+Migration/RoundTimestamp:
+  Enabled: true
+  EnforcedSince: 20261005130000
+  Include:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+    - 'db/click_house/migrate/**/*.rb'
+    - 'db/click_house/post_migrate/**/*.rb'
+    - 'ee/db/geo/migrate/*.rb'
+    - 'ee/db/geo/post_migrate/*.rb'
+    - 'ee/db/embedding/migrate/*.rb'
+    - 'ee/db/embedding/post_migrate/*.rb'
+
 BackgroundMigration/FeatureCategory:
   Enabled: true
   Include:

@@ -18,7 +18,7 @@ additional_properties:
     description: id of the pipeline pushing the event
   test_type:
     description: type of test, like frontend, backend
-product_group: development_analytics
+product_group: development_health
 milestone: '18.1'
 milestone_removed: '18.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191286

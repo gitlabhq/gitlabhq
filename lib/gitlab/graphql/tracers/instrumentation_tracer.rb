@@ -79,12 +79,17 @@ module Gitlab
           return unless query
 
           analysis_info = query.context[:gl_analysis]&.transform_keys { |key| "query_analysis.#{key}" }
+          logging = query.context.namespace(:gl_logging)
+          connection_nodes = logging.fetch(:connection_nodes, 0)
+          logging[:request_log]&.store(Labkit::Fields::GRAPHQL_CONNECTION_NODES, connection_nodes)
+
           info = {
             query_fingerprint: query.fingerprint,
             duration_s: duration_s,
             operation_name: query.operation_name,
             operation_fingerprint: query.operation_fingerprint,
             is_mutation: query.mutation?,
+            Labkit::Fields::GRAPHQL_CONNECTION_NODES => connection_nodes,
             variables: ::Gitlab::Graphql::LogSanitizer.variables(query.provided_variables, query.operation_name),
             query_string: ::Gitlab::Graphql::LogSanitizer.query_string(query)
           }

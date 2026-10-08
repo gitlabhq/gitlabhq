@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection, feature_category: :api do
-  let(:context) { instance_double(GraphQL::Query::Context, schema: GitlabSchema, :[] => nil) }
+  let(:context) { instance_double(GraphQL::Query::Context, schema: GitlabSchema, :[] => nil, namespace: {}) }
 
   it 'subclasses from GraphQL::Relay::RelationConnection' do
     expect(described_class.superclass).to eq GraphQL::Pagination::ActiveRecordRelationConnection

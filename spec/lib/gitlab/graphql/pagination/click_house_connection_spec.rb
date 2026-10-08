@@ -44,6 +44,8 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
     described_class.new(nodes, context: context).cursor_for(node)
   end
 
+  it_behaves_like 'a connection that counts its nodes'
+
   describe '#nodes' do
     subject(:actual_ids) { connection.nodes.pluck("id") }
 

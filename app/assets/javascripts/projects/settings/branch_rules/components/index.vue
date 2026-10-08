@@ -94,6 +94,7 @@ export default {
     branchesPath: { default: '' },
     canAdminGroupProtectedBranches: { default: false },
     canAdminProtectedBranches: { default: false },
+    canReadProtectedBranches: { default: false },
     groupSettingsRepositoryPath: { default: '' },
     canReadSquashOption: { default: false },
     canUpdateSquashOption: { default: false },
@@ -622,7 +623,7 @@ export default {
       </crud-component>
 
       <settings-section
-        v-if="!isPredefinedRule"
+        v-if="!isPredefinedRule && canReadProtectedBranches"
         :heading="$options.i18n.protectBranchTitle"
         class="gl-mt-5"
       >

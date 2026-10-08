@@ -7,7 +7,7 @@ import {
   BLOB_RENDER_EVENT_SHOW_SOURCE,
   BLOB_RENDER_ERRORS,
 } from '~/blob/components/constants';
-import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
+import { RichViewer, SimpleViewer } from '~/blob/components/blob_viewers';
 import {
   Blob,
   RichViewerMock,

@@ -455,7 +455,7 @@ manually check that `date`, on all Sidekiq nodes on the secondary site and all P
 same.
 
 If system clocks are synced, then the JWT token may be expiring while Git fetch is performing calculations between its
-two separate HTTP requests. See [issue 464101](https://gitlab.com/gitlab-org/gitlab/-/issues/464101), which existed in
+two separate HTTP requests. See [issue 464101](https://gitlab.com/gitlab-org/gitlab/-/work_items/464101), which existed in
 all GitLab versions until it was fixed in GitLab 17.1.0, 17.0.5, and 16.11.7.
 
 To validate if you are experiencing this issue:
@@ -489,7 +489,7 @@ To validate if you are experiencing this issue:
 1. If `last_sync_failure` no longer includes the error `fatal: could not read Username`, then you are
    affected by this issue. The state should now be `2`, which means that it's synced. If so, then you should upgrade to
    a GitLab version with the fix. You may also wish to upvote or comment on
-   [issue 466681](https://gitlab.com/gitlab-org/gitlab/-/issues/466681) which would have reduced the severity of this
+   [issue 466681](https://gitlab.com/gitlab-org/gitlab/-/work_items/466681) which would have reduced the severity of this
    issue.
 
 To workaround the issue, you must hot-patch all Sidekiq nodes in the secondary site to extend the JWT expiration time:
@@ -591,7 +591,7 @@ invalid formats, using `:` instead of `/` in the path:
 This issue is known in GitLab 17.0 and later, and is a result of more strict repository consistency
 checks. This new behavior results from a change in Git itself, where this check was added. It is not
 specific to GitLab Geo or Gitaly. For more information, see
-[issue 468560](https://gitlab.com/gitlab-org/gitlab/-/issues/468560).
+[issue 468560](https://gitlab.com/gitlab-org/gitlab/-/work_items/468560).
 
 #### Workaround
 
@@ -1542,7 +1542,7 @@ A comprehensive list of `fsck` errors can be found in the [Git documentation](ht
 
 GitLab [includes an enhancement](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5879) that might resolve some of these issues.
 
-[Gitaly issue 5625](https://gitlab.com/gitlab-org/gitaly/-/issues/5625) proposes to ensure that Geo replicates repositories even if the source repository contains
+[Gitaly issue 5625](https://gitlab.com/gitlab-org/gitaly/-/work_items/5625) proposes to ensure that Geo replicates repositories even if the source repository contains
 problematic commits.
 
 ### Related error `does not appear to be a git repository`
@@ -1636,7 +1636,7 @@ to transfer each affected repository from the primary to the secondary site.
 ## Find repository check failures in a Geo secondary site
 
 > [!note]
-> All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/issues/426659).
+> All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/work_items/426659).
 
 For GitLab 16.2 and earlier:
 

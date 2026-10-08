@@ -448,9 +448,10 @@ export default {
       :description="childDescription"
       :full-path="fullPath"
       hide-button
+      :hide-namespace-selector="!isGroup"
+      :hide-type-selector="!isGroup"
       :is-group="isGroup"
       :parent-id="workItemId"
-      :show-project-selector="isGroup"
       :title="childTitle"
       :visible="visible"
       :preselected-work-item-type="childItemType"

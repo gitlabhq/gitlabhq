@@ -6,7 +6,7 @@ RSpec.describe RssHelper, feature_category: :user_profile do
   describe '#rss_url_options' do
     context 'when signed in' do
       it "includes the current_user's feed_token" do
-        current_user = create(:user)
+        current_user = build_stubbed(:user, feed_token: 'feed-token')
         allow(helper).to receive(:current_user).and_return(current_user)
 
         feed_token = helper.rss_url_options[:feed_token]

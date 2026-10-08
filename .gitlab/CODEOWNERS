@@ -129,6 +129,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /db/click_house/ @gitlab-org/maintainers/clickhouse
 /ee/db/click_house/ @gitlab-org/maintainers/clickhouse
 /db/siphon/ @gitlab-org/maintainers/clickhouse
+/spec/support/database/retention-policy-missing-allowlist.yml @gitlab-org/maintainers/database
 
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership @gitlab-org/technical-writing/tw-docops
 

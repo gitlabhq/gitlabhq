@@ -68,6 +68,7 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
   def provider_response
     response = super
     response[:claims_supported] += %w[project_path ci_config_ref_uri ref_path sha environment jti]
+    response[:scopes_supported] = Array(response[:scopes_supported]).map(&:to_s) - [Gitlab::Auth::GRANULAR_SCOPE.to_s]
 
     # Filter scopes for MCP-specific discovery endpoints
     if request.path_info.end_with?('/api/v4/mcp')

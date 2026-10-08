@@ -286,8 +286,6 @@ type:CoverageFuzzingCorpus
 type:CurrentLicense
 type:CustomAttribute
 type:CustomDashboard
-type:CustomEmoji
-type:CustomEmojiPermissions
 type:CustomField
 type:CustomFieldSelectOption
 type:CustomSystemDashboard

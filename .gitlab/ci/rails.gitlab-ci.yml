@@ -522,7 +522,7 @@ gitlab:setup:
   stage: post-test
   variables:
     GIT_STRATEGY: none
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3.17
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3
   script:
     - ls -R
 

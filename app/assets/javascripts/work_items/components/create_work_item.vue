@@ -93,7 +93,6 @@ import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemCrmContactsQuery from '../graphql/work_item_crm_contacts.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import TitleSuggestions from './title_suggestions.vue';
-import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemNamespaceListbox from './shared/work_item_namespace_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
@@ -123,7 +122,6 @@ export default {
     WorkItemMilestone,
     WorkItemLoading,
     WorkItemCrmContacts,
-    WorkItemProjectsListbox,
     WorkItemNamespaceListbox,
     TitleSuggestions,
     WorkItemParent,
@@ -157,9 +155,6 @@ export default {
     groupPath: {
       default: '',
     },
-    projectNamespaceFullPath: {
-      default: '',
-    },
     getWorkItemTypeConfiguration: {
       default: () => {},
     },
@@ -178,11 +173,6 @@ export default {
     ),
   },
   props: {
-    alwaysShowWorkItemTypeSelect: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     confidential: {
       type: Boolean,
       required: false,
@@ -206,6 +196,16 @@ export default {
       required: false,
       default: false,
     },
+    hideNamespaceSelector: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hideTypeSelector: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isGroup: {
       type: Boolean,
       required: false,
@@ -215,11 +215,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    showProjectSelector: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     title: {
       type: String,
@@ -253,20 +248,6 @@ export default {
       default: false,
     },
     isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    namespaceFullName: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    /**
-     * Shows the group/project selector and lets the user create the item in any
-     * namespace they have access to, instead of being limited to the current one.
-     */
-    allowAnyNamespace: {
       type: Boolean,
       required: false,
       default: false,
@@ -310,7 +291,6 @@ export default {
       crmContactsWorkItem: {},
       namespace: null,
       workItemTypesConfiguration: {},
-      selectedProjectFullPath: this.initialSelectedProject(),
       selectedWorkItemTypeId: null,
       loading: false,
       initialLoadingWorkItem: true,
@@ -318,7 +298,6 @@ export default {
       initialLoadingWorkItemTypesConfiguration: true,
       selectedNamespacePath: this.initialSelectedProject(),
       selectedNamespaceObject: null,
-      showWorkItemTypeSelect: false,
       discussionToResolve: getParameterByName('discussion_to_resolve'),
       mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
       vulnerabilityId: getParameterByName('vulnerability_id'),
@@ -482,7 +461,7 @@ export default {
       );
     },
     skipWorkItemQuery() {
-      return !this.selectedProjectFullPath || !this.selectedWorkItemTypeName;
+      return !this.selectedNamespacePath || !this.selectedWorkItemTypeName;
     },
     hasWidgets() {
       return (
@@ -494,7 +473,7 @@ export default {
       return this.relatedItem?.id;
     },
     relatedItemReference() {
-      return getDisplayReference(this.selectedProjectFullPath, this.relatedItem.reference);
+      return getDisplayReference(this.selectedNamespacePath, this.relatedItem.reference);
     },
     relatedItemType() {
       return lowercaseWorkItemType(this.relatedItem?.type);
@@ -731,16 +710,7 @@ export default {
       return findCustomFieldsWidget(this.workItem)?.customFieldValues ?? null;
     },
     inputNamespacePath() {
-      if (this.shouldShowNamespaceSelector) {
-        return this.selectedNamespacePath;
-      }
-      return this.selectedProjectFullPath;
-    },
-    showItemTypeSelect() {
-      if (this.shouldShowNamespaceSelector) {
-        return true;
-      }
-      return this.showWorkItemTypeSelect || this.alwaysShowWorkItemTypeSelect;
+      return this.selectedNamespacePath;
     },
     formButtonsClasses() {
       return this.isModal
@@ -749,18 +719,12 @@ export default {
     },
     selectedProjectGroupPath() {
       // Eventually, we should be able to select both groups and projects from a single interface in consolidated list.
-      if (this.selectedProjectFullPath && this.selectedProjectFullPath.indexOf('/') === -1) {
-        return this.selectedProjectFullPath;
+      if (this.selectedNamespacePath && this.selectedNamespacePath.indexOf('/') === -1) {
+        return this.selectedNamespacePath;
       }
-      return this.selectedProjectFullPath
-        ? this.selectedProjectFullPath.substring(0, this.selectedProjectFullPath.lastIndexOf('/'))
+      return this.selectedNamespacePath
+        ? this.selectedNamespacePath.substring(0, this.selectedNamespacePath.lastIndexOf('/'))
         : this.groupPath;
-    },
-    shouldShowNamespaceSelector() {
-      // When the form asks for a project (Issues/Tasks/Incidents on a group page),
-      // keep creation project-scoped even if group Epic support would otherwise
-      // show the Group/project namespace selector.
-      return this.allowAnyNamespace || (this.isGroup && !this.showProjectSelector);
     },
     namespaceSelectorLabel() {
       return this.projectsOnly ? __('Project') : __('Group/project');
@@ -924,7 +888,6 @@ export default {
         this.selectedWorkItemTypeId = selectedWorkItemType?.id;
         this.$emit('change-type', selectedWorkItemType.name);
       } else {
-        this.showWorkItemTypeSelect = true;
         this.setDefaultWorkItemType();
       }
     },
@@ -1296,45 +1259,25 @@ export default {
         <page-heading v-if="!hideFormTitle" :heading="titleText" />
 
         <div class="gl-flex gl-items-center gl-gap-4">
-          <template v-if="shouldShowNamespaceSelector">
-            <gl-form-group
-              class="gl-mr-4 gl-max-w-26 gl-flex-grow"
-              :label="namespaceSelectorLabel"
-              label-for="create-work-item-namespace"
-              data-testid="work-item-namespace-form-group"
-            >
-              <work-item-namespace-listbox
-                v-model="selectedNamespacePath"
-                :full-path="fullPath"
-                :is-group="isGroup"
-                :limit-to-current-namespace="!allowAnyNamespace"
-                :projects-only="projectsOnly"
-                toggle-id="create-work-item-namespace"
-                @select-namespace="handleNamespaceSelect"
-              />
-            </gl-form-group>
-          </template>
-
-          <template v-else>
-            <gl-form-group
-              v-if="showProjectSelector"
-              class="gl-max-w-26 gl-flex-grow"
-              :label="__('Project')"
-              label-for="create-work-item-project"
-            >
-              <work-item-projects-listbox
-                v-model="selectedProjectFullPath"
-                :full-path="fullPath"
-                :is-group="isGroup"
-                :current-project-name="namespaceFullName"
-                :project-namespace-full-path="projectNamespaceFullPath"
-                toggle-id="create-work-item-project"
-              />
-            </gl-form-group>
-          </template>
+          <gl-form-group
+            v-if="!hideNamespaceSelector"
+            class="gl-mr-4 gl-max-w-26 gl-flex-grow"
+            :label="namespaceSelectorLabel"
+            label-for="create-work-item-namespace"
+            data-testid="work-item-namespace-form-group"
+          >
+            <work-item-namespace-listbox
+              v-model="selectedNamespacePath"
+              :full-path="fullPath"
+              :is-group="isGroup"
+              :projects-only="projectsOnly"
+              toggle-id="create-work-item-namespace"
+              @select-namespace="handleNamespaceSelect"
+            />
+          </gl-form-group>
 
           <gl-form-group
-            v-if="showItemTypeSelect"
+            v-if="!hideTypeSelector"
             class="gl-max-w-26 gl-flex-grow"
             label-class="!gl-pb-0"
           >
@@ -1367,7 +1310,7 @@ export default {
               @update-draft="updateDraftData('title', $event)"
             />
             <title-suggestions
-              :project-path="selectedProjectFullPath"
+              :project-path="selectedNamespacePath"
               :search="workItemTitle"
               :help-text="$options.i18n.similarWorkItemHelpText"
               :title="$options.i18n.suggestionTitle"

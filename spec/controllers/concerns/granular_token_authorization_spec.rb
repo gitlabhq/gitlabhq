@@ -257,8 +257,8 @@ RSpec.describe GranularTokenAuthorization, feature_category: :permissions do
       instance
     end
 
-    describe '#granular_personal_access_token' do
-      subject { helper.send(:granular_personal_access_token) }
+    describe '#granular_access_token' do
+      subject { helper.send(:granular_access_token) }
 
       context 'with a granular personal access token' do
         let(:token) { create(:granular_pat, user: user) }
@@ -284,10 +284,34 @@ RSpec.describe GranularTokenAuthorization, feature_category: :permissions do
 
         it { is_expected.to be_nil }
       end
+
+      context 'with an OAuth access token' do
+        let(:authentication_result) do
+          Gitlab::Auth::Result.new(user, nil, :oauth, [], { oauth_access_token: token })
+        end
+
+        context 'when the token is granular' do
+          let(:token) { build(:oauth_access_token, :granular, resource_owner: user) }
+
+          it { is_expected.to eq(token) }
+        end
+
+        context 'when the token is legacy' do
+          let(:token) { build(:oauth_access_token, resource_owner: user, scopes: ['api']) }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when the token is an IAM OAuth token' do
+          let(:token) { instance_double(Authn::Tokens::IamOauthToken, id: 'jti') }
+
+          it { is_expected.to be_nil }
+        end
+      end
     end
 
-    describe '#pat_authorized?' do
-      subject { helper.send(:pat_authorized?, project, :download_code) }
+    describe '#access_token_authorized?' do
+      subject { helper.send(:access_token_authorized?, project, :download_code) }
 
       context 'with a granular personal access token' do
         let(:boundary) { ::Authz::Boundary.for(project) }
@@ -330,6 +354,52 @@ RSpec.describe GranularTokenAuthorization, feature_category: :permissions do
               granular_tokens_enforced_after: Date.current
             )
           end
+
+          it { is_expected.to be(false) }
+        end
+      end
+
+      context 'with a legacy OAuth access token' do
+        let(:token) { build(:oauth_access_token, resource_owner: user, scopes: ['api']) }
+        let(:authentication_result) do
+          Gitlab::Auth::Result.new(user, nil, :oauth, [], { oauth_access_token: token })
+        end
+
+        it { is_expected.to be(true) }
+
+        context 'when the namespace enforces granular tokens' do
+          before do
+            group.namespace_settings.update!(
+              enforce_granular_tokens: true,
+              granular_tokens_enforced_after: Date.current
+            )
+          end
+
+          it { is_expected.to be(true) }
+        end
+      end
+
+      context 'with a granular OAuth access token' do
+        let_it_be(:application) { create(:oauth_application) }
+
+        let(:token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+        let(:authentication_result) do
+          Gitlab::Auth::Result.new(user, nil, :oauth, [], { oauth_access_token: token })
+        end
+
+        before do
+          create(:oauth_consent_grant, user: user, application: application,
+            boundary: ::Authz::Boundary.for(project), permissions: permissions)
+        end
+
+        context 'when the consent grant has the required permission' do
+          let(:permissions) { :download_code }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'when the consent grant is missing the required permission' do
+          let(:permissions) { :push_code }
 
           it { is_expected.to be(false) }
         end

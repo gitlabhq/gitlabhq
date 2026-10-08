@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
+import { RichViewer, SimpleViewer } from './blob_viewers';
 import BlobContentError from './blob_content_error.vue';
 
 import {

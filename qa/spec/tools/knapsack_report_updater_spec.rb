@@ -78,7 +78,7 @@ RSpec.describe QA::Tools::KnapsackReportUpdater, :aggregate_failures do
       squash: true,
       reviewer_ids: reviewer_ids,
       labels: [
-        "group::development analytics",
+        "group::development health",
         "type::maintenance",
         "maintenance::pipelines",
         "automation:bot-authored",

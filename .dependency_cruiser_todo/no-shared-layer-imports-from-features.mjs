@@ -25,8 +25,6 @@ export default {
     'app/assets/javascripts/vue_shared/access_tokens/utils.js',
     'app/assets/javascripts/vue_shared/alert_details/components/alert_todo.vue',
     'app/assets/javascripts/vue_shared/alert_details/components/system_notes/system_note.vue',
-    'app/assets/javascripts/vue_shared/components/blob_viewers/mixins.js',
-    'app/assets/javascripts/vue_shared/components/blob_viewers/rich_viewer.vue',
     'app/assets/javascripts/vue_shared/components/changed_file_icon.vue',
     'app/assets/javascripts/vue_shared/components/code_block_highlighted.vue',
     'app/assets/javascripts/vue_shared/components/code_dropdown/clone_code_dropdown.vue',

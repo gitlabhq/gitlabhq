@@ -47,7 +47,7 @@ module Gitlab
 
     attr_reader :actor, :protocol, :authentication_abilities,
       :repository_path, :redirected_path, :auth_result_type,
-      :cmd, :changes, :push_options, :gitaly_context, :personal_access_token
+      :cmd, :changes, :push_options, :gitaly_context, :personal_access_token, :oauth_access_token
     attr_accessor :container
 
     def self.error_message(key)
@@ -60,7 +60,7 @@ module Gitlab
       raise ArgumentError, "No error message defined for #{key}"
     end
 
-    def initialize(actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil, auth_result_type: nil, push_options: nil, gitaly_context: nil, personal_access_token: nil) # rubocop:disable Metrics/ParameterLists -- it needs a refactoring to resolve
+    def initialize(actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil, auth_result_type: nil, push_options: nil, gitaly_context: nil, personal_access_token: nil, oauth_access_token: nil) # rubocop:disable Metrics/ParameterLists -- it needs a refactoring to resolve
       @actor     = actor
       @container = container
       @protocol  = protocol
@@ -71,6 +71,7 @@ module Gitlab
       @push_options = Gitlab::PushOptions.new(push_options)
       @gitaly_context = gitaly_context
       @personal_access_token = personal_access_token
+      @oauth_access_token = oauth_access_token
     end
 
     def check(cmd, changes)
@@ -230,8 +231,8 @@ module Gitlab
     end
 
     def check_authentication_abilities!
-      check_granular_pat_permissions! if personal_access_token
-      check_legacy_authentication_abilities! unless personal_access_token&.granular?
+      check_granular_token_permissions! if access_token
+      check_legacy_authentication_abilities! unless access_token.try(:granular?)
     end
 
     def check_legacy_authentication_abilities!
@@ -247,11 +248,11 @@ module Gitlab
       end
     end
 
-    def check_granular_pat_permissions!
+    def check_granular_token_permissions!
       result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-        boundaries: granular_pat_boundaries,
+        boundaries: granular_token_boundaries,
         permissions: permission_for_command,
-        token: personal_access_token
+        token: access_token
       ).execute
 
       return unless result.error?
@@ -260,8 +261,12 @@ module Gitlab
       raise ForbiddenError, result.message
     end
 
-    def granular_pat_boundaries
+    def granular_token_boundaries
       ::Authz::Boundary.for(project)
+    end
+
+    def access_token
+      personal_access_token || oauth_access_token
     end
 
     # The granular permission required for the command. Each access type's
@@ -276,10 +281,10 @@ module Gitlab
       end
     end
 
-    # For granular PATs, permissions are validated earlier via check_granular_pat_permissions!
+    # For granular tokens, permissions are validated earlier via check_granular_token_permissions!
     # so we can skip the authentication_abilities check.
     def has_authentication_ability?(ability)
-      personal_access_token&.granular? || authentication_abilities.include?(ability)
+      access_token.try(:granular?) || authentication_abilities.include?(ability)
     end
 
     def check_project_accessibility!

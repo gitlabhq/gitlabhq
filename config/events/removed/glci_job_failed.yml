@@ -12,7 +12,7 @@ additional_properties:
     description: job ID
   property:
     description: failure category
-product_group: development_analytics
+product_group: development_health
 milestone: '17.11'
 milestone_removed: '19.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187501

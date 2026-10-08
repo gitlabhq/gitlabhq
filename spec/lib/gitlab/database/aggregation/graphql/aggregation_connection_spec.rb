@@ -61,6 +61,8 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
       insert_events_into_click_house
     end
 
+    it_behaves_like 'a connection that counts its nodes'
+
     context 'when requesting without pagination params' do
       let(:arguments) { {} }
 

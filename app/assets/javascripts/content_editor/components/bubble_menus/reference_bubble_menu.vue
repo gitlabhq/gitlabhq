@@ -5,6 +5,7 @@ import {
   GlButtonGroup,
   GlCollapsibleListbox,
 } from '@gitlab/ui';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import { __ } from '~/locale';
 import Reference from '../../extensions/reference';
 import ReferenceLabel from '../../extensions/reference_label';
@@ -137,8 +138,7 @@ export default {
       this.tiptapEditor.chain().focus().deleteSelection().run();
     },
     copyReferenceURL() {
-      // eslint-disable-next-line no-restricted-properties
-      navigator.clipboard.writeText(this.href);
+      copyToClipboard(this.href);
     },
     applyFormat(value) {
       const format = this.textFormats.find((v) => v.value === value);

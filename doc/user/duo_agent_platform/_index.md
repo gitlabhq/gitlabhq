@@ -104,6 +104,7 @@ These features are either beta or experimental and consume GitLab Credits.
 |---------|---|---|---|
 | [GitLab for Slack app](../project/integrations/gitlab_slack_application.md#gitlab-duo) <br /> Interact with GitLab Duo from Slack. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Security Review Flow](../application_security/security_review.md) <br /> Detects business logic vulnerabilities in merge requests. | {{< no >}} | {{< no >}} | {{< yes >}} |
+| [Workspace subagents](customize/workspace_subagents.md) <br /> Define specialized subagents in your repository for the Developer Flow to delegate tasks to. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 
 ## Beta and experimental features that don't consume credits
 

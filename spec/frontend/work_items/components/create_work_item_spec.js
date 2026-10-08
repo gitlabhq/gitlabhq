@@ -17,7 +17,6 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
-import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import WorkItemNamespaceListbox from '~/work_items/components/shared/work_item_namespace_listbox.vue';
 import TitleSuggestions from '~/work_items/components/title_suggestions.vue';
 import {
@@ -115,7 +114,6 @@ describe('Create work item component', () => {
   const findCrmContactsWidget = () => wrapper.findComponent(WorkItemCrmContacts);
   const findMilestoneWidget = () => wrapper.findComponent(WorkItemMilestone);
   const findParentWidget = () => wrapper.findComponent(WorkItemParent);
-  const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findGroupProjectSelector = () => wrapper.findComponent(WorkItemNamespaceListbox);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
@@ -170,7 +168,6 @@ describe('Create work item component', () => {
       propsData: {
         creationContext: CREATION_CONTEXT_LIST_ROUTE,
         fullPath,
-        projectNamespaceFullPath: fullPath,
         preselectedWorkItemType,
         ...props,
       },
@@ -392,29 +389,6 @@ describe('Create work item component', () => {
     });
   });
 
-  describe('project selector', () => {
-    it.each([true, false])(
-      'renders based on value of showProjectSelector prop',
-      async (showProjectSelector) => {
-        createComponent({ props: { showProjectSelector } });
-        await resolveAll();
-
-        expect(findProjectsSelector().exists()).toBe(showProjectSelector);
-      },
-    );
-
-    it('defaults the selected project to the injected `fullPath` value', async () => {
-      const namespaceFullName = 'GitLab.org / GitLab';
-      createComponent({
-        props: { showProjectSelector: true, namespaceFullName },
-      });
-      await resolveAll();
-
-      expect(findProjectsSelector().props('currentProjectName')).toBe(namespaceFullName);
-      expect(findProjectsSelector().props('selectedProjectFullPath')).toBe('full-path');
-    });
-  });
-
   describe('Group/project selector', () => {
     it('renders with the current namespace selected by default', async () => {
       createComponent({
@@ -428,48 +402,22 @@ describe('Create work item component', () => {
     });
 
     it.each`
-      scenario                       | isGroup  | allowAnyNamespace | hasEpicsFeature | showProjectSelector | expected
-      ${'group list page'}           | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
-      ${'any namespace allowed'}     | ${false} | ${true}           | ${false}        | ${false}            | ${true}
-      ${'EE with epics'}             | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
-      ${'CE group no epics'}         | ${true}  | ${false}          | ${false}        | ${false}            | ${true}
-      ${'CE project, no epics'}      | ${false} | ${false}          | ${false}        | ${false}            | ${false}
-      ${'group issue needs project'} | ${true}  | ${false}          | ${true}         | ${true}             | ${false}
-    `(
-      '$scenario shows selector: $expected',
-      async ({ isGroup, allowAnyNamespace, hasEpicsFeature, showProjectSelector, expected }) => {
-        createComponent({
-          props: { isGroup, allowAnyNamespace, showProjectSelector },
-          hasEpicsFeature,
-        });
+      scenario               | hideNamespaceSelector | expected
+      ${'shown by default'}  | ${false}              | ${true}
+      ${'explicitly hidden'} | ${true}               | ${false}
+    `('$scenario shows selector: $expected', async ({ hideNamespaceSelector, expected }) => {
+      createComponent({ props: { hideNamespaceSelector } });
 
-        await resolveAll();
-        expect(findGroupProjectSelector().exists()).toBe(expected);
-      },
-    );
-
-    it.each`
-      scenario                   | props                          | hasEpicsFeature | limitToCurrentNamespace
-      ${'any namespace allowed'} | ${{ allowAnyNamespace: true }} | ${false}        | ${false}
-      ${'on a group list page'}  | ${{ isGroup: true }}           | ${true}         | ${true}
-    `(
-      '$scenario passes limitToCurrentNamespace: $limitToCurrentNamespace',
-      async ({ props, hasEpicsFeature, limitToCurrentNamespace }) => {
-        createComponent({ props, hasEpicsFeature });
-        await resolveAll();
-
-        expect(findGroupProjectSelector().props('limitToCurrentNamespace')).toBe(
-          limitToCurrentNamespace,
-        );
-      },
-    );
+      await resolveAll();
+      expect(findGroupProjectSelector().exists()).toBe(expected);
+    });
 
     describe('when only projects can be selected', () => {
       const findSelectorFormGroup = () => wrapper.findByTestId('work-item-namespace-form-group');
 
       it('restricts the selector to projects and labels it Project', async () => {
         createComponent({
-          props: { allowAnyNamespace: true, allowProjectsOnly: true },
+          props: { allowProjectsOnly: true },
           hasEpicsFeature: true,
         });
         await resolveAll();
@@ -480,7 +428,6 @@ describe('Create work item component', () => {
 
       it('offers groups and projects under the Group/project label by default', async () => {
         createComponent({
-          props: { allowAnyNamespace: true },
           hasEpicsFeature: true,
         });
         await resolveAll();
@@ -509,9 +456,9 @@ describe('Create work item component', () => {
         expect(findGroupProjectSelector().props('projectsOnly')).toBe(false);
       });
 
-      it('restricts the selector to projects when any namespace is allowed but epics are not supported', async () => {
+      it('restricts the selector to projects when epics are not supported', async () => {
         createComponent({
-          props: { allowAnyNamespace: true, allowProjectsOnly: false },
+          props: { allowProjectsOnly: false },
           hasEpicsFeature: false,
         });
         await resolveAll();
@@ -631,10 +578,10 @@ describe('Create work item component', () => {
 
   describe('Work item types dropdown', () => {
     it('renders with loading icon when namespaceWorkItemTypes query is loading', async () => {
-      createComponent({ props: { preselectedWorkItemType: null, showProjectSelector: true } });
+      createComponent({ props: { preselectedWorkItemType: null } });
       await resolveAll();
 
-      findProjectsSelector().vm.$emit('select-project', 'fullPath');
+      findGroupProjectSelector().vm.$emit('select-namespace', 'fullPath');
       await nextTick();
 
       expect(findSelect().attributes('disabled')).not.toBeUndefined();
@@ -651,30 +598,29 @@ describe('Create work item component', () => {
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
 
-    it('hides the type selector if preselectedWorkItemType is provided', async () => {
+    it('shows the type selector by default even if preselectedWorkItemType is provided', async () => {
       createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-      await resolveAll();
-
-      expect(findSelect().exists()).toBe(false);
-    });
-
-    it('shows the type selector when alwaysShowWorkItemTypeSelect=true even if preselectedWorkItemType is provided', async () => {
-      createComponent({
-        props: {
-          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          alwaysShowWorkItemTypeSelect: true,
-        },
-      });
       await resolveAll();
 
       expect(findSelect().exists()).toBe(true);
     });
 
-    it('does not show the "Select type" option when preselectedWorkItemType is provided and alwaysShowWorkItemTypeSelect=true', async () => {
+    it('hides the type selector when hideTypeSelector=true', async () => {
       createComponent({
         props: {
           preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          alwaysShowWorkItemTypeSelect: true,
+          hideTypeSelector: true,
+        },
+      });
+      await resolveAll();
+
+      expect(findSelect().exists()).toBe(false);
+    });
+
+    it('does not show the "Select type" option when preselectedWorkItemType is provided', async () => {
+      createComponent({
+        props: {
+          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
         },
       });
       await resolveAll();
@@ -746,11 +692,11 @@ describe('Create work item component', () => {
       expect(findFormTitle().exists()).toBe(false);
     });
 
-    it('filters work item type based on route parameter', async () => {
+    it('renders the title based on the preselected work item type route parameter', async () => {
       createComponent();
       await resolveAll();
 
-      expect(findSelect().exists()).toBe(false);
+      expect(findSelect().exists()).toBe(true);
       expect(findFormTitle().text()).toBe('New epic');
     });
 
@@ -867,12 +813,12 @@ describe('Create work item component', () => {
       });
     });
 
-    it('creates work item within a specific namespace when project is selected', async () => {
+    it('creates work item within a specific namespace when namespace is selected', async () => {
       const fullPath = 'chosen/full/path';
-      createComponent({ props: { showProjectSelector: true } });
+      createComponent();
       await resolveAll();
 
-      findProjectsSelector().vm.$emit('select-project', fullPath);
+      findGroupProjectSelector().vm.$emit('select-namespace', fullPath);
       await updateWorkItemTitle();
       wrapper.find('form').trigger('submit');
 
@@ -884,14 +830,14 @@ describe('Create work item component', () => {
       });
     });
 
-    it('correct fullPath is provided to components when project is selected', async () => {
+    it('correct fullPath is provided to components when namespace is selected', async () => {
       const fullPath = 'chosen/full/path';
-      createComponent({ props: { showProjectSelector: true } });
+      createComponent();
       await resolveAll();
 
       expect(findAssigneesWidget().props('fullPath')).toBe('full-path');
 
-      findProjectsSelector().vm.$emit('select-project', fullPath);
+      findGroupProjectSelector().vm.$emit('select-namespace', fullPath);
 
       await nextTick();
 
@@ -1283,7 +1229,7 @@ describe('Create work item component', () => {
 
     beforeEach(async () => {
       createComponent({
-        props: { relatedItem: { id, type, reference, webUrl }, showProjectSelector: true },
+        props: { relatedItem: { id, type, reference, webUrl } },
       });
       await resolveAll();
     });
@@ -1301,10 +1247,10 @@ describe('Create work item component', () => {
       expect(link.attributes('href')).toBe('web/url');
     });
 
-    it('provides the related item fullPath to the project listbox', () => {
-      const listbox = findProjectsSelector();
+    it('provides the related item fullPath to the namespace listbox', () => {
+      const listbox = findGroupProjectSelector();
 
-      expect(listbox.props('selectedProjectFullPath')).toBe('related-full-path');
+      expect(listbox.props('selectedNamespacePath')).toBe('related-full-path');
     });
 
     it('provides the related item fullPath to the widget components', () => {

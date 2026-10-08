@@ -669,7 +669,6 @@ scopes:
   - namespace_settings_with_experiment_duo_features_enabled
   ee/app/models/ee/project.rb:
   - with_wiki_enabled
-  - with_security_reports_stored
   - with_active_prometheus_integration
   - with_designs
   - compliance_framework_id_in

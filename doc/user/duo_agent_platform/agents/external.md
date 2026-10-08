@@ -267,6 +267,13 @@ OpenAI Codex:
 - `gpt-5.4-mini`
 - `gpt-5.4-nano`
 
+> [!note]
+> On GitLab.com, the top-level group can [restrict Agentic Chat to specific models](../model_selection.md#select-a-model-for-agentic-chat).
+> If it does, external agents can use only those models.
+> Add the models your agent uses to the list.
+> This restriction is controlled by a feature flag.
+> For more information, see the history of that topic.
+
 ## Configure CI/CD variables
 
 Add variables to your project to determine how GitLab connects to the third-party provider.

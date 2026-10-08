@@ -18,7 +18,7 @@ import {
 } from '~/blob/components/constants';
 import SnippetBlobView from '~/snippets/components/snippet_blob_view.vue';
 import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
-import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
+import { RichViewer, SimpleViewer } from '~/blob/components/blob_viewers';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 

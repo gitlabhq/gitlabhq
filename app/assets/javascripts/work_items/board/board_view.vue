@@ -289,6 +289,15 @@ export default {
       }
       return this.orderedGroupValues.some((value) => !(value.id in this.groupCounts));
     },
+    hasNoResults() {
+      return (
+        this.hasActiveFilters &&
+        !this.showEmptyGroups &&
+        !this.needsGroupSelection &&
+        this.orderedGroupValues.length > 0 &&
+        this.orderedGroupValues.every((value) => this.groupCounts[value.id] === 0)
+      );
+    },
     displayedGroupValues() {
       if (this.showEmptyGroups) {
         return this.orderedGroupValues;
@@ -314,10 +323,6 @@ export default {
           gateData: this.gateData,
         }) ?? true
       );
-    },
-    // Epics are a fixed type on their board, so the type selector is hidden there.
-    alwaysShowWorkItemTypeSelect() {
-      return this.preselectedWorkItemType !== WORK_ITEM_TYPE_NAME_EPIC;
     },
     inheritedConfidential() {
       return this.queryVariables.confidential === true;
@@ -1099,7 +1104,7 @@ export default {
       size="lg"
       class="gl-m-auto"
     />
-    <div v-else-if="!hasWorkItems" class="gl-w-full gl-self-start">
+    <div v-else-if="!hasWorkItems || hasNoResults" class="gl-w-full gl-self-start">
       <slot name="empty-state"></slot>
     </div>
     <gl-empty-state
@@ -1164,10 +1169,10 @@ export default {
       v-if="createColumnValue"
       visible
       hide-button
-      :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
       :confidential="inheritedConfidential"
       :creation-context="$options.CREATION_CONTEXT_BOARD"
       :full-path="rootPageFullPath"
+      :hide-namespace-selector="!queryVariables.isGroup"
       :is-group="queryVariables.isGroup"
       :preselected-work-item-type="preselectedWorkItemType"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"

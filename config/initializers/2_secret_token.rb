@@ -64,7 +64,8 @@ class SecretsInitializer
     defaults = {
       secret_key_base: generate_new_secure_token,
       otp_key_base: generate_new_secure_token,
-      db_key_base: generate_new_secure_token,
+      # An array so that a new key can be appended to rotate it. The last key encrypts.
+      db_key_base: [generate_new_secure_token],
       openid_connect_signing_key: generate_new_rsa_private_key,
       # 1. We set the following two keys as an array to support keys rotation.
       #    The last key in the array is always used to encrypt data:

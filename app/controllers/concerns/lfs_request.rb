@@ -123,7 +123,7 @@ module LfsRequest
     return false if limit_exceeded?
     return true if can?(user, :build_push_code, project) && has_authentication_ability?(:build_push_code)
     return false unless has_authentication_ability?(:push_code)
-    return false unless pat_authorized?(project, :push_code)
+    return false unless access_token_authorized?(project, :push_code)
 
     lfs_deploy_token? ||
       can?(user, :push_code, project) ||
@@ -142,7 +142,7 @@ module LfsRequest
 
   def user_can_download_code?
     has_authentication_ability?(:download_code) &&
-      pat_authorized?(project, :download_code) &&
+      access_token_authorized?(project, :download_code) &&
       can?(user, :download_code, project)
   end
 
@@ -165,7 +165,7 @@ module LfsRequest
   end
 
   def has_authentication_ability?(capability)
-    return GRANULAR_LFS_ABILITIES.include?(capability) if granular_personal_access_token.present?
+    return GRANULAR_LFS_ABILITIES.include?(capability) if granular_access_token.present?
 
     (authentication_abilities || []).include?(capability)
   end

@@ -1005,6 +1005,65 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
               end
 
+              context 'when authenticating with a granular OAuth access token' do
+                let_it_be(:application) { create(:oauth_application) }
+
+                let(:oauth_token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+                let(:env) { { user: 'oauth2', password: oauth_token.plaintext_token } }
+
+                before do
+                  scopes = Doorkeeper.configuration.scopes + Doorkeeper::OAuth::Scopes.from_array([Gitlab::Auth::GRANULAR_SCOPE])
+                  allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+
+                  create(:oauth_consent_grant, user: user, application: application,
+                    boundary: ::Authz::Boundary.for(project), permissions: permissions)
+                end
+
+                context 'without any code permissions' do
+                  let(:permissions) { [] }
+
+                  it 'denies pulls' do
+                    download(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained oauth access token with the following project permissions: [Code: Download].")
+                    end
+                  end
+
+                  it 'denies pushes' do
+                    upload(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained oauth access token with the following project permissions: [Code: Push].")
+                    end
+                  end
+                end
+
+                context 'with download_code permission' do
+                  let(:permissions) { :download_code }
+
+                  it_behaves_like 'pulls are allowed'
+
+                  it 'denies pushes' do
+                    upload(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained oauth access token with the following project permissions: [Code: Push].")
+                    end
+                  end
+                end
+
+                context 'with push_code permission' do
+                  let(:permissions) { :push_code }
+
+                  it_behaves_like 'pushes are allowed'
+
+                  it 'denies pulls' do
+                    download(path, **env) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained oauth access token with the following project permissions: [Code: Download].")
+                    end
+                  end
+                end
+              end
+
               context 'when user has email OTP enabled' do
                 let_it_be(:user) { create(:user, email_otp_required_after: 1.second.ago, maintainer_of: project) }
                 let_it_be(:access_token) { create(:personal_access_token, user: user) }

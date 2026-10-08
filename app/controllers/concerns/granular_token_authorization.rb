@@ -64,18 +64,22 @@ module GranularTokenAuthorization
     render_404
   end
 
-  def granular_personal_access_token
-    token = authentication_result&.personal_access_token
-    return unless token&.granular?
+  def granular_access_token
+    token = authentication_result_token
+    return unless token.try(:granular?)
 
     token
   end
-  strong_memoize_attr :granular_personal_access_token
+  strong_memoize_attr :granular_access_token
 
-  def pat_authorized?(subject, permission)
-    token = authentication_result&.personal_access_token
+  def access_token_authorized?(subject, permission)
+    token = authentication_result_token
     return true unless token
 
     granular_scopes_authorized?(token, permission, subject)
+  end
+
+  def authentication_result_token
+    authentication_result&.access_token
   end
 end

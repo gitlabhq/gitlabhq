@@ -319,7 +319,7 @@ Arguments:
 | <a id="query-aicatalogconfigureditems-foundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Filter by foundational flow reference. |
 | <a id="query-aicatalogconfigureditems-groupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
 | <a id="query-aicatalogconfigureditems-includefoundationalconsumers"></a>`includeFoundationalConsumers` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Include configured foundational AI Catalog items. |
-| <a id="query-aicatalogconfigureditems-includeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |
+| <a id="query-aicatalogconfigureditems-includeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from the project's top-level group. Can only be used with `projectId`. |
 | <a id="query-aicatalogconfigureditems-itemid"></a>`itemId` | [`AiCatalogItemID`](#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |
 | <a id="query-aicatalogconfigureditems-itemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
 | <a id="query-aicatalogconfigureditems-itemtypes"></a>`itemTypes` | [`[AiCatalogItemType!]`](#aicatalogitemtype) | Types of items to retrieve. |
@@ -3851,6 +3851,7 @@ Arguments:
 | <a id="mutation-aicatalogitemconsumerbulkcreate-projectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | Global IDs of the projects to enable the catalog item in (maximum 100). |
 | <a id="mutation-aicatalogitemconsumerbulkcreate-triggerconditions"></a>`triggerConditions` {{< icon name="warning-solid" >}} | [`AiCatalogTriggerConditionsInput`](#aicatalogtriggerconditionsinput) | Introduced in GitLab 19.3. Status: Experiment. Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |
 | <a id="mutation-aicatalogitemconsumerbulkcreate-triggerfilter"></a>`triggerFilter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Deprecated in GitLab 19.3. Use `triggerConditions`. |
+| <a id="mutation-aicatalogitemconsumerbulkcreate-triggergoals"></a>`triggerGoals` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.5. Status: Experiment. Goals for the auto-created AI Catalog triggers, keyed by event type. |
 | <a id="mutation-aicatalogitemconsumerbulkcreate-triggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create AI Catalog triggers for. |
 
 Fields:
@@ -3884,6 +3885,7 @@ Arguments:
 | <a id="mutation-aicatalogitemconsumercreate-target"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target project or top-level group in which the catalog item is configured. |
 | <a id="mutation-aicatalogitemconsumercreate-triggerconditions"></a>`triggerConditions` {{< icon name="warning-solid" >}} | [`AiCatalogTriggerConditionsInput`](#aicatalogtriggerconditionsinput) | Introduced in GitLab 19.3. Status: Experiment. Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |
 | <a id="mutation-aicatalogitemconsumercreate-triggerfilter"></a>`triggerFilter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Deprecated in GitLab 19.3. Use `triggerConditions`. |
+| <a id="mutation-aicatalogitemconsumercreate-triggergoals"></a>`triggerGoals` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.5. Status: Experiment. Goals for the auto-created AI Catalog triggers, keyed by event type. |
 | <a id="mutation-aicatalogitemconsumercreate-triggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create AI Catalog triggers for (values can be mention, assign or assign_reviewer). |
 
 Fields:
@@ -35497,6 +35499,139 @@ Fields:
 | <a id="aicatalogmcptoolicon-src"></a>`src` | [`String!`](#string) | URL to the icon image. |
 | <a id="aicatalogmcptoolicon-theme"></a>`theme` | [`String`](#string) | Theme the icon is intended for: "light" or "dark". |
 
+### `AiCatalogSkill`
+
+An AI catalog skill. The repository pointer fields resolve against the latest item version.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogskill-authorname"></a>`authorName` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Git author name of the commit that last changed the published SKILL.md. |
+| <a id="aicatalogskill-blobsha"></a>`blobSha` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Git object ID of the published SKILL.md blob. |
+| <a id="aicatalogskill-commitsha"></a>`commitSha` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Commit that last changed the published SKILL.md. |
+| <a id="aicatalogskill-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
+| <a id="aicatalogskill-description"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogskill-descriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="aicatalogskill-directory"></a>`directory` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Directory of the skill. Co-located resources live alongside SKILL.md. |
+| <a id="aicatalogskill-foundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational item. |
+| <a id="aicatalogskill-foundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
+| <a id="aicatalogskill-gitref"></a>`gitRef` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Git reference the skill was published from. |
+| <a id="aicatalogskill-id"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogskill-isenabledinmanagedbyproject"></a>`isEnabledInManagedByProject` | [`Boolean!`](#boolean) | Whether the item is enabled in the project it is managed by. This field can only be resolved for one AiCatalogItem in any single request. |
+| <a id="aicatalogskill-itemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
+| <a id="aicatalogskill-last30dayusagecount"></a>`last30DayUsageCount` | [`Int!`](#int) | Number of projects using the item in the last 30 days. |
+| <a id="aicatalogskill-name"></a>`name` | [`String!`](#string) | Name of the item. |
+| <a id="aicatalogskill-path"></a>`path` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Path of the SKILL.md file in the project repository. |
+| <a id="aicatalogskill-project"></a>`project` | [`Project`](#project) | Project for the item. |
+| <a id="aicatalogskill-public"></a>`public` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Deprecated in GitLab 19.3. Use `visibility`. |
+| <a id="aicatalogskill-softdeleted"></a>`softDeleted` | [`Boolean`](#boolean) | Indicates if the item has been soft deleted. |
+| <a id="aicatalogskill-softdeletedat"></a>`softDeletedAt` | [`Time`](#time) | Timestamp of when the item was soft deleted. |
+| <a id="aicatalogskill-starcount"></a>`starCount` | [`Int!`](#int) | Number of stars for the item. |
+| <a id="aicatalogskill-starred"></a>`starred` | [`Boolean!`](#boolean) | Whether the current user has starred the item. |
+| <a id="aicatalogskill-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
+| <a id="aicatalogskill-userpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
+| <a id="aicatalogskill-verificationlevel"></a>`verificationLevel` | [`AiCatalogItemVerificationLevel!`](#aicatalogitemverificationlevel) | Verification level of the item. |
+| <a id="aicatalogskill-versions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
+| <a id="aicatalogskill-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`AiCatalogItemVisibility!`](#aicatalogitemvisibility) | Introduced in GitLab 19.2. Status: Experiment. Visibility of the item in the catalog. |
+| <a id="aicatalogskill-webpath"></a>`webPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Web path of the item in the AI catalog. |
+
+#### Fields with arguments
+
+##### `AiCatalogSkill.configurationForGroup`
+
+{{< details >}}
+
+- Introduced in GitLab 18.7.
+- Status: Experiment.
+
+{{< /details >}}
+
+Item configuration for the given group.
+
+Returns [`AiCatalogItemConsumer`](#aicatalogitemconsumer).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogskill-configurationforgroup-groupid"></a>`groupId` | [`GroupID!`](#groupid) | Global ID of the group to return the item configuration of. |
+
+##### `AiCatalogSkill.configurationForProject`
+
+{{< details >}}
+
+- Introduced in GitLab 18.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Item configuration for the given project.
+
+Returns [`AiCatalogItemConsumer`](#aicatalogitemconsumer).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogskill-configurationforproject-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project to return the item configuration of. |
+
+##### `AiCatalogSkill.effectiveVersion`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogskill-effectiveversion-groupid"></a>`groupId` | [`GroupID`](#groupid) | Global ID of the group to return the effective version for. |
+| <a id="aicatalogskill-effectiveversion-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to return the effective version for. |
+
+##### `AiCatalogSkill.latestVersion`
+
+Latest version of the item.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogskill-latestversion-released"></a>`released` | [`Boolean`](#boolean) | Return the latest released version. |
+
+### `AiCatalogSkillVersion`
+
+An AI catalog skill version.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogskillversion-authorname"></a>`authorName` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Git author name of the commit that last changed SKILL.md for the item version. |
+| <a id="aicatalogskillversion-blobsha"></a>`blobSha` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Git object ID of the SKILL.md blob for the item version. |
+| <a id="aicatalogskillversion-commitsha"></a>`commitSha` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Commit that last changed SKILL.md for the item version. |
+| <a id="aicatalogskillversion-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogskillversion-createdby"></a>`createdBy` | [`UserCore`](#usercore) | User that created the item version. |
+| <a id="aicatalogskillversion-deprecated"></a>`deprecated` | [`Boolean!`](#boolean) | Indicates the item version has been deprecated by the author. |
+| <a id="aicatalogskillversion-gitref"></a>`gitRef` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Git reference the skill version was published from. |
+| <a id="aicatalogskillversion-humanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
+| <a id="aicatalogskillversion-id"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogskillversion-item"></a>`item` | [`AiCatalogItem!`](#aicatalogitem) | Item the version belongs to. |
+| <a id="aicatalogskillversion-path"></a>`path` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Path of the SKILL.md file in the project repository. |
+| <a id="aicatalogskillversion-released"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
+| <a id="aicatalogskillversion-releasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
+| <a id="aicatalogskillversion-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
+| <a id="aicatalogskillversion-versionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
+
 ### `AiCatalogThirdPartyFlow`
 
 An AI catalog third party flow.
@@ -47385,7 +47520,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="gitlabsubscriptionusage-dailyusage-limit"></a>`limit` | [`Int`](#int) | Maximum number of daily usage entries to return. |
+| <a id="gitlabsubscriptionusage-dailyusage-limit"></a>`limit` | [`Int`](#int) | Maximum number of daily usage entries to return. Defaults to every day in the date range. |
 | <a id="gitlabsubscriptionusage-dailyusage-sort"></a>`sort` | [`DailyUsageSort`](#dailyusagesort) | Sort daily usage entries by the selected criteria. |
 
 ### `GitlabSubscriptionUsageBlockedStatus`
@@ -69372,6 +69507,7 @@ Possible item types for AI items.
 | <a id="aicatalogitemtype-agent"></a>`AGENT` | Agent. |
 | <a id="aicatalogitemtype-flow"></a>`FLOW` | Flow. |
 | <a id="aicatalogitemtype-foundational_agent"></a>`FOUNDATIONAL_AGENT` | Foundational agent. |
+| <a id="aicatalogitemtype-skill"></a>`SKILL` | Skill. |
 | <a id="aicatalogitemtype-third_party_flow"></a>`THIRD_PARTY_FLOW` | Third party flow. |
 
 ### `AiCatalogItemVerificationLevel`
@@ -77637,6 +77773,7 @@ One of:
 
 - [`AiCatalogAgent`](#aicatalogagent)
 - [`AiCatalogFlow`](#aicatalogflow)
+- [`AiCatalogSkill`](#aicatalogskill)
 - [`AiCatalogThirdPartyFlow`](#aicatalogthirdpartyflow)
 - [`AiFoundationalChatAgent`](#aifoundationalchatagent)
 
@@ -77967,6 +78104,7 @@ Implementations:
 
 - [`AiCatalogAgent`](#aicatalogagent)
 - [`AiCatalogFlow`](#aicatalogflow)
+- [`AiCatalogSkill`](#aicatalogskill)
 - [`AiCatalogThirdPartyFlow`](#aicatalogthirdpartyflow)
 
 Fields:
@@ -78076,6 +78214,7 @@ Implementations:
 
 - [`AiCatalogAgentVersion`](#aicatalogagentversion)
 - [`AiCatalogFlowVersion`](#aicatalogflowversion)
+- [`AiCatalogSkillVersion`](#aicatalogskillversion)
 - [`AiCatalogThirdPartyFlowVersion`](#aicatalogthirdpartyflowversion)
 
 Fields:

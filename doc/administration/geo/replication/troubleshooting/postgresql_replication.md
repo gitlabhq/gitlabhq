@@ -131,7 +131,7 @@ excessively long, which increases the frequency of this error message. This can 
 where some queries never complete due to being canceled on every replication.
 
 These long-running queries are
-[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
+[planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/work_items/34269),
 but as a workaround, we recommend enabling
 [`hot_standby_feedback`](https://www.postgresql.org/docs/16/hot-standby.html#HOT-STANDBY-CONFLICT).
 This increases the likelihood of bloat on the primary site as it prevents
@@ -152,7 +152,7 @@ sudo gitlab-ctl reconfigure
 ```
 
 To help us resolve this problem, consider commenting on
-[the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4489).
+[the issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/4489).
 
 ## Message: `server certificate for "PostgreSQL" does not match host name`
 
@@ -207,7 +207,7 @@ is aborted to prevent accidental data loss. To bypass this message, pass the `--
 
 ## Message: `FATAL:  could not map anonymous shared memory: Cannot allocate memory`
 
-If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381585) that tracks this problem.
+If you see this message, it means that the secondary site's PostgreSQL tries to request memory that is higher than the available memory. There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/381585) that tracks this problem.
 
 Example error message in Patroni logs (located at `/var/log/gitlab/patroni/current` for Linux package installations):
 

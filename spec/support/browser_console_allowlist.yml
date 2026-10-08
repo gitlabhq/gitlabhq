@@ -1,0 +1,255 @@
+# Known application errors that feature specs may still log to the browser console.
+#
+# The after-example hook in spec/support/capybara.rb fails an example on any SEVERE console
+# message that BROWSER_CONSOLE_ERROR_FILTER does not ignore, unless an entry here allows it.
+#
+# Keys:
+#   message: plain text that occurs in the console message (required). The comparison ignores
+#            the URL and line prefix, quotes and backslashes. An empty message allows a console
+#            error that has no text, such as an error object logged without a message.
+#   messages: a list of such texts instead of message. It matches the same number of console
+#            messages logged in a row, such as vue-apollo GraphQL errors, which Chrome logs as a
+#            text and an Object.
+#   specs:   spec file paths or globs the entry applies to (required)
+#   issue:   full URL of the issue that tracks the fix (optional)
+#
+# Baseline from pipelines 2867610835 and 2881995978 of
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256639 and pipelines 2867469601 and
+# 2872215632 of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255199.
+# Remove an entry when the error is fixed. spec/support_specs/browser_console_allowlist_spec.rb
+# validates this file.
+- message: "TypeError: Cannot read properties of null (reading 'text')"
+  issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/628981
+  specs:
+  - ee/spec/features/groups/wiki_spec.rb
+  - ee/spec/features/projects/feature_flags/feature_flag_issues_spec.rb
+  - ee/spec/features/work_items/okr_spec.rb
+  - spec/features/groups/milestones/gfm_autocomplete_spec.rb
+  - spec/features/issuables/markdown_references/jira_spec.rb
+  - spec/features/merge_request/user_comments_on_merge_request_spec.rb
+  - spec/features/merge_request/user_suggests_changes_on_diff_spec.rb
+  - spec/features/milestones/user_creates_milestone_spec.rb
+  - spec/features/projects/milestones/gfm_autocomplete_spec.rb
+  - spec/features/work_items/detail/work_item_detail_spec.rb
+  - spec/features/work_items/issues/design_management/user_views_design_spec.rb
+  - spec/features/work_items/issues/gfm_autocomplete_spec.rb
+  - spec/features/work_items/issues/notes_on_issues_spec.rb
+  - spec/features/work_items/issues/user_comments_on_issue_spec.rb
+- message: "TypeError: Cannot read properties of undefined (reading 'clientWidth')"
+  issue: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3650
+  specs:
+  - spec/features/groups/service_accounts/group_service_accounts_crud_spec.rb
+  - spec/features/groups/service_accounts/subgroup_service_accounts_spec.rb
+  - spec/features/projects/service_accounts_spec.rb
+- message: "TypeError: Cannot read properties of undefined (reading 'namespace')"
+  specs:
+  - spec/features/work_items/issues/list/filtered_search/dropdown_assignee_spec.rb
+  - spec/features/work_items/issues/list/filtered_search/dropdown_author_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'projectRepositoryRegistries')"
+  specs:
+  - ee/spec/features/admin/geo/admin_geo_replication_nav_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'getAttribute')"
+  specs:
+  - ee/spec/features/groups/wiki_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'assigned')"
+  specs:
+  - spec/features/users/login/regular_user_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'recentlyViewedItems')"
+  specs:
+  - spec/features/users/login/regular_user_spec.rb
+- message: "TypeError: Cannot destructure property 'id' of '{}' as it is null."
+  specs:
+  - spec/features/users/login/regular_user_spec.rb
+- message: "Error: The emoji map is uninitialized or initialization has not completed"
+  specs:
+  - spec/features/profiles/user_edit_profile_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'hide')"
+  specs:
+  - spec/features/admin/runners/admin_manages_runners_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'close')"
+  specs:
+  - spec/features/projects/ci/editor_spec.rb
+- message: "TypeError: Cannot read properties of undefined (reading 'push')"
+  specs:
+  - spec/features/dashboard/issues_spec.rb
+- message: "Error: The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+  specs:
+  - spec/features/groups/work_items_spec.rb
+- message: "Error sending the query 'apiFuzzingCiConfiguration' ServerError: Response not successful: Received status code 500"
+  specs:
+  - ee/spec/features/user_sees_active_nav_items_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'scanModes')"
+  specs:
+  - ee/spec/features/user_sees_active_nav_items_spec.rb
+- message: "TypeError: Cannot read properties of undefined (reading 'scanModes')"
+  specs:
+  - ee/spec/features/user_sees_active_nav_items_spec.rb
+- message: "TypeError: Cannot read properties of undefined (reading 'value')"
+  specs:
+  - ee/spec/features/user_sees_active_nav_items_spec.rb
+- message: "[Vue warn]: Property or method targetUrl is not defined on the instance"
+  specs:
+  - ee/spec/features/user_sees_active_nav_items_spec.rb
+- message: "[Vue warn]: Invalid prop: type check failed for prop apiFuzzingCiConfiguration"
+  specs:
+  - ee/spec/features/user_sees_active_nav_items_spec.rb
+- message: "[Vue warn]: Write operation failed: computed value is readonly"
+  specs:
+  - ee/spec/features/incidents/incident_details_spec.rb
+  - ee/spec/features/incidents/user_uploads_metric_images_spec.rb
+  - spec/features/abuse_report_spec.rb
+  - spec/features/incidents/incident_details_spec.rb
+  - spec/features/incidents/incident_timeline_events_spec.rb
+  - spec/features/incidents/user_views_alert_details_spec.rb
+  - spec/features/incidents/user_views_incident_spec.rb
+- message: "[Vue warn]: Invalid prop: type check failed for prop text"
+  specs:
+  - ee/spec/features/admin/custom_role_admin_background_migrations_spec.rb
+  - spec/features/admin/broadcast_messages_spec.rb
+  - spec/features/groups/container_registry_spec.rb
+  - spec/features/groups/packages_spec.rb
+  - spec/features/projects/container_registry_spec.rb
+  - spec/features/projects/import_export/import_file_spec.rb
+  - spec/features/projects/packages_spec.rb
+- message: "[Vue warn]: Invalid prop: type check failed for prop placeholder"
+  specs:
+  - spec/features/projects/integrations/user_activates_irker_spec.rb
+- message: "[Vue warn]: Invalid prop: type check failed for prop noteId"
+  specs:
+  - spec/features/merge_request/batch_comments_spec.rb
+- messages:
+  - "GraphQL execution errors for query 'runners'"
+  - Object
+  specs:
+  - spec/features/projects/ci/editor_spec.rb
+- messages:
+  - "GraphQL execution errors for subscription 'todoId'"
+  - Object
+  specs:
+  - ee/spec/features/merge_request/user_sees_approve_via_custom_role_spec.rb
+- messages:
+  - "GraphQL execution errors for subscription 'state'"
+  - Object
+  specs:
+  - ee/spec/features/merge_request/user_sees_approve_via_custom_role_spec.rb
+- messages:
+  - "GraphQL execution errors for subscription 'mergeChecksState'"
+  - Object
+  specs:
+  - ee/spec/features/merge_request/user_sees_approve_via_custom_role_spec.rb
+- messages:
+  - "GraphQL execution errors for subscription 'issuable'"
+  - Object
+  specs:
+  - ee/spec/features/merge_request/user_sees_approve_via_custom_role_spec.rb
+# The subscription name carries an index: workItemNotes0, workItemNotes1, ...
+- messages:
+  - "GraphQL execution errors for subscription 'workItemNotes"
+  - Object
+  specs:
+  - ee/spec/features/work_items/epics/delete_epic_spec.rb
+- message: "Error: Unauthorized subscription"
+  specs:
+  - ee/spec/features/merge_request/user_sees_approve_via_custom_role_spec.rb
+- message: "Missing field 'pipelines' while writing result"
+  specs:
+  - spec/features/projects/pipelines/pipelines_spec.rb
+- message: "Missing field 'commit' while writing result"
+  specs:
+  - spec/features/projects/jobs/user_browses_jobs_spec.rb
+- message: "Missing field 'browseArtifactsPath' while writing result"
+  specs:
+  - spec/features/projects/jobs/user_browses_jobs_spec.rb
+- message: "Missing field 'discussions' while writing result"
+  specs:
+  - spec/features/work_items/detail/work_item_detail_spec.rb
+  - spec/features/work_items/issues/user_uses_quick_actions_spec.rb
+- message: "PipelineUsageApp: error fetching subscriptionPermissions query."
+  specs:
+  - ee/spec/features/ci/ci_minutes_spec.rb
+  - ee/spec/features/profiles/usage_quotas/usage_quotas_spec.rb
+- message: "Error sending the query 'subscriptionPermissions' ServerParseError: Unexpected token '<', <!DOCTYPE ... is not valid JSON"
+  specs:
+  - spec/features/groups/usage_quotas/storage_tab_spec.rb
+  - spec/features/groups/usage_quotas/usage_quotas_spec.rb
+- message: "Error: bad request: error building search request"
+  specs:
+  - ee/spec/features/search/zoekt/search_spec.rb
+- message: "Error: failed to parse query"
+  specs:
+  - ee/spec/features/search/elastic/project_search_spec.rb
+- message: "Missing field 'project' while writing result"
+  specs:
+  - ee/spec/features/projects/jobs/blocked_deployment_job_page_spec.rb
+  - ee/spec/features/projects/jobs/root_cause_analysis_job_page_spec.rb
+  - ee/spec/features/projects/jobs_spec.rb
+  - spec/features/projects/jobs/permissions_spec.rb
+  - spec/features/projects/jobs/user_browses_job_spec.rb
+  - spec/features/projects/jobs/user_browses_jobs_spec.rb
+  - spec/features/projects/jobs/user_triggers_manual_job_with_variables_spec.rb
+  - spec/features/projects/jobs_spec.rb
+- message: "Missing field 'job' while writing result"
+  specs:
+  - spec/features/projects/jobs/user_triggers_manual_job_with_variables_spec.rb
+  - spec/features/projects/jobs_spec.rb
+# FOSS only: every work item list page writes a namespace without an id into the Apollo cache.
+- message: "Missing field 'id' while writing result"
+  specs:
+  - spec/features/issuables/*_spec.rb
+  - spec/features/markdown/gitlab_flavored_markdown_spec.rb
+  - spec/features/projects/labels/issues_sorted_by_priority_spec.rb
+  - spec/features/user_sorts_things_spec.rb
+  - spec/features/work_item_rebalancing_spec.rb
+  - spec/features/work_items/issues/labels_hierarchy_spec.rb
+  - spec/features/work_items/issues/list/**/*_spec.rb
+  - spec/features/work_items/issues/user_sees_breadcrumb_links_spec.rb
+  - spec/features/work_items/list/**/*_spec.rb
+- message: "[Vue warn]: Invalid prop: type check failed for prop areScopedVariablesAvailable"
+  specs:
+  - spec/features/group_variables_spec.rb
+  - spec/features/groups/settings/ci_cd_spec.rb
+  - spec/features/groups/settings/user_searches_in_settings_spec.rb
+  - spec/lib/search/group_settings_spec.rb
+# FOSS only: these pages link an EE page bundle stylesheet that the FOSS build does not ship, so the
+# server answers with HTML. The link tag should be EE only.
+- message: "Refused to apply style from"
+  specs:
+  - spec/features/admin/admin_dev_ops_reports_spec.rb
+  - spec/features/cycle_analytics_spec.rb
+  - spec/features/projects/active_tabs_spec.rb
+  - spec/features/usage_stats_consent_spec.rb
+- message: "Missing field 'emailsDisabled' while writing result"
+  specs:
+  - spec/features/boards/new_issue_spec.rb
+- message: "Missing field 'webPath' while writing result"
+  specs:
+  - spec/features/boards/new_issue_spec.rb
+- message: "Error: Request failed with status code 404"
+  specs:
+  - spec/features/search/user_searches_for_code_spec.rb
+  - spec/features/search/user_searches_for_issues_spec.rb
+- message: "Missing field 'discussionLocked' while writing result"
+  specs:
+  - spec/features/work_items/detail/work_item_detail_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'map')"
+  specs:
+  - ee/spec/features/projects/protected_branches_spec.rb
+  - ee/spec/features/projects/settings/ee/protected_branches_spec.rb
+- message: "TypeError: Cannot read properties of null (reading 'group')"
+  specs:
+  - ee/spec/features/boards/swimlanes/epics_swimlanes_sidebar_labels_spec.rb
+- message: "[Vue warn]: Invalid prop: type check failed for prop helpText"
+  specs:
+  - spec/features/profiles/two_factor_auths_spec.rb
+# Every source editor: the Rspack build defines window.IS_VITE, and enableMonacoYamlWorkerForVite
+# in app/assets/javascripts/editor/utils.js has no worker for this label.
+- message: 'Uncaught Error: Unknown Monaco worker label: "editorWorkerService"'
+  specs:
+  - ee/spec/features/**/*_spec.rb
+  - spec/features/**/*_spec.rb
+- message: "TypeError: Cannot read properties of undefined (reading 'queries')"
+  specs:
+  - ee/spec/features/admin/geo/admin_geo_replication_nav_spec.rb
+- message: "TypeError: Cannot read properties of undefined (reading 'replace')"
+  specs:
+  - spec/features/work_items/issues/new/user_creates_issue_spec.rb

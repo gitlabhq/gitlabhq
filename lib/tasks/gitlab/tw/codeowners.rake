@@ -71,7 +71,7 @@ module TwCodeowners
     # CodeOwnerRule.new('Dependency Firewall', ''),
     # CodeOwnerRule.new('Design System', ''),
     # CodeOwnerRule.new('Developer Clients', ''),
-    # CodeOwnerRule.new('Development Analytics', ''),
+    # CodeOwnerRule.new('Development Health', ''),
     # CodeOwnerRule.new('Development Tooling', ''),
     # CodeOwnerRule.new('Duo Chat', ''),
     # CodeOwnerRule.new('Duo Client SDK', ''),

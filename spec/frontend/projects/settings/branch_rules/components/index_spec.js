@@ -94,6 +94,7 @@ describe('View branch rules', () => {
 
   const createComponent = async ({
     canAdminProtectedBranches = true,
+    canReadProtectedBranches = true,
     squashOptionsFeatureAvailable = true,
     canReadSquashOption = true,
     canUpdateSquashOption = true,
@@ -121,6 +122,7 @@ describe('View branch rules', () => {
         protectedBranchesPath,
         branchRulesPath,
         canAdminProtectedBranches,
+        canReadProtectedBranches,
         squashOptionsFeatureAvailable,
         canReadSquashOption,
         canUpdateSquashOption,
@@ -839,6 +841,22 @@ describe('View branch rules', () => {
       expect(trackEventSpy).toHaveBeenCalledWith('change_allow_force_push', {
         label: 'branch_rule_details',
       });
+    });
+  });
+
+  describe('when canReadProtectedBranches is false', () => {
+    beforeEach(() => createComponent({ canReadProtectedBranches: false }));
+
+    it('does not render the Protect branch section', () => {
+      const sections = wrapper.findAllComponents(SettingsSection);
+
+      expect(sections).toHaveLength(1);
+      expect(sections.at(0).attributes('heading')).toBe('Merge requests');
+    });
+
+    it('does not render the allowed to merge and push protections', () => {
+      expect(findAllowedToMerge().exists()).toBe(false);
+      expect(findAllowedToPush().exists()).toBe(false);
     });
   });
 

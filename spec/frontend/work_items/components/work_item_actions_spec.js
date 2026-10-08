@@ -241,9 +241,7 @@ describe('WorkItemActions component', () => {
     createComponent({
       workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
       provide: {
-        getWorkItemTypeConfiguration: jest
-          .fn()
-          .mockReturnValue({ supportsMoveAction: true, showProjectSelector: true }),
+        getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ supportsMoveAction: true }),
       },
     });
 
@@ -782,7 +780,6 @@ describe('WorkItemActions component', () => {
 
       expect(findCreateWorkItemModal().props()).toMatchObject({
         creationContext: CREATION_CONTEXT_RELATED_ITEM,
-        namespaceFullName: 'GitLab.org / GitLab Test',
         relatedItem: {
           id: 'gid://gitlab/WorkItem/1',
           reference: 'gitlab-org/gitlab-test#1',
@@ -800,26 +797,6 @@ describe('WorkItemActions component', () => {
 
       expect(findCreateWorkItemModal().props('visible')).toBe(true);
     });
-
-    it.each`
-      isProjectSelectorVisible | showProjectSelector
-      ${true}                  | ${true}
-      ${false}                 | ${false}
-      ${false}                 | ${undefined}
-    `(
-      'when showProjectSelector config is $showProjectSelector, sets `CreateWorkItemModal` `showProjectSelector` prop to $isProjectSelectorVisible',
-      ({ isProjectSelectorVisible, showProjectSelector }) => {
-        createComponent({
-          provide: {
-            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ showProjectSelector }),
-          },
-        });
-
-        expect(findCreateWorkItemModal().props('showProjectSelector')).toBe(
-          isProjectSelectorVisible,
-        );
-      },
-    );
 
     it('emits `workItemCreated` when `CreateWorkItemModal` emits `workItemCreated`', () => {
       createComponent();

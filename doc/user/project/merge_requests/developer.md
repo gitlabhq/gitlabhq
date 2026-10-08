@@ -52,6 +52,10 @@ To help the Developer Flow produce better results, you should configure your pro
   linting rules, commit format, and coding patterns. The Developer Flow uses this file
   for context when working in your repository.
   For more information, see [AGENTS.md customization files](../../duo_agent_platform/customize/agents_md.md).
+- Add workspace subagents: Define specialized subagents in the `.agents/agents/` directory
+  that the Developer Flow can delegate focused tasks to, like reviews or research.
+  This feature is an experiment.
+  For more information, see [workspace subagents](../../duo_agent_platform/customize/workspace_subagents.md).
 - Configure the execution environment: If your project requires specific tooling
   (for example, Go, Python, or Node.js), configure the agent environment with an `agent-config.yml` file.
   Without this, the Developer Flow cannot install dependencies or run tests, and is more likely
