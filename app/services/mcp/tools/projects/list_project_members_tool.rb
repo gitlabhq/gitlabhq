@@ -81,13 +81,15 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            'Project not found or inaccessible'
+            'Project not found or inaccessible',
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 
         def members_forbidden_error
           ::Mcp::Tools::Base::Response.error(
-            'Access denied: you do not have permission to list the members of this project.'
+            'Access denied: you do not have permission to list the members of this project.',
+            reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
           )
         end
       end

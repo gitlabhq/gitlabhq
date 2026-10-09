@@ -93,6 +93,7 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
         expect(result[:content].first[:text]).to include(
           'Job not found or inaccessible'
         )
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 
@@ -137,6 +138,7 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
           expect(result[:content].first[:text]).to include(
             'Job not found or inaccessible'
           )
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
         end
       end
     end
@@ -231,6 +233,7 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
           expect(result[:content].first[:text]).to include(
             "Job log not accessible: you do not have permission to read this job's log."
           )
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
         end
       end
     end

@@ -15,7 +15,7 @@ module Tooling
         # Table cells cannot contain Markdown paragraphs, so descriptions rendered
         # in tables separate paragraphs with HTML line breaks instead.
         TABLE_PARAGRAPH_BREAK = '<br/><br/>'
-        PARAGRAPH_BREAK = "\n\n"
+        EXPERIMENT_LINK = '../../../../policy/development_stages_support.md#experiment'
 
         def sorted_by_name(collection)
           collection.sort_by(&:name)
@@ -25,12 +25,14 @@ module Tooling
           "`#{item.name}`"
         end
 
-        def description(item, paragraph_break: TABLE_PARAGRAPH_BREAK)
+        # With `block: true`, the item's availability is rendered separately by
+        # #availability_details, so the description excludes it.
+        def description(item, block: false)
           description =
             if deprecated?(item)
               deprecation_description(item)
             elsif experiment?(item)
-              experiment_description(item, paragraph_break)
+              experiment_description(item, block)
             else
               plain_description(item)
             end
@@ -103,8 +105,28 @@ module Tooling
           object.fields.reject { |f| STANDARD_CONNECTION_FIELDS.include?(f.name) }
         end
 
-        def field_description(field, paragraph_break: TABLE_PARAGRAPH_BREAK)
-          description = description(field, paragraph_break: paragraph_break)
+        # Availability details for an item that has its own section. Items in
+        # table cells can't hold shortcodes, so they use #description instead.
+        def availability_details(item)
+          return unless experiment?(item)
+
+          <<~MARKDOWN.strip
+            {{< details >}}
+
+            - Status: Experiment
+
+            {{< /details >}}
+
+            {{< history >}}
+
+            - Introduced as an [experiment](#{EXPERIMENT_LINK}) in GitLab #{item.deprecation.milestone}.
+
+            {{< /history >}}
+          MARKDOWN
+        end
+
+        def field_description(field, block: false)
+          description = description(field, block: block)
           return description unless field.connection?
 
           [description, connection_note].reject(&:empty?).join(' ')
@@ -189,8 +211,8 @@ module Tooling
         end
 
         def query_body_parts(query)
-          parts = []
-          desc = field_description(query, paragraph_break: PARAGRAPH_BREAK)
+          parts = [availability_details(query)].compact
+          desc = field_description(query, block: true)
           parts << desc if desc.present?
           parts << "**Returns:** #{type(query)}"
 
@@ -203,8 +225,8 @@ module Tooling
         end
 
         def mutation_body_parts(mutation)
-          parts = []
-          desc = description(mutation, paragraph_break: PARAGRAPH_BREAK)
+          parts = [availability_details(mutation)].compact
+          desc = description(mutation, block: true)
           parts << desc if desc.present?
           parts << "**Input type:** `#{mutation.input_object_name}`"
 
@@ -269,10 +291,13 @@ module Tooling
           string
         end
 
-        def experiment_description(item, paragraph_break)
+        def experiment_description(item, block)
+          original = item.deprecation.original_description
+          return original.to_s if block
+
           status = "Status: Experiment. Introduced in GitLab #{item.deprecation.milestone}."
 
-          [status, item.deprecation.original_description].compact.join(paragraph_break)
+          [status, original].compact.join(TABLE_PARAGRAPH_BREAK)
         end
       end
     end

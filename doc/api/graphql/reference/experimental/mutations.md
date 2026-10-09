@@ -175,7 +175,17 @@ for every mutation, so it is not listed with each mutation's arguments and field
 
 ## `adminClearDuoAvailability`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Clears an admin-locked GitLab Duo availability override from a group.
 
@@ -197,7 +207,17 @@ Clears an admin-locked GitLab Duo availability override from a group.
 
 ## `adminRolesLdapSync`
 
-Status: Experiment. Introduced in GitLab 18.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.
+
+{{< /history >}}
 
 **Input type:** `AdminRolesLdapSyncInput`
 
@@ -210,7 +230,17 @@ Status: Experiment. Introduced in GitLab 18.0.
 
 ## `adminSetDuoAvailability`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Sets an admin-locked GitLab Duo availability override on a group.
 
@@ -284,7 +314,17 @@ Sets an admin-locked GitLab Duo availability override on a group.
 
 ## `aiAction`
 
-Status: Experiment. Introduced in GitLab 15.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.11.
+
+{{< /history >}}
 
 **Input type:** `AiActionInput`
 
@@ -318,7 +358,17 @@ Status: Experiment. Introduced in GitLab 15.11.
 
 ## `aiCatalogAgentCreate`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogAgentCreateInput`
 
@@ -347,7 +397,17 @@ Status: Experiment. Introduced in GitLab 18.2.
 
 ## `aiCatalogAgentDelete`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogAgentDeleteInput`
 
@@ -367,7 +427,17 @@ Status: Experiment. Introduced in GitLab 18.2.
 
 ## `aiCatalogAgentUpdate`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogAgentUpdateInput`
 
@@ -397,7 +467,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiCatalogFlowCreate`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogFlowCreateInput`
 
@@ -422,7 +502,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiCatalogFlowDelete`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogFlowDeleteInput`
 
@@ -442,7 +532,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiCatalogFlowUpdate`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogFlowUpdateInput`
 
@@ -468,7 +568,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiCatalogItemConsumerBulkCreate`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogItemConsumerBulkCreateInput`
 
@@ -491,7 +601,17 @@ Status: Experiment. Introduced in GitLab 19.1.
 
 ## `aiCatalogItemConsumerCreate`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogItemConsumerCreateInput`
 
@@ -519,7 +639,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiCatalogItemConsumerDelete`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogItemConsumerDeleteInput`
 
@@ -538,7 +668,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiCatalogItemConsumerUpdate`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogItemConsumerUpdateInput`
 
@@ -561,7 +701,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiCatalogItemReport`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogItemReportInput`
 
@@ -581,7 +731,17 @@ Status: Experiment. Introduced in GitLab 18.7.
 
 ## `aiCatalogItemStar`
 
-Status: Experiment. Introduced in GitLab 18.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogItemStarInput`
 
@@ -601,7 +761,17 @@ Status: Experiment. Introduced in GitLab 18.11.
 
 ## `aiCatalogItemVersionRestore`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogItemVersionRestoreInput`
 
@@ -621,7 +791,17 @@ Status: Experiment. Introduced in GitLab 19.1.
 
 ## `aiCatalogMcpServerCreate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogMcpServerCreateInput`
 
@@ -647,7 +827,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `aiCatalogMcpServerSetBlock`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Blocks or allows an external MCP server for a group or project (kill-switch).
 
@@ -671,7 +861,17 @@ Blocks or allows an external MCP server for a group or project (kill-switch).
 
 ## `aiCatalogMcpServerUpdate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogMcpServerUpdateInput`
 
@@ -698,7 +898,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `aiCatalogThirdPartyFlowCreate`
 
-Status: Experiment. Introduced in GitLab 18.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogThirdPartyFlowCreateInput`
 
@@ -723,7 +933,17 @@ Status: Experiment. Introduced in GitLab 18.5.
 
 ## `aiCatalogThirdPartyFlowDelete`
 
-Status: Experiment. Introduced in GitLab 18.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogThirdPartyFlowDeleteInput`
 
@@ -743,7 +963,17 @@ Status: Experiment. Introduced in GitLab 18.5.
 
 ## `aiCatalogThirdPartyFlowUpdate`
 
-Status: Experiment. Introduced in GitLab 18.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.
+
+{{< /history >}}
 
 **Input type:** `AiCatalogThirdPartyFlowUpdateInput`
 
@@ -769,7 +999,17 @@ Status: Experiment. Introduced in GitLab 18.5.
 
 ## `aiDomainSettingsInstanceUpdate`
 
-Status: Experiment. Introduced in GitLab 19.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.
+
+{{< /history >}}
 
 Adds or removes domains from the allowed or denied list for flows running in a sandboxed environment.
 
@@ -793,7 +1033,17 @@ Adds or removes domains from the allowed or denied list for flows running in a s
 
 ## `aiDomainSettingsNamespaceUpdate`
 
-Status: Experiment. Introduced in GitLab 19.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.
+
+{{< /history >}}
 
 Adds or removes domains from the allowed or denied list for flows running in a sandboxed environment.
 
@@ -818,7 +1068,17 @@ Adds or removes domains from the allowed or denied list for flows running in a s
 
 ## `aiDuoWorkflowCreate`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 **Input type:** `AiDuoWorkflowCreateInput`
 
@@ -848,7 +1108,17 @@ Status: Experiment. Introduced in GitLab 18.1.
 
 ## `aiFeatureSettingModelAllowlistUpdate`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Updates the instance-level model selection allowlist for an AI feature.
 
@@ -871,7 +1141,17 @@ Updates the instance-level model selection allowlist for an AI feature.
 
 ## `aiFeatureSettingUpdate`
 
-Status: Experiment. Introduced in GitLab 17.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
+
+{{< /history >}}
 
 Updates or creates settings for AI features.
 
@@ -895,7 +1175,17 @@ Updates or creates settings for AI features.
 
 ## `aiFlowScheduleCreate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 **Input type:** `AiFlowScheduleCreateInput`
 
@@ -918,7 +1208,17 @@ Status: Experiment. Introduced in GitLab 19.4.
 
 ## `aiFlowScheduleDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 **Input type:** `AiFlowScheduleDeleteInput`
 
@@ -937,7 +1237,17 @@ Status: Experiment. Introduced in GitLab 19.4.
 
 ## `aiFlowScheduleUpdate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 **Input type:** `AiFlowScheduleUpdateInput`
 
@@ -960,7 +1270,17 @@ Status: Experiment. Introduced in GitLab 19.4.
 
 ## `aiFlowTriggerCreate`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiFlowTriggerCreateInput`
 
@@ -987,7 +1307,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiFlowTriggerDelete`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiFlowTriggerDeleteInput`
 
@@ -1005,7 +1335,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiFlowTriggerUpdate`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `AiFlowTriggerUpdateInput`
 
@@ -1032,7 +1372,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `aiModelSelectionNamespaceModelAllowlistUpdate`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Updates the namespace-level model selection allowlist for an AI feature.
 
@@ -1056,7 +1406,17 @@ Updates the namespace-level model selection allowlist for an AI feature.
 
 ## `aiModelSelectionNamespaceUpdate`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 Updates or creates settings for AI features for a namespace.
 
@@ -1079,7 +1439,17 @@ Updates or creates settings for AI features for a namespace.
 
 ## `aiSelfHostedModelConnectionCheck`
 
-Status: Experiment. Introduced in GitLab 17.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.
+
+{{< /history >}}
 
 Checks if the AI Gateway can establish a connection with the given model configuration.
 
@@ -1106,7 +1476,17 @@ Checks if the AI Gateway can establish a connection with the given model configu
 
 ## `aiSelfHostedModelCreate`
 
-Status: Experiment. Introduced in GitLab 17.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.1.
+
+{{< /history >}}
 
 **Input type:** `AiSelfHostedModelCreateInput`
 
@@ -1131,7 +1511,17 @@ Status: Experiment. Introduced in GitLab 17.1.
 
 ## `aiSelfHostedModelDelete`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 Deletes a self-hosted model.
 
@@ -1151,7 +1541,17 @@ Deletes a self-hosted model.
 
 ## `aiSelfHostedModelUpdate`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 Updates a self-hosted model.
 
@@ -1221,7 +1621,17 @@ Updates a self-hosted model.
 
 ## `approvalProjectRuleDelete`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `approvalProjectRuleDeleteInput`
 
@@ -1240,7 +1650,17 @@ Status: Experiment. Introduced in GitLab 16.10.
 
 ## `approvalProjectRuleUpdate`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `approvalProjectRuleUpdateInput`
 
@@ -1301,7 +1721,17 @@ Status: Experiment. Introduced in GitLab 16.10.
 
 ## `artifactRegistryActivate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Activates an Artifact Registry for an organization by claiming a slug.
 
@@ -1322,7 +1752,17 @@ Activates an Artifact Registry for an organization by claiming a slug.
 
 ## `artifactRegistryArtifactDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes one artifact of an Artifact Registry repository. Permanently deletes a published artifact on a hosted repository and evicts a cached artifact on a remote repository, following the kind of the repository addressed. Artifact Registry accepts the request rather than completing it, so the mutation reports acceptance rather than completion. Re-read the artifact list to see the result.
 
@@ -1344,7 +1784,17 @@ Deletes one artifact of an Artifact Registry repository. Permanently deletes a p
 
 ## `artifactRegistryContainerTagDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes a container tag, identified by its name. Applies only to container repositories in Docker or OCI format. This mutation never reads the repository kind. Artifact Registry decides the outcome from its own records. On a hosted repository, deletion permanently removes the tag. On a remote repository, it evicts the cached tag reference. On a virtual repository, the request is passed through for Artifact Registry to decide. Deleting a tag never removes the manifest it pointed at. Artifact Registry accepts the request rather than completing it, so this mutation reports acceptance, not completion.
 
@@ -1367,7 +1817,17 @@ Deletes a container tag, identified by its name. Applies only to container repos
 
 ## `artifactRegistryDisable`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Disables Artifact Registry for the organization resolved from the request context (the X-GitLab-Organization-ID header, or the user default organization).
 
@@ -1382,7 +1842,17 @@ Disables Artifact Registry for the organization resolved from the request contex
 
 ## `artifactRegistryEnable`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Enables Artifact Registry for the organization resolved from the request context (the X-GitLab-Organization-ID header, or the user default organization).
 
@@ -1397,7 +1867,17 @@ Enables Artifact Registry for the organization resolved from the request context
 
 ## `artifactRegistryManifestDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes a manifest, identified by its digest. Applies only to Docker or OCI container repositories, whose kind this mutation never reads. Artifact Registry decides the outcome from its records, permanently removing the manifest on a hosted repository, evicting the cached copy on a remote one, or passing the request through on a virtual one. Deleting a manifest removes tags pointing at it and index entries where it is the parent, though a manifest it indexed survives untagged. Artifact Registry accepts rather than completes the request, so this reports acceptance. Re-read the image's manifests afterward for the result. Deletion is refused if another manifest indexes the target as a child, and the error lists at most 10 blocking digests plus the total count.
 
@@ -1420,7 +1900,17 @@ Deletes a manifest, identified by its digest. Applies only to Docker or OCI cont
 
 ## `artifactRegistryNpmDistTagDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes one dist-tag of an npm package in an Artifact Registry repository, addressed by its Artifact Registry ID. Applies to npm repositories only. A non-npm repository is refused before any request reaches Artifact Registry, and the refusal appears in the payload errors. A remote repository is refused the same way, because Artifact Registry holds the dist-tags of a remote repository as a rewritten document rather than as individually addressable rows, so there is no dist-tag row to delete. Removes the dist-tag alone, never the version it named. The mutation reports acceptance rather than completion.
 
@@ -1442,7 +1932,17 @@ Deletes one dist-tag of an npm package in an Artifact Registry repository, addre
 
 ## `artifactRegistryRepositoryArtifactsDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes every artifact of an Artifact Registry repository. Permanently deletes published artifacts on a hosted repository and evicts cached artifacts on a remote repository, following the kind of the repository addressed. Artifact Registry accepts the request rather than completing it, so the mutation reports acceptance rather than completion. Re-read the artifact list to see the result.
 
@@ -1463,7 +1963,17 @@ Deletes every artifact of an Artifact Registry repository. Permanently deletes p
 
 ## `artifactRegistryRepositoryCreate`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Creates a repository in Artifact Registry.
 
@@ -1491,7 +2001,17 @@ Creates a repository in Artifact Registry.
 
 ## `artifactRegistryRepositoryDelete`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Deletes a repository in Artifact Registry and removes every artifact it holds. Deleting an already-absent repository still succeeds.
 
@@ -1511,7 +2031,17 @@ Deletes a repository in Artifact Registry and removes every artifact it holds. D
 
 ## `artifactRegistryRepositoryTestConnection`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Tests the upstream connection of a remote repository in Artifact Registry.
 
@@ -1535,7 +2065,17 @@ Tests the upstream connection of a remote repository in Artifact Registry.
 
 ## `artifactRegistryRepositoryUpdate`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Updates a repository in Artifact Registry. Artifact Registry writes the metadata fields and the settings in separate transactions, metadata first, so a failed update can leave a visibility or description change applied while the settings did not change. Re-sending the same mutation converges.
 
@@ -1561,7 +2101,17 @@ Updates a repository in Artifact Registry. Artifact Registry writes the metadata
 
 ## `artifactRegistryRoleBulkGrant`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Grants Artifact Registry roles to users on resources in a single all-or-nothing operation.
 
@@ -1582,7 +2132,17 @@ Grants Artifact Registry roles to users on resources in a single all-or-nothing 
 
 ## `artifactRegistryRoleBulkRevoke`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation.
 
@@ -1603,7 +2163,17 @@ Revokes Artifact Registry roles from users on resources in a single all-or-nothi
 
 ## `artifactRegistryRoleGrant`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Grants an Artifact Registry role to a user on a resource.
 
@@ -1625,7 +2195,17 @@ Grants an Artifact Registry role to a user on a resource.
 
 ## `artifactRegistryRoleRevoke`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it.
 
@@ -1646,7 +2226,17 @@ Revokes a user's Artifact Registry role on a resource. Names no role: a user hol
 
 ## `artifactRegistryUpstreamRepositoryDissociate`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 Removes an upstream repository association from a virtual repository in Artifact Registry. The upstream repository and its artifacts remain unchanged, and Artifact Registry compacts the remaining upstream positions. Succeeds even when the association is already gone, or the repository is missing, inaccessible, not virtual, or not of the given format.
 
@@ -1668,7 +2258,17 @@ Removes an upstream repository association from a virtual repository in Artifact
 
 ## `artifactRegistryUpstreamTestConnection`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Tests a supplied upstream connection for the remote repository create form in Artifact Registry, before any repository exists to hold it.
 
@@ -1692,7 +2292,17 @@ Tests a supplied upstream connection for the remote repository create form in Ar
 
 ## `artifactRegistryVersionDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes one version of a package in an Artifact Registry repository. Permanently deletes a published version on a hosted repository and evicts a cached version on a remote repository, following the kind of the repository addressed. Artifact Registry accepts the request rather than completing it, so the mutation reports acceptance rather than completion. Re-read the version list to see the result. Applies to Maven and npm repositories only.
 
@@ -1714,7 +2324,17 @@ Deletes one version of a package in an Artifact Registry repository. Permanently
 
 ## `ascpComponentCreate`
 
-Status: Experiment. Introduced in GitLab 18.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.
+
+{{< /history >}}
 
 **Input type:** `AscpComponentCreateInput`
 
@@ -1738,7 +2358,17 @@ Status: Experiment. Introduced in GitLab 18.11.
 
 ## `ascpScanCreate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `AscpScanCreateInput`
 
@@ -1761,7 +2391,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `ascpSecurityContextCreate`
 
-Status: Experiment. Introduced in GitLab 18.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.
+
+{{< /history >}}
 
 **Input type:** `AscpSecurityContextCreateInput`
 
@@ -1855,7 +2495,17 @@ Deprecated in GitLab 18.10. Use `groupAuditEventStreamingDestinationsUpdate` ins
 
 ## `auditEventsGroupDestinationDenylistEventsAdd`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsGroupDestinationDenylistEventsAddInput`
 
@@ -1875,7 +2525,17 @@ Status: Experiment. Introduced in GitLab 19.1.
 
 ## `auditEventsGroupDestinationDenylistEventsDelete`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsGroupDestinationDenylistEventsDeleteInput`
 
@@ -1894,7 +2554,17 @@ Status: Experiment. Introduced in GitLab 19.1.
 
 ## `auditEventsGroupDestinationEventsAdd`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsGroupDestinationEventsAddInput`
 
@@ -1914,7 +2584,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `auditEventsGroupDestinationEventsDelete`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsGroupDestinationEventsDeleteInput`
 
@@ -1933,7 +2613,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `auditEventsGroupDestinationNamespaceFilterCreate`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsGroupDestinationNamespaceFilterCreateInput`
 
@@ -1953,7 +2643,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `auditEventsGroupDestinationNamespaceFilterDelete`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsGroupDestinationNamespaceFilterDeleteInput`
 
@@ -2037,7 +2737,17 @@ Deprecated in GitLab 18.10. Use `instanceAuditEventStreamingDestinationsUpdate` 
 
 ## `auditEventsInstanceDestinationEventsAdd`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsInstanceDestinationEventsAddInput`
 
@@ -2057,7 +2767,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `auditEventsInstanceDestinationEventsDelete`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsInstanceDestinationEventsDeleteInput`
 
@@ -2076,7 +2796,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `auditEventsInstanceDestinationNamespaceFilterCreate`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsInstanceDestinationNamespaceFilterCreateInput`
 
@@ -2096,7 +2826,17 @@ Status: Experiment. Introduced in GitLab 17.2.
 
 ## `auditEventsInstanceDestinationNamespaceFilterDelete`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `AuditEventsInstanceDestinationNamespaceFilterDeleteInput`
 
@@ -2494,7 +3234,17 @@ Deprecated in GitLab 17.5. Replaced by WorkItem type.
 
 ## `branchRuleApprovalProjectRuleCreate`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `branchRuleApprovalProjectRuleCreateInput`
 
@@ -2518,7 +3268,17 @@ Status: Experiment. Introduced in GitLab 16.10.
 
 ## `branchRuleCreate`
 
-Status: Experiment. Introduced in GitLab 16.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.7.
+
+{{< /history >}}
 
 **Input type:** `BranchRuleCreateInput`
 
@@ -2538,7 +3298,17 @@ Status: Experiment. Introduced in GitLab 16.7.
 
 ## `branchRuleDelete`
 
-Status: Experiment. Introduced in GitLab 16.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.9.
+
+{{< /history >}}
 
 **Input type:** `BranchRuleDeleteInput`
 
@@ -2557,7 +3327,17 @@ Status: Experiment. Introduced in GitLab 16.9.
 
 ## `branchRuleExternalStatusCheckCreate`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 Create a new external status check from a branch rule.
 
@@ -2581,7 +3361,17 @@ Create a new external status check from a branch rule.
 
 ## `branchRuleExternalStatusCheckDestroy`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 Destroy an external status check from a branch rule.
 
@@ -2602,7 +3392,17 @@ Destroy an external status check from a branch rule.
 
 ## `branchRuleExternalStatusCheckUpdate`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 Update an external status check from a branch rule.
 
@@ -2627,7 +3427,17 @@ Update an external status check from a branch rule.
 
 ## `branchRuleSquashOptionCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Create a squash option for a branch rule.
 
@@ -2649,7 +3459,17 @@ Create a squash option for a branch rule.
 
 ## `branchRuleSquashOptionDelete`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 Delete a squash option for a branch rule.
 
@@ -2669,7 +3489,17 @@ Delete a squash option for a branch rule.
 
 ## `branchRuleSquashOptionUpdate`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 Update a squash option for a branch rule.
 
@@ -2691,7 +3521,17 @@ Update a squash option for a branch rule.
 
 ## `branchRuleUpdate`
 
-Status: Experiment. Introduced in GitLab 16.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.7.
+
+{{< /history >}}
 
 **Input type:** `BranchRuleUpdateInput`
 
@@ -2712,7 +3552,17 @@ Status: Experiment. Introduced in GitLab 16.7.
 
 ## `bulkDestroyJobArtifacts`
 
-Status: Experiment. Introduced in GitLab 15.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.10.
+
+{{< /history >}}
 
 **Input type:** `BulkDestroyJobArtifactsInput`
 
@@ -2753,7 +3603,17 @@ Status: Experiment. Introduced in GitLab 15.10.
 
 ## `bulkRunnerDelete`
 
-Status: Experiment. Introduced in GitLab 15.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.3.
+
+{{< /history >}}
 
 **Input type:** `BulkRunnerDeleteInput`
 
@@ -2796,7 +3656,17 @@ This operation is best-effort: valid updates are applied even if some fail.
 
 ## `bulkUpdateAiToolRules`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Bulk updates permission settings for multiple AI tool rules.
 
@@ -2837,7 +3707,17 @@ Bulk updates permission settings for multiple AI tool rules.
 
 ## `cancelVulnerabilityWorkflow`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Cancels a vulnerability workflow execution.
 
@@ -2860,7 +3740,17 @@ Cancels a vulnerability workflow execution.
 
 ## `catalogResourcesCreate`
 
-Status: Experiment. Introduced in GitLab 15.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.11.
+
+{{< /history >}}
 
 **Input type:** `CatalogResourcesCreateInput`
 
@@ -2878,7 +3768,17 @@ Status: Experiment. Introduced in GitLab 15.11.
 
 ## `catalogResourcesDestroy`
 
-Status: Experiment. Introduced in GitLab 16.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.6.
+
+{{< /history >}}
 
 **Input type:** `CatalogResourcesDestroyInput`
 
@@ -2896,7 +3796,17 @@ Status: Experiment. Introduced in GitLab 16.6.
 
 ## `cdApplicationCreate`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Creates a continuous deployment application in an organization.
 
@@ -2920,7 +3830,17 @@ Creates a continuous deployment application in an organization.
 
 ## `cdApplicationFlowDefinitionCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Creates a new pipeline version of a continuous deployment application flow definition.
 
@@ -2942,7 +3862,17 @@ Creates a new pipeline version of a continuous deployment application flow defin
 
 ## `cdApplicationLinkCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Creates a link on a continuous deployment application.
 
@@ -2966,7 +3896,17 @@ Creates a link on a continuous deployment application.
 
 ## `cdApplicationLinkDelete`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Deletes a link on a continuous deployment application.
 
@@ -2986,7 +3926,17 @@ Deletes a link on a continuous deployment application.
 
 ## `cdApplicationLinkUpdate`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Updates a link on a continuous deployment application.
 
@@ -3010,7 +3960,17 @@ Updates a link on a continuous deployment application.
 
 ## `cdApplicationUpdate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Updates a continuous deployment application.
 
@@ -3033,7 +3993,17 @@ Updates a continuous deployment application.
 
 ## `cdArtifactSourceCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Creates a continuous deployment artifact source for a service.
 
@@ -3057,7 +4027,17 @@ Creates a continuous deployment artifact source for a service.
 
 ## `cdEnvironmentCreate`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Creates a continuous deployment environment in an organization.
 
@@ -3082,7 +4062,17 @@ Creates a continuous deployment environment in an organization.
 
 ## `cdEnvironmentDriverBindingCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Creates a new versioned driver binding for a continuous deployment environment.
 
@@ -3104,7 +4094,17 @@ Creates a new versioned driver binding for a continuous deployment environment.
 
 ## `cdEnvironmentUpdate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Updates a continuous deployment environment.
 
@@ -3128,7 +4128,17 @@ Updates a continuous deployment environment.
 
 ## `cdRolloutCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Creates a continuous deployment rollout in an organization.
 
@@ -3150,7 +4160,17 @@ Creates a continuous deployment rollout in an organization.
 
 ## `cdRolloutGateResolve`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Resolves an open approval gate on a continuous deployment rollout by recording the decision in the rollout transition journal.
 
@@ -3173,7 +4193,17 @@ Resolves an open approval gate on a continuous deployment rollout by recording t
 
 ## `cdServiceCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Creates a continuous deployment service in an application.
 
@@ -3196,7 +4226,17 @@ Creates a continuous deployment service in an application.
 
 ## `cdServiceUpdate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Updates a continuous deployment service.
 
@@ -3219,7 +4259,17 @@ Updates a continuous deployment service.
 
 ## `cdVersionCreate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Creates a continuous deployment version from a free-text name, for artifacts GitLab did not observe being pushed.
 
@@ -3241,7 +4291,17 @@ Creates a continuous deployment version from a free-text name, for artifacts Git
 
 ## `cdVersionSetCreate`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Creates a continuous deployment version set in an application.
 
@@ -3345,7 +4405,17 @@ Creates a continuous deployment version set in an application.
 
 ## `ciJobTokenScopeUpdatePolicies`
 
-Status: Experiment. Introduced in GitLab 17.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.
+
+{{< /history >}}
 
 **Input type:** `CiJobTokenScopeUpdatePoliciesInput`
 
@@ -3619,7 +4689,17 @@ response.
 
 ## `containerCacheEntryDelete`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `ContainerCacheEntryDeleteInput`
 
@@ -3638,7 +4718,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `containerUpstreamCacheDelete`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `ContainerUpstreamCacheDeleteInput`
 
@@ -3657,7 +4747,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `containerUpstreamCreate`
 
-Status: Experiment. Introduced in GitLab 18.8.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.8.
+
+{{< /history >}}
 
 **Input type:** `ContainerUpstreamCreateInput`
 
@@ -3682,7 +4782,17 @@ Status: Experiment. Introduced in GitLab 18.8.
 
 ## `containerUpstreamDelete`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `ContainerUpstreamDeleteInput`
 
@@ -3701,7 +4811,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `containerUpstreamTest`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `ContainerUpstreamTestInput`
 
@@ -3724,7 +4844,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `containerUpstreamUpdate`
 
-Status: Experiment. Introduced in GitLab 18.8.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.8.
+
+{{< /history >}}
 
 **Input type:** `ContainerUpstreamUpdateInput`
 
@@ -3749,7 +4879,17 @@ Status: Experiment. Introduced in GitLab 18.8.
 
 ## `containerVirtualRegistryCacheDelete`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `ContainerVirtualRegistryCacheDeleteInput`
 
@@ -3768,7 +4908,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `containerVirtualRegistryCreate`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `ContainerVirtualRegistryCreateInput`
 
@@ -3789,7 +4939,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `containerVirtualRegistryDelete`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `ContainerVirtualRegistryDeleteInput`
 
@@ -3808,7 +4968,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `containerVirtualRegistryUpdate`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `ContainerVirtualRegistryUpdateInput`
 
@@ -3829,7 +4999,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `containerVirtualRegistryUpstreamCreate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `ContainerVirtualRegistryUpstreamCreateInput`
 
@@ -3849,7 +5029,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `containerVirtualRegistryUpstreamDelete`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `ContainerVirtualRegistryUpstreamDeleteInput`
 
@@ -3868,7 +5058,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `containerVirtualRegistryUpstreamUpdate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `ContainerVirtualRegistryUpstreamUpdateInput`
 
@@ -4032,7 +5232,17 @@ Deprecated in GitLab 16.0. Underlying feature was removed in 16.0.
 
 ## `createComplianceFrameworkFromTemplate`
 
-Status: Experiment. Introduced in GitLab 19.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.
+
+{{< /history >}}
 
 **Input type:** `CreateComplianceFrameworkFromTemplateInput`
 
@@ -4056,7 +5266,17 @@ Status: Experiment. Introduced in GitLab 19.0.
 
 ## `createComplianceRequirement`
 
-Status: Experiment. Introduced in GitLab 17.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.
+
+{{< /history >}}
 
 **Input type:** `CreateComplianceRequirementInput`
 
@@ -4077,7 +5297,17 @@ Status: Experiment. Introduced in GitLab 17.6.
 
 ## `createComplianceRequirementsControl`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `CreateComplianceRequirementsControlInput`
 
@@ -4119,7 +5349,17 @@ Creates a repository protection rule to restrict access to a project's container
 
 ## `createContainerProtectionTagRule`
 
-Status: Experiment. Introduced in GitLab 17.8.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.8.
+
+{{< /history >}}
 
 Creates a protection rule to control which user roles can modify container image tags matching a specified pattern.
 
@@ -4143,7 +5383,17 @@ Creates a protection rule to control which user roles can modify container image
 
 ## `createCustomDashboard`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Creates a custom dashboard in an organization.
 
@@ -4258,7 +5508,17 @@ Deprecated in GitLab 17.5. Replaced by `WorkItem` type. For more information, se
 
 ## `createFunctionalVerificationWorkflow`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 **Input type:** `CreateFunctionalVerificationWorkflowInput`
 
@@ -4364,7 +5624,17 @@ Deprecated in GitLab 14.0. Use iterationCreate.
 
 ## `createLatestDiffNote`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 Creates a diff note on a merge request using minimal parameters. SHAs, file paths, and position type are resolved automatically from the latest merge request diff.
 
@@ -4485,7 +5755,17 @@ Creates a protection rule to restrict access to project packages.
 
 ## `createTerraformStateProtectionRule`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Creates a protection rule for a Terraform state backend.
 
@@ -4530,7 +5810,17 @@ Creates a protection rule for a Terraform state backend.
 
 ## `customFieldArchive`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `CustomFieldArchiveInput`
 
@@ -4549,7 +5839,17 @@ Status: Experiment. Introduced in GitLab 17.9.
 
 ## `customFieldCreate`
 
-Status: Experiment. Introduced in GitLab 17.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.
+
+{{< /history >}}
 
 **Input type:** `CustomFieldCreateInput`
 
@@ -4572,7 +5872,17 @@ Status: Experiment. Introduced in GitLab 17.6.
 
 ## `customFieldUnarchive`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `CustomFieldUnarchiveInput`
 
@@ -4591,7 +5901,17 @@ Status: Experiment. Introduced in GitLab 17.9.
 
 ## `customFieldUpdate`
 
-Status: Experiment. Introduced in GitLab 17.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.
+
+{{< /history >}}
 
 **Input type:** `CustomFieldUpdateInput`
 
@@ -5042,7 +6362,17 @@ Deletes a container repository protection rule.
 
 ## `deleteContainerProtectionTagRule`
 
-Status: Experiment. Introduced in GitLab 17.8.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.8.
+
+{{< /history >}}
 
 Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
@@ -5063,7 +6393,17 @@ Deletes a protection rule that controls which user roles can modify container im
 
 ## `deleteConversationThread`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `DeleteConversationThreadInput`
 
@@ -5082,7 +6422,17 @@ Status: Experiment. Introduced in GitLab 17.9.
 
 ## `deleteCustomDashboard`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 Deletes a custom dashboard.
 
@@ -5103,7 +6453,17 @@ Deletes a custom dashboard.
 
 ## `deleteDuoWorkflowsWorkflow`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 **Input type:** `DeleteDuoWorkflowsWorkflowInput`
 
@@ -5122,7 +6482,17 @@ Status: Experiment. Introduced in GitLab 18.1.
 
 ## `deleteGroupCustomAttribute`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 Deletes a custom attribute from a group. Only available to admins.
 
@@ -5163,7 +6533,17 @@ Deletes a protection rule for packages.
 
 ## `deletePagesDeployment`
 
-Status: Experiment. Introduced in GitLab 17.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.1.
+
+{{< /history >}}
 
 Deletes a Pages deployment.
 
@@ -5184,7 +6564,17 @@ Deletes a Pages deployment.
 
 ## `deleteProjectCustomAttribute`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 Deletes a custom attribute from a project. Only available to admins.
 
@@ -5206,7 +6596,17 @@ Deletes a custom attribute from a project. Only available to admins.
 
 ## `deleteTerraformStateProtectionRule`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Deletes a protection rule for a Terraform state backend.
 
@@ -5227,7 +6627,17 @@ Deletes a protection rule for a Terraform state backend.
 
 ## `deleteUserCustomAttribute`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 Deletes a custom attribute from a user. Only available to admins.
 
@@ -5375,7 +6785,17 @@ Deletes a custom attribute from a user. Only available to admins.
 
 ## `destroyComplianceRequirement`
 
-Status: Experiment. Introduced in GitLab 17.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.
+
+{{< /history >}}
 
 **Input type:** `DestroyComplianceRequirementInput`
 
@@ -5393,7 +6813,17 @@ Status: Experiment. Introduced in GitLab 17.7.
 
 ## `destroyComplianceRequirementsControl`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `DestroyComplianceRequirementsControlInput`
 
@@ -5582,7 +7012,17 @@ Deprecated in GitLab 17.5. Replaced by WorkItem type.
 
 ## `devfileValidate`
 
-Status: Experiment. Introduced in GitLab 18.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.
+
+{{< /history >}}
 
 **Input type:** `DevfileValidateInput`
 
@@ -5639,7 +7079,17 @@ Toggles the resolved state of a discussion.
 
 ## `dismissPolicyViolations`
 
-Status: Experiment. Introduced in GitLab 18.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.
+
+{{< /history >}}
 
 Dismisses policy violations linked to a merge request.
 
@@ -5664,7 +7114,17 @@ Dismisses policy violations linked to a merge request.
 
 ## `duoSettingsUpdate`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 Updates GitLab Duo settings.
 
@@ -5697,7 +7157,17 @@ Updates GitLab Duo settings.
 
 ## `duoUserFeedback`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `DuoUserFeedbackInput`
 
@@ -6187,7 +7657,17 @@ Deprecated in GitLab 18.10. Use `groupAuditEventStreamingDestinationsUpdate` ins
 
 ## `geoRegistriesBulkUpdate`
 
-Status: Experiment. Introduced in GitLab 16.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.4.
+
+{{< /history >}}
 
 Mutates multiple Geo registries for a given registry class.
 
@@ -6212,7 +7692,17 @@ Mutates multiple Geo registries for a given registry class.
 
 ## `geoRegistriesUpdate`
 
-Status: Experiment. Introduced in GitLab 16.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.1.
+
+{{< /history >}}
 
 Mutates a Geo registry.
 
@@ -6319,7 +7809,17 @@ Deprecated in GitLab 18.10. Use `groupAuditEventStreamingDestinationsUpdate` ins
 
 ## `governPolicyCreate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Creates a policy in the policy store for an organization or group.
 
@@ -6350,7 +7850,17 @@ Creates a policy in the policy store for an organization or group.
 
 ## `governPolicyDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes a policy from the policy store for an organization or group.
 
@@ -6372,7 +7882,17 @@ Deletes a policy from the policy store for an organization or group.
 
 ## `governPolicyUpdate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Updates a policy in the policy store for an organization or group. Only the supplied fields are changed; omitted fields keep their current values, while an explicit null clears a nullable field.
 
@@ -6404,7 +7924,17 @@ Updates a policy in the policy store for an organization or group. Only the supp
 
 ## `groupAuditEventStreamingDestinationsCreate`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `GroupAuditEventStreamingDestinationsCreateInput`
 
@@ -6427,7 +7957,17 @@ Status: Experiment. Introduced in GitLab 16.11.
 
 ## `groupAuditEventStreamingDestinationsDelete`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `GroupAuditEventStreamingDestinationsDeleteInput`
 
@@ -6445,7 +7985,17 @@ Status: Experiment. Introduced in GitLab 16.11.
 
 ## `groupAuditEventStreamingDestinationsUpdate`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `GroupAuditEventStreamingDestinationsUpdateInput`
 
@@ -6490,7 +8040,17 @@ Status: Experiment. Introduced in GitLab 16.11.
 
 ## `groupMembersExport`
 
-Status: Experiment. Introduced in GitLab 17.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
+
+{{< /history >}}
 
 **Input type:** `GroupMembersExportInput`
 
@@ -6509,7 +8069,17 @@ Status: Experiment. Introduced in GitLab 17.4.
 
 ## `groupSavedReplyCreate`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `GroupSavedReplyCreateInput`
 
@@ -6530,7 +8100,17 @@ Status: Experiment. Introduced in GitLab 16.10.
 
 ## `groupSavedReplyDestroy`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `GroupSavedReplyDestroyInput`
 
@@ -6549,7 +8129,17 @@ Status: Experiment. Introduced in GitLab 16.10.
 
 ## `groupSavedReplyUpdate`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `GroupSavedReplyUpdateInput`
 
@@ -6713,7 +8303,17 @@ Status: Experiment. Introduced in GitLab 16.10.
 
 ## `groupTransfer`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `GroupTransferInput`
 
@@ -6845,7 +8445,17 @@ Status: Experiment. Introduced in GitLab 19.3.
 
 ## `importSourceUserCancelReassignment`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `ImportSourceUserCancelReassignmentInput`
 
@@ -6864,7 +8474,17 @@ Status: Experiment. Introduced in GitLab 17.2.
 
 ## `importSourceUserKeepAllAsPlaceholder`
 
-Status: Experiment. Introduced in GitLab 17.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.
+
+{{< /history >}}
 
 **Input type:** `ImportSourceUserKeepAllAsPlaceholderInput`
 
@@ -6883,7 +8503,17 @@ Status: Experiment. Introduced in GitLab 17.6.
 
 ## `importSourceUserKeepAsPlaceholder`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `ImportSourceUserKeepAsPlaceholderInput`
 
@@ -6902,7 +8532,17 @@ Status: Experiment. Introduced in GitLab 17.2.
 
 ## `importSourceUserReassign`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `ImportSourceUserReassignInput`
 
@@ -6922,7 +8562,17 @@ Status: Experiment. Introduced in GitLab 17.2.
 
 ## `importSourceUserResendNotification`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `ImportSourceUserResendNotificationInput`
 
@@ -6941,7 +8591,17 @@ Status: Experiment. Introduced in GitLab 17.2.
 
 ## `importSourceUserRetryFailedReassignment`
 
-Status: Experiment. Introduced in GitLab 18.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.
+
+{{< /history >}}
 
 **Input type:** `ImportSourceUserRetryFailedReassignmentInput`
 
@@ -6960,7 +8620,17 @@ Status: Experiment. Introduced in GitLab 18.11.
 
 ## `importSourceUserUndoKeepAsPlaceholder`
 
-Status: Experiment. Introduced in GitLab 18.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.
+
+{{< /history >}}
 
 **Input type:** `ImportSourceUserUndoKeepAsPlaceholderInput`
 
@@ -6979,7 +8649,17 @@ Status: Experiment. Introduced in GitLab 18.4.
 
 ## `instanceAuditEventStreamingDestinationsCreate`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `InstanceAuditEventStreamingDestinationsCreateInput`
 
@@ -7001,7 +8681,17 @@ Status: Experiment. Introduced in GitLab 16.11.
 
 ## `instanceAuditEventStreamingDestinationsDelete`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `InstanceAuditEventStreamingDestinationsDeleteInput`
 
@@ -7019,7 +8709,17 @@ Status: Experiment. Introduced in GitLab 16.11.
 
 ## `instanceAuditEventStreamingDestinationsUpdate`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `InstanceAuditEventStreamingDestinationsUpdateInput`
 
@@ -7189,7 +8889,17 @@ Deprecated in GitLab 18.10. Use `instanceAuditEventStreamingDestinationsUpdate` 
 
 ## `integrationExclusionCreate`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `IntegrationExclusionCreateInput`
 
@@ -7210,7 +8920,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `integrationExclusionDelete`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `IntegrationExclusionDeleteInput`
 
@@ -7818,7 +9538,17 @@ Deprecated in GitLab 17.5. Replaced by WorkItem type.
 
 ## `knowledgeGraphExcludedNamespaceCreate`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 **Input type:** `KnowledgeGraphExcludedNamespaceCreateInput`
 
@@ -7837,7 +9567,17 @@ Status: Experiment. Introduced in GitLab 19.5.
 
 ## `knowledgeGraphExcludedNamespaceDestroy`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 **Input type:** `KnowledgeGraphExcludedNamespaceDestroyInput`
 
@@ -7895,7 +9635,17 @@ Status: Experiment. Introduced in GitLab 19.5.
 
 ## `ldapAdminRoleLinkCreate`
 
-Status: Experiment. Introduced in GitLab 17.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.
+
+{{< /history >}}
 
 Creates an instance-level custom admin role LDAP link.
 
@@ -7919,7 +9669,17 @@ Creates an instance-level custom admin role LDAP link.
 
 ## `ldapAdminRoleLinkDestroy`
 
-Status: Experiment. Introduced in GitLab 18.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.
+
+{{< /history >}}
 
 Destroys an instance-level custom admin role LDAP link.
 
@@ -7940,7 +9700,17 @@ Destroys an instance-level custom admin role LDAP link.
 
 ## `lifecycleAttachWorkItemType`
 
-Status: Experiment. Introduced in GitLab 18.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.
+
+{{< /history >}}
 
 **Input type:** `LifecycleAttachWorkItemTypeInput`
 
@@ -7962,7 +9732,17 @@ Status: Experiment. Introduced in GitLab 18.4.
 
 ## `lifecycleCreate`
 
-Status: Experiment. Introduced in GitLab 18.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.
+
+{{< /history >}}
 
 **Input type:** `LifecycleCreateInput`
 
@@ -7986,7 +9766,17 @@ Status: Experiment. Introduced in GitLab 18.4.
 
 ## `lifecycleDelete`
 
-Status: Experiment. Introduced in GitLab 18.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.
+
+{{< /history >}}
 
 **Input type:** `LifecycleDeleteInput`
 
@@ -8006,7 +9796,17 @@ Status: Experiment. Introduced in GitLab 18.4.
 
 ## `lifecycleUpdate`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 **Input type:** `LifecycleUpdateInput`
 
@@ -8032,7 +9832,17 @@ Status: Experiment. Introduced in GitLab 18.1.
 
 ## `linkProjectComplianceViolationIssue`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `LinkProjectComplianceViolationIssueInput`
 
@@ -8070,7 +9880,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `mavenCacheEntryDelete`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `MavenCacheEntryDeleteInput`
 
@@ -8089,7 +9909,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `mavenUpstreamCacheDelete`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `MavenUpstreamCacheDeleteInput`
 
@@ -8108,7 +9938,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `mavenUpstreamCreate`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 **Input type:** `MavenUpstreamCreateInput`
 
@@ -8134,7 +9974,17 @@ Status: Experiment. Introduced in GitLab 18.2.
 
 ## `mavenUpstreamDelete`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `MavenUpstreamDeleteInput`
 
@@ -8153,7 +10003,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `mavenUpstreamUpdate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `MavenUpstreamUpdateInput`
 
@@ -8179,7 +10039,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `mavenVirtualRegistryCacheDelete`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `MavenVirtualRegistryCacheDeleteInput`
 
@@ -8198,7 +10068,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `mavenVirtualRegistryCreate`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `MavenVirtualRegistryCreateInput`
 
@@ -8219,7 +10099,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `mavenVirtualRegistryDelete`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `MavenVirtualRegistryDeleteInput`
 
@@ -8238,7 +10128,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `mavenVirtualRegistryUpdate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `MavenVirtualRegistryUpdateInput`
 
@@ -8259,7 +10159,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `mavenVirtualRegistryUpstreamDelete`
 
-Status: Experiment. Introduced in GitLab 18.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.
+
+{{< /history >}}
 
 **Input type:** `MavenVirtualRegistryUpstreamDeleteInput`
 
@@ -8278,7 +10188,17 @@ Status: Experiment. Introduced in GitLab 18.11.
 
 ## `mavenVirtualRegistryUpstreamUpdate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `MavenVirtualRegistryUpstreamUpdateInput`
 
@@ -8298,7 +10218,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `memberRoleAdminCreate`
 
-Status: Experiment. Introduced in GitLab 17.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.
+
+{{< /history >}}
 
 **Input type:** `MemberRoleAdminCreateInput`
 
@@ -8319,7 +10249,17 @@ Status: Experiment. Introduced in GitLab 17.7.
 
 ## `memberRoleAdminDelete`
 
-Status: Experiment. Introduced in GitLab 17.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.
+
+{{< /history >}}
 
 **Input type:** `MemberRoleAdminDeleteInput`
 
@@ -8338,7 +10278,17 @@ Status: Experiment. Introduced in GitLab 17.10.
 
 ## `memberRoleAdminUpdate`
 
-Status: Experiment. Introduced in GitLab 17.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.
+
+{{< /history >}}
 
 **Input type:** `MemberRoleAdminUpdateInput`
 
@@ -8360,7 +10310,17 @@ Status: Experiment. Introduced in GitLab 17.10.
 
 ## `memberRoleCreate`
 
-Status: Experiment. Introduced in GitLab 16.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.5.
+
+{{< /history >}}
 
 **Input type:** `MemberRoleCreateInput`
 
@@ -8383,7 +10343,17 @@ Status: Experiment. Introduced in GitLab 16.5.
 
 ## `memberRoleDelete`
 
-Status: Experiment. Introduced in GitLab 16.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.7.
+
+{{< /history >}}
 
 **Input type:** `MemberRoleDeleteInput`
 
@@ -8402,7 +10372,17 @@ Status: Experiment. Introduced in GitLab 16.7.
 
 ## `memberRoleToUserAssign`
 
-Status: Experiment. Introduced in GitLab 17.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.
+
+{{< /history >}}
 
 **Input type:** `MemberRoleToUserAssignInput`
 
@@ -8474,7 +10454,17 @@ because the merging may not have happened yet.
 
 ## `mergeRequestBypassSecurityPolicy`
 
-Status: Experiment. Introduced in GitLab 18.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.
+
+{{< /history >}}
 
 Bypasses security policies for a merge request.
 
@@ -8603,7 +10593,17 @@ Removes relations between a merge request and work items.
 
 ## `mergeRequestResyncSecurityPolicies`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Triggers a re-evaluation of the security approval policies applicable to the merge request.
 
@@ -8644,7 +10644,17 @@ Triggers a re-evaluation of the security approval policies applicable to the mer
 
 ## `mergeRequestSavedViewCreate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Creates a saved view on the merge request dashboard. Available only when the `mr_dashboard_saved_views` feature flag is enabled.
 
@@ -8666,7 +10676,17 @@ Creates a saved view on the merge request dashboard. Available only when the `mr
 
 ## `mergeRequestSavedViewDelete`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Deletes a saved view from the merge request dashboard. Available only when the `mr_dashboard_saved_views` feature flag is enabled.
 
@@ -8687,7 +10707,17 @@ Deletes a saved view from the merge request dashboard. Available only when the `
 
 ## `mergeRequestSavedViewUpdate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Updates a saved view on the merge request dashboard. Available only when the `mr_dashboard_saved_views` feature flag is enabled.
 
@@ -8917,7 +10947,17 @@ Update attributes of a merge request.
 
 ## `mergeTrainsDeleteCar`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `MergeTrainsDeleteCarInput`
 
@@ -8935,7 +10975,17 @@ Status: Experiment. Introduced in GitLab 17.2.
 
 ## `mlModelCreate`
 
-Status: Experiment. Introduced in GitLab 16.8.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.8.
+
+{{< /history >}}
 
 **Input type:** `MlModelCreateInput`
 
@@ -8956,7 +11006,17 @@ Status: Experiment. Introduced in GitLab 16.8.
 
 ## `mlModelDelete`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `MlModelDeleteInput`
 
@@ -8976,7 +11036,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `mlModelDestroy`
 
-Status: Experiment. Introduced in GitLab 16.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.
+
+{{< /history >}}
 
 **Input type:** `MlModelDestroyInput`
 
@@ -8997,7 +11067,17 @@ Status: Experiment. Introduced in GitLab 16.10.
 
 ## `mlModelEdit`
 
-Status: Experiment. Introduced in GitLab 17.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.3.
+
+{{< /history >}}
 
 **Input type:** `MlModelEditInput`
 
@@ -9019,7 +11099,17 @@ Status: Experiment. Introduced in GitLab 17.3.
 
 ## `mlModelVersionCreate`
 
-Status: Experiment. Introduced in GitLab 17.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.1.
+
+{{< /history >}}
 
 **Input type:** `MlModelVersionCreateInput`
 
@@ -9042,7 +11132,17 @@ Status: Experiment. Introduced in GitLab 17.1.
 
 ## `mlModelVersionDelete`
 
-Status: Experiment. Introduced in GitLab 17.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.0.
+
+{{< /history >}}
 
 **Input type:** `MlModelVersionDeleteInput`
 
@@ -9061,7 +11161,17 @@ Status: Experiment. Introduced in GitLab 17.0.
 
 ## `mlModelVersionEdit`
 
-Status: Experiment. Introduced in GitLab 17.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
+
+{{< /history >}}
 
 **Input type:** `MlModelVersionEditInput`
 
@@ -9188,7 +11298,17 @@ Status: Experiment. Introduced in GitLab 17.4.
 
 ## `namespaceSettingsUpdate`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `NamespaceSettingsUpdateInput`
 
@@ -9208,7 +11328,17 @@ Status: Experiment. Introduced in GitLab 17.9.
 
 ## `namespacesRegenerateNewWorkItemEmailAddress`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 **Input type:** `NamespacesRegenerateNewWorkItemEmailAddressInput`
 
@@ -9372,7 +11502,17 @@ Convert a standard comment to a resolvable thread.
 
 ## `orbitStartTrial`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 **Input type:** `OrbitStartTrialInput`
 
@@ -9391,7 +11531,17 @@ Status: Experiment. Introduced in GitLab 19.5.
 
 ## `orbitUpdate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `OrbitUpdateInput`
 
@@ -9411,7 +11561,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `organizationConfirm`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 **Input type:** `OrganizationConfirmInput`
 
@@ -9431,7 +11591,17 @@ Status: Experiment. Introduced in GitLab 19.2.
 
 ## `organizationCreate`
 
-Status: Experiment. Introduced in GitLab 16.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.6.
+
+{{< /history >}}
 
 **Input type:** `OrganizationCreateInput`
 
@@ -9454,7 +11624,17 @@ Status: Experiment. Introduced in GitLab 16.6.
 
 ## `organizationCreateClusterAgentMapping`
 
-Status: Experiment. Introduced in GitLab 17.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.
+
+{{< /history >}}
 
 **Input type:** `OrganizationCreateClusterAgentMappingInput`
 
@@ -9473,7 +11653,17 @@ Status: Experiment. Introduced in GitLab 17.11.
 
 ## `organizationDelete`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 **Input type:** `OrganizationDeleteInput`
 
@@ -9494,7 +11684,17 @@ Status: Experiment. Introduced in GitLab 19.1.
 
 ## `organizationDeleteClusterAgentMapping`
 
-Status: Experiment. Introduced in GitLab 17.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.
+
+{{< /history >}}
 
 **Input type:** `OrganizationDeleteClusterAgentMappingInput`
 
@@ -9513,7 +11713,17 @@ Status: Experiment. Introduced in GitLab 17.11.
 
 ## `organizationRestore`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `OrganizationRestoreInput`
 
@@ -9532,7 +11742,17 @@ Status: Experiment. Introduced in GitLab 19.3.
 
 ## `organizationUpdate`
 
-Status: Experiment. Introduced in GitLab 16.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.7.
+
+{{< /history >}}
 
 **Input type:** `OrganizationUpdateInput`
 
@@ -9557,7 +11777,17 @@ Status: Experiment. Introduced in GitLab 16.7.
 
 ## `organizationUserCreate`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `OrganizationUserCreateInput`
 
@@ -9578,7 +11808,17 @@ Status: Experiment. Introduced in GitLab 19.3.
 
 ## `organizationUserDelete`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `OrganizationUserDeleteInput`
 
@@ -9597,7 +11837,17 @@ Status: Experiment. Introduced in GitLab 19.3.
 
 ## `organizationUserUpdate`
 
-Status: Experiment. Introduced in GitLab 17.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.5.
+
+{{< /history >}}
 
 **Input type:** `OrganizationUserUpdateInput`
 
@@ -9634,7 +11884,17 @@ Status: Experiment. Introduced in GitLab 17.5.
 
 ## `personalAccessTokenCreate`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Creates a personal access token for the current user.
 
@@ -9659,7 +11919,17 @@ Creates a personal access token for the current user.
 
 ## `personalAccessTokenRevoke`
 
-Status: Experiment. Introduced in GitLab 18.8.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.8.
+
+{{< /history >}}
 
 Revokes a specified personal access token.
 
@@ -9679,7 +11949,17 @@ Revokes a specified personal access token.
 
 ## `personalAccessTokenRotate`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Rotate a specified personal access token.
 
@@ -9757,7 +12037,17 @@ Rotate a specified personal access token.
 
 ## `pipelineExecutionSchedulePolicyTestRun`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 Triggers a test-run for a Scheduled Pipeline Execution Policy on a specific project.
 
@@ -9894,7 +12184,17 @@ Triggers a test-run for a Scheduled Pipeline Execution Policy on a specific proj
 
 ## `pipelineTriggerCreate`
 
-Status: Experiment. Introduced in GitLab 16.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.3.
+
+{{< /history >}}
 
 **Input type:** `PipelineTriggerCreateInput`
 
@@ -9915,7 +12215,17 @@ Status: Experiment. Introduced in GitLab 16.3.
 
 ## `pipelineTriggerDelete`
 
-Status: Experiment. Introduced in GitLab 16.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.3.
+
+{{< /history >}}
 
 **Input type:** `PipelineTriggerDeleteInput`
 
@@ -9933,7 +12243,17 @@ Status: Experiment. Introduced in GitLab 16.3.
 
 ## `pipelineTriggerUpdate`
 
-Status: Experiment. Introduced in GitLab 16.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.3.
+
+{{< /history >}}
 
 **Input type:** `PipelineTriggerUpdateInput`
 
@@ -9953,7 +12273,17 @@ Status: Experiment. Introduced in GitLab 16.3.
 
 ## `processUserBillablePromotionRequest`
 
-Status: Experiment. Introduced in GitLab 17.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.
+
+{{< /history >}}
 
 **Input type:** `ProcessUserBillablePromotionRequestInput`
 
@@ -9973,7 +12303,17 @@ Status: Experiment. Introduced in GitLab 17.2.
 
 ## `projectBlobsRemove`
 
-Status: Experiment. Introduced in GitLab 17.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.1.
+
+{{< /history >}}
 
 **Input type:** `projectBlobsRemoveInput`
 
@@ -10024,7 +12364,17 @@ Status: Experiment. Introduced in GitLab 17.1.
 
 ## `projectCustomAttributeSet`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 Sets (creates or updates) a custom attribute on a project. Only available to admins.
 
@@ -10070,7 +12420,17 @@ Updates multiple members of a project. To use this mutation, you must have at le
 
 ## `projectSavedReplyCreate`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `ProjectSavedReplyCreateInput`
 
@@ -10091,7 +12451,17 @@ Status: Experiment. Introduced in GitLab 16.11.
 
 ## `projectSavedReplyDestroy`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `ProjectSavedReplyDestroyInput`
 
@@ -10110,7 +12480,17 @@ Status: Experiment. Introduced in GitLab 16.11.
 
 ## `projectSavedReplyUpdate`
 
-Status: Experiment. Introduced in GitLab 16.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.
+
+{{< /history >}}
 
 **Input type:** `ProjectSavedReplyUpdateInput`
 
@@ -10393,7 +12773,17 @@ Deprecated in GitLab 17.3. CVS has been enabled permanently. See [this epic](htt
 
 ## `projectSettingsUpdate`
 
-Status: Experiment. Introduced in GitLab 16.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.9.
+
+{{< /history >}}
 
 **Input type:** `ProjectSettingsUpdateInput`
 
@@ -10456,7 +12846,17 @@ Status: Experiment. Introduced in GitLab 16.9.
 
 ## `projectSyncFork`
 
-Status: Experiment. Introduced in GitLab 15.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.9.
+
+{{< /history >}}
 
 **Input type:** `ProjectSyncForkInput`
 
@@ -10511,7 +12911,17 @@ Status: Experiment. Introduced in GitLab 15.9.
 
 ## `projectTextReplace`
 
-Status: Experiment. Introduced in GitLab 17.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.1.
+
+{{< /history >}}
 
 **Input type:** `projectTextReplaceInput`
 
@@ -10530,7 +12940,17 @@ Status: Experiment. Introduced in GitLab 17.1.
 
 ## `projectTransfer`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `ProjectTransferInput`
 
@@ -10890,7 +13310,17 @@ Repositions a DiffNote on an image (a `Note` where the `position.positionType` i
 
 ## `restorePagesDeployment`
 
-Status: Experiment. Introduced in GitLab 17.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.1.
+
+{{< /history >}}
 
 Restores a Pages deployment that has been scheduled for deletion.
 
@@ -10911,7 +13341,17 @@ Restores a Pages deployment that has been scheduled for deletion.
 
 ## `resyncSecurityPolicies`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 Triggers a resynchronization of security policies linked to the given project or group (`full_path`).
 
@@ -10932,7 +13372,17 @@ Triggers a resynchronization of security policies linked to the given project or
 
 ## `runnerAssignToProject`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 **Input type:** `RunnerAssignToProjectInput`
 
@@ -10951,7 +13401,17 @@ Status: Experiment. Introduced in GitLab 18.1.
 
 ## `runnerBulkPause`
 
-Status: Experiment. Introduced in GitLab 17.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.
+
+{{< /history >}}
 
 **Input type:** `RunnerBulkPauseInput`
 
@@ -10988,7 +13448,17 @@ Status: Experiment. Introduced in GitLab 17.11.
 
 ## `runnerCreate`
 
-Status: Experiment. Introduced in GitLab 15.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.10.
+
+{{< /history >}}
 
 **Input type:** `RunnerCreateInput`
 
@@ -11037,7 +13507,17 @@ Status: Experiment. Introduced in GitLab 15.10.
 
 ## `runnerUnassignFromProject`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 **Input type:** `RunnerUnassignFromProjectInput`
 
@@ -11220,7 +13700,17 @@ Commits the `policy_yaml` content to the assigned security policy project for th
 
 ## `secretsManagerEnableAddOn`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 **Input type:** `SecretsManagerEnableAddOnInput`
 
@@ -11239,7 +13729,17 @@ Status: Experiment. Introduced in GitLab 19.4.
 
 ## `secretsManagerInstanceEnableAddOn`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 **Input type:** `SecretsManagerInstanceEnableAddOnInput`
 
@@ -11252,7 +13752,17 @@ Status: Experiment. Introduced in GitLab 19.4.
 
 ## `secretsManagerInstanceRefreshEntitlement`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 **Input type:** `SecretsManagerInstanceRefreshEntitlementInput`
 
@@ -11265,7 +13775,17 @@ Status: Experiment. Introduced in GitLab 19.5.
 
 ## `secretsManagerInstanceStartTrial`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 **Input type:** `SecretsManagerInstanceStartTrialInput`
 
@@ -11278,7 +13798,17 @@ Status: Experiment. Introduced in GitLab 19.4.
 
 ## `secretsManagerRefreshEntitlement`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 **Input type:** `SecretsManagerRefreshEntitlementInput`
 
@@ -11297,7 +13827,17 @@ Status: Experiment. Introduced in GitLab 19.5.
 
 ## `secretsManagerStartTrial`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 **Input type:** `SecretsManagerStartTrialInput`
 
@@ -11486,7 +14026,17 @@ Status: Experiment. Introduced in GitLab 19.2.
 
 ## `securityFindingCreateVulnerability`
 
-Status: Experiment. Introduced in GitLab 17.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.5.
+
+{{< /history >}}
 
 **Input type:** `SecurityFindingCreateVulnerabilityInput`
 
@@ -11545,7 +14095,17 @@ Status: Experiment. Introduced in GitLab 17.5.
 
 ## `securityFindingJiraIssueFormUrlCreate`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 **Input type:** `SecurityFindingJiraIssueFormUrlCreateInput`
 
@@ -11641,7 +14201,17 @@ Creates and assigns a security policy project for the given project or group (`f
 
 ## `securityPolicyProjectCreateAsync`
 
-Status: Experiment. Introduced in GitLab 17.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.3.
+
+{{< /history >}}
 
 Creates and assigns a security policy project for the given project or group (`full_path`) async.
 
@@ -11680,7 +14250,17 @@ Unassigns the security policy project for the given project (`full_path`).
 
 ## `securityRefsTrack`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `SecurityRefsTrackInput`
 
@@ -11700,7 +14280,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `securityRefsUntrack`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `SecurityRefsUntrackInput`
 
@@ -11719,7 +14309,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `securityScanProfileAttach`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `SecurityScanProfileAttachInput`
 
@@ -11739,7 +14339,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `securityScanProfileCreate`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `SecurityScanProfileCreateInput`
 
@@ -11763,7 +14373,17 @@ Status: Experiment. Introduced in GitLab 19.3.
 
 ## `securityScanProfileDelete`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `SecurityScanProfileDeleteInput`
 
@@ -11782,7 +14402,17 @@ Status: Experiment. Introduced in GitLab 19.3.
 
 ## `securityScanProfileDetach`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `SecurityScanProfileDetachInput`
 
@@ -11802,7 +14432,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `securityScanProfileUpdate`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `SecurityScanProfileUpdateInput`
 
@@ -11865,7 +14505,17 @@ Enable/disable container scanning for registry for the given project.
 
 ## `setCvsForContainerScanning`
 
-Status: Experiment. Introduced in GitLab 19.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.
+
+{{< /history >}}
 
 Enable or disable continuous vulnerability scanning for container scanning for the given project.
 
@@ -11887,7 +14537,17 @@ Enable or disable continuous vulnerability scanning for container scanning for t
 
 ## `setCvsForDependencyScanning`
 
-Status: Experiment. Introduced in GitLab 19.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.
+
+{{< /history >}}
 
 Enable or disable continuous vulnerability scanning for dependency scanning for the given project.
 
@@ -11909,7 +14569,17 @@ Enable or disable continuous vulnerability scanning for dependency scanning for 
 
 ## `setGroupCustomAttribute`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 Creates or updates a custom attribute on a group. Only available to admins.
 
@@ -12111,7 +14781,17 @@ Enable/disable secret detection validity checks for the given project.
 
 ## `starProject`
 
-Status: Experiment. Introduced in GitLab 16.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.7.
+
+{{< /history >}}
 
 **Input type:** `StarProjectInput`
 
@@ -12131,7 +14811,17 @@ Status: Experiment. Introduced in GitLab 16.7.
 
 ## `startVulnerabilityWorkflow`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Creates and starts a vulnerability workflow execution.
 
@@ -12245,7 +14935,17 @@ Rate limited per project by the `tags_create_limit` application setting.
 
 ## `timelineEventCreate`
 
-Status: Experiment. Introduced in GitLab 15.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.6.
+
+{{< /history >}}
 
 **Input type:** `TimelineEventCreateInput`
 
@@ -12393,7 +15093,17 @@ Status: Experiment. Introduced in GitLab 15.6.
 
 ## `todoDeleteAllDone`
 
-Status: Experiment. Introduced in GitLab 17.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.
+
+{{< /history >}}
 
 **Input type:** `TodoDeleteAllDoneInput`
 
@@ -12411,7 +15121,17 @@ Status: Experiment. Introduced in GitLab 17.11.
 
 ## `todoDeleteMany`
 
-Status: Experiment. Introduced in GitLab 17.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.
+
+{{< /history >}}
 
 **Input type:** `TodoDeleteManyInput`
 
@@ -12446,7 +15166,17 @@ Status: Experiment. Introduced in GitLab 17.11.
 
 ## `todoResolveMany`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `TodoResolveManyInput`
 
@@ -12499,7 +15229,17 @@ Status: Experiment. Introduced in GitLab 17.9.
 
 ## `todoSnooze`
 
-Status: Experiment. Introduced in GitLab 17.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
+
+{{< /history >}}
 
 **Input type:** `TodoSnoozeInput`
 
@@ -12519,7 +15259,17 @@ Status: Experiment. Introduced in GitLab 17.4.
 
 ## `todoSnoozeMany`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `TodoSnoozeManyInput`
 
@@ -12539,7 +15289,17 @@ Status: Experiment. Introduced in GitLab 17.9.
 
 ## `todoUnSnooze`
 
-Status: Experiment. Introduced in GitLab 17.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
+
+{{< /history >}}
 
 **Input type:** `TodoUnSnoozeInput`
 
@@ -12558,7 +15318,17 @@ Status: Experiment. Introduced in GitLab 17.4.
 
 ## `todoUnsnoozeMany`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `TodoUnsnoozeManyInput`
 
@@ -12599,7 +15369,17 @@ Status: Experiment. Introduced in GitLab 17.9.
 
 ## `unlinkProjectComplianceViolationIssue`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 **Input type:** `UnlinkProjectComplianceViolationIssueInput`
 
@@ -12620,7 +15400,17 @@ Status: Experiment. Introduced in GitLab 18.3.
 
 ## `updateAiToolRule`
 
-Status: Experiment. Introduced in GitLab 19.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.
+
+{{< /history >}}
 
 Updates the permission settings for an AI tool rule.
 
@@ -12753,7 +15543,17 @@ Deprecated in GitLab 17.5. Replaced by WorkItem type.
 
 ## `updateComplianceRequirement`
 
-Status: Experiment. Introduced in GitLab 17.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.
+
+{{< /history >}}
 
 **Input type:** `UpdateComplianceRequirementInput`
 
@@ -12774,7 +15574,17 @@ Status: Experiment. Introduced in GitLab 17.7.
 
 ## `updateComplianceRequirementsControl`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `UpdateComplianceRequirementsControlInput`
 
@@ -12840,7 +15650,17 @@ Updates a container repository protection rule that controls who can modify cont
 
 ## `updateContainerProtectionTagRule`
 
-Status: Experiment. Introduced in GitLab 17.8.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.8.
+
+{{< /history >}}
 
 Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
@@ -12864,7 +15684,17 @@ Updates a protection rule that controls which user roles can modify container im
 
 ## `updateCustomDashboard`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 Updates a custom dashboard.
 
@@ -12956,7 +15786,17 @@ These settings can be adjusted only by the group Owner.
 
 ## `updateDuoWorkflowAgentPrivileges`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 **Input type:** `UpdateDuoWorkflowAgentPrivilegesInput`
 
@@ -12977,7 +15817,17 @@ Status: Experiment. Introduced in GitLab 19.2.
 
 ## `updateDuoWorkflowToolCallApprovals`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 **Input type:** `UpdateDuoWorkflowToolCallApprovalsInput`
 
@@ -13000,7 +15850,17 @@ Status: Experiment. Introduced in GitLab 18.9.
 
 ## `updateDuoWorkflowWebSearch`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 **Input type:** `UpdateDuoWorkflowWebSearchInput`
 
@@ -13256,7 +16116,17 @@ Updates a package protection rule to restrict access to project packages. You ca
 
 ## `updateProjectComplianceViolation`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 **Input type:** `UpdateProjectComplianceViolationInput`
 
@@ -13320,7 +16190,17 @@ Status: Experiment. Introduced in GitLab 18.2.
 
 ## `updateTerraformStateProtectionRule`
 
-Status: Experiment. Introduced in GitLab 18.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.
+
+{{< /history >}}
 
 Updates a protection rule for a Terraform state backend.
 
@@ -13344,7 +16224,17 @@ Updates a protection rule for a Terraform state backend.
 
 ## `updateVirtualRegistriesSetting`
 
-Status: Experiment. Introduced in GitLab 18.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.
+
+{{< /history >}}
 
 Updates or creates virtual registries settings for a root group.
 
@@ -13366,7 +16256,17 @@ Updates or creates virtual registries settings for a root group.
 
 ## `uploadCreate`
 
-Status: Experiment. Introduced in GitLab 19.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.
+
+{{< /history >}}
 
 Creates an upload (uploads a file to a project or group for use in Markdown).
 
@@ -13603,7 +16503,17 @@ Bulk upsert per-user budget cap overrides.
 
 ## `userCustomAttributeSet`
 
-Status: Experiment. Introduced in GitLab 18.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.
+
+{{< /history >}}
 
 Creates or updates a custom attribute on a user. Only available to admins.
 
@@ -13693,7 +16603,17 @@ Creates or updates a custom attribute on a user. Only available to admins.
 
 ## `valueStreamCreate`
 
-Status: Experiment. Introduced in GitLab 16.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.6.
+
+{{< /history >}}
 
 Creates a value stream.
 
@@ -13717,7 +16637,17 @@ Creates a value stream.
 
 ## `valueStreamDestroy`
 
-Status: Experiment. Introduced in GitLab 16.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.6.
+
+{{< /history >}}
 
 Destroy a value stream.
 
@@ -13738,7 +16668,17 @@ Destroy a value stream.
 
 ## `valueStreamUpdate`
 
-Status: Experiment. Introduced in GitLab 16.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.6.
+
+{{< /history >}}
 
 Updates a value stream.
 
@@ -13781,7 +16721,17 @@ Create a verified namespace and mark all child catalog resources with the passed
 
 ## `virtualRegistriesCleanupPolicyUpsert`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Create or update virtual registries cleanup policy for a root group.
 
@@ -13807,7 +16757,17 @@ Create or update virtual registries cleanup policy for a root group.
 
 ## `vulnerabilitiesArchive`
 
-Status: Experiment. Introduced in GitLab 17.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.
+
+{{< /history >}}
 
 **Input type:** `VulnerabilitiesArchiveInput`
 
@@ -13827,7 +16787,17 @@ Status: Experiment. Introduced in GitLab 17.10.
 
 ## `vulnerabilitiesCreateIssue`
 
-Status: Experiment. Introduced in GitLab 17.9.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.
+
+{{< /history >}}
 
 **Input type:** `VulnerabilitiesCreateIssueInput`
 
@@ -13905,7 +16875,17 @@ Remove all Vulnerabilities and related information from a given project. [Introd
 
 ## `vulnerabilityAutoRemediation`
 
-Status: Experiment. Introduced in GitLab 19.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.
+
+{{< /history >}}
 
 Triggers automated remediation for a single vulnerability. Currently supports dependency (SCA) vulnerabilities, where a remediation merge request is created asynchronously when a fix is available; other report types return `UNSUPPORTED`.
 
@@ -13992,7 +16972,17 @@ Triggers automated remediation for a single vulnerability. Currently supports de
 
 ## `vulnerabilityDismissFalsePositiveFlag`
 
-Status: Experiment. Introduced in GitLab 18.6.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.6.
+
+{{< /history >}}
 
 Dismiss a vulnerability false positive flag.
 
@@ -14066,7 +17056,17 @@ Dismiss a vulnerability false positive flag.
 
 ## `vulnerabilityLinkMergeRequest`
 
-Status: Experiment. Introduced in GitLab 18.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.
+
+{{< /history >}}
 
 Link a merge request to a vulnerability.
 
@@ -14125,7 +17125,17 @@ Link a merge request to a vulnerability.
 
 ## `vulnerabilityUnlinkMergeRequest`
 
-Status: Experiment. Introduced in GitLab 18.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.
+
+{{< /history >}}
 
 Unlink a merge request from a vulnerability.
 
@@ -14147,7 +17157,17 @@ Unlink a merge request from a vulnerability.
 
 ## `wikiPageSubscribe`
 
-Status: Experiment. Introduced in GitLab 18.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.
+
+{{< /history >}}
 
 **Input type:** `WikiPageSubscribeInput`
 
@@ -14167,7 +17187,17 @@ Status: Experiment. Introduced in GitLab 18.1.
 
 ## `workItemAddClosingMergeRequest`
 
-Status: Experiment. Introduced in GitLab 17.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.1.
+
+{{< /history >}}
 
 Adds a closing merge request to a work item.
 
@@ -14191,7 +17221,17 @@ Adds a closing merge request to a work item.
 
 ## `workItemAddLinkedItems`
 
-Status: Experiment. Introduced in GitLab 16.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.3.
+
+{{< /history >}}
 
 Add linked items to the work item.
 
@@ -14215,7 +17255,17 @@ Add linked items to the work item.
 
 ## `workItemAvailabilityToggle`
 
-Status: Experiment. Introduced in GitLab 18.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.
+
+{{< /history >}}
 
 Enables or disables a work item type for a namespace.
 
@@ -14239,7 +17289,17 @@ Enables or disables a work item type for a namespace.
 
 ## `workItemBulkMove`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 Moves work items between projects or groups.
 
@@ -14262,7 +17322,17 @@ Moves work items between projects or groups.
 
 ## `workItemBulkUpdate`
 
-Status: Experiment. Introduced in GitLab 17.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
+
+{{< /history >}}
 
 Allows updating several properties for a set of work items.
 
@@ -14294,7 +17364,17 @@ Allows updating several properties for a set of work items.
 
 ## `workItemConvert`
 
-Status: Experiment. Introduced in GitLab 15.11.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.11.
+
+{{< /history >}}
 
 Converts the work item to a new type.
 
@@ -14316,7 +17396,17 @@ Converts the work item to a new type.
 
 ## `workItemCreate`
 
-Status: Experiment. Introduced in GitLab 15.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.1.
+
+{{< /history >}}
 
 Creates a work item.
 
@@ -14362,7 +17452,17 @@ Creates a work item.
 
 ## `workItemCreateFromTask`
 
-Status: Experiment. Introduced in GitLab 15.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.1.
+
+{{< /history >}}
 
 Creates a work item from a task in another work item's description.
 
@@ -14385,7 +17485,17 @@ Creates a work item from a task in another work item's description.
 
 ## `workItemDecisionArchive`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 Archives a resolved decision in the decision log of a work item. The decision is kept but marked as archived. Open decisions cannot be archived, and archiving cannot be undone.
 
@@ -14406,7 +17516,17 @@ Archives a resolved decision in the decision log of a work item. The decision is
 
 ## `workItemDecisionCreate`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Records a decision in the decision log of a work item.
 
@@ -14433,7 +17553,17 @@ Records a decision in the decision log of a work item.
 
 ## `workItemDecisionDelete`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 Deletes an open decision from the decision log of a work item. Resolved or archived decisions cannot be deleted; archive resolved decisions instead.
 
@@ -14454,7 +17584,17 @@ Deletes an open decision from the decision log of a work item. Resolved or archi
 
 ## `workItemDecisionResolve`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Resolves a decision in the decision log of a work item.
 
@@ -14479,7 +17619,17 @@ Resolves a decision in the decision log of a work item.
 
 ## `workItemDecisionUpdate`
 
-Status: Experiment. Introduced in GitLab 19.5.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
 
 Updates a decision in the decision log of a work item.
 
@@ -14509,7 +17659,17 @@ Updates a decision in the decision log of a work item.
 
 ## `workItemDelete`
 
-Status: Experiment. Introduced in GitLab 15.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.1.
+
+{{< /history >}}
 
 Deletes a work item.
 
@@ -14531,7 +17691,17 @@ Deletes a work item.
 
 ## `workItemEnableAiPlanning`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Enables AI planning for a work item. Once enabled, AI planning cannot be disabled.
 
@@ -14613,7 +17783,17 @@ Deprecated in GitLab 18.0. Use WorkItemsCsvExport.
 
 ## `workItemGenerateReadinessScore`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Scores the readiness of a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `workplan_score` feature flag is enabled; returns an error otherwise.
 
@@ -14634,7 +17814,17 @@ Scores the readiness of a work item asynchronously through a Duo Agent Platform 
 
 ## `workItemGenerateWorkplan`
 
-Status: Experiment. Introduced in GitLab 19.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.
+
+{{< /history >}}
 
 Generates a workplan for a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
 
@@ -14655,7 +17845,17 @@ Generates a workplan for a work item asynchronously through a Duo Agent Platform
 
 ## `workItemHierarchyAddChildrenItems`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 Adds children to a given work item's hierarchy by Global ID.
 
@@ -14677,7 +17877,17 @@ Adds children to a given work item's hierarchy by Global ID.
 
 ## `workItemRemoveLinkedItems`
 
-Status: Experiment. Introduced in GitLab 16.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.3.
+
+{{< /history >}}
 
 Remove items linked to the work item.
 
@@ -14700,7 +17910,17 @@ Remove items linked to the work item.
 
 ## `workItemResumeWorkplan`
 
-Status: Experiment. Introduced in GitLab 19.4.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.
+
+{{< /history >}}
 
 Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
 
@@ -14721,7 +17941,17 @@ Resumes a paused workplan generation flow that is awaiting input, sending the re
 
 ## `workItemSavedViewCreate`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Creates a saved view.
 
@@ -14749,7 +17979,17 @@ Creates a saved view.
 
 ## `workItemSavedViewDelete`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Deletes a saved view.
 
@@ -14770,7 +18010,17 @@ Deletes a saved view.
 
 ## `workItemSavedViewReorder`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Reorders a saved view for the current user.
 
@@ -14793,7 +18043,17 @@ Reorders a saved view for the current user.
 
 ## `workItemSavedViewSubscribe`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Subscribes the current user to a saved view.
 
@@ -14814,7 +18074,17 @@ Subscribes the current user to a saved view.
 
 ## `workItemSavedViewUnsubscribe`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Unsubscribes the current user from a saved view.
 
@@ -14835,7 +18105,17 @@ Unsubscribes the current user from a saved view.
 
 ## `workItemSavedViewUpdate`
 
-Status: Experiment. Introduced in GitLab 18.7.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.
+
+{{< /history >}}
 
 Updates a saved view.
 
@@ -14863,7 +18143,17 @@ Updates a saved view.
 
 ## `workItemSettingsUpdate`
 
-Status: Experiment. Introduced in GitLab 19.0.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.
+
+{{< /history >}}
 
 Updates work item settings for a root group or organization. Omit fullPath to update settings for the current organization.
 
@@ -14885,7 +18175,17 @@ Updates work item settings for a root group or organization. Omit fullPath to up
 
 ## `workItemSubscribe`
 
-Status: Experiment. Introduced in GitLab 16.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.3.
+
+{{< /history >}}
 
 **Input type:** `WorkItemSubscribeInput`
 
@@ -14905,7 +18205,17 @@ Status: Experiment. Introduced in GitLab 16.3.
 
 ## `workItemTypeCreate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `WorkItemTypeCreateInput`
 
@@ -14927,7 +18237,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `workItemTypeUpdate`
 
-Status: Experiment. Introduced in GitLab 18.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.
+
+{{< /history >}}
 
 **Input type:** `WorkItemTypeUpdateInput`
 
@@ -14951,7 +18271,17 @@ Status: Experiment. Introduced in GitLab 18.10.
 
 ## `workItemUpdate`
 
-Status: Experiment. Introduced in GitLab 15.1.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.1.
+
+{{< /history >}}
 
 Updates a work item by Global ID.
 
@@ -14998,7 +18328,17 @@ Updates a work item by Global ID.
 
 ## `workItemUserPreferenceUpdate`
 
-Status: Experiment. Introduced in GitLab 17.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.
+
+{{< /history >}}
 
 Create or Update user preferences for a work item type and namespace.
 
@@ -15022,7 +18362,17 @@ Create or Update user preferences for a work item type and namespace.
 
 ## `workItemsCsvExport`
 
-Status: Experiment. Introduced in GitLab 15.10.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.10.
+
+{{< /history >}}
 
 **Input type:** `WorkItemsCsvExportInput`
 
@@ -15083,7 +18433,17 @@ Status: Experiment. Introduced in GitLab 15.10.
 
 ## `workItemsCsvImport`
 
-Status: Experiment. Introduced in GitLab 18.2.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.
+
+{{< /history >}}
 
 **Input type:** `WorkItemsCsvImportInput`
 
@@ -15103,7 +18463,17 @@ Status: Experiment. Introduced in GitLab 18.2.
 
 ## `workItemsHierarchyReorder`
 
-Status: Experiment. Introduced in GitLab 17.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.3.
+
+{{< /history >}}
 
 Reorder a work item in the hierarchy tree.
 
@@ -15129,7 +18499,17 @@ Reorder a work item in the hierarchy tree.
 
 ## `workItemsReorder`
 
-Status: Experiment. Introduced in GitLab 18.3.
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.
+
+{{< /history >}}
 
 Reorders a work item.
 

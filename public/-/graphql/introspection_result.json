@@ -272563,7 +272563,7 @@
             },
             {
               "name": "artifactRegistryRoleBulkGrant",
-              "description": "Grants Artifact Registry roles to users on resources in a single all-or-nothing operation. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Grants Artifact Registry roles to users on resources in a single all-or-nothing operation. Replaces any role a user already holds on that resource. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -272592,7 +272592,7 @@
             },
             {
               "name": "artifactRegistryRoleBulkRevoke",
-              "description": "Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation. Users can revoke their own role. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -272621,7 +272621,7 @@
             },
             {
               "name": "artifactRegistryRoleGrant",
-              "description": "Grants an Artifact Registry role to a user on a resource. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Grants an Artifact Registry role to a user on a resource. Replaces any role the user already holds on that resource. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -272650,7 +272650,7 @@
             },
             {
               "name": "artifactRegistryRoleRevoke",
-              "description": "Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it. Users can revoke their own role. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "input",

@@ -300,6 +300,47 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
         expect(fetched.sum).to be < zip_bytes.size / 2
       end
 
+      # rubyzip's end-of-central-directory scan starts 64 KB back from the end, so a
+      # smaller archive forces the out-of-range seek that only object storage hits.
+      it 'reads an entry from an archive smaller than the central directory scan window' do
+        zipfile = Tempfile.new(['small', '.zip'])
+        Zip::OutputStream.open(zipfile.path) do |zos|
+          zos.put_next_entry('gl-sast-report.json')
+          zos.write('{"findings":[]}')
+        end
+        zip_bytes = File.binread(zipfile.path)
+        small_job = create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_job_artifact, :remote_store, job: small_job, file_type: :archive, file_format: :zip,
+          file: UploadedFile.new(zipfile.path, filename: 'ci_build_artifacts.zip'))
+        zipfile.close!
+
+        stub_request(:get, %r{\Ahttps://artifacts\.s3\.amazonaws\.com/}).to_return do |request|
+          m = request.headers['Range'].to_s.match(/bytes=(\d+)-(\d+)/)
+          range_start = m[1].to_i
+          range_end = [m[2].to_i, zip_bytes.size - 1].min
+          { status: 206, body: zip_bytes[range_start..range_end],
+            headers: { 'Content-Range' => "bytes #{range_start}-#{range_end}/#{zip_bytes.size}" } }
+        end
+
+        result = execute({ project_id: project.full_path, job_id: small_job.id, artifact_path: 'gl-sast-report.json' })
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent][:content]).to eq('{"findings":[]}')
+      end
+
+      it 'points to the download URL when an out-of-range seek escapes the central directory scan',
+        :aggregate_failures do
+        allow(Zip::File).to receive(:open_buffer).and_raise(Errno::EINVAL, 'new position is outside of file')
+
+        result = execute({ project_id: project.full_path, job_id: remote_job.id, artifact_path: text_file })
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job #{remote_job.id}")
+        expect(result[:content].first[:text]).to include(
+          Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, remote_job)
+        )
+      end
+
       it 'points to the download URL when the archive cannot be opened', :aggregate_failures do
         allow(::Gitlab::HttpIO).to receive(:new).and_raise(::Gitlab::HttpIO::FailedToGetChunkError)
 
@@ -476,6 +517,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Artifact path mismatch')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'rejects a URL that is not a job URL' do
@@ -483,6 +525,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Invalid job URL')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'rejects a non-http URL instead of crashing' do
@@ -490,6 +533,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Invalid URL format')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       context 'when the instance is served under a relative URL root' do
@@ -574,6 +618,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
           expect(result[:isError]).to be(true)
           expect(result[:content].first[:text]).to include('Job not found or inaccessible')
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
         end
       end
 
@@ -610,6 +655,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
           expect(result[:isError]).to be(true)
           expect(result[:content].first[:text]).to include('Job not found or inaccessible')
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
         end
       end
 

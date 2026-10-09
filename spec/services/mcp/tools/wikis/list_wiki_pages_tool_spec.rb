@@ -169,6 +169,7 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesTool, feature_category: :mcp_serv
         expect(processed[:content].first[:text]).to eq(
           "Project not found or inaccessible"
         )
+        expect(Mcp::Tools::Base::Response.error_reason(processed)).to eq(:not_found)
       end
     end
 
@@ -180,6 +181,7 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesTool, feature_category: :mcp_serv
 
         expect(processed[:isError]).to be(true)
         expect(processed[:content].first[:text]).to include("This wiki isn't available")
+        expect(Mcp::Tools::Base::Response.error_reason(processed)).to eq(:unauthorized)
       end
     end
 
@@ -191,6 +193,7 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesTool, feature_category: :mcp_serv
 
         expect(processed[:isError]).to be(true)
         expect(processed[:content].first[:text]).to include("This wiki isn't available")
+        expect(Mcp::Tools::Base::Response.error_reason(processed)).to eq(:error)
       end
     end
 
@@ -289,6 +292,7 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesTool, feature_category: :mcp_serv
         expect(result[:content].first[:text]).to include(
           "This wiki isn't available"
         )
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
   end

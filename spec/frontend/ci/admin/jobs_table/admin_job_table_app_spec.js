@@ -223,6 +223,21 @@ describe('Job table app', () => {
       expect(findEmptyState().exists()).toBe(false);
       expect(findTable().exists()).toBe(true);
     });
+
+    describe('when a tab scope is set and no jobs are returned', () => {
+      beforeEach(async () => {
+        createComponent({ handler: emptyHandler });
+        await waitForPromises();
+
+        findTabs().vm.$emit('fetch-jobs-by-status', ['SUCCESS', 'FAILED', 'CANCELED']);
+        await waitForPromises();
+      });
+
+      it('shows the table instead of the empty state', () => {
+        expect(findEmptyState().exists()).toBe(false);
+        expect(findTable().exists()).toBe(true);
+      });
+    });
   });
 
   describe('error state', () => {

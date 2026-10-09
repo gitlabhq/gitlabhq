@@ -261,6 +261,22 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     pages.find { |compiled_doc| compiled_doc.filename.to_s.end_with?(filename) }
   end
 
+  def experiment_block(milestone, description = nil)
+    <<~MD.strip + (description ? "\n\n#{description}" : '')
+      {{< details >}}
+
+      - Status: Experiment
+
+      {{< /details >}}
+
+      {{< history >}}
+
+      - Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab #{milestone}.
+
+      {{< /history >}}
+    MD
+  end
+
   describe 'every page' do
     it 'has no runs of blank lines' do
       pages.each do |compiled_doc|
@@ -325,8 +341,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
     it 'renders the deprecation and experiment status of a mutation', :aggregate_failures do
       expect(section('deprecatedMutation')).to include('Deprecated in GitLab 1.0. Use objectCreate instead.')
-      expect(section('experimentalMutation'))
-        .to include("Status: Experiment. Introduced in GitLab 2.0.\n\nAn experimental mutation.")
+      expect(section('experimentalMutation')).to include(experiment_block('2.0', 'An experimental mutation.'))
     end
 
     it 'lists mutations in alphabetical order' do
@@ -402,8 +417,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
     it 'renders the deprecation and experiment status of a query', :aggregate_failures do
       expect(section('deprecatedQuery')).to include('Deprecated in GitLab 1.0. Use findObject instead.')
-      expect(section('experimentalQuery'))
-        .to include("Status: Experiment. Introduced in GitLab 2.0.\n\nAn experimental query.")
+      expect(section('experimentalQuery')).to include(experiment_block('2.0', 'An experimental query.'))
     end
 
     it 'renders an experimental query without a description' do
@@ -411,7 +425,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
         <<~MD
           ## `experimentalQueryWithoutDescription`
 
-          Status: Experiment. Introduced in GitLab 2.0.
+          #{experiment_block('2.0')}
 
           **Returns:** [`String`](scalars.md#string)
         MD

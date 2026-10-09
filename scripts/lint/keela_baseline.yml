@@ -6,8 +6,6 @@
 #
 ---
 attributes:
-  app/models/commit.rb:
-  - redacted_description_html
   app/models/supply_chain/slsa/provenance_statement.rb:
   - invocation_id
 constants:

@@ -1110,6 +1110,7 @@ Representation of a GitLab user.
 - [`WorkItemWidgetDevelopment`](objects.md#workitemwidgetdevelopment)
 - [`WorkItemWidgetEmailParticipants`](objects.md#workitemwidgetemailparticipants)
 - [`WorkItemWidgetErrorTracking`](objects.md#workitemwidgeterrortracking)
+- [`WorkItemWidgetEscalationPolicy`](objects.md#workitemwidgetescalationpolicy)
 - [`WorkItemWidgetEscalationStatus`](objects.md#workitemwidgetescalationstatus)
 - [`WorkItemWidgetHealthStatus`](objects.md#workitemwidgethealthstatus)
 - [`WorkItemWidgetHierarchy`](objects.md#workitemwidgethierarchy)

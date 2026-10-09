@@ -293,7 +293,7 @@ Each run also stops after a fixed duration and resumes from its checkpoint on th
 A first load with every registry type enabled can take about a day.
 To shorten it, narrow the enabled types.
 
-### v2: Using the gsutil tool to download the package metadata exports
+### Download v2 package metadata with gsutil
 
 This section describes how to download v2 data.
 
@@ -1222,7 +1222,7 @@ CVE enrichment files must be exactly two directory levels below the version dire
 In GitLab 19.4 and earlier, a copy of the CVE enrichment bucket made as it is
 puts the files one level deeper than required, and
 GitLab reads none of them.
-To correct it, see [the CVE enrichment step in the download procedure](#v2-using-the-gsutil-tool-to-download-the-package-metadata-exports).
+To correct it, see [the CVE enrichment step in the download procedure](#download-v2-package-metadata-with-gsutil).
 
 You can check if GitLab recognizes the file path in the [Rails console](../../administration/operations/rails_console.md):
 

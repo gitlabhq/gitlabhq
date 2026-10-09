@@ -9322,6 +9322,7 @@ Relationship between an epic and an issue.
 | `relativePosition` | [`Int`](scalars.md#int) | Relative position of the issue (used for positioning in epic tree and issue boards). |
 | `severity` | [`IssuableSeverity`](enums.md#issuableseverity) | Severity level of the incident. |
 | `slaDueAt` | [`Time`](scalars.md#time) | Timestamp of when the issue SLA expires. |
+| `startDate` | [`Time`](scalars.md#time) | Start date of the issue. |
 | `state` | [`IssueState!`](enums.md#issuestate) | State of the issue. |
 | `status` | [`WorkItemStatus`](#workitemstatus) | Status: Experiment. Introduced in GitLab 18.0.<br/><br/>Status of the issue. |
 | `statusPagePublishedIncident` | [`Boolean`](scalars.md#boolean) | Indicates whether an issue is published to the status page. |
@@ -11444,6 +11445,7 @@ Paginated collection of [`IssuableResourceLink`](#issuableresourcelink). See [St
 | `relativePosition` | [`Int`](scalars.md#int) | Relative position of the issue (used for positioning in epic tree and issue boards). |
 | `severity` | [`IssuableSeverity`](enums.md#issuableseverity) | Severity level of the incident. |
 | `slaDueAt` | [`Time`](scalars.md#time) | Timestamp of when the issue SLA expires. |
+| `startDate` | [`Time`](scalars.md#time) | Start date of the issue. |
 | `state` | [`IssueState!`](enums.md#issuestate) | State of the issue. |
 | `status` | [`WorkItemStatus`](#workitemstatus) | Status: Experiment. Introduced in GitLab 18.0.<br/><br/>Status of the issue. |
 | `statusPagePublishedIncident` | [`Boolean`](scalars.md#boolean) | Indicates whether an issue is published to the status page. |
@@ -21680,6 +21682,7 @@ Paginated collection of [`WorkItemDescriptionTemplate`](#workitemdescriptiontemp
 | `development` | [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment) | Development widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `emailParticipants` | [`WorkItemWidgetEmailParticipants`](#workitemwidgetemailparticipants) | Email participants widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `errorTracking` | [`WorkItemWidgetErrorTracking`](#workitemwidgeterrortracking) | Error tracking widget of the work item. Returns `null` if the widget is not available for the work item. |
+| `escalationPolicy` | [`WorkItemWidgetEscalationPolicy`](#workitemwidgetescalationpolicy) | Escalation policy widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `escalationStatus` | [`WorkItemWidgetEscalationStatus`](#workitemwidgetescalationstatus) | Escalation status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `healthStatus` | [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus) | Health status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `hierarchy` | [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy) | Hierarchy widget of the work item. Returns `null` if the widget is not available for the work item. |
@@ -22353,6 +22356,19 @@ Represents details about a line of code of the stack trace.
 | ---- | ---- | ----------- |
 | `line` | [`String`](scalars.md#string) | Line of code. |
 | `lineNumber` | [`Int`](scalars.md#int) | Line number of code. |
+
+## `WorkItemWidgetEscalationPolicy`
+
+Represents the escalation policy widget.
+
+**Implements:** [`WorkItemWidget`](interfaces.md#workitemwidget)
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy of the work item. |
+| `type` | [`WorkItemWidgetType`](enums.md#workitemwidgettype) | Widget type. |
 
 ## `WorkItemWidgetEscalationStatus`
 

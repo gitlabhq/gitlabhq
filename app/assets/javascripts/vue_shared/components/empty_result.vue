@@ -37,6 +37,11 @@ export default {
       required: false,
       default: 0,
     },
+    searchHint: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     title() {
@@ -51,9 +56,12 @@ export default {
         });
       }
 
-      return this.type === TYPES.search
-        ? this.$options.i18n.descriptionSearch
-        : this.$options.i18n.descriptionFilter;
+      const description =
+        this.type === TYPES.search
+          ? this.$options.i18n.descriptionSearch
+          : this.$options.i18n.descriptionFilter;
+
+      return this.searchHint ? `${description} ${this.searchHint}` : description;
     },
   },
   emptyStateSvgPath,

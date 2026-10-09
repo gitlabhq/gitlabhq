@@ -79,7 +79,14 @@ module Mcp
           processed_result = super
           return processed_result if processed_result[:isError]
 
-          commits = processed_result[:structuredContent].dig('repository', 'commits')
+          repository = processed_result[:structuredContent]['repository']
+          unless repository
+            return ::Mcp::Tools::Base::Response.error(
+              'Operation returned no data', reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+            )
+          end
+
+          commits = repository['commits']
           return ::Mcp::Tools::Base::Response.error('Operation returned no data') unless commits
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(commits) }]
@@ -87,7 +94,9 @@ module Mcp
         end
 
         def resource_not_found_error
-          ::Mcp::Tools::Base::Response.error('Project not found or inaccessible')
+          ::Mcp::Tools::Base::Response.error(
+            'Project not found or inaccessible', reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+          )
         end
       end
     end

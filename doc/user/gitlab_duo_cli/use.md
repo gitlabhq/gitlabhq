@@ -125,38 +125,8 @@ For more information, see [custom slash commands](customize.md#custom-slash-comm
 
 ### Settings
 
-{{< history >}}
-
-- Settings panel [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.90.0) in GitLab Duo CLI 8.90.0, during the GitLab 19.0 release.
-- Setting to display work items in new sessions [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 9.11.0, during
-the GitLab 19.4 release.
-- Setting to adjust theme [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 9.11.0, during the GitLab 19.4 release.
-- Setting to run suggested prompts as `/goal` sessions [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.24.0) in GitLab Duo CLI 9.24.0, during the GitLab 19.5 release.
-
-{{< /history >}}
-
-To change a setting:
-
-1. In interactive mode, type `/settings` and press <kbd>Enter</kbd>.
-1. Use the arrow keys to navigate the list of settings.
-1. To change the selected setting, press <kbd>Enter</kbd> or <kbd>Space</kbd>.
-1. To close the panel, press <kbd>Escape</kbd>.
-
-Changes persist across sessions.
-If your organization enforces a setting, the panel shows **Set by your organization** and you can't
-change it.
-For more information, see [managed settings file](_index.md#managed-settings-file).
-
-The following settings are available:
-
-| Setting                  | Description                                                                                       |
-|--------------------------|---------------------------------------------------------------------------------------------------|
-| **Telemetry**            | Send anonymous usage data to improve GitLab Duo.                                                  |
-| **Enable global skills** | (Experimental) Discover [user-level Agent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills) from `~/.agents/skills/` and `~/.gitlab/duo/skills/`. A restart is required for changes to take effect. |
-| **Notifications**        | Control [system notifications](#system-notifications) (`auto` or `disabled`).                     |
-| **Show work items on session start** | Display your open work items when you start a new session. |
-| **Run suggested prompts as /goal sessions** | Run suggested prompts as `/goal` sessions instead of plain chat messages. A restart is required for changes to take effect. |
-| **Theme**        | Change the theme setting. Options include `auto`, `dark`, `light`, `dark high contrast`, and `light high contrast`. |
+To view and change settings, type `/settings` in interactive mode.
+For more information, see [GitLab Duo CLI settings](settings.md).
 
 ### System notifications
 
@@ -170,7 +140,7 @@ The GitLab Duo CLI can send a system notification when a session needs your atte
 (for example, when it finishes a task or requires a tool approval) while the terminal window
 is not focused.
 
-Notifications are controlled by the **Notifications** setting in the [settings panel](#settings):
+Notifications are controlled by the **Notifications** setting in the [settings panel](settings.md#settings-panel):
 
 - `auto` (default): Send a system notification when the terminal is unfocused.
 - `disabled`: Never send system notifications.

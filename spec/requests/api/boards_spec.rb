@@ -52,6 +52,40 @@ RSpec.describe API::Boards, :with_license, feature_category: :planning_views do
       expect(json_response['error']).to eq('name is missing')
     end
 
+    context 'when the name is not valid' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:board_name, :name_error) do
+        ('a' * 256) | 'is too long (maximum is 255 characters)'
+        ''          | "can't be blank"
+      end
+
+      with_them do
+        it 'returns the validation errors and creates nothing', :aggregate_failures do
+          expect { post api(url, user), params: { name: board_name } }.not_to change { board_parent.boards.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['name']).to contain_exactly(name_error)
+        end
+      end
+    end
+
+    it 'returns a 400 when the service fails without validation errors', :aggregate_failures do
+      allow_next_instance_of(Boards::CreateService) do |service|
+        allow(service).to receive(:execute).and_return(
+          ServiceResponse.error(
+            message: 'There was an error when creating a board.',
+            payload: { board: build(:board, project: board_parent, name: 'Test Board') }
+          )
+        )
+      end
+
+      post api(url, user), params: { name: 'Test Board' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to eq('400 Bad request - There was an error when creating a board.')
+    end
+
     it_behaves_like 'authorizing granular token permissions', :create_issue_board do
       let(:boundary_object) { board_parent }
       let(:request) { post api(url, personal_access_token: pat), params: { name: 'Test Board' } }

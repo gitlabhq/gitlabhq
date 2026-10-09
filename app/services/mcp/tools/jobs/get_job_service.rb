@@ -85,7 +85,7 @@ module Mcp
           @arguments = params[:arguments] || {}
           @invoked_as = params[:name]
 
-          job || raise(ArgumentError, NOT_FOUND)
+          job || raise(ResourceNotFoundError, NOT_FOUND)
         end
 
         def perform_default(arguments = {})

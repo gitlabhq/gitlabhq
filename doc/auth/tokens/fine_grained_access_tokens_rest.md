@@ -2213,9 +2213,11 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items` |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/-/work_items` |
 | Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/boards` |
 | Create | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
@@ -2243,6 +2245,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/issues/:issue_id` |
 | Create | Group | `POST` | `/groups/:id/-/work_items` |
 | Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/notes` |
 | Create | Group | `POST` | `/groups/:id/boards` |
 | Create | Group | `POST` | `/groups/:id/boards/:board_id/lists` |
@@ -2256,9 +2259,12 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | `POST` | `/groups/:id/wiki_pages/:noteable_id/notes` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
+| Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid` |
+| Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id` |
 | Delete | Project | `DELETE` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Delete | Project | `DELETE` | `/projects/:id/issues/:issue_iid` |
@@ -2280,6 +2286,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Delete | Group | `DELETE` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Delete | Group | `DELETE` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
 | Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid` |
+| Delete | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Delete | Group | `DELETE` | `/groups/:id/boards/:board_id` |
 | Delete | Group | `DELETE` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Delete | Group | `DELETE` | `/groups/:id/epics/:epic_iid/award_emoji/:award_id` |
@@ -2290,6 +2297,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Delete | Group | `DELETE` | `/groups/:id/milestones/:milestone_id` |
 | Delete | Group | `DELETE` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
 | Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
+| Delete | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/award_emoji` |

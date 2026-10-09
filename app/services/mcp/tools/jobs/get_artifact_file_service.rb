@@ -90,7 +90,7 @@ module Mcp
         def auth_target(params)
           @arguments = params[:arguments] || {}
 
-          job || raise(ArgumentError, NOT_FOUND)
+          job || raise(ResourceNotFoundError, NOT_FOUND)
         end
 
         def perform_default(arguments = {})
@@ -226,7 +226,7 @@ module Mcp
               read_entry(entry)
             end
           end
-        rescue ::Gitlab::HttpIO::FailedToGetChunkError, Zip::Error, Zlib::Error
+        rescue ::Gitlab::HttpIO::FailedToGetChunkError, Errno::EINVAL, Zip::Error, Zlib::Error
           archive_unreadable_error
         end
 

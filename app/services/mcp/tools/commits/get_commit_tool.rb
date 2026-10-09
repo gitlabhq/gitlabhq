@@ -59,8 +59,8 @@ module Mcp
         end
 
         def process_result(result)
-          missing = missing_resource(result)
-          return missing_resource_error(missing) if missing
+          resource, reason = missing_resource(result)
+          return missing_resource_error(resource, reason) if resource
 
           processed_result = super
           return processed_result if processed_result[:isError]
@@ -74,15 +74,14 @@ module Mcp
           return if result['errors'].present?
 
           project = result.dig('data', 'project')
-          return 'Project' if project.nil?
+          return ['Project', ::Mcp::Tools::Base::Response::Reason::NOT_FOUND] if project.nil?
+          return ['Commit', ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED] if project['repository'].nil?
 
-          'Commit' if project.dig('repository', 'commit').nil?
+          ['Commit', ::Mcp::Tools::Base::Response::Reason::NOT_FOUND] if project.dig('repository', 'commit').nil?
         end
 
-        def missing_resource_error(resource)
-          ::Mcp::Tools::Base::Response.error(
-            "#{resource} not found or inaccessible"
-          )
+        def missing_resource_error(resource, reason)
+          ::Mcp::Tools::Base::Response.error("#{resource} not found or inaccessible", reason: reason)
         end
       end
     end

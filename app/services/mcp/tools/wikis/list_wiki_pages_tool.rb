@@ -12,7 +12,9 @@ module Mcp
         register_version VERSIONS[:v0_1_0], {}
 
         def execute
-          return wiki_unavailable_error if group_request? && !group_wikis_supported?
+          if group_request? && !group_wikis_supported?
+            return wiki_unavailable_error(reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST)
+          end
 
           super
         end
@@ -68,11 +70,12 @@ module Mcp
           nil
         end
 
-        def wiki_unavailable_error
+        def wiki_unavailable_error(reason: nil)
           ::Mcp::Tools::Base::Response.error(
             "This wiki isn't available. It may be disabled, not available on the current plan, or you " \
               "don't have permission to view it. If you expected access, check the wiki's settings or " \
-              "contact an administrator."
+              "contact an administrator.",
+            reason: reason
           )
         end
 
@@ -83,7 +86,9 @@ module Mcp
 
           data = processed_result[:structuredContent]
 
-          return wiki_unavailable_error if wiki_unavailable?(data)
+          if wiki_unavailable?(data)
+            return wiki_unavailable_error(reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED)
+          end
 
           wiki_pages = extract_wiki_pages(data)
           return wiki_unavailable_error unless wiki_pages
@@ -120,7 +125,8 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            "#{container_type.to_s.capitalize} not found or inaccessible"
+            "#{container_type.to_s.capitalize} not found or inaccessible",
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
       end

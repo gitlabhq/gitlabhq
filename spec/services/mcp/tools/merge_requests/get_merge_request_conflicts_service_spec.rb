@@ -212,6 +212,41 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
 
           expect(result[:isError]).to be true
           expect(result[:content].first[:text]).to match(/target object not found|Merge request not found/i)
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+        end
+      end
+
+      context 'when the merge request has lost its source project' do
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+        let(:arguments) { { 'project_id' => project.id.to_s, 'merge_request_iid' => merge_request.iid } }
+
+        before do
+          merge_request.update_column(:source_project_id, nil)
+        end
+
+        it 'reports not_found' do
+          result = service.execute(params: { arguments: arguments })
+
+          expect(result[:content].first[:text]).to include("#{service_name}: source project not found")
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+        end
+      end
+
+      context 'when the user cannot push to the source branch' do
+        let_it_be(:reporter) { create(:user, reporter_of: project) }
+
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+        let(:arguments) { { 'project_id' => project.id.to_s, 'merge_request_iid' => merge_request.iid } }
+
+        before do
+          service.set_cred(current_user: reporter)
+        end
+
+        it 'reports unauthorized' do
+          result = service.execute(params: { arguments: arguments })
+
+          expect(result[:content].first[:text]).to include("#{service_name}: not found or access denied")
+          expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
         end
       end
 

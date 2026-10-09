@@ -6561,6 +6561,7 @@ Type of a work item widget.
 | `DEVELOPMENT` | Development widget. |
 | `EMAIL_PARTICIPANTS` | Email Participants widget. |
 | `ERROR_TRACKING` | Error Tracking widget. |
+| `ESCALATION_POLICY` | Escalation Policy widget. |
 | `ESCALATION_STATUS` | Escalation Status widget. |
 | `HEALTH_STATUS` | Health Status widget. |
 | `HIERARCHY` | Hierarchy widget. |

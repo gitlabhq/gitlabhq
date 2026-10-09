@@ -49,6 +49,35 @@ RSpec.describe 'Query.jobs', feature_category: :continuous_integration do
     )
   end
 
+  it 'returns the links the admin jobs table renders' do
+    admin_links_query = %(
+      query {
+        jobs {
+          nodes {
+            id
+            detailedStatus { detailsPath }
+            pipeline { path project { webUrl } }
+            runner { adminUrl }
+          }
+        }
+      }
+    )
+
+    post_graphql(admin_links_query, current_user: admin)
+
+    expect(jobs_graphql_data).to contain_exactly(
+      a_graphql_entity_for(
+        build,
+        detailed_status: a_hash_including('detailsPath' => project_job_path(project, build)),
+        pipeline: a_hash_including(
+          'path' => project_pipeline_path(project, pipeline),
+          'project' => a_hash_including('webUrl' => project.web_url)
+        ),
+        runner: a_hash_including('adminUrl' => Gitlab::Routing.url_helpers.admin_runner_url(runner))
+      )
+    )
+  end
+
   context 'when requesting individual fields' do
     using RSpec::Parameterized::TableSyntax
 

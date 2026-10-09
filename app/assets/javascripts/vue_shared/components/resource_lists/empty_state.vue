@@ -42,6 +42,11 @@ export default {
       type: String,
       required: true,
     },
+    searchHint: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     hasSearch() {
@@ -57,6 +62,7 @@ export default {
     :search="search"
     :search-minimum-length="searchMinimumLength"
     :type="type"
+    :search-hint="searchHint"
   />
   <gl-empty-state
     v-else

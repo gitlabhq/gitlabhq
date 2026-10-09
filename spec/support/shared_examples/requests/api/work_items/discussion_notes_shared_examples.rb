@@ -129,7 +129,9 @@ RSpec.shared_examples 'a work item discussion notes endpoint' do
   end
 
   it 'returns 404 when the work item does not exist' do
-    get api(api_request_path.sub("/#{work_item.iid}/", "/#{non_existing_record_iid}/"), user)
+    path = api_request_path.sub("/-/work_items/#{work_item.iid}/", "/-/work_items/#{non_existing_record_iid}/")
+
+    get api(path, user)
 
     expect(response).to have_gitlab_http_status(:not_found)
   end
@@ -174,6 +176,105 @@ RSpec.shared_examples 'a work item discussion notes endpoint' do
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+  end
+end
+
+# Shared behaviour for the reply to a work item discussion endpoint. The including context
+# must define the same lets as above, plus:
+#   - `owner`              an owner of the work item's parent (may set created_at)
+#   - `non_member`         a user with no membership on the parent
+#   - `quick_action_label` a label named 'bug' that is visible to the work item
+#   - `reply_path`         a lambda `->(item, discussion_id)` building the endpoint path
+RSpec.shared_examples 'a work item endpoint replying to a discussion' do
+  let(:params) { { body: 'hi!' } }
+  let(:path_for) { ->(item) { reply_path.call(item, comment.discussion_id) } }
+
+  it_behaves_like 'a work item endpoint creating a note'
+
+  it 'adds the note to the discussion', :aggregate_failures do
+    post api(api_request_path, user), params: params
+
+    expect(response).to have_gitlab_http_status(:created)
+    expect(json_response['type']).to eq('DiscussionNote')
+    expect(Note.find(json_response['id']).discussion_id).to eq(comment.discussion_id)
+  end
+
+  it 'converts a standalone comment into a discussion thread', :aggregate_failures do
+    post api(api_request_path, user), params: params
+
+    expect(response).to have_gitlab_http_status(:created)
+    expect(comment.reload.type).to eq('DiscussionNote')
+  end
+
+  it 'adds a reply to a multi-note discussion thread', :aggregate_failures do
+    root = create(:discussion_note_on_work_item, noteable: work_item, author: user, **note_params)
+    create(:discussion_note_on_work_item, noteable: work_item, author: user, in_reply_to: root, **note_params)
+
+    post api(reply_path.call(work_item, root.discussion_id), user), params: params
+
+    expect(response).to have_gitlab_http_status(:created)
+    expect(Note.find(json_response['id']).discussion_id).to eq(root.discussion_id)
+  end
+
+  it 'inherits the confidentiality of an internal thread', :aggregate_failures do
+    internal_note = create(:note, :confidential, noteable: work_item, author: user, **note_params)
+
+    post api(reply_path.call(work_item, internal_note.discussion_id), user), params: params
+
+    expect(response).to have_gitlab_http_status(:created)
+    expect(json_response['internal']).to be(true)
+  end
+
+  it 'returns 400 when replying to a system note', :aggregate_failures do
+    system_note = create(:note, :system, noteable: work_item, author: user, **note_params)
+
+    post api(reply_path.call(work_item, system_note.discussion_id), user), params: params
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+    expect(json_response['message']).to eq('400 Bad request - Replies to system notes are not allowed.')
+  end
+
+  it 'returns 404 when the discussion does not exist' do
+    post api(reply_path.call(work_item, 'nonexistent'), user), params: params
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the discussion belongs to a different work item' do
+    other_work_item = create(:work_item, work_item.work_item_type.base_type, author: user, **note_params)
+    other_note = create(:note, noteable: other_work_item, author: user, **note_params)
+
+    post api(reply_path.call(work_item, other_note.discussion_id), user), params: params
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  context 'when no note in the discussion is readable by the current user' do
+    let(:guest) { create(:user, guest_of: container) }
+    let(:internal_note) do
+      create(:note, :confidential, noteable: work_item, author: user, note: 'Internal-only note', **note_params)
+    end
+
+    it 'returns 404' do
+      post api(reply_path.call(work_item, internal_note.discussion_id), guest), params: params
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+end
+
+# Same requirements as above, plus `locked_work_item`: a work item with a locked discussion in a public
+# parent. Kept separate because the `/namespaces/:id` route only resolves groups for members, so a
+# non-member gets 404 there instead of 403.
+RSpec.shared_examples 'a work item endpoint rejecting replies to a locked discussion' do
+  it 'returns forbidden for a non-member', :aggregate_failures do
+    root = create(:note, noteable: locked_work_item, author: user, project: locked_work_item.project,
+      namespace: locked_work_item.namespace)
+    path = reply_path.call(locked_work_item, root.discussion_id)
+
+    expect { post api(path, non_member), params: { body: 'hi!' } }.not_to change { locked_work_item.notes.count }
+
+    expect(response).to have_gitlab_http_status(:forbidden)
   end
 end
 
@@ -430,6 +531,134 @@ RSpec.shared_examples 'a work item endpoint updating a discussion note' do
         params: { resolved: true }
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+end
+
+# Shared behaviour for the DELETE single note in a work item discussion endpoint. The including
+# context must define the same lets as the GET note examples, plus:
+#   - `deletable_note`       a DiscussionNote authored by `user` on `work_item`, created per example
+#   - `discussion_note_path` a lambda `->(discussion_id, note_id, work_item_iid: work_item.iid)`
+#                            building the endpoint path
+#   - `api_request_path`     the endpoint path for `deletable_note`
+RSpec.shared_examples 'a work item endpoint deleting a discussion note' do
+  it 'deletes the note', :aggregate_failures do
+    delete api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:no_content)
+    expect(Note.exists?(deletable_note.id)).to be(false)
+  end
+
+  it 'deletes a reply in a multi-note discussion thread', :aggregate_failures do
+    reply = create(:discussion_note_on_work_item, noteable: work_item, author: user, in_reply_to: deletable_note,
+      **note_params)
+
+    delete api(discussion_note_path.call(deletable_note.discussion_id, reply.id), user)
+
+    expect(response).to have_gitlab_http_status(:no_content)
+    expect(Note.exists?(reply.id)).to be(false)
+    expect(Note.exists?(deletable_note.id)).to be(true)
+  end
+
+  it 'returns 404 on a second delete of the same note' do
+    delete api(api_request_path, user)
+    delete api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it_behaves_like '412 response' do
+    let(:request) { api(api_request_path, user) }
+  end
+
+  it 'deletes another user note as a maintainer', :aggregate_failures do
+    maintainer = create(:user, maintainer_of: container)
+
+    delete api(api_request_path, maintainer)
+
+    expect(response).to have_gitlab_http_status(:no_content)
+    expect(Note.exists?(deletable_note.id)).to be(false)
+  end
+
+  it 'returns 403 when the user cannot delete the note', :aggregate_failures do
+    developer = create(:user, developer_of: container)
+
+    delete api(api_request_path, developer)
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+    expect(Note.exists?(deletable_note.id)).to be(true)
+  end
+
+  it 'returns 403 for a system note', :aggregate_failures do
+    system_note = create(:system_note, noteable: work_item, author: user, **note_params)
+
+    delete api(discussion_note_path.call(system_note.discussion_id, system_note.id), user)
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+    expect(Note.exists?(system_note.id)).to be(true)
+  end
+
+  it 'returns 404 when the work item does not exist' do
+    delete api(discussion_note_path.call(deletable_note.discussion_id, deletable_note.id,
+      work_item_iid: non_existing_record_iid), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the discussion does not exist' do
+    delete api(discussion_note_path.call('nonexistent', deletable_note.id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the note does not exist' do
+    delete api(discussion_note_path.call(deletable_note.discussion_id, non_existing_record_id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the note belongs to a different discussion on the same work item', :aggregate_failures do
+    delete api(discussion_note_path.call(deletable_note.discussion_id, comment.id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+    expect(Note.exists?(comment.id)).to be(true)
+  end
+
+  it 'returns 404 when the note belongs to a different work item', :aggregate_failures do
+    other_work_item = create(:work_item, work_item.work_item_type.base_type, author: user, **note_params)
+    other_note = create(:discussion_note_on_work_item, noteable: other_work_item, author: user, **note_params)
+
+    delete api(discussion_note_path.call(other_note.discussion_id, other_note.id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+    expect(Note.exists?(other_note.id)).to be(true)
+  end
+
+  it 'returns not_found when the feature flag is disabled' do
+    stub_feature_flags(work_item_rest_api: false)
+
+    delete api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns unauthorized when no token is provided' do
+    delete api(api_request_path)
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+
+  context 'when the note is not readable by the current user' do
+    let(:guest) { create(:user, guest_of: container) }
+    let(:internal_note) do
+      create(:discussion_note_on_work_item, :confidential, noteable: work_item, author: user, **note_params)
+    end
+
+    it 'returns 404', :aggregate_failures do
+      delete api(discussion_note_path.call(internal_note.discussion_id, internal_note.id), guest)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(Note.exists?(internal_note.id)).to be(true)
     end
   end
 end

@@ -16,10 +16,13 @@ end
 #   user               - a reporter on the work item's parent
 #   owner              - an owner of the work item's parent (may set created_at)
 #   non_member         - a user with no membership on the parent
-#   locked_work_item   - a work item with a locked discussion in a public parent
 #   quick_action_label - a label named 'bug' that is visible to the work item
 # May be overridden by the caller:
 #   created_note_json  - the created note in the response, when it is nested (e.g. in a discussion)
+# Endpoints that accept `internal` also include 'a work item endpoint creating an internal note', and
+# routes that return 403 for a locked discussion include 'a work item endpoint rejecting notes on a
+# locked discussion'. Replies inherit confidentiality, and the `/namespaces/:id` route 404s for
+# non-members, so neither fits every caller.
 RSpec.shared_examples 'a work item endpoint creating a note' do
   let(:params) { { body: 'hi!' } }
   let(:created_note_json) { json_response }
@@ -34,14 +37,6 @@ RSpec.shared_examples 'a work item endpoint creating a note' do
     expect(created_note_json['author']['username']).to eq(user.username)
   end
 
-  it 'creates an internal note when internal is true', :aggregate_failures do
-    post api(api_request_path, user), params: params.merge(internal: true)
-
-    expect(response).to have_gitlab_http_status(:created)
-    expect(created_note_json['internal']).to be(true)
-    expect(created_note_json['confidential']).to be(true)
-  end
-
   it 'returns 400 when body is missing' do
     post api(api_request_path, user)
 
@@ -49,13 +44,15 @@ RSpec.shared_examples 'a work item endpoint creating a note' do
   end
 
   it 'returns 404 when the work item does not exist' do
-    post api(api_request_path.sub("/#{work_item.iid}/", "/#{non_existing_record_iid}/"), user), params: params
+    path = api_request_path.sub("/-/work_items/#{work_item.iid}/", "/-/work_items/#{non_existing_record_iid}/")
+
+    post api(path, user), params: params
 
     expect(response).to have_gitlab_http_status(:not_found)
   end
 
   it 'returns 400 when work_item_iid is not an integer', :aggregate_failures do
-    path = api_request_path.sub(%r{/#{work_item.iid}/(\w+)\z}, "/#{work_item.iid}abc/\\1")
+    path = api_request_path.sub("/-/work_items/#{work_item.iid}/", "/-/work_items/#{work_item.iid}abc/")
 
     expect { post api(path, user), params: params }.not_to change { work_item.notes.count }
 
@@ -80,15 +77,6 @@ RSpec.shared_examples 'a work item endpoint creating a note' do
     post api(api_request_path, non_member), params: params
 
     expect(response).to have_gitlab_http_status(:not_found)
-  end
-
-  context 'when the discussion is locked' do
-    it 'returns forbidden for a non-member', :aggregate_failures do
-      expect { post api(path_for.call(locked_work_item), non_member), params: params }
-        .not_to change { locked_work_item.notes.count }
-
-      expect(response).to have_gitlab_http_status(:forbidden)
-    end
   end
 
   context 'when setting created_at' do
@@ -128,11 +116,37 @@ RSpec.shared_examples 'a work item endpoint creating a note' do
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_return(true)
     end
 
-    it 'returns too_many_requests' do
-      post api(api_request_path, user), params: params
+    it 'returns too_many_requests without querying notes', :aggregate_failures do
+      recorder = ActiveRecord::QueryRecorder.new { post api(api_request_path, user), params: params }
 
       expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(recorder.log.grep(/FROM "notes"/)).to be_empty
     end
+  end
+end
+
+# Same requirements as 'a work item endpoint creating a note'.
+RSpec.shared_examples 'a work item endpoint creating an internal note' do
+  let(:params) { { body: 'hi!' } }
+  let(:created_note_json) { json_response }
+
+  it 'creates an internal note when internal is true', :aggregate_failures do
+    post api(api_request_path, user), params: params.merge(internal: true)
+
+    expect(response).to have_gitlab_http_status(:created)
+    expect(created_note_json['internal']).to be(true)
+    expect(created_note_json['confidential']).to be(true)
+  end
+end
+
+# Requires `path_for`, `non_member` and `locked_work_item` (a work item with a locked discussion in a
+# public parent) from the caller.
+RSpec.shared_examples 'a work item endpoint rejecting notes on a locked discussion' do
+  it 'returns forbidden for a non-member', :aggregate_failures do
+    expect { post api(path_for.call(locked_work_item), non_member), params: { body: 'hi!' } }
+      .not_to change { locked_work_item.notes.count }
+
+    expect(response).to have_gitlab_http_status(:forbidden)
   end
 end
 
@@ -141,6 +155,12 @@ RSpec.shared_examples 'a work item endpoint creating a discussion' do
   it_behaves_like 'a work item endpoint creating a note' do
     let(:created_note_json) { json_response['notes'].first }
   end
+
+  it_behaves_like 'a work item endpoint creating an internal note' do
+    let(:created_note_json) { json_response['notes'].first }
+  end
+
+  it_behaves_like 'a work item endpoint rejecting notes on a locked discussion'
 
   it 'creates a new discussion thread', :aggregate_failures do
     post api(api_request_path, user), params: { body: 'hi!' }

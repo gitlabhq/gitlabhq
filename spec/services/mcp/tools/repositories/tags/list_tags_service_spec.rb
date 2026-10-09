@@ -237,6 +237,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('Provide exactly one of: url or project_id')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'rejects a call without arguments' do
@@ -249,6 +250,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
         result = execute({ url: project.web_url, project_id: project.full_path })
 
         expect(result[:content].first[:text]).to include('Provide exactly one of: url or project_id')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
 
       it 'reports a url pointing at a project that does not exist' do
@@ -270,6 +272,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('must point to a project')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 

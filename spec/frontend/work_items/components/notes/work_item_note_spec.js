@@ -104,7 +104,6 @@ describe('Work Item Note', () => {
   const findSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
   const findAgentActorLine = () => wrapper.findComponent({ name: 'NoteAgentActorLine' });
   const findDuoQuestionNote = () => wrapper.findComponent({ name: 'DuoQuestionNote' });
-  const findActorLineSeparator = () => wrapper.findByTestId('actor-line-separator');
 
   const createComponent = ({
     note = mockWorkItemCommentNote,
@@ -142,12 +141,7 @@ describe('Work Item Note', () => {
         NoteAgentActorLine: {
           name: 'NoteAgentActorLine',
           props: {
-            agentName: { type: String, default: '' },
-            agentCatalogPath: { type: String, default: '' },
-            sessionId: { type: [String, Number], default: '' },
-            initiatorType: { type: String, default: 'NONE' },
-            initiator: { type: Object, default: null },
-            canViewSession: { type: Boolean, default: false },
+            presence: { type: Object, required: true },
           },
           template: '<div></div>',
         },
@@ -816,13 +810,13 @@ end`;
       beforeEach(() => createWithFlag({ note: presenceNote }));
 
       it('renders the actor line for the agent and its session', () => {
-        expect(findAgentActorLine().props()).toMatchObject({
-          agentName: 'Developer Agent',
-          agentCatalogPath: '/-/ai/catalog/agents/3',
+        expect(findAgentActorLine().props('presence')).toEqual({
           sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
-          canViewSession: true,
+          agentName: 'Developer Agent',
+          agentCatalogWebPath: '/-/ai/catalog/agents/3',
           initiatorType: 'USER',
           initiator: { label: '@nokafor', webPath: '/nokafor' },
+          userPermissions: { readDuoWorkflow: true },
         });
       });
 
@@ -834,18 +828,10 @@ end`;
         expect(findNoteHeader().props('singleLine')).toBe(true);
       });
 
-      it('separates the actor line from the author name before it', () => {
-        expect(findActorLineSeparator().exists()).toBe(true);
-      });
-
       describe('when the actor line reports it no longer fits', () => {
         beforeEach(async () => {
           findAgentActorLine().vm.$emit('overflow', true);
           await nextTick();
-        });
-
-        it('drops the separator, since the line wraps onto its own row', () => {
-          expect(findActorLineSeparator().exists()).toBe(false);
         });
 
         it('lets the header wrap', () => {
@@ -873,7 +859,9 @@ end`;
       });
 
       it('tells the actor line the session cannot be opened', () => {
-        expect(findAgentActorLine().props('canViewSession')).toBe(false);
+        expect(findAgentActorLine().props('presence').userPermissions).toEqual({
+          readDuoWorkflow: false,
+        });
       });
     });
 
@@ -888,7 +876,7 @@ end`;
       );
 
       it('passes no catalog path', () => {
-        expect(findAgentActorLine().props('agentCatalogPath')).toBe(null);
+        expect(findAgentActorLine().props('presence').agentCatalogWebPath).toBe(null);
       });
     });
   });

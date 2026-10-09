@@ -3435,6 +3435,12 @@ msgstr ""
 msgid "AICatalog|Search MCP servers."
 msgstr ""
 
+msgid "AICatalog|Search by name or description"
+msgstr ""
+
+msgid "AICatalog|Search matches names and descriptions only. Project, visibility and item type are not searched."
+msgstr ""
+
 msgid "AICatalog|Search tools."
 msgstr ""
 

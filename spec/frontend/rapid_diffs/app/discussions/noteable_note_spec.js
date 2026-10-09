@@ -75,6 +75,13 @@ describe('NoteableNote', () => {
           props: ['agentName', 'sessionId', 'status', 'isReply'],
           template: '<div />',
         },
+        NoteAgentActorLine: {
+          name: 'NoteAgentActorLine',
+          props: {
+            presence: { type: Object, required: true },
+          },
+          template: '<div />',
+        },
       },
     });
   };
@@ -103,6 +110,8 @@ describe('NoteableNote', () => {
   const findNoteBody = () => wrapper.findComponent(NoteBody);
   const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
   const findNoteSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
+  const findNoteHeader = () => wrapper.findComponent(NoteHeader);
+  const findAgentActorLine = () => wrapper.findComponent({ name: 'NoteAgentActorLine' });
 
   it('shows note header with correct props', () => {
     createComponent();
@@ -503,6 +512,122 @@ describe('NoteableNote', () => {
         it('passes isReply as true', () => {
           expect(findNoteSessionBar().props('isReply')).toBe(true);
         });
+      });
+    });
+  });
+
+  describe('AgentActorLine', () => {
+    const agentPresence = {
+      session_id: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+      agent_name: 'Developer Agent',
+      agent_catalog_web_path: '/-/ai/catalog/agents/3',
+      initiator_type: 'USER',
+      initiator: { label: '@nokafor', web_path: '/nokafor' },
+      user_permissions: { read_duo_workflow: true },
+    };
+
+    const createWithFlag = ({
+      noteOptions = { agent_presence: agentPresence },
+      flag = true,
+    } = {}) =>
+      createComponent(
+        { note: createNote({ duo_session_id: 42, ...noteOptions }) },
+        { ...defaultProvisions, glFeatures: { agentPresenceConsolidation: flag } },
+      );
+
+    describe('when the agentPresenceConsolidation feature flag is disabled', () => {
+      beforeEach(() => createWithFlag({ flag: false }));
+
+      it('does not render the actor line', () => {
+        expect(findAgentActorLine().exists()).toBe(false);
+      });
+
+      it('still offers the standalone session button', () => {
+        expect(findNoteActions().props('duoSessionId')).toBe(42);
+      });
+    });
+
+    describe.each`
+      description                       | noteOptions
+      ${'has no agent presence'}        | ${{}}
+      ${'has a null agent presence'}    | ${{ agent_presence: null }}
+      ${'has no resolvable agent name'} | ${{ agent_presence: { ...agentPresence, agent_name: null } }}
+      ${'has no session to open'}       | ${{ agent_presence: { ...agentPresence, session_id: null } }}
+    `('when the note $description', ({ noteOptions }) => {
+      beforeEach(() => createWithFlag({ noteOptions }));
+
+      it('does not render the actor line', () => {
+        expect(findAgentActorLine().exists()).toBe(false);
+      });
+
+      it('keeps the standalone session button', () => {
+        expect(findNoteActions().props('duoSessionId')).toBe(42);
+      });
+    });
+
+    describe('when the note has agent presence', () => {
+      beforeEach(() => createWithFlag());
+
+      it('renders the actor line for the agent and its session', () => {
+        expect(findAgentActorLine().props('presence')).toEqual({
+          sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
+          agentName: 'Developer Agent',
+          agentCatalogWebPath: '/-/ai/catalog/agents/3',
+          initiatorType: 'USER',
+          initiator: { label: '@nokafor', webPath: '/nokafor' },
+          userPermissions: { readDuoWorkflow: true },
+        });
+      });
+
+      it('hides the raw service account username, which the actor line replaces', () => {
+        expect(findNoteHeader().props('hideUsername')).toBe(true);
+      });
+
+      it('keeps the header on one row', () => {
+        expect(findNoteHeader().props('singleLine')).toBe(true);
+      });
+
+      it('drops the standalone session button, which would duplicate the session link', () => {
+        expect(findNoteActions().props('duoSessionId')).toBe(null);
+      });
+
+      describe('when the actor line reports it no longer fits', () => {
+        beforeEach(async () => {
+          findAgentActorLine().vm.$emit('overflow', true);
+          await nextTick();
+        });
+
+        it('lets the header wrap', () => {
+          expect(findNoteHeader().props('singleLine')).toBe(false);
+        });
+      });
+    });
+
+    describe('when the current user cannot read the session', () => {
+      beforeEach(() =>
+        createWithFlag({
+          noteOptions: {
+            agent_presence: { ...agentPresence, user_permissions: { read_duo_workflow: false } },
+          },
+        }),
+      );
+
+      it('tells the actor line the session cannot be opened', () => {
+        expect(findAgentActorLine().props('presence').userPermissions).toEqual({
+          readDuoWorkflow: false,
+        });
+      });
+    });
+
+    describe('when the agent has no catalog profile', () => {
+      beforeEach(() =>
+        createWithFlag({
+          noteOptions: { agent_presence: { ...agentPresence, agent_catalog_web_path: null } },
+        }),
+      );
+
+      it('passes no catalog path', () => {
+        expect(findAgentActorLine().props('presence').agentCatalogWebPath).toBe(null);
       });
     });
   });

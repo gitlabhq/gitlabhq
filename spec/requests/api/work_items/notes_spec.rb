@@ -316,6 +316,8 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
     let(:path_for) { ->(item) { "/projects/#{item.project.id}/-/work_items/#{item.iid}/notes" } }
 
     it_behaves_like 'a work item endpoint creating a note'
+    it_behaves_like 'a work item endpoint creating an internal note'
+    it_behaves_like 'a work item endpoint rejecting notes on a locked discussion'
 
     it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
       let(:boundary_object) { project }
@@ -343,6 +345,8 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
     end
 
     it_behaves_like 'a work item endpoint creating a note'
+    it_behaves_like 'a work item endpoint creating an internal note'
+    it_behaves_like 'a work item endpoint rejecting notes on a locked discussion'
 
     it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
       let(:boundary_object) { project }

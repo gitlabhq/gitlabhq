@@ -30,9 +30,9 @@ module Mcp
           super
         rescue Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError => e
           Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::NOT_FOUND)
-        rescue ArgumentError,
-          Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError,
-          ::Gitlab::Access::AccessDeniedError => e
+        rescue ArgumentError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::BAD_REQUEST)
+        rescue Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, ::Gitlab::Access::AccessDeniedError => e
           Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::UNAUTHORIZED)
         rescue StandardError => e
           ::Gitlab::ErrorTracking.track_exception(e, mcp_tool: name)
@@ -43,7 +43,7 @@ module Mcp
           target = auth_target(params)
           return if target && ::Ability.allowed?(current_user, auth_ability, target)
 
-          raise ArgumentError, authorization_error_message
+          raise ::Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, authorization_error_message
         end
 
         def authorization_error_message

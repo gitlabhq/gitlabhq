@@ -67,6 +67,16 @@ export default {
       required: false,
       default: undefined,
     },
+    hideUsername: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    singleLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     authorId() {
@@ -105,7 +115,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-min-w-0 gl-flex-wrap gl-items-center gl-gap-3">
+  <div
+    class="gl-flex gl-min-w-0 gl-flex-wrap gl-items-center gl-gap-3"
+    :class="{ '!gl-flex-nowrap': singleLine }"
+  >
     <template v-if="author">
       <span v-if="showAvatar" class="gl-flex">
         <gl-avatar-link
@@ -123,10 +136,14 @@ export default {
           <slot name="avatar-badge"></slot>
         </gl-avatar-link>
       </span>
-      <note-author :author="author" />
+      <note-author :author="author" :show-username="!hideUsername" :truncate="singleLine" />
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
-    <span class="gl-flex gl-flex-wrap gl-items-center gl-gap-1 gl-text-subtle">
+    <span
+      class="js-note-headline-meta gl-flex gl-flex-wrap gl-items-center gl-gap-1 gl-text-subtle"
+      :class="{ 'gl-flex-1 !gl-flex-nowrap gl-truncate': singleLine }"
+    >
+      <slot></slot>
       <template v-if="createdAt">
         <span></span>
         <time-ago-tooltip

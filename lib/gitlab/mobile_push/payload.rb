@@ -6,6 +6,13 @@ module Gitlab
     # GitLab mobile app's to-do list (`Todo.actionText` / `showAuthor` in the
     # app) so pushes read exactly like the rows they open.
     #
+    # The `gitlab` dict also names who acted (`author_*`) and when the todo was
+    # raised (`created_at`), what a to-do list row knows and a tap on the push
+    # otherwise does not: a `review_submitted` todo's landing screen picks the
+    # reviewer's review out of the merge request's discussions by exactly those
+    # two, and without them it could only guess at the newest review-shaped
+    # activity on the merge request, whoever left it.
+    #
     # In :id_only mode (the subscription's payload_mode) no user content
     # leaves the instance: the alert is a fixed generic sentence, the
     # `gitlab` dict carries identifiers only, and `mutable-content` is set
@@ -100,7 +107,12 @@ module Gitlab
           project_path: full_path,
           iid: todo.target.try(:iid),
           target_url: todo.target_url,
-          note_id: todo.note_id
+          note_id: todo.note_id,
+          created_at: todo.created_at.utc.iso8601(3),
+          author_id: todo.author_id,
+          author_name: todo.author_name,
+          author_username: todo.author.username,
+          author_avatar_url: todo.author.avatar_url(only_path: false)
         }
       end
 

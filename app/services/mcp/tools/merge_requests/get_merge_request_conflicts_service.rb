@@ -44,7 +44,7 @@ module Mcp
         def auth_target(params)
           strong_memoize_with(:auth_target, params[:arguments]) do
             mr = merge_request(params[:arguments])
-            raise ArgumentError, "#{name}: merge request not found" if mr.nil?
+            raise ResourceNotFoundError, "#{name}: merge request not found" if mr.nil?
 
             mr
           end
@@ -54,12 +54,12 @@ module Mcp
           super
 
           mr = auth_target(params)
-          raise ArgumentError, "#{name}: source project not found" unless mr.source_project
+          raise ResourceNotFoundError, "#{name}: source project not found" unless mr.source_project
 
           access = ::Gitlab::UserAccess.new(current_user, container: mr.source_project)
           return if access.can_push_to_branch?(mr.source_branch)
 
-          raise ArgumentError, authorization_error_message
+          raise ResourceForbiddenError, authorization_error_message
         end
 
         protected

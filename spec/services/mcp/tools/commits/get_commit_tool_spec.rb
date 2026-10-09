@@ -155,6 +155,22 @@ RSpec.describe Mcp::Tools::Commits::GetCommitTool, feature_category: :mcp_server
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Commit not found')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+      end
+    end
+
+    context 'when the caller can see the project but not its code' do
+      let_it_be(:private_project) { create(:project, :repository, :private) }
+      let_it_be(:guest) { create(:user, guest_of: private_project) }
+
+      let(:tool) { described_class.new(current_user: guest, params: params) }
+      let(:params) { { project_id: private_project.full_path, commit_sha: private_project.commit.sha } }
+
+      it 'reports unauthorized with the commit-not-found message', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:content].first[:text]).to eq('Commit not found or inaccessible')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:unauthorized)
       end
     end
 

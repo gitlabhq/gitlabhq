@@ -76,7 +76,16 @@ describe('ResourceListsEmptyState', () => {
         search: 'tes',
         searchMinimumLength: 0,
         type: defaultPropsData.type,
+        searchHint: '',
       });
+    });
+
+    it('passes searchHint to EmptyResult', () => {
+      createComponent({ propsData: { search: 'tes', searchHint: 'Only names are searched.' } });
+
+      expect(wrapper.findComponent(EmptyResult).props('searchHint')).toBe(
+        'Only names are searched.',
+      );
     });
   });
 });

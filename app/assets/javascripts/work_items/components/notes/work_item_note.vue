@@ -8,6 +8,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
+import { parseAgentPresence } from '~/ai/agents_utils';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -273,8 +274,7 @@ export default {
     agentPresence() {
       if (!this.glFeatures.agentPresenceConsolidation) return null;
 
-      const presence = this.note.agentPresence;
-      return presence?.agentName && presence?.sessionId ? presence : null;
+      return parseAgentPresence(this.note.agentPresence);
     },
     hasSession() {
       const session = this.note.duoTriggeredSession;
@@ -495,20 +495,8 @@ export default {
             :single-line="Boolean(agentPresence) && !actorLineOverflows"
           >
             <template v-if="agentPresence">
-              <span
-                v-if="!actorLineOverflows"
-                aria-hidden="true"
-                class="gl-text-subtle"
-                data-testid="actor-line-separator"
-                >&middot;</span
-              >
               <note-agent-actor-line
-                :agent-name="agentPresence.agentName"
-                :agent-catalog-path="agentPresence.agentCatalogWebPath"
-                :session-id="agentPresence.sessionId"
-                :initiator-type="agentPresence.initiatorType"
-                :initiator="agentPresence.initiator"
-                :can-view-session="Boolean(agentPresence.userPermissions?.readDuoWorkflow)"
+                :presence="agentPresence"
                 @overflow="actorLineOverflows = $event"
               />
             </template>

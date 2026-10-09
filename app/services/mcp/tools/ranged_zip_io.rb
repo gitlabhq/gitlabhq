@@ -20,6 +20,16 @@ module Mcp
 
         super
       end
+
+      # rubyzip's end-of-central-directory scan seeks ~64 KB back from the end and
+      # rescues the Errno::EINVAL a File raises when that lands before offset 0;
+      # HttpIO raises a bare RuntimeError instead, which escaped the scan and broke
+      # every archive smaller than the window.
+      def seek(amount, whence = IO::SEEK_SET)
+        __getobj__.seek(amount, whence)
+      rescue RuntimeError => e
+        raise Errno::EINVAL, e.message
+      end
     end
   end
 end

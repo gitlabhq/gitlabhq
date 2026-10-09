@@ -8,6 +8,7 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { isCurrentUser } from '~/lib/utils/common_utils';
+import { parseAgentPresence } from '~/ai/agents_utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
@@ -24,6 +25,9 @@ export default {
     NoteBody,
     NoteSessionBar: defineAsyncComponent(
       () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
+    ),
+    NoteAgentActorLine: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_agent_actor_line.vue'),
     ),
     GlAvatarLink,
     GlAvatar,
@@ -100,6 +104,7 @@ export default {
   emits: ['cancel-editing', 'note-edited', 'resolve', 'start-editing', 'start-replying'],
   data() {
     return {
+      actorLineOverflows: false,
       isDeleting: false,
       isSaving: false,
     };
@@ -144,6 +149,16 @@ export default {
         this.glFeatures.noteAgentSessionBar &&
         Boolean(this.note.duo_session_id_triggered && this.note.duo_session_agent_name)
       );
+    },
+    agentPresence() {
+      if (!this.glFeatures.agentPresenceConsolidation) return null;
+
+      return parseAgentPresence(this.note.agent_presence);
+    },
+    duoSessionId() {
+      if (this.agentPresence) return null;
+
+      return this.note.duo_session_id;
     },
   },
   watch: {
@@ -267,7 +282,8 @@ export default {
           <slot name="headline"></slot>
         </div>
         <div
-          class="gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2 gl-px-4 gl-pt-2"
+          class="js-note-header-info gl-flex gl-flex-wrap gl-items-start gl-justify-between gl-gap-2 gl-px-4 gl-pt-2"
+          :class="{ '!gl-flex-nowrap': agentPresence }"
         >
           <note-header
             class="gl-my-1 gl-py-2"
@@ -277,9 +293,17 @@ export default {
             :is-internal-note="note.internal"
             :is-imported="note.imported"
             :show-avatar="!timelineLayout"
+            :hide-username="Boolean(agentPresence)"
+            :single-line="Boolean(agentPresence) && !actorLineOverflows"
           >
             <template v-if="glSlots()['avatar-badge']" #avatar-badge>
               <slot name="avatar-badge"></slot>
+            </template>
+            <template v-if="agentPresence">
+              <note-agent-actor-line
+                :presence="agentPresence"
+                @overflow="actorLineOverflows = $event"
+              />
             </template>
           </note-header>
           <note-actions
@@ -301,7 +325,7 @@ export default {
             :can-resolve="canResolve"
             :is-resolved="isResolved"
             :is-resolving="isResolving"
-            :duo-session-id="note.duo_session_id"
+            :duo-session-id="duoSessionId"
             @resolve="$emit('resolve')"
             @delete="onDelete"
             @start-editing="$emit('start-editing')"

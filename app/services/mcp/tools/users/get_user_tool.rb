@@ -60,7 +60,9 @@ module Mcp
         end
 
         def resource_not_found_error
-          ::Mcp::Tools::Base::Response.error('User not found or inaccessible')
+          ::Mcp::Tools::Base::Response.error(
+            'User not found or inaccessible', reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+          )
         end
       end
     end

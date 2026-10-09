@@ -88,9 +88,38 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
         .to start_with('Status: Experiment. Introduced in GitLab 16.0.')
     end
 
+    it 'omits the experiment text from the description in block context' do
+      expect(helper.description(value('EXPERIMENTAL'), block: true)).to eq('An experimental value.')
+    end
+
     it 'renders the deprecation milestone for deprecated items' do
       expect(helper.description(value('DEPRECATED')))
         .to start_with('Deprecated in GitLab 16.0.')
+    end
+  end
+
+  describe '#availability_details' do
+    it 'renders the status and history shortcodes for experimental items' do
+      expect(helper.availability_details(value('EXPERIMENTAL'))).to eq(
+        <<~MD.strip
+          {{< details >}}
+
+          - Status: Experiment
+
+          {{< /details >}}
+
+          {{< history >}}
+
+          - Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.0.
+
+          {{< /history >}}
+        MD
+      )
+    end
+
+    it 'returns nil for items that are not experimental', :aggregate_failures do
+      expect(helper.availability_details(value('PLAIN'))).to be_nil
+      expect(helper.availability_details(value('DEPRECATED'))).to be_nil
     end
   end
 

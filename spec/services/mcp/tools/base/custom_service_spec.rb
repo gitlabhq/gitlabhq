@@ -197,6 +197,17 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
           end
         end
 
+        context 'when project_id is not a string' do
+          let(:arguments) { { arguments: { project_id: project.id } } }
+
+          it 'reports bad_request' do
+            result = service.execute(request: nil, params: arguments)
+
+            expect(result[:content].first[:text]).to eq('Tool execution failed: project_id must be a string')
+            expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
+          end
+        end
+
         context 'when the project does not exist' do
           let(:current_user) { create(:user) }
           let(:arguments) { { arguments: { project_id: non_existing_record_id.to_s } } }

@@ -14,6 +14,17 @@
     auto_stop_in: 2 weeks
     url: https://docs.gitlab.com/upstream-review-mr-${DOCS_GITLAB_REPO_SUFFIX}-${CI_MERGE_REQUEST_IID}
     on_stop: review-docs-cleanup
+  secrets:
+    DOCS_PROJECT_API_TOKEN:
+      gitlab_secrets_manager:
+        name: DOCS_PROJECT_API_TOKEN
+        source: group/gitlab-org
+      file: false
+    DOCS_TRIGGER_TOKEN:
+      gitlab_secrets_manager:
+        name: DOCS_TRIGGER_TOKEN
+        source: group/gitlab-org
+      file: false
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem

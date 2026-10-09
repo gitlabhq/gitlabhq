@@ -14,18 +14,30 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
 
-        def create_work_item_note(parent_work_item, type: nil)
+        def create_work_item_note(parent_work_item, type: nil, in_reply_to_discussion_id: nil, &block)
+          authorize_note_creation!(parent_work_item)
+          create_authorized_work_item_note(parent_work_item, type: type,
+            in_reply_to_discussion_id: in_reply_to_discussion_id, &block)
+        end
+
+        # Call this before any database lookup so a throttled request costs no queries.
+        # check_rate_limit! increments the counter, so it must run exactly once per request.
+        def authorize_note_creation!(parent_work_item)
           authorize_work_item_feature!(parent_work_item)
           authorize! :create_note, parent_work_item
 
           allowlist = Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
           check_rate_limit! :notes_create, scope: { user: current_user }, users_allowlist: allowlist
+        end
 
+        # Expects authorize_note_creation! to have run already.
+        def create_authorized_work_item_note(parent_work_item, type: nil, in_reply_to_discussion_id: nil)
           opts = {
             noteable: parent_work_item,
             note: params[:body],
             type: type,
             internal: params[:internal],
+            in_reply_to_discussion_id: in_reply_to_discussion_id,
             created_at: params[:created_at],
             scope_validator: ::Gitlab::Auth::ScopeValidator.new(
               current_user, Gitlab::Auth::RequestAuthenticator.new(request)

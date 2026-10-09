@@ -5262,7 +5262,7 @@ Fields:
 
 {{< /details >}}
 
-Grants Artifact Registry roles to users on resources in a single all-or-nothing operation.
+Grants Artifact Registry roles to users on resources in a single all-or-nothing operation. Replaces any role a user already holds on that resource.
 
 Input type: `ArtifactRegistryRoleBulkGrantInput`
 
@@ -5290,7 +5290,7 @@ Fields:
 
 {{< /details >}}
 
-Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation.
+Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation. Users can revoke their own role.
 
 Input type: `ArtifactRegistryRoleBulkRevokeInput`
 
@@ -5318,7 +5318,7 @@ Fields:
 
 {{< /details >}}
 
-Grants an Artifact Registry role to a user on a resource.
+Grants an Artifact Registry role to a user on a resource. Replaces any role the user already holds on that resource.
 
 Input type: `ArtifactRegistryRoleGrantInput`
 
@@ -5347,7 +5347,7 @@ Fields:
 
 {{< /details >}}
 
-Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it.
+Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it. Users can revoke their own role.
 
 Input type: `ArtifactRegistryRoleRevokeInput`
 

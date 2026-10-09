@@ -9,6 +9,8 @@
 #
 ---
 attributes:
+  app/models/commit.rb:
+    - redacted_description_html: Setter is called dynamically via Banzai::ObjectRenderer#render which does object.__send__("redacted_#{attribute}_html=", ...) with CommitRenderer::ATTRIBUTES
   ee/app/models/iteration.rb:
     - skip_future_date_validation: "Read by the future_date validation (validate :future_date, unless: :skip_future_date_validation) and set via a factory trait across the iteration specs"
 delegations:
