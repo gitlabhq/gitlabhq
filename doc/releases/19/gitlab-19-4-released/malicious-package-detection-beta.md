@@ -27,6 +27,6 @@ You don't need any additional setup. Coverage applies to the
 [supported package types](../../../user/application_security/gitlab_advisory_database/_index.md#supported-package-types):
 npm, PyPI, Maven, Go, NuGet, Cargo, and RubyGems. The same advisories power
 [continuous vulnerability scanning](../../../user/application_security/continuous_vulnerability_scanning/_index.md#malicious-packages),
-and [offline instances](../../../topics/offline/quick_start_guide.md) download them manually.
+and [offline instances](../../../topics/offline/package-metadata-database.md) download them manually.
 
 Share feedback on [issue 606036](https://gitlab.com/gitlab-org/gitlab/-/work_items/606036).

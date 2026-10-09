@@ -17,7 +17,7 @@ RSpec.describe OperationsHelper do
     subject { helper.alerts_settings_data }
 
     before do
-      allow(helper).to receive(:can?).with(user, :admin_operations, project) { true }
+      allow(helper).to receive(:can?).with(user, :admin_operations, project).and_return(true)
     end
 
     context 'initial integration configuration' do

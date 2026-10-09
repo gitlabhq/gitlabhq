@@ -1,0 +1,10 @@
+---
+name: observability_sass_features
+description: Enables GitLab Observability features on GitLab.com.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/embody-team/experimental-observability/-/work_items/3
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190904
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632757
+milestone: '18.1'
+group: group::embody
+type: beta
+default_enabled: false

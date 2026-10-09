@@ -211,6 +211,24 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
             expect(endpoints_pos).to be < cicd_pos,
               'Endpoint details should appear before CI/CD export settings'
           end
+
+          it 'renders the curl test command with single-backslash continuations and a single-line copy value' do
+            get_setup_page
+
+            doc = Nokogiri::HTML(response.body)
+            displayed = doc.at_css('pre code').text
+            copy_text = doc.at_css('button[title="Copy curl command"]')['data-clipboard-text']
+            endpoint = group.observability_group_o11y_setting.otel_https_endpoint
+
+            aggregate_failures do
+              expect(displayed).to include("#{endpoint}/v1/traces \\\n")
+              expect(displayed).not_to include('\\\\')
+              expect(copy_text).to start_with(
+                "curl -X POST #{endpoint}/v1/traces -H 'Content-Type: application/json' -d '{\"resourceSpans\":"
+              )
+              expect(copy_text).not_to include('\\')
+            end
+          end
         end
       end
 

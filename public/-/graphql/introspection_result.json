@@ -136383,7 +136383,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -136666,7 +136666,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -137675,7 +137675,7 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

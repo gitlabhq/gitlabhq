@@ -79,13 +79,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe "can_change_visibility_level?" do
     it "returns false if there are no appropriate permissions" do
-      allow(helper).to receive(:can?) { false }
+      allow(helper).to receive(:can?).and_return(false)
 
       expect(helper.can_change_visibility_level?(project, user)).to be_falsey
     end
 
     it "returns true if there are permissions" do
-      allow(helper).to receive(:can?) { true }
+      allow(helper).to receive(:can?).and_return(true)
 
       expect(helper.can_change_visibility_level?(project, user)).to be_truthy
     end
@@ -93,13 +93,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
   describe '#can_disable_emails?' do
     it 'returns true for the project owner' do
-      allow(helper).to receive(:can?).with(project.owner, :set_emails_disabled, project) { true }
+      allow(helper).to receive(:can?).with(project.owner, :set_emails_disabled, project).and_return(true)
 
       expect(helper.can_disable_emails?(project, project.owner)).to be_truthy
     end
 
     it 'returns false for anyone else' do
-      allow(helper).to receive(:can?).with(user, :set_emails_disabled, project) { false }
+      allow(helper).to receive(:can?).with(user, :set_emails_disabled, project).and_return(false)
 
       expect(helper.can_disable_emails?(project, user)).to be_falsey
     end
@@ -466,13 +466,17 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     let(:user) { build_stubbed(:user, username: 'john') }
 
     it 'returns the command to push to create project over HTTP' do
-      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'http' }
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol).and_return(
+        'http'
+      )
 
       expect(helper.push_to_create_project_command(user)).to eq('git push --set-upstream http://test.host/john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)')
     end
 
     it 'returns the command to push to create project over SSH' do
-      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'ssh' }
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol).and_return(
+        'ssh'
+      )
 
       expect(helper.push_to_create_project_command(user)).to eq("git push --set-upstream #{Gitlab.config.gitlab.user}@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)")
     end
@@ -831,7 +835,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.project_permissions_panel_data(project) }
 
     before do
-      allow(helper).to receive(:can?) { true }
+      allow(helper).to receive(:can?).and_return(true)
     end
 
     it 'includes project_permissions_settings' do
@@ -872,7 +876,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it 'includes canAddCatalogResource' do
-      allow(helper).to receive(:can?) { false }
+      allow(helper).to receive(:can?).and_return(false)
 
       expect(subject).to include(canAddCatalogResource: false)
     end

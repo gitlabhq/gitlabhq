@@ -217,7 +217,6 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :obser
 
     context 'when source_pipeline present but root_pipeline_id absent' do
       before do
-        pipeline_data[:trace_correlation_enabled] = true
         pipeline_data[:source_pipeline] = { pipeline_id: 999 }
         pipeline_data[:object_attributes].delete(:root_pipeline_id)
       end
@@ -234,7 +233,6 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :obser
 
     context 'with same-project source pipeline (cross-pipeline linking)' do
       before do
-        pipeline_data[:trace_correlation_enabled] = true
         pipeline_data[:source_pipeline] = {
           project: { id: 789 },
           bridge_id: 50,
@@ -249,7 +247,6 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :obser
 
     context 'with cross-project source pipeline' do
       before do
-        pipeline_data[:trace_correlation_enabled] = true
         pipeline_data[:source_pipeline] = {
           project: { id: 999 },
           bridge_id: 50,
@@ -268,20 +265,8 @@ RSpec.describe Gitlab::Observability::PipelineToTraces, feature_category: :obser
       end
     end
 
-    context 'with trace_correlation_enabled false' do
-      before do
-        pipeline_data[:trace_correlation_enabled] = false
-        pipeline_data[:source_pipeline] = { project: { id: 789 }, bridge_id: 50, pipeline_id: 100 }
-      end
-
-      it 'leaves parentSpanId empty' do
-        expect(pipeline_span[:parentSpanId]).to eq('')
-      end
-    end
-
     context 'with source pipeline but no bridge_id' do
       before do
-        pipeline_data[:trace_correlation_enabled] = true
         pipeline_data[:source_pipeline] = { project: { id: 789 }, bridge_id: nil, pipeline_id: 100 }
       end
 

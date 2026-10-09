@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Stage, feature_category: :pipeline_co
   describe '#seeds_errors' do
     it 'returns all errors from seeds' do
       expect(subject.seeds.first)
-        .to receive(:errors) { ["build error"] }
+        .to receive(:errors).and_return(["build error"])
 
       expect(subject.errors).to contain_exactly(
         "build error")

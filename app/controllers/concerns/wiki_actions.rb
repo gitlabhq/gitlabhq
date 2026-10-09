@@ -272,10 +272,16 @@ module WikiActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def history
     if page
-      @commits_count = page.count_versions
-      @commits = Kaminari.paginate_array(page.versions(page: pagination_params[:page].to_i),
-        total_count: page.count_versions)
-        .page(pagination_params[:page])
+      if Feature.enabled?(:wiki_page_history_follow_renames, container)
+        history = Wikis::PageHistory.new(page)
+        @commits_count = history.count
+        versions = history.versions(page: pagination_params[:page].to_i)
+      else
+        @commits_count = page.count_versions
+        versions = page.versions(page: pagination_params[:page].to_i)
+      end
+
+      @commits = Kaminari.paginate_array(versions, total_count: @commits_count).page(pagination_params[:page])
 
       render 'shared/wikis/history'
     else

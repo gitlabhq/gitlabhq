@@ -44,7 +44,7 @@ module Import
 
       group.errors.any? ? current_user.namespace : group
     rescue StandardError => e
-      Gitlab::AppLogger.error(e)
+      Gitlab::ErrorTracking.track_exception(e, namespace_path: namespace)
 
       current_user.namespace
     end

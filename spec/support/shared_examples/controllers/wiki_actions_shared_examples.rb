@@ -173,6 +173,36 @@ RSpec.shared_examples 'wiki controller actions' do
     it_behaves_like 'fetching history', :not_found do
       let(:allow_read_wiki)   { false }
     end
+
+    context 'when the page was renamed' do
+      let(:allow_read_wiki) { true }
+
+      before do
+        expect(wiki.find_page(wiki_title).update(title: 'renamed', content: 'hello world')).to be(true)
+        expect(wiki.find_page('renamed').update(title: 'renamed', content: 'hello again')).to be(true)
+      end
+
+      it 'counts and lists the commits from before the rename', :aggregate_failures do
+        get :history, params: routing_params.merge(id: 'renamed')
+
+        expect(assigns(:commits_count)).to eq(3)
+        expect(assigns(:commits).size).to eq(3)
+        expect(assigns(:commits).last.message).to match(/created page: #{wiki_title}/)
+      end
+
+      context 'when wiki_page_history_follow_renames is disabled' do
+        before do
+          stub_feature_flags(wiki_page_history_follow_renames: false)
+        end
+
+        it 'counts and lists only the commits on the current path', :aggregate_failures do
+          get :history, params: routing_params.merge(id: 'renamed')
+
+          expect(assigns(:commits_count)).to eq(2)
+          expect(assigns(:commits).size).to eq(2)
+        end
+      end
+    end
   end
 
   describe 'GET #diff' do

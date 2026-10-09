@@ -11,7 +11,7 @@ title: Set up Observability on GitLab Self-Managed
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 

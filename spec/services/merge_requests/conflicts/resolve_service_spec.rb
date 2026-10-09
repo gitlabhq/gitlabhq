@@ -218,6 +218,111 @@ RSpec.describe MergeRequests::Conflicts::ResolveService, feature_category: :code
       end
     end
 
+    context 'when the commit message is blank' do
+      before do
+        service.execute(user, params.merge(commit_message: ''))
+      end
+
+      it 'falls back to the default commit message' do
+        expect(merge_request.source_branch_head.message)
+          .to start_with("Merge branch 'conflict-start' into 'conflict-resolvable'")
+      end
+    end
+
+    context 'when a file is not in conflict' do
+      let(:params) do
+        {
+          files: [
+            {
+              old_path: 'files/ruby/version_info.rb',
+              new_path: 'files/ruby/version_info.rb',
+              content: 'class VersionInfo; end'
+            }
+          ],
+          commit_message: 'This is a commit message!'
+        }
+      end
+
+      let(:reason) { described_class::REASON_FILE_NOT_IN_CONFLICT }
+      let(:message) { 'File files/ruby/version_info.rb is not in conflict.' }
+
+      it_behaves_like 'a refusal before resolving'
+    end
+
+    context 'when a file has neither sections nor content' do
+      let(:params) do
+        {
+          files: [
+            {
+              old_path: 'files/ruby/popen.rb',
+              new_path: 'files/ruby/popen.rb',
+              sections: { '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head' }
+            }, {
+              old_path: 'files/ruby/regex.rb',
+              new_path: 'files/ruby/regex.rb',
+              sections: sections
+            }
+          ],
+          commit_message: 'This is a commit message!'
+        }
+      end
+
+      let(:reason) { described_class::REASON_INCOMPLETE_FILE }
+      let(:message) { 'File files/ruby/regex.rb needs either sections or content.' }
+
+      context 'when sections is an empty hash' do
+        let(:sections) { {} }
+
+        it_behaves_like 'a refusal before resolving'
+      end
+
+      context 'when sections is not a hash' do
+        let(:sections) { 'head' }
+
+        it_behaves_like 'a refusal before resolving'
+      end
+
+      context 'when a section value is not a string' do
+        let(:sections) { { '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => %w[head] } }
+
+        it_behaves_like 'a refusal before resolving'
+      end
+
+      context 'when sections is missing' do
+        let(:sections) { nil }
+
+        it_behaves_like 'a refusal before resolving'
+      end
+    end
+
+    context 'when a tree-conflict-tolerant lister cached the resolvability check as true', :clean_gitlab_redis_cache do
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_branch: 'conflict-missing-side',
+          source_project: project,
+          target_branch: 'conflict-start',
+          merge_status: :cannot_be_merged
+        )
+      end
+
+      let(:reason) { described_class::REASON_NOT_RESOLVABLE_IN_UI }
+      let(:message) do
+        'The merge conflicts for this merge request cannot be resolved through GitLab. ' \
+          'Please try to resolve them locally.'
+      end
+
+      before do
+        MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: true).can_be_resolved_in_ui?
+      end
+
+      it 'reads the cached result back without allow_tree_conflicts' do
+        expect(MergeRequests::Conflicts::ListService.new(merge_request).can_be_resolved_in_ui?).to be(true)
+      end
+
+      it_behaves_like 'a refusal before resolving'
+    end
+
     context 'when the user cannot push to the source branch' do
       let(:project) { create(:project, :public, :repository) }
       let(:reason) { described_class::REASON_NO_PUSH_ACCESS }

@@ -110,6 +110,26 @@ RSpec.describe Import::BitbucketService, feature_category: :importers do
           end
         end
 
+        context 'when creating the target namespace raises an error' do
+          let(:target_namespace) { 'another_group/subgroup' }
+          let(:exception) { StandardError.new('boom') }
+
+          before do
+            allow_next_instance_of(Groups::NestedCreateService) do |service|
+              allow(service).to receive(:execute).and_raise(exception)
+            end
+          end
+
+          it 'tracks the exception and creates the project under the user namespace' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+              .with(exception, namespace_path: target_namespace)
+
+            service.execute
+
+            expect(user.projects.find_by_name('foo')).to be_present
+          end
+        end
+
         context 'when bitbucket user is not authorized' do
           it 'return an error' do
             allow_next_instance_of(Bitbucket::Client) do |client|

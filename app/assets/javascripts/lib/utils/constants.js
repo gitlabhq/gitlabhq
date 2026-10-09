@@ -25,4 +25,12 @@ export const PREFERS_DARK = '(prefers-color-scheme: dark)';
 
 export const IMAGE_FORMATS = /^[\w.\-+]+\.(png|jpg|jpeg|gif|bmp|tiff|ico|webp)$/;
 
+export const VIDEO_FORMATS = [
+  { mime: 'video/mp4', ext: 'mp4' },
+  { mime: 'video/quicktime', ext: 'mov' },
+  { mime: 'video/webm', ext: 'webm' },
+  { mime: 'video/ogg', ext: 'ogv' },
+  { mime: 'video/x-m4v', ext: 'm4v' },
+];
+
 export const NO_SCROLL_TO_HASH_CLASS = 'js-no-scroll-to-hash';

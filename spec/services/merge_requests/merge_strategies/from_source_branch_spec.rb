@@ -397,6 +397,27 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
       end
     end
 
+    context 'when the target branch tip cannot be resolved' do
+      before do
+        project.merge_method = :ff
+        project.save!
+
+        allow(merge_request.target_project.repository).to receive(:commit).and_call_original
+        allow(merge_request.target_project.repository)
+          .to receive(:commit).with(merge_request.target_branch_ref).and_return(nil)
+      end
+
+      it 'fast-forwards without an expected target sha' do
+        expect(merge_request.target_project.repository)
+          .to receive(:ff_merge)
+          .with(user, merge_request.diff_head_sha, merge_request.target_branch,
+            merge_request: merge_request, target_sha: nil)
+          .and_return('1234')
+
+        expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
+      end
+    end
+
     context 'when the fast-forward does not advance the target branch via the auto-rebase path' do
       before do
         project.merge_method = :ff

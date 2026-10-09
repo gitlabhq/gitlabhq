@@ -23,9 +23,7 @@ const TEMPLATE = `<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}"
 
 describe('dropzone_input', () => {
   beforeEach(() => {
-    jest
-      .spyOn(mediaUtils, 'getLimitedMediaDimensions')
-      .mockResolvedValue({ width: 663, height: 325 });
+    jest.spyOn(mediaUtils, 'getLimitedMediaDimensions').mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -48,6 +46,7 @@ describe('dropzone_input', () => {
 
   describe('handlePaste', () => {
     let form;
+    let axiosMock;
 
     const triggerPasteEvent = (clipboardData = {}) => {
       const event = $.Event('paste');
@@ -59,6 +58,37 @@ describe('dropzone_input', () => {
       $('.js-gfm-input').trigger(event);
     };
 
+    const triggerFilesPasteEvent = (files) => {
+      const fileList = files.map(
+        ({ fileName, mimeType }) => new File([new Blob()], fileName, { type: mimeType }),
+      );
+
+      triggerPasteEvent({
+        types: ['Files'],
+        files: fileList,
+        items: fileList.map((file) => ({ kind: 'file', type: file.type, getAsFile: () => file })),
+      });
+    };
+
+    const triggerFilePasteEvent = (fileName, mimeType) =>
+      triggerFilesPasteEvent([{ fileName, mimeType }]);
+
+    const pasteFileAndAwaitUpload = ({ fileName, mimeType, markdown, dimensions = null }) => {
+      jest.spyOn(mediaUtils, 'getLimitedMediaDimensions').mockResolvedValue(dimensions);
+      axiosMock.onPost().reply(HTTP_STATUS_OK, { link: { markdown } });
+
+      return new Promise((resolve) => {
+        $('textarea').on('change', () => resolve(axiosMock));
+
+        triggerFilePasteEvent(fileName, mimeType);
+      });
+    };
+
+    const uploadedFileNames = () =>
+      axiosMock.history.post.map((request) => request.data.get('file').name);
+
+    const textareaValue = () => $('textarea').val();
+
     beforeEach(() => {
       setHTMLFixture(htmlNewMilestone);
 
@@ -68,10 +98,13 @@ describe('dropzone_input', () => {
 
       // needed for the underlying insertText to work
       document.execCommand = jest.fn(() => false);
+
+      axiosMock = new MockAdapter(axios);
     });
 
     afterEach(() => {
       form = null;
+      axiosMock.restore();
     });
 
     it('pastes Markdown tables', () => {
@@ -89,25 +122,23 @@ describe('dropzone_input', () => {
     });
 
     it('passes truncated long filename to post request', async () => {
-      const axiosMock = new MockAdapter(axios);
       const longFileName = 'a'.repeat(300);
 
-      triggerPasteEvent({
-        types: ['text/plain', 'text/html', 'text/rtf', 'Files'],
-        getData: () => longFileName,
-        files: [new File([new Blob()], longFileName, { type: 'image/png' })],
-        items: [
-          {
-            kind: 'file',
-            type: 'image/png',
-            getAsFile: () => new Blob(),
-          },
-        ],
+      await pasteFileAndAwaitUpload({
+        fileName: longFileName,
+        mimeType: 'image/png',
+        markdown: '![truncated]',
       });
 
-      axiosMock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: 'foo' } });
+      expect(uploadedFileNames()[0]).toHaveLength(246);
+    });
+
+    it('ignores pasted non-media files', async () => {
+      triggerFilePasteEvent('doc.pdf', 'application/pdf');
       await waitForPromises();
-      expect(axiosMock.history.post[0].data.get('file').name).toHaveLength(246);
+
+      expect(axiosMock.history.post).toHaveLength(0);
+      expect(textareaValue()).toBe('');
     });
 
     it('disables generated image file when clipboardData have both image and text', () => {
@@ -128,64 +159,93 @@ describe('dropzone_input', () => {
         ],
       });
 
-      expect(form.find('.js-gfm-input')[0].value).toBe('');
+      expect(textareaValue()).toBe('');
     });
 
-    it('display original file name in comment box', async () => {
-      jest.spyOn(mediaUtils, 'getLimitedMediaDimensions').mockResolvedValue(null);
-      await new Promise((resolve) => {
-        const axiosMock = new MockAdapter(axios);
-        triggerPasteEvent({
-          types: ['Files'],
-          files: [new File([new Blob()], 'test.png', { type: 'image/png' })],
-          items: [
-            {
-              kind: 'file',
-              type: 'image/png',
-              getAsFile: () => new Blob(),
-            },
-          ],
+    it.each`
+      mimeType             | pastedName    | expectedName
+      ${'image/png'}       | ${'test.png'} | ${'test.png'}
+      ${'video/quicktime'} | ${'test.mov'} | ${'test.mov'}
+      ${'image/png'}       | ${''}         | ${'image.png'}
+      ${'video/mp4'}       | ${''}         | ${'video.mp4'}
+      ${'video/quicktime'} | ${''}         | ${'video.mov'}
+      ${'video/webm'}      | ${''}         | ${'video.webm'}
+      ${'video/ogg'}       | ${''}         | ${'video.ogv'}
+      ${'video/x-m4v'}     | ${''}         | ${'video.m4v'}
+      ${'video/x-msvideo'} | ${''}         | ${'video.bin'}
+    `(
+      'uploads a pasted $mimeType file as $expectedName',
+      async ({ mimeType, pastedName, expectedName }) => {
+        await pasteFileAndAwaitUpload({
+          fileName: pastedName,
+          mimeType,
+          markdown: '![uploaded]',
         });
 
-        $('textarea').on('change', () => {
-          expect(axiosMock.history.post[0].data.get('file').name).toEqual('test.png');
-          expect($('textarea').val()).toEqual('![test.png]');
+        expect(uploadedFileNames()).toEqual([expectedName]);
+        expect(textareaValue()).toEqual('![uploaded]');
+      },
+    );
 
-          resolve();
-        });
+    it('keeps the placeholder when a pasted file fails to upload', async () => {
+      axiosMock.onPost().reply(HTTP_STATUS_BAD_REQUEST, { message: 'nope' });
 
-        axiosMock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '![test.png]' } });
-      });
+      triggerFilePasteEvent('test.mp4', 'video/mp4');
+      await waitForPromises();
+
+      expect(axiosMock.history.post).toHaveLength(1);
+      expect(textareaValue()).toBe('{{test.mp4}}');
     });
 
-    it('display width and height for retina images', async () => {
-      await new Promise((resolve) => {
-        const axiosMock = new MockAdapter(axios);
-        triggerPasteEvent({
-          types: ['Files'],
-          files: [new File(['foo'], 'test.png', { type: 'image/png' })],
-          items: [
-            {
-              kind: 'file',
-              type: 'image/png',
-              getAsFile: () => new Blob(),
-            },
-          ],
-        });
+    it('uploads every file pasted at once', async () => {
+      axiosMock
+        .onPost()
+        .reply((config) => [
+          HTTP_STATUS_OK,
+          { link: { markdown: `![${config.data.get('file').name}]` } },
+        ]);
 
-        $('textarea').on('change', () => {
-          expect(axiosMock.history.post[0].data.get('file').name).toEqual('test.png');
-          expect($('textarea').val()).toEqual('![test.png]{width=663 height=325}');
+      triggerFilesPasteEvent([
+        { fileName: 'foo.png', mimeType: 'image/png' },
+        { fileName: 'bar.mp4', mimeType: 'video/mp4' },
+      ]);
+      await waitForPromises();
 
-          resolve();
-        });
+      expect(uploadedFileNames()).toEqual(['foo.png', 'bar.mp4']);
+      expect(textareaValue()).toEqual('![foo.png]![bar.mp4]');
+    });
 
-        axiosMock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: '![test.png]' } });
+    it('keeps the placeholder for a file that fails while another uploads', async () => {
+      axiosMock
+        .onPost()
+        .reply((config) =>
+          config.data.get('file').name === 'foo.png'
+            ? [HTTP_STATUS_OK, { link: { markdown: '![foo]' } }]
+            : [HTTP_STATUS_BAD_REQUEST, { message: 'nope' }],
+        );
+
+      triggerFilesPasteEvent([
+        { fileName: 'foo.png', mimeType: 'image/png' },
+        { fileName: 'bar.mp4', mimeType: 'video/mp4' },
+      ]);
+      await waitForPromises();
+
+      expect(textareaValue()).toEqual('![foo]{{bar.mp4}}');
+    });
+
+    it('displays width and height for media', async () => {
+      await pasteFileAndAwaitUpload({
+        fileName: 'test.png',
+        mimeType: 'image/png',
+        markdown: '![test]',
+        dimensions: { width: 663, height: 325 },
       });
+
+      expect(uploadedFileNames()).toEqual(['test.png']);
+      expect(textareaValue()).toEqual('![test]{width=663 height=325}');
     });
 
     it('preserves undo history', async () => {
-      jest.spyOn(mediaUtils, 'getLimitedMediaDimensions').mockResolvedValue(null);
       let execCommandMock;
       const fileName = 'undo-file.png';
 
@@ -204,22 +264,11 @@ describe('dropzone_input', () => {
         });
         document.execCommand = execCommandMock;
 
-        const axiosMock = new MockAdapter(axios);
         axiosMock.onPost().reply(HTTP_STATUS_OK, { link: { markdown: `![${fileName}]` } });
-        triggerPasteEvent({
-          types: ['Files'],
-          files: [new File([new Blob()], fileName, { type: 'image/png' })],
-          items: [
-            {
-              kind: 'file',
-              type: 'image/png',
-              getAsFile: () => new Blob(),
-            },
-          ],
-        });
+        triggerFilePasteEvent(fileName, 'image/png');
       });
 
-      expect($('textarea').val()).toEqual('');
+      expect(textareaValue()).toEqual('');
       expect(execCommandMock.mock.calls).toHaveLength(2);
       expect(execCommandMock.mock.calls[1][2]).toEqual(`![${fileName}]`);
     });

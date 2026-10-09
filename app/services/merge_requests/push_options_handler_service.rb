@@ -29,7 +29,7 @@ module MergeRequests
       rescue Gitlab::Access::AccessDeniedError
         errors << 'User access was denied'
       rescue StandardError => e
-        Gitlab::AppLogger.error(e)
+        Gitlab::ErrorTracking.track_exception(e, project_id: project.id, branch: branch)
         errors << 'An unknown error occurred'
       end
 

@@ -13,9 +13,9 @@ description: What the Package Metadata Database contains, how GitLab synchronize
 
 {{< /details >}}
 
-The Package Metadata Database (PMDB) is a collection of license, security advisories and enrichment data for
+The Package Metadata Database (PMDB) is a collection of license and security advisory data for
 open source packages, maintained by GitLab.
-GitLab instances synchronize PMDB data into the database, where the following features use it:
+GitLab synchronizes it into the database of your instance, where the following features read it:
 
 - [Container scanning for registry](../container_scanning/_index.md#container-scanning-for-registry)
 - [Continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md)
@@ -43,15 +43,17 @@ To synchronize less data, clear the package registry types that you do not use i
 ## Data format versions
 
 Each dataset is published in one of two data format versions, v2 or v3.
+These are versions of the data format, not GitLab versions.
 
-| Format version | Datasets |
-|----------------|----------|
-| v2             | Licenses for GitLab 19.3 and earlier, advisories, and CVE enrichment. |
-| v3             | Licenses for GitLab 19.4 and later, and malware advisories. |
+| Format version | Datasets | Distributed from |
+|----------------|----------|------------------|
+| v2             | Licenses for GitLab 19.3 and earlier, advisories, and CVE enrichment. | Public Google Cloud Storage buckets, readable without credentials. |
+| v3             | Licenses for GitLab 19.4 and later, and malware advisories. | The Package Metadata Database distribution service, an authenticated GitLab service. |
 
-v3 license data supports Software Package Data Exchange (SPDX) license expressions. For example, `MIT OR Apache-2.0`.
+v3 license data carries Software Package Data Exchange (SPDX) license expressions instead of
+single license identifiers. For example, `MIT OR Apache-2.0`.
 
-GitLab instances determines which data format version to use:
+You do not choose the format version. Your GitLab version determines which one it reads:
 
 | GitLab version   | Licenses | Advisories | CVE enrichment | Malware advisories |
 |------------------|----------|------------|----------------|--------------------|
@@ -60,6 +62,7 @@ GitLab instances determines which data format version to use:
 | 19.4 and later   | v3       | v2         | v2             | v3                 |
 
 Feature flags control the v3 license data and the malware advisories, and both are enabled by default.
+Malware advisories are in beta.
 
 ## Synchronization
 
@@ -69,7 +72,7 @@ that is newer than what the instance already holds.
 
 ### Instances with internet access
 
-An instance with internet access downloads v2 data from the defined GCP buckets and v3 data from a
+An instance with internet access downloads v2 data from the public buckets and v3 data from the
 distribution service.
 To download v2 data, the instance needs outbound network access to `storage.googleapis.com`.
 
@@ -86,7 +89,7 @@ There is no fallback to the network, so a directory that holds stale data serves
 and reports no error.
 
 For the download procedures and feature flag details for each dataset, see
-[enabling the Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+[Package Metadata Database for offline instances](../../../topics/offline/package-metadata-database.md).
 
 ## Related topics
 

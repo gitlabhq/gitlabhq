@@ -64,7 +64,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when action name is diff_for_path' do
       before do
-        allow(controller).to receive(:action_name) { 'diff_for_path' }
+        allow(controller).to receive(:action_name).and_return('diff_for_path')
       end
 
       it 'returns expanded true' do
@@ -921,7 +921,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when request has w param set' do
       before do
-        allow(controller).to receive(:params) { { w: '1' } }
+        allow(controller).to receive(:params).and_return({ w: '1' })
       end
 
       it { is_expected.to be(true) }
@@ -944,7 +944,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
       context 'when request has w param set' do
         before do
-          allow(controller).to receive(:params) { { w: '1' } }
+          allow(controller).to receive(:params).and_return({ w: '1' })
         end
 
         it { is_expected.to be(true) }

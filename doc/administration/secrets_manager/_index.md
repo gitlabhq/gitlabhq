@@ -372,6 +372,10 @@ connected to a PostgreSQL read replica.
 PostgreSQL streaming replication carries all OpenBao data (secrets, policies, authentication
 configuration) from the primary to the secondary site automatically.
 
+> [!note]
+> Geo [selective synchronization](../geo/replication/selective_synchronization.md) does not apply to
+> OpenBao secrets or policies, which replicate regardless of selective synchronization settings.
+
 Both GitLab instances (primary and secondary) connect to the primary OpenBao URL. The secondary
 OpenBao deployment remains in standby, and is promoted to active when the secondary
 PostgreSQL database becomes writable during a

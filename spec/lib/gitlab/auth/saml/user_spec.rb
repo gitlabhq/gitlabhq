@@ -189,7 +189,7 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:email) { %w[john@mail.com john2@example.com] }
+              allow(ldap_user).to receive(:email).and_return(%w[john@mail.com john2@example.com])
               allow(ldap_user).to receive(:dn) { dn }
               allow(Gitlab::Auth::Ldap::Adapter).to receive(:new).and_return(adapter)
               allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).with(uid, adapter).and_return(ldap_user)

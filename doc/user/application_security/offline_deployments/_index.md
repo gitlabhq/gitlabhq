@@ -111,8 +111,8 @@ Metadata Database for license, advisory, and vulnerability risk assessment data.
 This database is a data artifact, not an analyzer image, so loading the analyzer images does not provide it.
 An offline instance has none of it until you copy the exports across.
 
-For the procedure, see
-[enabling the Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+For information on what the database contains and which data format version each GitLab
+version supports, see [Package Metadata Database](../../../topics/offline/package-metadata-database.md).
 
 ## Loading Docker images onto your offline host
 

@@ -93,7 +93,7 @@ Before you migrate, an administrator should:
   used by your projects are selected. For more information, see
   [choose package registry metadata to sync](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync).
 - For offline or firewalled instances, follow
-  [enabling the Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+  [Package Metadata Database for offline instances](../../../topics/offline/package-metadata-database.md).
 
 If PMDB synchronization is not complete for a package type that your
 projects use, the new analyzer cannot resolve advisories for the corresponding

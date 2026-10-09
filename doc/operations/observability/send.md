@@ -11,7 +11,7 @@ title: Send telemetry data to GitLab Observability
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 

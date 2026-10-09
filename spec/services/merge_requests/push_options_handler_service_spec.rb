@@ -1253,8 +1253,10 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
       expect(service.errors).to eq(['An unknown error occurred'])
     end
 
-    it 'writes to Gitlab::AppLogger' do
-      expect(Gitlab::AppLogger).to receive(:error).with(exception)
+    it 'tracks the exception' do
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+        exception, project_id: project.id, branch: source_branch
+      )
 
       run_service_with_exception
     end

@@ -2,21 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/ReturnFromStub:
   Exclude:
-    - 'spec/helpers/dashboard_helper_spec.rb'
-    - 'spec/helpers/diff_helper_spec.rb'
-    - 'spec/helpers/explore_helper_spec.rb'
-    - 'spec/helpers/groups_helper_spec.rb'
-    - 'spec/helpers/issues_helper_spec.rb'
-    - 'spec/helpers/operations_helper_spec.rb'
-    - 'spec/helpers/projects_helper_spec.rb'
-    - 'spec/lib/banzai/filter/references/external_issue_reference_filter_spec.rb'
-    - 'spec/lib/banzai/reference_redactor_spec.rb'
-    - 'spec/lib/file_size_validator_spec.rb'
-    - 'spec/lib/gitlab/auth/saml/user_spec.rb'
-    - 'spec/lib/gitlab/ci/build/policy/changes_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/seed/stage_spec.rb'
-    - 'spec/lib/gitlab/ci/status/build/failed_spec.rb'
-    - 'spec/lib/gitlab/ci/trace/remote_checksum_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/models/concerns/deprecated_assignee_spec.rb'

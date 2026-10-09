@@ -163,8 +163,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     end
 
     before do
-      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+      allow(Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
     end
 
     it 'is true when moved issue project has service desk disabled' do

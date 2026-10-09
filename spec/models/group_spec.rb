@@ -4242,13 +4242,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#dependency_malware_detection_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :dependency_malware_detection }
-      let(:feature_flag_method) { :dependency_malware_detection_feature_flag_enabled? }
-    end
-  end
-
   describe '#use_mermaid_v12_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :use_mermaid_v12 }

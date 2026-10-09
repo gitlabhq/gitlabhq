@@ -1461,7 +1461,7 @@ To run dependency scanning in an offline environment you must have:
 
 - A GitLab Runner with the `docker` or `kubernetes` executor.
 - Local copies of the dependency scanning analyzer images.
-- Access to the [Package Metadata Database](../../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database). Required to have license and advisory data for your dependencies.
+- Access to the [Package Metadata Database](../../../../topics/offline/package-metadata-database.md). Required to have license and advisory data for your dependencies.
 
 ### Local copies of analyzer images
 

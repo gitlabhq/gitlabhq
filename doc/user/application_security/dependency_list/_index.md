@@ -45,12 +45,9 @@ You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-t
 - View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_paths`. Disabled by default.
 - View dependency paths option [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197224) in GitLab 18.2. Feature flag `dependency_paths` removed.
 - Malware badge [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Enabled by default.
+- Malware badge [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.5. Feature flag `dependency_malware_detection` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the malware badge is controlled by a feature flag.
-> For more information, see the history.
 
 Prerequisites:
 
@@ -87,6 +84,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 - Tracked ref filter for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240011) in GitLab 19.2 [with flags](../../../administration/feature_flags/_index.md) named `vulnerabilities_across_contexts` and `project_dependency_tracked_ref`. `project_dependency_tracked_ref` is disabled by default.
 - Malware filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with flags](../../../administration/feature_flags/_index.md) named `dependency_malware_detection` and `malicious_packages_dependency_list_filtering`. Enabled by default.
 - Feature flag `malicious_packages_dependency_list_filtering` removed in GitLab 19.5.
+- Feature flag `dependency_malware_detection` removed in GitLab 19.5.
 
 {{< /history >}}
 
@@ -210,12 +208,9 @@ If the [dependency scanning](../dependency_scanning/_index.md) CI/CD job is conf
 {{< history >}}
 
 - `malware` field in the JSON export for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `dependency_malware_detection`. Enabled by default.
+- `malware` field in the JSON export for projects [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/587758) in GitLab 19.5. Feature flag `dependency_malware_detection` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of the `malware` field in the JSON export is controlled by a feature flag.
-> For more information, see the history.
 
 You can export the dependency list in:
 
@@ -265,7 +260,7 @@ If the license appears as `unknown` upstream, it is expected that GitLab will sh
 
 #### Package version not in Package Metadata DB
 
-The specific version of the dependency package must exist in the [Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database). If it doesn't, the **License** for that dependency appears as `unknown`. Read more in [issue 440218](https://gitlab.com/gitlab-org/gitlab/-/issues/440218) about Go modules.
+The specific version of the dependency package must exist in the [Package Metadata Database](../../../topics/offline/package-metadata-database.md). If it doesn't, the **License** for that dependency appears as `unknown`. Read more in [issue 440218](https://gitlab.com/gitlab-org/gitlab/-/issues/440218) about Go modules.
 
 #### Package name contains special characters
 

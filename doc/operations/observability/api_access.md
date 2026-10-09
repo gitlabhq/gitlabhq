@@ -11,7 +11,7 @@ title: Access the Observability API
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 

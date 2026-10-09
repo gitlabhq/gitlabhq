@@ -177,8 +177,8 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
       project.add_developer(user)
 
       allow(Ability).to receive(:allowed?).and_call_original
-      allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global) { false }
-      allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+      allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(false)
+      allow(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
     end
 
     it 'skips links to issues within the same project' do

@@ -317,6 +317,24 @@ RSpec.describe Projects::MergeRequests::ConflictsController, feature_category: :
       end
     end
 
+    context 'when a file is not in conflict' do
+      before do
+        resolve_conflicts([
+          {
+            'new_path' => 'files/ruby/version_info.rb',
+            'old_path' => 'files/ruby/version_info.rb',
+            'content' => 'class VersionInfo; end'
+          }
+        ])
+      end
+
+      it 'returns a 400 naming the file without creating a commit', :aggregate_failures do
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('File files/ruby/version_info.rb is not in conflict.')
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
+      end
+    end
+
     context 'when a git command error occurs (e.g. pre-receive hook rejection)' do
       before do
         allow_next_instance_of(MergeRequests::Conflicts::ResolveService) do |instance|

@@ -1556,6 +1556,8 @@ Payload example:
 {{< history >}}
 
 - `object_attributes.default_branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606357) in GitLab 19.3.
+- `object_attributes.root_pipeline_id`, `bridges`, and `source_pipeline.bridge_id` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241952) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `ci_pipeline_otlp_trace_correlation`. Disabled by default.
+- `object_attributes.root_pipeline_id`, `bridges`, and `source_pipeline.bridge_id` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260524) in GitLab 19.5. Feature flag `ci_pipeline_otlp_trace_correlation` removed.
 
 {{< /history >}}
 
@@ -1564,6 +1566,16 @@ Pipeline events are triggered when the status of a pipeline changes.
 Pipeline webhooks triggered by blocked users are not processed.
 
 Pipeline webhooks expose `object_attributes.name`.
+
+The payload also includes these attributes for pipeline relationships:
+
+- `object_attributes.root_pipeline_id`: The ID of the top-level pipeline in a parent-child pipeline hierarchy.
+  If the pipeline is not a child pipeline, the value is the ID of the pipeline itself.
+- `bridges`: The trigger jobs in the pipeline.
+  Each entry has the same attributes as a `builds` entry, except `artifacts_file`, and includes `"bridge": true`.
+- `source_pipeline.bridge_id`: The ID of the upstream trigger job that created the pipeline.
+  The value is `null` if the upstream job is not a trigger job.
+  `source_pipeline` is included only when the pipeline has an upstream pipeline.
 
 Request header:
 
@@ -1604,7 +1616,8 @@ Payload example:
         "value": "us-west-1"
       }
     ],
-    "url": "http://example.com/gitlab-org/gitlab-test/-/pipelines/31"
+    "url": "http://example.com/gitlab-org/gitlab-test/-/pipelines/31",
+    "root_pipeline_id": 31
   },
   "merge_request": {
     "id": 1,
@@ -1832,6 +1845,33 @@ Payload example:
       }
     }
   ],
+  "bridges": [
+    {
+      "id": 381,
+      "stage": "deploy",
+      "name": "trigger-downstream",
+      "status": "success",
+      "created_at": "2016-08-12 15:23:28 UTC",
+      "started_at": "2016-08-12 15:26:30 UTC",
+      "finished_at": "2016-08-12 15:28:10 UTC",
+      "duration": 100.0,
+      "queued_duration": 1.0,
+      "failure_reason": null,
+      "when": "on_success",
+      "manual": false,
+      "allow_failure": false,
+      "user": {
+        "id": 1,
+        "name": "Administrator",
+        "username": "root",
+        "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon",
+        "email": "admin@example.com"
+      },
+      "runner": null,
+      "environment": null,
+      "bridge": true
+    }
+  ],
   "source_pipeline": {
     "project": {
       "id": 41,
@@ -1839,7 +1879,8 @@ Payload example:
       "path_with_namespace": "gitlab-org/upstream-project"
     },
     "pipeline_id": 30,
-    "job_id": 3401
+    "job_id": 3401,
+    "bridge_id": 3401
   }
 }
 ```

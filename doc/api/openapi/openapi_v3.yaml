@@ -84579,8 +84579,8 @@ components:
         malware:
           type: boolean
           description: 'Malware status: true if the package version matches a malware
-            advisory, false otherwise. Omitted when malware detection is not enabled
-            for the project.'
+            advisory, false otherwise. Omitted when the user cannot read security
+            resources.'
     APIEntitiesProjectAlias:
       type: object
       properties:

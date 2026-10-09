@@ -88,7 +88,9 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
     end
 
     it 'has an empty link if issue_url is invalid' do
-      expect_any_instance_of(project.external_issue_tracker.class).to receive(:issue_url) { 'javascript:alert("foo");' }
+      expect_any_instance_of(project.external_issue_tracker.class).to receive(:issue_url).and_return(
+        'javascript:alert("foo");'
+      )
 
       doc = filter("Issue #{reference}")
       link = doc.css('a').first.attr('href')
@@ -97,7 +99,9 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
     end
 
     it 'has an empty link if issue_path is invalid' do
-      expect_any_instance_of(project.external_issue_tracker.class).to receive(:issue_path) { 'javascript:alert("foo");' }
+      expect_any_instance_of(project.external_issue_tracker.class).to receive(:issue_path).and_return(
+        'javascript:alert("foo");'
+      )
 
       doc = filter("Issue #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')

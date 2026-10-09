@@ -233,20 +233,20 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     it 'returns true for the group owner' do
-      allow(helper).to receive(:can?).with(current_user, :set_emails_disabled, group) { true }
+      allow(helper).to receive(:can?).with(current_user, :set_emails_disabled, group).and_return(true)
 
       expect(helper.can_disable_group_emails?(group)).to be_truthy
     end
 
     it 'returns false for anyone else' do
-      allow(helper).to receive(:can?).with(current_user, :set_emails_disabled, group) { false }
+      allow(helper).to receive(:can?).with(current_user, :set_emails_disabled, group).and_return(false)
 
       expect(helper.can_disable_group_emails?(group)).to be_falsey
     end
 
     context 'when subgroups' do
       before do
-        allow(helper).to receive(:can?).with(current_user, :set_emails_disabled, subgroup) { true }
+        allow(helper).to receive(:can?).with(current_user, :set_emails_disabled, subgroup).and_return(true)
       end
 
       it 'returns false if parent group is disabling emails' do
@@ -320,7 +320,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'for users who can update default branch protection of the group' do
       before do
-        allow(helper).to receive(:can?).with(current_user, :update_default_branch_protection, group) { true }
+        allow(helper).to receive(:can?).with(current_user, :update_default_branch_protection, group).and_return(true)
       end
 
       it { is_expected.to be_truthy }
@@ -328,7 +328,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'for users who cannot update default branch protection of the group' do
       before do
-        allow(helper).to receive(:can?).with(current_user, :update_default_branch_protection, group) { false }
+        allow(helper).to receive(:can?).with(current_user, :update_default_branch_protection, group).and_return(false)
       end
 
       it { is_expected.to be_falsey }
@@ -476,8 +476,8 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     let(:initial_sort) { 'created_asc' }
 
     before do
-      allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
-      allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
+      allow(helper).to receive(:can?).with(user, :create_subgroup, group).and_return(true)
+      allow(helper).to receive(:can?).with(user, :create_projects, group).and_return(true)
       allow(helper).to receive_messages(current_user: user, group_project_list_sort_by: initial_sort)
     end
 

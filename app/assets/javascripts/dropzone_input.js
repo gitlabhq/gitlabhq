@@ -7,6 +7,7 @@ import { getFilename } from '~/lib/utils/file_upload';
 import { truncate } from '~/lib/utils/text_utility';
 import { n__, __ } from '~/locale';
 import { getLimitedMediaDimensions } from '~/lib/utils/media_utils';
+import { VIDEO_FORMATS } from '~/lib/utils/constants';
 import PasteMarkdownTable from './behaviors/markdown/paste_markdown_table';
 import axios from './lib/utils/axios_utils';
 import csrf from './lib/utils/csrf';
@@ -26,12 +27,24 @@ function getErrorMessage(res) {
   return res.message;
 }
 
-async function transformImageMarkdown(md, file) {
+async function transformMediaMarkdown(md, file) {
   const dimensions = await getLimitedMediaDimensions(file);
   if (!dimensions) return md;
   // eslint-disable-next-line @gitlab/require-i18n-strings
   return `${md}{width=${dimensions.width} height=${dimensions.height}}`;
 }
+
+const VIDEO_FALLBACK_FILENAMES = Object.fromEntries(
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  VIDEO_FORMATS.map(({ mime, ext }) => [mime, `video.${ext}`]),
+);
+
+const getFallbackFilename = (file) => {
+  if (file.type.startsWith('video/')) {
+    return VIDEO_FALLBACK_FILENAMES[file.type] || 'video.bin';
+  }
+  return 'image.png';
+};
 
 export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   // Accept both jQuery and DOM elements
@@ -100,7 +113,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       const shouldPad = processingFileCount >= 1;
 
       addFileToForm(response.link.url, header.size);
-      const md = await transformImageMarkdown(response.link.markdown, header);
+      const md = await transformMediaMarkdown(response.link.markdown, header);
       pasteText(md, shouldPad);
     },
     error: (file, errorMessage = __('Attaching the file failed.'), xhr) => {
@@ -194,11 +207,11 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       } else if (!hasPlainText(pasteEvent)) {
         const fileList = [...clipboardData.files];
         fileList.forEach((file) => {
-          if (file.type.indexOf('image') !== -1) {
+          if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
             event.preventDefault();
             const MAX_FILE_NAME_LENGTH = 246;
 
-            const filename = getFilename(file) || 'image.png';
+            const filename = getFilename(file) || getFallbackFilename(file);
             const truncateFilename = truncate(filename, MAX_FILE_NAME_LENGTH);
             const text = `{{${truncateFilename}}}`;
             pasteText(text);
@@ -262,7 +275,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     axios
       .post(uploadsPath, formData)
       .then(async ({ data }) => {
-        const md = await transformImageMarkdown(data.link.markdown, item);
+        const md = await transformMediaMarkdown(data.link.markdown, item);
         insertToTextArea(filename, md);
         closeSpinner();
       })

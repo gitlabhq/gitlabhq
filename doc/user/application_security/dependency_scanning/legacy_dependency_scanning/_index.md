@@ -720,7 +720,7 @@ Prerequisites:
 - A GitLab Runner with the `docker` or `kubernetes` executor
 - Local copies of the dependency scanning analyzer images
 - Access to the [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
-- Access to the [Package Metadata Database](../../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database)
+- Access to the [Package Metadata Database](../../../../topics/offline/package-metadata-database.md)
 
 #### Local copies of analyzer images
 

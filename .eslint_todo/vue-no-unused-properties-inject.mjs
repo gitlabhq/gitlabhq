@@ -5,7 +5,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/issues/dashboard/components/issues_dashboard_app.vue',
     'app/assets/javascripts/repository/components/header_area.vue',
     'app/assets/javascripts/repository/components/header_area/breadcrumbs.vue',
     'ee/app/assets/javascripts/security_orchestration/components/policies/app.vue',

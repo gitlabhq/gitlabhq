@@ -8630,6 +8630,9 @@ msgid_plural "AiGovernance|%d users"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AiGovernance|%{agent} (glab)"
+msgstr ""
+
 msgid "AiGovernance|%{change} this month"
 msgstr ""
 
@@ -8887,6 +8890,9 @@ msgid "AiGovernance|Runs on the user's machine as the user. Local access is not 
 msgstr ""
 
 msgid "AiGovernance|Search or filter tool rules..."
+msgstr ""
+
+msgid "AiGovernance|Session #%{id} done by %{agent}"
 msgstr ""
 
 msgid "AiGovernance|Session #%{id} · %{name}"
@@ -30044,9 +30050,6 @@ msgstr ""
 msgid "Dependencies|Risk includes known vulnerabilities and malware packages currently detected in your project. Previously detected findings that are no longer present are excluded to keep risk assessments accurate."
 msgstr ""
 
-msgid "Dependencies|Risk includes known vulnerabilities currently detected in your project. Previously detected findings that are no longer present are excluded to keep risk assessments accurate."
-msgstr ""
-
 msgid "Dependencies|Search or filter dependencies…"
 msgstr ""
 
@@ -38470,6 +38473,12 @@ msgid "File"
 msgstr ""
 
 msgid "File %{current} of %{total}"
+msgstr ""
+
+msgid "File %{path} is not in conflict."
+msgstr ""
+
+msgid "File %{path} needs either sections or content."
 msgstr ""
 
 msgid "File Tree"
@@ -56994,6 +57003,12 @@ msgstr ""
 msgid "Observability|Authentication failed. Please refresh the page."
 msgstr ""
 
+msgid "Observability|Beta"
+msgstr ""
+
+msgid "Observability|Beta functionality"
+msgstr ""
+
 msgid "Observability|Built on ClickHouse for superior performance, GitLab Observability makes observability accessible within GitLab."
 msgstr ""
 
@@ -57159,12 +57174,6 @@ msgstr ""
 msgid "Observability|Experience the power of GitLab Observability with real-time dashboards and comprehensive monitoring capabilities."
 msgstr ""
 
-msgid "Observability|Experimental"
-msgstr ""
-
-msgid "Observability|Experimental functionality"
-msgstr ""
-
 msgid "Observability|Explore and analyze distributed traces"
 msgstr ""
 
@@ -57207,7 +57216,7 @@ msgstr ""
 msgid "Observability|Firewall configuration: Open outbound access to %{endpoint} on ports 4317-4318 and 14317-14318"
 msgstr ""
 
-msgid "Observability|Free during the experimental phase"
+msgid "Observability|Free during the beta"
 msgstr ""
 
 msgid "Observability|General"
@@ -74228,7 +74237,7 @@ msgstr[1] ""
 msgid "SecretsManagerTrial|%{percent}%% of GitLab Secrets Manager trial credits left. If not used up, they expire today."
 msgstr ""
 
-msgid "SecretsManagerTrial|Contact your billing administrator to enable on-demand billing and avoid disruption."
+msgid "SecretsManagerTrial|Contact your subscription owner to enable on-demand billing and avoid disruption."
 msgstr ""
 
 msgid "SecretsManagerTrial|Contact your subscription owner to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing and avoid a service disruption. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
@@ -74263,7 +74272,7 @@ msgstr ""
 msgid "SecretsManagerTrial|You can only view details or delete existing secrets. Please visit the %{portalLinkStart}Customer Portal%{portalLinkEnd} or contact your subscription owner to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing, and then re-enable GitLab Secrets Manager."
 msgstr ""
 
-msgid "SecretsManagerTrial|You have a short grace period remaining before access is removed. Contact your billing administrator to enable on-demand billing and avoid disruption."
+msgid "SecretsManagerTrial|You have a short grace period remaining before access is removed. Contact your subscription owner to enable on-demand billing and avoid disruption."
 msgstr ""
 
 msgid "SecretsManagerTrial|Your secrets manager add-on has been removed from your license"
@@ -78903,7 +78912,7 @@ msgstr ""
 msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
-msgid "SecurityReports|Mean time to remediation (MTTR) for vulnerabilities, shown as a weekly trend from Monday to Sunday. A vulnerability is remediated when it is resolved or no longer detected. The most recent week might be incomplete."
+msgid "SecurityReports|Mean time to remediation (MTTR) for vulnerabilities, shown as a weekly trend from Monday to Sunday. A vulnerability is remediated when it is resolved or no longer detected. The trend excludes dismissed vulnerabilities and vulnerabilities detected more than 90 days before the start of each week. Data for the most recent week might be incomplete."
 msgstr ""
 
 msgid "SecurityReports|Median: %{days} day"

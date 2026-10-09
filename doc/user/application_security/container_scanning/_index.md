@@ -1042,7 +1042,7 @@ Prerequisites:
 - The Maintainer or Owner role for the project or group.
 - A GitLab Runner with the Docker or Kubernetes executor.
 - A local copy of the container scanning analyzer image.
-- Access to the [Package Metadata Database (PMDB)](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
+- Access to the [Package Metadata Database (PMDB)](../../../topics/offline/package-metadata-database.md).
 
   Required to have advisory data for the components detected in your container images.
   Container scanning for registry relies on [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md)

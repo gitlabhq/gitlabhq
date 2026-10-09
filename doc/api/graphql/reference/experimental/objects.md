@@ -7283,7 +7283,7 @@ A software dependency used by a project.
 | `id` | [`GlobalID!`](scalars.md#globalid) | ID of the dependency. |
 | `licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | `location` | [`Location`](#location) | Information about where the dependency is located. |
-| `malware` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. |
+| `malware` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. |
 | `name` | [`String!`](scalars.md#string) | Name of the dependency. |
 | `packager` | [`PackageManager`](enums.md#packagemanager) | Description of the tool used to manage the dependency. |
 | `reachability` | [`ReachabilityType`](enums.md#reachabilitytype) | Information about reachability of a dependency. |
@@ -7307,7 +7307,7 @@ A software dependency aggregation used by a group.
 | `id` | [`GlobalID!`](scalars.md#globalid) | ID of the dependency. |
 | `licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | `location` | [`Location`](#location) | Information about where the dependency is located. |
-| `malware` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. |
+| `malware` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. |
 | `name` | [`String!`](scalars.md#string) | Name of the dependency. |
 | `occurrenceCount` | [`Int!`](scalars.md#int) | Number of occurrences of the dependency across projects. |
 | `packager` | [`PackageManager`](enums.md#packagemanager) | Description of the tool used to manage the dependency. |

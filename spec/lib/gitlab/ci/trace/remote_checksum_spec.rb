@@ -37,8 +37,8 @@ RSpec.describe Gitlab::Ci::Trace::RemoteChecksum, feature_category: :continuous_
         context 'with Google as provider' do
           before do
             spy_file = spy(:file)
-            expect(fetcher).to receive(:provider_google?) { true }
-            expect(fetcher).not_to receive(:provider_aws?) { false }
+            expect(fetcher).to receive(:provider_google?).and_return(true)
+            expect(fetcher).not_to receive(:provider_aws?)
             allow(spy_file).to receive(:attributes).and_return(metadata)
 
             allow_next_found_instance_of(Ci::JobArtifact) do |trace_artifact|
@@ -65,8 +65,8 @@ RSpec.describe Gitlab::Ci::Trace::RemoteChecksum, feature_category: :continuous_
           let(:file_store) { JobArtifactUploader::Store::REMOTE }
 
           before do
-            expect(fetcher).to receive(:provider_aws?) { false }
-            expect(fetcher).to receive(:provider_google?) { false }
+            expect(fetcher).to receive(:provider_aws?).and_return(false)
+            expect(fetcher).to receive(:provider_google?).and_return(false)
           end
 
           it { is_expected.to be_nil }

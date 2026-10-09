@@ -52,7 +52,6 @@ RSpec.describe Gitlab::Observability::TracingHelpers, feature_category: :observa
       let(:pipeline_data) do
         {
           object_attributes: { id: pipeline_id },
-          trace_correlation_enabled: true,
           source_pipeline: { pipeline_id: 99 }
         }
       end

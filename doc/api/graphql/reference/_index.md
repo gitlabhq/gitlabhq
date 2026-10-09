@@ -43352,7 +43352,7 @@ Fields:
 | <a id="dependency-id"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
 | <a id="dependency-licenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | <a id="dependency-location"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
-| <a id="dependency-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. |
+| <a id="dependency-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. |
 | <a id="dependency-name"></a>`name` | [`String!`](#string) | Name of the dependency. |
 | <a id="dependency-packager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
 | <a id="dependency-reachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
@@ -43396,7 +43396,7 @@ Fields:
 | <a id="dependencyaggregation-id"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
 | <a id="dependencyaggregation-licenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | <a id="dependencyaggregation-location"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
-| <a id="dependencyaggregation-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. |
+| <a id="dependencyaggregation-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. |
 | <a id="dependencyaggregation-name"></a>`name` | [`String!`](#string) | Name of the dependency. |
 | <a id="dependencyaggregation-occurrencecount"></a>`occurrenceCount` | [`Int!`](#int) | Number of occurrences of the dependency across projects. |
 | <a id="dependencyaggregation-packager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
@@ -78634,7 +78634,7 @@ Fields:
 | <a id="dependencyinterface-id"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
 | <a id="dependencyinterface-licenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | <a id="dependencyinterface-location"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
-| <a id="dependencyinterface-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the project. |
+| <a id="dependencyinterface-malware"></a>`malware` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.1. Status: Experiment. Indicates whether the dependency is a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. |
 | <a id="dependencyinterface-name"></a>`name` | [`String!`](#string) | Name of the dependency. |
 | <a id="dependencyinterface-packager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
 | <a id="dependencyinterface-reachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
