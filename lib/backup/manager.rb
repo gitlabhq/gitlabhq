@@ -64,7 +64,7 @@ module Backup
     end
 
     def restore
-      run_unpack(options.backup_id)
+      run_unpack(options.backup_id, check_disk_space: true)
       run_all_restore_tasks
 
       logger.warn "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
@@ -181,14 +181,14 @@ module Backup
       remove_tmp
     end
 
-    def run_unpack(backup_id)
+    def run_unpack(backup_id, check_disk_space: false)
       Backup::Restore::Unpack.new(
         backup_id: backup_id,
         backup_path: backup_path,
         manifest_filepath: manifest_filepath,
         options: options,
         logger: logger
-      ).run!
+      ).run!(check_disk_space: check_disk_space)
     end
 
     def read_backup_information

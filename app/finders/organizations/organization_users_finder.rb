@@ -7,23 +7,31 @@ module Organizations
   class OrganizationUsersFinder
     # @param organization [Organizations::Organization]
     # @param current_user [User]
-    def initialize(organization:, current_user:)
+    # @param search [String, nil] filters by user name, username, or public email
+    def initialize(organization:, current_user:, search: nil)
       @organization = organization
       @current_user = current_user
+      @search = search
     end
 
     def execute
       return User.none if organization.nil? || !authorized?
 
-      all_organization_users
+      by_search
     end
 
     private
 
-    attr_reader :organization, :current_user
+    attr_reader :organization, :current_user, :search
 
     def all_organization_users
       organization.organization_users
+    end
+
+    def by_search
+      return all_organization_users if search.blank?
+
+      all_organization_users.by_user(User.search(search, use_minimum_char_limit: true).without_order.select(:id))
     end
 
     def authorized?

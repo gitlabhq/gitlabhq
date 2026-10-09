@@ -43,7 +43,7 @@ class ProjectPolicy < BasePolicy
   end
 
   desc "User owns the project's organization"
-  condition(:organization_owner) { owns_organization?(@subject.organization) }
+  condition(:organization_owner) { user_is_organization_admin?(@subject.organization) }
 
   rule { admin | organization_owner }.enable :read_all_organization_resources
 

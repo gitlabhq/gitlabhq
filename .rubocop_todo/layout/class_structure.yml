@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/ClassStructure:
-  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/group_issues_resolver.rb'
     - 'app/graphql/resolvers/group_merge_requests_resolver.rb'

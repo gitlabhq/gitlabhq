@@ -24,6 +24,7 @@ ignore_in_report: true
 - Default read and write permissions for the Maintainer role in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623437) in GitLab 19.4.
 - Default read metadata and create permissions for the Developer role in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623438) in GitLab 19.5.
 - Secrets permissions for groups [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/623457) in GitLab 19.4. Group permissions no longer grant access, and the `GROUP` principal type, the `groupPath` argument of `PrincipalInput`, and the `group` field of `Principal` were removed from the GraphQL API. Grant permissions to users or roles instead.
+- Feature flags `secrets_manager` and `group_secrets_manager` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259222) in GitLab 19.5.
 
 {{< /history >}}
 

@@ -7765,7 +7765,10 @@ msgstr ""
 msgid "AdminUsers|Remove from organization"
 msgstr ""
 
-msgid "AdminUsers|Remove user from the organization?"
+msgid "AdminUsers|Remove user"
+msgstr ""
+
+msgid "AdminUsers|Remove user %{username}"
 msgstr ""
 
 msgid "AdminUsers|Requires at least Maintainer role in specific groups and projects."
@@ -7862,6 +7865,9 @@ msgid "AdminUsers|To confirm, type %{name}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}."
+msgstr ""
+
+msgid "AdminUsers|To remove %{username} from the organization, assign another owner to each group above. Their account isn't deleted."
 msgstr ""
 
 msgid "AdminUsers|Trust user"
@@ -33260,6 +33266,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create trigger"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Daily at %{time} %{timezone}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Default model"
 msgstr ""
 
@@ -33377,6 +33386,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Hourly"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Hourly at %{minute} minutes past the hour %{timezone}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Identify code improvements"
 msgstr ""
 
@@ -33408,6 +33420,9 @@ msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Modify plan"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Monthly on day %{dayOfMonth} at %{time} %{timezone}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Needs a decision"
@@ -33705,6 +33720,12 @@ msgid "DuoAgentsPlatform|We won't ask you for this information again. It will ne
 msgstr ""
 
 msgid "DuoAgentsPlatform|Weekdays"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Weekdays at %{time} %{timezone}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Weekly on %{dayOfWeek} at %{time} %{timezone}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|What this trigger runs."
@@ -48873,6 +48894,9 @@ msgstr ""
 msgid "Job|This job could not be executed because of insufficient permissions to track the upstream project."
 msgstr ""
 
+msgid "Job|This job could not be executed because the pipeline variables file is missing from storage. Run a new pipeline."
+msgstr ""
+
 msgid "Job|This job could not be executed because the trigger:project value resolved to a blank value. Check that the variables or inputs used in trigger:project are set."
 msgstr ""
 
@@ -59797,8 +59821,18 @@ msgstr ""
 msgid "Organization|%{organizationName} is your organization's home. Manage settings from the sidebar. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "Organization|%{username} is the sole owner of %{count} group"
+msgid_plural "Organization|%{username} is the sole owner of %{count} groups"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Organization|* Name, URL, and admin roles can all be updated later from your Organization page."
 msgstr ""
+
+msgid "Organization|+%d more group"
+msgid_plural "Organization|+%d more groups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
 msgstr ""
@@ -59870,6 +59904,9 @@ msgid "Organization|An error occurred while adding users to the organization. Pl
 msgstr ""
 
 msgid "Organization|An error occurred while leaving the organization. Please try again."
+msgstr ""
+
+msgid "Organization|An error occurred while loading groups. Please try again."
 msgstr ""
 
 msgid "Organization|Are you sure you want to leave \"%{name}\"?"
@@ -60180,6 +60217,11 @@ msgstr ""
 
 msgid "Organization|You are confirming:"
 msgstr ""
+
+msgid "Organization|You are the sole owner of %{count} group"
+msgid_plural "Organization|You are the sole owner of %{count} groups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Organization|You can now start using your new organization."
 msgstr ""
@@ -63818,6 +63860,9 @@ msgstr ""
 msgid "PolicyStore|Every project in this group, including newly created ones"
 msgstr ""
 
+msgid "PolicyStore|Every project in this organization, including newly created ones"
+msgstr ""
+
 msgid "PolicyStore|Exclusions"
 msgstr ""
 
@@ -63920,10 +63965,19 @@ msgstr ""
 msgid "PolicyStore|Production"
 msgstr ""
 
+msgid "PolicyStore|Project created"
+msgstr ""
+
+msgid "PolicyStore|Project creation requested"
+msgstr ""
+
 msgid "PolicyStore|Project setting"
 msgstr ""
 
 msgid "PolicyStore|Project settings change requested"
+msgstr ""
+
+msgid "PolicyStore|Project transferred"
 msgstr ""
 
 msgid "PolicyStore|Projects"
@@ -64107,6 +64161,15 @@ msgid "PolicyStore|When a deployment environment is not in the required operatio
 msgstr ""
 
 msgid "PolicyStore|When a deployment to a gated environment is requested"
+msgstr ""
+
+msgid "PolicyStore|When a new project has been created"
+msgstr ""
+
+msgid "PolicyStore|When a project is about to be created, before it exists"
+msgstr ""
+
+msgid "PolicyStore|When a project moves to a different namespace"
 msgstr ""
 
 msgid "PolicyStore|When a project setting does not match the required value"
@@ -91241,6 +91304,9 @@ msgstr ""
 msgid "UserMapping|The provided spreadsheet contains duplicate email addresses or usernames."
 msgstr ""
 
+msgid "UserMapping|This import was created from a file. The source hostname was supplied by the importing user and GitLab cannot verify it."
+msgstr ""
+
 msgid "UserMapping|This limit is shared with all subgroups in the group's hierarchy."
 msgstr ""
 
@@ -98968,6 +99034,9 @@ msgid "Your review"
 msgstr ""
 
 msgid "Your review requests merged in the last 2 weeks."
+msgstr ""
+
+msgid "Your review was submitted, but the merge request was not approved: %{reason}"
 msgstr ""
 
 msgid "Your reviews you've requested changes for or commented on."

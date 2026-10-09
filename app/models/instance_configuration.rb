@@ -64,7 +64,9 @@ class InstanceConfiguration
   end
 
   def package_file_size_limits
-    Plan.all.to_h { |plan| [plan.name.capitalize, plan_file_size_limits(plan)] }
+    ::GitlabSubscriptions::SystemDefined::Plan.instance_plans.to_h do |plan|
+      [plan.name.capitalize, plan_file_size_limits(plan)]
+    end
   end
 
   def plan_file_size_limits(plan)
@@ -175,7 +177,9 @@ class InstanceConfiguration
   end
 
   def ci_cd_limits
-    Plan.all.to_h { |plan| [plan.name.capitalize, plan_ci_cd_limits(plan)] }
+    ::GitlabSubscriptions::SystemDefined::Plan.instance_plans.to_h do |plan|
+      [plan.name.capitalize, plan_ci_cd_limits(plan)]
+    end
   end
 
   def plan_ci_cd_limits(plan)

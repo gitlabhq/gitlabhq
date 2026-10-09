@@ -224,6 +224,11 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
   describe 'GET /show with namespace_id' do
     let(:namespace_id) { source_user.namespace_id }
+    let(:offline_warning) do
+      s_('UserMapping|This import was created from a file. ' \
+        'The source hostname was supplied by the importing user and GitLab cannot verify it.')
+    end
+
     let(:path) do
       namespaced_show_import_source_users_path(
         namespace_id: namespace_id,
@@ -242,6 +247,24 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
         show_invite
 
         expect(response).to have_gitlab_http_status(:success)
+      end
+
+      it 'does not show the offline transfer warning for other imports' do
+        show_invite
+
+        expect(response.body).not_to include(offline_warning)
+      end
+
+      context 'when the source user was imported through offline transfer' do
+        before do
+          source_user.update!(import_type: Import::SOURCE_OFFLINE_TRANSFER.to_s)
+        end
+
+        it 'shows the unverified source hostname warning' do
+          show_invite
+
+          expect(response.body).to include(offline_warning)
+        end
       end
 
       it_behaves_like 'it notifies about unavailable reassignments'

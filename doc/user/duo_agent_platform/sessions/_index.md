@@ -45,6 +45,32 @@ To view sessions you've triggered:
 1. Select any session to view more details.
 1. Optional. Filter the details to show all logs or a concise subset only.
 
+### Triage sessions in the session inbox
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/616493) in GitLab 19.4 as an
+  [experiment](../../../policy/development_stages_support.md#experiment)
+  [with a feature flag](../../../administration/feature_flags/_index.md) named
+  `duo_panel_session_inbox`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/621748) in GitLab 19.5 to also
+  require the GitLab Duo experiment and beta features setting.
+
+{{< /history >}}
+
+The session list in the right sidebar has two tabs: **Needs a decision** and **All**.
+**Needs a decision** shows sessions that wait for you to approve or respond to an agent action.
+**All** shows every session you've triggered.
+
+To see the tabs, [GitLab Duo experiment and beta features](../../gitlab_duo/turn_on_off.md)
+must be turned on. Without it, the sidebar shows a single list of sessions.
+
 ## GitLab Duo Agentic Chat sessions
 
 Because chats are interactive, they require a clearer separation in the UI.

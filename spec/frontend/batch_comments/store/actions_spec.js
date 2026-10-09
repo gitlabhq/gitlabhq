@@ -192,6 +192,15 @@ describe('Batch comments store actions', () => {
       });
     });
 
+    it('resolves with the response body', async () => {
+      mock.onAny().reply(HTTP_STATUS_OK, { review_id: 5, reviewer_state_error: 'error' });
+
+      await expect(store.publishReview()).resolves.toEqual({
+        review_id: 5,
+        reviewer_state_error: 'error',
+      });
+    });
+
     it('calls service with notes data', () => {
       mock.onAny().reply(HTTP_STATUS_OK);
       jest.spyOn(axios, 'post');
@@ -223,6 +232,21 @@ describe('Batch comments store actions', () => {
       expect(axios.post.mock.calls[0]).toEqual(['http://test.host', { ids: [1] }]);
       expect(axios.post.mock.calls[1]).toEqual(['http://test.host', { ids: [2] }]);
       expect(store[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]).toHaveBeenCalled();
+    });
+
+    it('resolves with the last batch response body', async () => {
+      mock
+        .onPost()
+        .replyOnce(HTTP_STATUS_OK, { review_id: 5 })
+        .onPost()
+        .replyOnce(HTTP_STATUS_OK, { review_id: 5, reviewer_state_error: 'error' });
+
+      store.$patch({ drafts: [{ id: 1 }, { id: 2 }] });
+
+      await expect(store.publishReviewInBatches({}, 1)).resolves.toEqual({
+        review_id: 5,
+        reviewer_state_error: 'error',
+      });
     });
 
     it('publishes every batch into one review when improvedReviewEmail is enabled', async () => {

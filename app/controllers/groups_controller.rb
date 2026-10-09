@@ -109,7 +109,7 @@ class GroupsController < Groups::ApplicationController
                  )
                end
 
-      redirect_to @group, notice: notice
+      redirect_to group_path(@group, organization_path: nil), notice: notice
     else
       render action: "new"
     end

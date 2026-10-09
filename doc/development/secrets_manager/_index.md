@@ -56,8 +56,6 @@ All checks go through `SecretsManagement::Availability` at `ee/lib/secrets_manag
 The gates are combined with AND.
 Turning off enrollment makes Secrets Manager unavailable right away.
 CI jobs picked up after that get no secrets, and jobs that are already running keep the secrets they received.
-During rollout, feature flags also control availability, one for projects and one for groups.
-The flags are planned for removal.
 
 Entitlement is a separate, additional gate based on trial and billing status.
 For details, see [Entitlement states](fulfillment.md#entitlement-states).

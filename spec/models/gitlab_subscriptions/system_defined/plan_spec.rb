@@ -73,6 +73,12 @@ RSpec.describe GitlabSubscriptions::SystemDefined::Plan, feature_category: :plan
     end
   end
 
+  describe '.instance_plans' do
+    it 'returns only the default plan' do
+      expect(described_class.instance_plans).to eq([described_class.default])
+    end
+  end
+
   describe '#default?' do
     it 'is true for the default plan' do
       expect(described_class.default.default?).to be(true)

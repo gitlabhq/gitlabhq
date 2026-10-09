@@ -10278,7 +10278,7 @@ export const workItemMetadataProviderResponse = {
       },
       userPermissions: {
         createWorkItem: true,
-        adminLabel: true,
+        createLabel: true,
         __typename: 'NamespacePermissions',
       },
       __typename: 'Namespace',
@@ -10451,7 +10451,7 @@ export const mockMetadataQueryResponse = {
       },
       userPermissions: {
         __typename: 'NamespaceUserPermissions',
-        adminLabel: true,
+        createLabel: true,
         createProjects: true,
         bulkAdminEpic: true,
         adminIssue: true,

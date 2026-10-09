@@ -192,6 +192,10 @@ module Import
       accepted_status? ? reassign_to_user_id : placeholder_user_id
     end
 
+    def offline_transfer?
+      import_type == Import::SOURCE_OFFLINE_TRANSFER.to_s
+    end
+
     def accepted_status?
       STATUSES.slice(*ACCEPTED_STATUSES).value?(status)
     end

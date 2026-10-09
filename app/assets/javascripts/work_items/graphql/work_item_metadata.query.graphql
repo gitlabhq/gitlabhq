@@ -13,7 +13,7 @@ query workItemMetadata($fullPath: ID!) {
     }
     userPermissions {
       createWorkItem
-      adminLabel
+      createLabel @gl_introduced(version: "19.5.0")
       createProjects
       adminIssue
       adminProject

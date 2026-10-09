@@ -6,7 +6,7 @@ module Types
       class Base < BasePermissionType
         graphql_name 'NamespacePermissions'
 
-        abilities :admin_label, :admin_issue, :create_work_item,
+        abilities :admin_label, :create_label, :admin_issue, :create_work_item,
           :import_issues, :create_projects, :import_work_items, :admin_project, :create_saved_view
 
         ability_field :read_namespace

@@ -256,7 +256,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
       ).to include(
         {
           'organization_gid' => "gid://gitlab/Organizations::Organization/#{organization.id}",
-          'new_group_path' => "/o/#{organization.path}/-/groups/new",
+          'new_group_path' => "/groups/new",
           'new_project_path' => '/projects/new',
           'organization_groups_projects_sort' => 'name_asc',
           'organization_groups_projects_display' => 'groups',

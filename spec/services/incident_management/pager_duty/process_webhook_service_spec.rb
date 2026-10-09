@@ -91,6 +91,51 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessWebhookService, feature_cat
 
         it_behaves_like 'does not process incidents'
       end
+
+      context 'when token is nil' do
+        let(:token) { nil }
+
+        it 'responds with Unauthorized' do
+          result = execute
+
+          expect(result).to be_error
+          expect(result.http_status).to eq(:unauthorized)
+        end
+
+        it_behaves_like 'does not process incidents'
+      end
+
+      context 'when token is not a string' do
+        let(:token) { 123 }
+
+        it 'responds with Unauthorized' do
+          result = execute
+
+          expect(result).to be_error
+          expect(result.http_status).to eq(:unauthorized)
+        end
+
+        it_behaves_like 'does not process incidents'
+      end
+    end
+
+    context 'when PagerDuty token is nil and a token is supplied' do
+      let_it_be_with_reload(:incident_management_setting) { create(:project_incident_management_setting, project: project, pagerduty_active: false) }
+
+      let(:token) { 'some-token' }
+
+      before do
+        incident_management_setting.update_column(:pagerduty_active, true)
+      end
+
+      it 'responds with Unauthorized' do
+        result = execute
+
+        expect(result).to be_error
+        expect(result.http_status).to eq(:unauthorized)
+      end
+
+      it_behaves_like 'does not process incidents'
     end
 
     context 'when both tokens are nil' do

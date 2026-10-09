@@ -112,7 +112,7 @@ module Organizations
     def shared_groups_and_projects_app_data(organization)
       {
         organization_gid: organization.to_global_id,
-        new_group_path: new_groups_organization_path(organization),
+        new_group_path: new_group_path,
         new_project_path: new_project_path,
         can_create_group: can?(current_user, :create_group, organization),
         can_create_project: current_user&.can_create_project?,

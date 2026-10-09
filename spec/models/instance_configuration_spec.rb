@@ -167,12 +167,9 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
       end
 
       describe '#package_file_size_limits' do
-        let_it_be(:premium_plan) { create(:plan, name: 'premium') }
-        let_it_be(:ultimate_plan) { create(:plan, name: 'ultimate') }
-
         before do
           create(:plan_limits,
-            plan: premium_plan,
+            :default_plan,
             conan_max_file_size: 1001,
             helm_max_file_size: 1008,
             maven_max_file_size: 1002,
@@ -182,34 +179,19 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
             terraform_module_max_file_size: 1006,
             generic_packages_max_file_size: 1007
           )
-          create(:plan_limits,
-            plan: ultimate_plan,
-            conan_max_file_size: 1101,
-            helm_max_file_size: 1108,
-            maven_max_file_size: 1102,
-            npm_max_file_size: 1103,
-            nuget_max_file_size: 1104,
-            pypi_max_file_size: 1105,
-            terraform_module_max_file_size: 1106,
-            generic_packages_max_file_size: 1107
-          )
         end
 
         it 'returns package file size limits' do
           file_size_limits = subject.settings[:package_file_size_limits]
 
-          expect(file_size_limits[:Premium]).to eq({ conan: 1001, helm: 1008, maven: 1002, npm: 1003, nuget: 1004, pypi: 1005, terraform_module: 1006, generic: 1007 })
-          expect(file_size_limits[:Ultimate]).to eq({ conan: 1101, helm: 1108, maven: 1102, npm: 1103, nuget: 1104, pypi: 1105, terraform_module: 1106, generic: 1107 })
+          expect(file_size_limits[:Default]).to eq({ conan: 1001, helm: 1008, maven: 1002, npm: 1003, nuget: 1004, pypi: 1005, terraform_module: 1006, generic: 1007 })
         end
       end
 
       describe '#ci_cd_limits' do
-        let_it_be(:premium) { create(:plan, name: 'premium') }
-        let_it_be(:ultimate) { create(:plan, name: 'ultimate') }
-
         before do
           create(:plan_limits,
-            plan: premium,
+            :default_plan,
             ci_pipeline_size: 1001,
             ci_active_jobs: 1002,
             ci_project_subscriptions: 1004,
@@ -217,23 +199,13 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
             ci_needs_size_limit: 1006,
             ci_registered_group_runners: 1007,
             ci_registered_project_runners: 1008
-          )
-          create(:plan_limits,
-            plan: ultimate,
-            ci_pipeline_size: 1101,
-            ci_active_jobs: 1102,
-            ci_project_subscriptions: 1104,
-            ci_pipeline_schedules: 1105,
-            ci_needs_size_limit: 1106,
-            ci_registered_group_runners: 1107,
-            ci_registered_project_runners: 1108
           )
         end
 
         it 'returns CI/CD limits' do
           ci_cd_size_limits = subject.settings[:ci_cd_limits]
 
-          expect(ci_cd_size_limits[:Premium]).to eq({
+          expect(ci_cd_size_limits[:Default]).to eq({
             ci_active_jobs: 1002,
             ci_needs_size_limit: 1006,
             ci_pipeline_schedules: 1005,
@@ -241,15 +213,6 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
             ci_project_subscriptions: 1004,
             ci_registered_group_runners: 1007,
             ci_registered_project_runners: 1008
-          })
-          expect(ci_cd_size_limits[:Ultimate]).to eq({
-            ci_active_jobs: 1102,
-            ci_needs_size_limit: 1106,
-            ci_pipeline_schedules: 1105,
-            ci_pipeline_size: 1101,
-            ci_project_subscriptions: 1104,
-            ci_registered_group_runners: 1107,
-            ci_registered_project_runners: 1108
           })
         end
       end

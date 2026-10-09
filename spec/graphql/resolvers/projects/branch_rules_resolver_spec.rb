@@ -16,7 +16,6 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
 
   let(:max_page_size) { 100 }
   let(:default_page_size) { 20 }
-  let(:schema) { GitlabSchema }
 
   before_all do
     project.add_maintainer(current_user)
@@ -44,7 +43,7 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
         calls_gitaly: true
       )
 
-      resolve_field(field, project, args: arguments, object_type: resolver_parent, schema: schema)
+      resolve_field(field, project, args: arguments, current_user: current_user, object_type: resolver_parent)
     end
 
     it 'returns an externally paginated array connection' do
@@ -97,7 +96,7 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
           calls_gitaly: true
         )
 
-        resolve_field(field, project, args: { first: 2 }, object_type: resolver_parent, schema: schema)
+        resolve_field(field, project, args: { first: 2 }, current_user: current_user, object_type: resolver_parent)
       end
 
       let(:after) { first_page.end_cursor }

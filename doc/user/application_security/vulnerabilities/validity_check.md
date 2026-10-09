@@ -105,6 +105,7 @@ Validity checks support the following secret types:
 - AWS IAM long-term access key IDs (beginning with `AKIA`)
 - Datadog API keys
 - EasyPost API tokens
+- EasyPost test API tokens
 - GitHub App installation tokens
 - GitHub fine-grained personal access tokens
 - GitHub OAuth access tokens

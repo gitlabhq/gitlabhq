@@ -48,12 +48,14 @@ Add metrics reports to your CI/CD pipeline to track custom metrics in merge requ
 
 Prerequisites:
 
-- The metrics file must use the [OpenMetrics](https://prometheus.io/docs/instrumenting/exposition_formats/#openmetrics-text-format) text format.
+- The metrics file must be a text file with one metric per line, in the format `<name> <value>`.
+  The [OpenMetrics](https://prometheus.io/docs/instrumenting/exposition_formats/#openmetrics-text-format)
+  text format meets this requirement.
 
 To configure metrics reports:
 
 1. In your `.gitlab-ci.yml` file, add a job that generates a metrics report.
-1. Add a script to the job that generates metrics in OpenMetrics format.
+1. Add a script to the job that generates metrics, with one `<name> <value>` per line.
 1. Configure the job to upload the metrics file with [`artifacts:reports:metrics`](../yaml/artifacts_reports.md#artifactsreportsmetrics).
 
 For example:

@@ -436,6 +436,62 @@ describe('ReviewDrawer', () => {
     },
   );
 
+  it('disables the approve option when the merge request is merged', async () => {
+    useNotes().noteableData = { ...useNotes().noteableData, state: 'merged' };
+    useBatchComments().drawerOpened = true;
+
+    createComponent({ canApprove: true });
+
+    await findPlaceholderField().vm.$emit('focus');
+
+    await waitForPromises();
+
+    expect(wrapper.find('.custom-control-input[value="approved"]').attributes('disabled')).toBe(
+      'disabled',
+    );
+  });
+
+  describe('when the review was published but the approval was refused', () => {
+    beforeEach(async () => {
+      jest.spyOn(diffsEventHub, '$emit');
+      window.mrTabs = { tabShown: jest.fn() };
+      useBatchComments().drafts = [];
+      useBatchComments().drawerOpened = true;
+      useBatchComments().publishReview.mockResolvedValue({
+        review_id: 1,
+        reviewer_state_error: 'Merge request is already merged',
+      });
+
+      createComponent();
+
+      await waitForPromises();
+      await wrapper.find('.custom-control-input[value="approved"]').trigger('change');
+
+      submitDrawerForm();
+
+      await waitForPromises();
+    });
+
+    it('shows a warning', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'Your review was submitted, but the merge request was not approved: Merge request is already merged',
+        variant: 'warning',
+      });
+    });
+
+    it('does not emit the approval event', () => {
+      expect(diffsEventHub.$emit).not.toHaveBeenCalledWith(
+        'mr:reviewDrawer:submit:approval',
+        expect.anything(),
+      );
+    });
+
+    it('does not switch to the overview tab', () => {
+      expect(window.mrTabs.tabShown).not.toHaveBeenCalled();
+    });
+  });
+
   describe('when discarding a review', () => {
     beforeEach(() => {
       useBatchComments().drawerOpened = true;

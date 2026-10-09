@@ -71,12 +71,15 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       merge_request_activity_counter.track_submit_review_comment(user: current_user)
     end
 
-    update_reviewer_state if reviewer_state_params[:reviewer_state]
+    reviewer_state_error = update_reviewer_state if reviewer_state_params[:reviewer_state]
 
     if result[:status] == :success
       submit_experience.complete
 
-      render json: { review_id: result[:review_id] }
+      payload = { review_id: result[:review_id] }
+      payload[:reviewer_state_error] = reviewer_state_error if reviewer_state_error
+
+      render json: payload
     else
       submit_experience.error!(result[:message]).complete
       submit_and_notify_experience.error!(result[:message]).complete if submit_and_notify_experience
@@ -255,11 +258,14 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
   end
 
+  # @return [String, nil] why the approval was refused, so the review can still be published
   def update_reviewer_state
     if reviewer_state_params[:reviewer_state] === 'approved'
-      ::MergeRequests::ApprovalService
+      approval = ::MergeRequests::ApprovalService
         .new(project: @project, current_user: current_user, params: approve_params)
         .execute(merge_request)
+
+      return approval.message if approval.error? && approval.reason != :already_approved
 
       merge_request_activity_counter.track_submit_review_approve(user: current_user)
     else
@@ -267,6 +273,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
         .new(project: @project, current_user: current_user)
         .execute(merge_request, reviewer_state_params[:reviewer_state])
     end
+
+    nil
   end
 end
 

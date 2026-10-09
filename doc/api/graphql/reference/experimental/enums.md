@@ -1538,6 +1538,7 @@ Values for sorting CI/CD job analytics.
 | `NO_UPDATES_CANCELING` | A job that failed due to no updates canceling. |
 | `NO_UPDATES_RUNNING` | A job that failed due to no updates running. |
 | `PIPELINE_LOOP_DETECTED` | A job that failed due to pipeline loop detected. |
+| `PIPELINE_VARIABLES_FILE_MISSING` | A job that failed due to pipeline variables file missing. |
 | `PROJECT_DELETED` | A job that failed due to project deleted. |
 | `PROTECTED_ENVIRONMENT_FAILURE` | A job that failed due to protected environment failure. |
 | `REACHED_DOWNSTREAM_PIPELINE_TRIGGER_RATE_LIMIT` | A job that failed due to reached downstream pipeline trigger rate limit. |

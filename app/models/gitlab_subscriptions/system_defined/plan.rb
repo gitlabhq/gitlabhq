@@ -44,6 +44,11 @@ module GitlabSubscriptions
           DEFAULT_PLANS
         end
 
+        # Outside GitLab.com every namespace is on the default plan.
+        def instance_plans
+          [default]
+        end
+
         def names_for_uids(uids)
           where(id: uids).map(&:name)
         end

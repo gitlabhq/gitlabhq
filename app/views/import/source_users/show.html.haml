@@ -34,6 +34,9 @@
         = safe_format(s_('UserMapping|Imported from: %{source_hostname}'), source_hostname: source_hostname)
         %br
         = safe_format(s_('UserMapping|Original user: %{source_name} (%{source_username})'), source_name: source_name, source_username: source_username)
+      - if @source_user.offline_transfer?
+        %p.gl-mb-5
+          = s_('UserMapping|This import was created from a file. The source hostname was supplied by the importing user and GitLab cannot verify it.')
       %h5
         = s_('UserMapping|Reassignment details:')
       %p

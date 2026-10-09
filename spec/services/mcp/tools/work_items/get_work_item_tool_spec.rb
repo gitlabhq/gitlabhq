@@ -26,6 +26,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
         expect(tool.build_variables).to eq(
           id: work_item.to_global_id.to_s,
           includeNotes: false,
+          includeDiscussions: false,
           includeRelatedMergeRequests: false,
           relatedMergeRequestsFirst: 20
         )
@@ -49,6 +50,48 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
         expect(tool.build_variables).to include(
           includeNotes: true, includeRelatedMergeRequests: false, notesFirst: 100
         )
+      end
+    end
+
+    context 'with the discussions facet' do
+      let(:arguments) do
+        { project_id: project.id.to_s, work_item_iid: work_item.iid, include: %w[discussions] }
+      end
+
+      it 'enables only the discussions facet with the page default', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables).to include(
+          includeNotes: false, includeDiscussions: true, includeRelatedMergeRequests: false, discussionsFirst: 20
+        )
+        expect(variables).not_to include(:discussionsAfter, :discussionsFilter)
+      end
+
+      context 'with pagination and a filter' do
+        let(:arguments) do
+          super().merge(discussions_first: 5, discussions_after: 'abc', discussions_filter: 'only_comments')
+        end
+
+        it 'passes them to the query' do
+          expect(tool.build_variables).to include(
+            discussionsFirst: 5, discussionsAfter: 'abc', discussionsFilter: 'ONLY_COMMENTS'
+          )
+        end
+      end
+    end
+
+    context 'with discussions parameters but without the discussions facet' do
+      let(:arguments) do
+        {
+          project_id: project.id.to_s,
+          work_item_iid: work_item.iid,
+          discussions_first: 5,
+          discussions_filter: 'only_comments'
+        }
+      end
+
+      it 'ignores them' do
+        expect(tool.build_variables).not_to include(:discussionsFirst, :discussionsAfter, :discussionsFilter)
       end
     end
 
@@ -144,6 +187,111 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
 
         notes_widget = result[:structuredContent]['widgets'].find { |widget| widget['type'] == 'NOTES' }
         expect(notes_widget['notes']['nodes'].pluck('body')).to include(system_note.note)
+      end
+    end
+
+    context 'with the discussions facet' do
+      let_it_be(:discussion_work_item) { create(:work_item, project: project) }
+      let_it_be(:thread_start) do
+        create(:discussion_note_on_work_item, project: project, noteable: discussion_work_item, note: 'Thread start')
+      end
+
+      let_it_be(:thread_reply) do
+        create(:discussion_note_on_work_item, project: project, noteable: discussion_work_item,
+          note: 'Thread reply', in_reply_to: thread_start)
+      end
+
+      let_it_be(:resolved_thread) do
+        create(:discussion_note_on_work_item, :resolved, project: project, noteable: discussion_work_item,
+          note: 'Resolved thread')
+      end
+
+      let_it_be(:single_note) do
+        create(:note, project: project, noteable: discussion_work_item, note: 'A single comment')
+      end
+
+      let_it_be(:system_note) do
+        create(:note, :system, project: project, noteable: discussion_work_item, note: 'changed the description')
+      end
+
+      let_it_be(:internal_note) do
+        create(:note, :confidential, project: project, noteable: discussion_work_item, note: 'An internal comment')
+      end
+
+      let(:arguments) do
+        { project_id: project.id.to_s, work_item_iid: discussion_work_item.iid, include: %w[discussions] }
+      end
+
+      def discussions_connection
+        result[:structuredContent]['widgets'].find { |widget| widget['type'] == 'NOTES' }['discussions']
+      end
+
+      def discussions_by_first_note
+        discussions_connection['nodes'].index_by { |discussion| discussion['notes']['nodes'].first['body'] }
+      end
+
+      def note_bodies
+        discussions_connection['nodes'].flat_map { |discussion| discussion['notes']['nodes'].pluck('body') }
+      end
+
+      it 'returns each thread with its resolution state and its notes', :aggregate_failures do
+        expect(result[:isError]).to be(false)
+        expect(discussions_connection['pageInfo']).to include('endCursor', 'hasNextPage')
+
+        threads = discussions_by_first_note
+
+        expect(threads['Thread start']).to include('id' => be_present, 'resolvable' => true, 'resolved' => false)
+        expect(threads['Thread start']['notes']['nodes'].pluck('body')).to eq(['Thread start', 'Thread reply'])
+        expect(threads['Resolved thread']).to include('resolvable' => true, 'resolved' => true)
+        expect(threads['A single comment']['notes']['nodes'].size).to eq(1)
+        expect(threads['changed the description']).to include('resolvable' => false)
+        expect(threads['changed the description']['notes']['nodes'].first['system']).to be(true)
+        expect(threads['An internal comment']['notes']['nodes'].first['internal']).to be(true)
+      end
+
+      it 'does not return the notes facet' do
+        notes_widget = result[:structuredContent]['widgets'].find { |widget| widget['type'] == 'NOTES' }
+
+        expect(notes_widget).not_to have_key('notes')
+      end
+
+      context 'with discussions_filter only_comments' do
+        let(:arguments) { super().merge(discussions_filter: 'only_comments') }
+
+        it 'leaves out system notes', :aggregate_failures do
+          expect(note_bodies).to include('Thread start', 'A single comment')
+          expect(note_bodies).not_to include('changed the description')
+        end
+      end
+
+      context 'with discussions_filter only_activity' do
+        let(:arguments) { super().merge(discussions_filter: 'only_activity') }
+
+        it 'returns only system notes' do
+          expect(note_bodies).to contain_exactly('changed the description')
+        end
+      end
+
+      context 'when the caller cannot read internal notes' do
+        let_it_be(:non_member) { create(:user) }
+
+        let(:tool) { described_class.new(current_user: non_member, params: arguments, version: '0.1.0') }
+
+        it 'leaves out internal notes', :aggregate_failures do
+          expect(note_bodies).to include('Thread start', 'A single comment')
+          expect(note_bodies).not_to include('An internal comment')
+        end
+      end
+
+      context 'when the work item has no notes' do
+        let(:arguments) do
+          { project_id: project.id.to_s, work_item_iid: work_item.iid, include: %w[discussions] }
+        end
+
+        it 'returns an empty connection', :aggregate_failures do
+          expect(discussions_connection['nodes']).to be_empty
+          expect(discussions_connection['pageInfo']['hasNextPage']).to be(false)
+        end
       end
     end
 

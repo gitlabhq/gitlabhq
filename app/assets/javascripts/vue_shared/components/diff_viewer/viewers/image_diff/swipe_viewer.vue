@@ -128,7 +128,7 @@ export default {
         ref="swipeOldImg"
         :render-info="false"
         :path="oldPath"
-        class="frame deleted"
+        class="frame deleted gl-text-left"
         :encode-path="encodePath"
         @img-loaded="swipeOldImgLoaded"
       />
@@ -145,8 +145,9 @@ export default {
           :path="newPath"
           :style="{
             width: swipeMaxPixelWidth,
+            height: swipeMaxPixelHeight,
           }"
-          class="frame added"
+          class="frame added gl-text-left"
           :encode-path="encodePath"
           @img-loaded="swipeNewImgLoaded"
         >

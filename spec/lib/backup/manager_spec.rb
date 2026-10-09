@@ -20,7 +20,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
   let(:backup_fixture_version) { '17.0.0-pre' }
   let(:backup_fixture) { fixtures_path.join(backup_fixture_filename) }
 
-  subject { described_class.new(progress, backup_tasks: backup_tasks) }
+  subject(:manager) { described_class.new(progress, backup_tasks: backup_tasks) }
 
   before do
     # Rspec fails with `uninitialized constant RSpec::Support::Differ` when it
@@ -293,6 +293,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
     before do
       stub_env('INCREMENTAL', incremental_env)
+      expect(Sys::Filesystem).not_to receive(:stat)
       allow(ApplicationRecord.connection).to receive(:reconnect!)
     end
 
@@ -1179,6 +1180,10 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     end
 
     before do
+      stub_env('BACKUP_SKIP_STORAGE_CHECK', nil)
+      allow(Sys::Filesystem).to receive(:stat).with(backup_path.to_s)
+        .and_return(instance_double(Sys::Filesystem::Stat, bytes_available: 2**50))
+
       Rake.application.rake_require 'tasks/gitlab/shell'
       Rake.application.rake_require 'tasks/cache'
 
@@ -1197,6 +1202,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       it 'fails the operation and prints an error' do
+        expect(Sys::Filesystem).not_to receive(:stat)
         expect { subject.restore }.to raise_error SystemExit
         expect(progress.string).to include('No backups found')
       end
@@ -1219,6 +1225,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       it 'fails the operation and prints an error' do
+        expect(Sys::Filesystem).not_to receive(:stat)
         expect { subject.restore }.to raise_error SystemExit
         expect(progress.string).to include('Found more than one backup')
       end
@@ -1237,6 +1244,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       it 'fails the operation and prints an error' do
+        expect(Sys::Filesystem).not_to receive(:stat)
         expect { subject.restore }.to raise_error SystemExit
         expect(File).to have_received(:exist?).with('wrong_gitlab_backup.tar')
         expect(progress.string).to include('The backup file wrong_gitlab_backup.tar does not exist')
@@ -1248,6 +1256,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       let(:backup_id) { "1451606400_2016_01_01_1.2.3" }
 
       before do
+        File.write(backup_path.join('1451606400_2016_01_01_1.2.3_gitlab_backup.tar'), 'backup')
         allow(Dir).to receive(:glob).and_return(
           [
             '1451606400_2016_01_01_1.2.3_gitlab_backup.tar'
@@ -1265,6 +1274,61 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
         expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
         expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
+      end
+
+      shared_examples 'stops before restoring data' do
+        it 'exits without unpacking, restoring components, or cleaning files', :aggregate_failures do
+          expect(Kernel).not_to receive(:system)
+          expect(target1).not_to receive(:restore)
+          expect(target2).not_to receive(:restore)
+          expect(FileUtils).not_to receive(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).not_to receive(:rm_rf).with(backup_path.join('tmp'))
+          expect(Rake::Task['gitlab:shell:setup']).not_to receive(:invoke)
+          expect(Rake::Task['cache:clear']).not_to receive(:invoke)
+
+          expect { manager.restore }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+        end
+      end
+
+      context 'with insufficient disk space' do
+        before do
+          allow(Sys::Filesystem).to receive(:stat)
+            .and_return(instance_double(Sys::Filesystem::Stat, bytes_available: 0))
+        end
+
+        it_behaves_like 'stops before restoring data'
+
+        context 'with confirmation bypasses and an incremental backup' do
+          before do
+            stub_env('FORCE', 'true')
+            stub_env('GITLAB_ASSUME_YES', '1')
+            stub_env('INCREMENTAL', 'true')
+          end
+
+          it_behaves_like 'stops before restoring data'
+        end
+
+        context 'with an explicit storage check bypass' do
+          before do
+            stub_env('BACKUP_SKIP_STORAGE_CHECK', 'true')
+          end
+
+          it 'restores the components', :aggregate_failures do
+            expect(Sys::Filesystem).not_to receive(:stat)
+            expect(target1).to receive(:restore)
+            expect(target2).to receive(:restore)
+
+            manager.restore
+          end
+        end
+      end
+
+      context 'when disk space cannot be checked' do
+        before do
+          allow(Sys::Filesystem).to receive(:stat).and_raise(Sys::Filesystem::Error, 'stat failed')
+        end
+
+        it_behaves_like 'stops before restoring data'
       end
 
       context 'backup information mismatches' do
@@ -1330,6 +1394,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
       it 'selects the non-tarred backup to restore from' do
         expect(Kernel).not_to receive(:system)
+        expect(Sys::Filesystem).not_to receive(:stat)
 
         subject.restore
 
@@ -1366,6 +1431,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     let(:backup_id) { '1714155640_2024_04_26_17.0.0-pre' }
 
     before do
+      expect(Sys::Filesystem).not_to receive(:stat)
       FileUtils.cp(backup_fixture, backup_path)
     end
 

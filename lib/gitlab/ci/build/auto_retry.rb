@@ -12,7 +12,8 @@ class Gitlab::Ci::Build::AutoRetry
     no_matching_runner: 0,
     missing_dependency_failure: 0,
     forward_deployment_failure: 0,
-    environment_creation_failure: 0
+    environment_creation_failure: 0,
+    pipeline_variables_file_missing: 0
   }.freeze
 
   def initialize(build)

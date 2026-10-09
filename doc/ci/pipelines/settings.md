@@ -44,8 +44,9 @@ To change the visibility of your pipelines and related features:
      and the **CI/CD** menu items are visible only to project members (Reporter or higher).
      Other users, including guest users, can only view the status of pipelines and jobs, and only
      when viewing merge requests or commits.
-   - For **Internal** projects, pipelines are visible to all authenticated users except [external users](../../administration/external_users.md).
-     Related features are visible only to project members (Reporter or higher).
+   - For **Internal** projects, pipelines and related features are visible only to project members (Reporter or higher).
+     Other authenticated users, except [external users](../../administration/external_users.md),
+     can only view the status of pipelines and jobs, and only when viewing merge requests or commits.
    - For **Private** projects, pipelines and related features are visible to project members (Reporter or higher) only.
 
 ### Change pipeline visibility for non-project members in public projects

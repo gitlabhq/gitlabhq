@@ -1454,12 +1454,14 @@ Examples:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605882) in GitLab 19.4.
+- `discussions` facet [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/597686) in GitLab 19.5.
 
 {{< /history >}}
 
 Retrieves a single work item (issue, epic, task, incident, objective, or key result) with its
-type, dates, assignees, labels, milestone, and parent. Optionally includes its notes or the
-merge requests related to it. Widgets the work item type does not support are omitted.
+type, dates, assignees, labels, milestone, and parent. Optionally includes its notes, its
+discussions, or the merge requests related to it. Widgets the work item type does not support
+are omitted.
 
 | Parameter                       | Type    | Required | Description |
 |---------------------------------|---------|----------|-------------|
@@ -1467,19 +1469,33 @@ merge requests related to it. Widgets the work item type does not support are om
 | `group_id`                      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`                    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid`                 | integer | No       | Internal ID of the work item. Required if `url` is missing. |
-| `include`                       | array   | No       | Associated data to return. One of `notes` or `related_merge_requests`, one facet per call. For the newest notes, use `notes_last` without `notes_first` or `notes_after`. |
+| `include`                       | array   | No       | Associated data to return. One of `notes`, `discussions`, or `related_merge_requests`, one facet per call. For the newest notes, use `notes_last` without `notes_first` or `notes_after`. |
 | `notes_first`                   | integer | No       | Number of notes to return after the cursor (forward pagination). Default 100, maximum 100. |
 | `notes_after`                   | string  | No       | Cursor for forward pagination of notes. Use `pageInfo.endCursor` from a previous response. |
 | `notes_last`                    | integer | No       | Number of notes to return before the cursor (backward pagination). Default 100, maximum 100. |
 | `notes_before`                  | string  | No       | Cursor for backward pagination of notes. Use `pageInfo.startCursor` from a previous response. |
+| `discussions_first`             | integer | No       | Number of discussions to return after the cursor. Default 20, maximum 100. |
+| `discussions_after`             | string  | No       | Cursor for forward pagination of discussions. Use `pageInfo.endCursor` from a previous response. |
+| `discussions_filter`            | string  | No       | Which discussions to return: `all_notes` (default), `only_comments` to leave out system notes, or `only_activity` for system notes only. |
 | `related_merge_requests_first`  | integer | No       | Number of related merge requests to return. Default 20, maximum 100. |
 | `related_merge_requests_after`  | string  | No       | Cursor for forward pagination of related merge requests. |
 | `mr_page_size`                  | integer | No       | Deprecated: use `related_merge_requests_first` instead. |
 | `mr_pagination_cursor`          | string  | No       | Deprecated: use `related_merge_requests_after` instead. |
 
 The `notes` facet returns up to 100 notes per call and paginates in both directions with
-the `notes_*` parameters. The `related_merge_requests` facet is empty for group-level work
-items such as epics.
+the `notes_*` parameters. Each note includes `discussion.id`, the ID of the thread it belongs to,
+so you can group notes by thread.
+
+Use `discussions` for thread structure and resolution state,
+and `notes` for a flat chronological history.
+
+The `discussions` facet returns the threads on the work item. Each discussion includes its
+`resolvable` and `resolved` state and its notes, so you can find the threads that are still
+unresolved. An unresolved thread has `resolvable` set to `true` and `resolved` set to `false`.
+It paginates forward only with the `discussions_*` parameters, and a discussion
+is never split across pages.
+
+The `related_merge_requests` facet is empty for group work items such as epics.
 
 Example:
 

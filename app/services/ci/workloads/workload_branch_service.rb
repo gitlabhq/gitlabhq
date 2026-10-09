@@ -10,6 +10,8 @@ module Ci
       end
 
       def execute
+        return repository_empty_response if @project.empty_repo?
+
         workload_ref = "workloads/#{SecureRandom.hex[0..10]}"
         source_ref = @project.repository.branch_exists?(@source_branch) ? @source_branch : default_branch
         create_internal_refs(source_ref, workload_ref)
@@ -19,6 +21,10 @@ module Ci
       end
 
       private
+
+      def repository_empty_response
+        ServiceResponse.error(message: 'Repository is empty', reason: :repository_empty)
+      end
 
       def create_internal_refs(source_ref, workload_ref)
         source_sha = @project.repository.commit(source_ref)&.sha

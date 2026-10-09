@@ -10,8 +10,8 @@ import {
   GlFormInput,
   GlForm,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
-import { createAlert } from '~/alert';
+import { __, sprintf } from '~/locale';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { useBatchComments } from '~/batch_comments/store';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
@@ -29,6 +29,7 @@ import { updateText } from '~/lib/utils/text_markdown';
 import { useNotes } from '~/notes/store/legacy_notes';
 import diffsEventHub from '~/diffs/event_hub';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { STATUS_MERGED } from '~/issues/constants';
 import { EVT_REVIEW_DRAWER_APPROVED } from '../../diffs/constants';
 import reviewDrawerQuery from '../queries/review_drawer.query.graphql';
 
@@ -105,6 +106,7 @@ export default {
       'getNotesData',
       'getCurrentUserLastNote',
       'getUserData',
+      'openState',
     ]),
     getDrawerHeaderHeight() {
       if (!this.drawerOpened) return '0';
@@ -172,7 +174,7 @@ export default {
             </p>`,
           ].join('<br />'),
           value: REVIEW_STATES.APPROVED,
-          disabled: !this.userPermissions.canApprove,
+          disabled: !this.userPermissions.canApprove || this.openState === STATUS_MERGED,
         },
         {
           html: [
@@ -213,10 +215,21 @@ export default {
       try {
         const { note, reviewer_state: reviewerState } = this.noteData;
 
-        if (this.draftsCount > 0) {
-          await this.publishReviewInBatches(this.noteData);
-        } else {
-          await this.publishReview({ ...this.noteData });
+        const response =
+          this.draftsCount > 0
+            ? await this.publishReviewInBatches(this.noteData)
+            : await this.publishReview({ ...this.noteData });
+
+        const approvalRefused = Boolean(response?.reviewer_state_error);
+
+        if (approvalRefused) {
+          createAlert({
+            message: sprintf(
+              __('Your review was submitted, but the merge request was not approved: %{reason}'),
+              { reason: response.reviewer_state_error },
+            ),
+            variant: VARIANT_WARNING,
+          });
         }
 
         markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
@@ -248,7 +261,7 @@ export default {
             { deep: true },
           );
         } else {
-          if (reviewerState === REVIEW_STATES.APPROVED) {
+          if (reviewerState === REVIEW_STATES.APPROVED && !approvalRefused) {
             window.mrTabs?.tabShown('show');
           }
 
@@ -257,7 +270,7 @@ export default {
           this.isSubmitting = false;
         }
 
-        if (NOTIFY_EVENTS[reviewerState]) {
+        if (NOTIFY_EVENTS[reviewerState] && !approvalRefused) {
           diffsEventHub.$emit(NOTIFY_EVENTS[reviewerState], {
             summary: note ? 1 : 0,
             comments: this.draftsCount,

@@ -155,7 +155,7 @@ rspec graphql-document-integration pg17:
       if [ -z "${tests}" ]; then
         echo "No backend specs read the changed GraphQL query documents. Skipping."
       else
-        rspec_section rspec_simple_job_with_retry "-- ${tests}"
+        rspec_section rspec_simple_job_with_retry "${RSPEC_TAGS} -- ${tests}"
       fi
 
 rspec unit pg17 single-redis:
@@ -1235,7 +1235,7 @@ rspec-ee graphql-document-integration pg17:
       if [ -z "${tests}" ]; then
         echo "No backend specs read the changed GraphQL query documents. Skipping."
       else
-        rspec_section rspec_simple_job_with_retry "-- ${tests}"
+        rspec_section rspec_simple_job_with_retry "${RSPEC_TAGS} -- ${tests}"
       fi
 
 rspec-ee unit pg17 single-db:

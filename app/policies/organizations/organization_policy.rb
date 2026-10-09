@@ -5,7 +5,7 @@ module Organizations
     condition(:organization_user) { @subject.user?(@user) }
 
     desc "User owns the organization"
-    condition(:organization_owner) { owns_organization?(@subject) }
+    condition(:organization_owner) { user_is_organization_admin?(@subject) }
 
     desc 'Organization is public'
     condition(:public_organization, scope: :subject, score: 0) { @subject.public? }

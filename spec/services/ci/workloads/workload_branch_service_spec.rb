@@ -16,6 +16,20 @@ RSpec.describe Ci::Workloads::WorkloadBranchService, feature_category: :continuo
       allow(SecureRandom).to receive(:hex).and_return('abcdef12345')
     end
 
+    context 'when the project has an empty repository' do
+      let_it_be(:project) { create(:project, :empty_repo) }
+
+      it 'returns an error response with reason :repository_empty and does not touch refs' do
+        expect(project.repository).not_to receive(:create_ref)
+
+        result = execute
+
+        expect(result).to be_error
+        expect(result.message).to eq('Repository is empty')
+        expect(result.reason).to eq(:repository_empty)
+      end
+    end
+
     context 'when source branch exists' do
       before do
         project.repository.create_branch(source_branch, project.default_branch)

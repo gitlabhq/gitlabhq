@@ -141967,6 +141967,22 @@
               "deprecationReason": null
             },
             {
+              "name": "createLabel",
+              "description": "If `true`, the user can perform `create_label` on this resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "createProjects",
               "description": "If `true`, the user can perform `create_projects` on this resource",
               "args": [],

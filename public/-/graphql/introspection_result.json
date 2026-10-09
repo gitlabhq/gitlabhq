@@ -86184,6 +86184,12 @@
               "description": "A job that failed due to duo workflow connection failure.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "PIPELINE_VARIABLES_FILE_MISSING",
+              "description": "A job that failed due to pipeline variables file missing.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -297551,6 +297557,22 @@
               "deprecationReason": null
             },
             {
+              "name": "createLabel",
+              "description": "If `true`, the user can perform `create_label` on this resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "createProjects",
               "description": "If `true`, the user can perform `create_projects` on this resource",
               "args": [],
@@ -305590,6 +305612,18 @@
               "name": "organizationUsers",
               "description": "Users with access to the organization. Introduced in GitLab 16.4: Status: Experiment.",
               "args": [
+                {
+                  "name": "search",
+                  "description": "Search query for the name, username, or public email of the user. Partial matches require at least 3 characters.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
                 {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
@@ -329115,7 +329149,7 @@
             },
             {
               "name": "policies",
-              "description": "Policies stored in the policy store for the organization or group. Only `first` and `after` are supported; page with `pageInfo.endCursor`. Cursor offsets are capped at 100000, so policies past that window cannot be paged. The `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Policies stored in the policy store for the organization or group. For a group, organization-wide, ancestor, and descendant groups' policies are included. Only `first` and `after` are supported; page with `pageInfo.endCursor`. Cursor offsets are capped at 100000, so policies past that window cannot be paged. The `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "triggerType",
@@ -335500,6 +335534,26 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "excludeSourceTypes",
+                  "description": "Source types to exclude. Sessions with no recorded source type are never excluded. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "DuoWorkflowSourceType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
                 },
                 {
                   "name": "sort",
@@ -370178,6 +370232,26 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "excludeSourceTypes",
+                  "description": "Source types to exclude. Sessions with no recorded source type are never excluded. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "DuoWorkflowSourceType",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
                 },
                 {
                   "name": "sort",

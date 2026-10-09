@@ -734,6 +734,16 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '#offline_transfer?' do
+    it 'returns true for offline transfers' do
+      expect(described_class.new(import_type: Import::SOURCE_OFFLINE_TRANSFER.to_s)).to be_offline_transfer
+    end
+
+    it 'returns false for other imports' do
+      expect(described_class.new(import_type: 'github')).not_to be_offline_transfer
+    end
+  end
+
   describe '#reassignment_error=' do
     let(:source_user) { build(:import_source_user, :reassignment_in_progress) }
 

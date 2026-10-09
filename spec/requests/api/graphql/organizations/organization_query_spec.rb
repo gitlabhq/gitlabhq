@@ -190,6 +190,54 @@ RSpec.describe 'getting organization information', feature_category: :organizati
         expect { run_query }.not_to exceed_query_limit(base_query_count)
       end
 
+      context 'with search argument' do
+        let_it_be(:searched_user) { create(:user, organizations: [], name: 'Jane Searchable') }
+        let_it_be(:searched_organization_user) do
+          create(:organization_user, organization: organization, user: searched_user)
+        end
+
+        let(:search) { 'searchable' }
+        let(:organization_fields) do
+          <<~FIELDS
+            organizationUsers(search: "#{search}") {
+              nodes {
+                id
+              }
+            }
+          FIELDS
+        end
+
+        it 'returns only the matching organization users' do
+          request_organization
+
+          expect(graphql_data_at(:organization, :organizationUsers, :nodes))
+            .to contain_exactly(a_graphql_entity_for(searched_organization_user))
+        end
+
+        context 'when search is too short for partial matching' do
+          let(:search) { 'ja' }
+
+          it 'returns no partial matches' do
+            request_organization
+
+            expect(graphql_data_at(:organization, :organizationUsers, :nodes)).to be_empty
+          end
+        end
+
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :autocomplete_users, graphql: true,
+          use_second_scope: false do
+          def request
+            post_graphql(query, current_user: current_user)
+          end
+        end
+      end
+
+      it_behaves_like 'unthrottled endpoint', rate_limit_key: :autocomplete_users, graphql: true do
+        def request
+          post_graphql(query, current_user: current_user)
+        end
+      end
+
       private
 
       def run_query

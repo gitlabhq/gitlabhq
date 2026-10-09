@@ -1,0 +1,21 @@
+# @feature_category: organization
+query soloOwnedGroups($id: UserID!, $first: Int, $after: String) {
+  user(id: $id) {
+    id
+    groups(soloOwned: true, first: $first, after: $after) {
+      count
+      nodes {
+        id
+        fullPath
+        webPath
+        parent {
+          id
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}

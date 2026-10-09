@@ -127,11 +127,14 @@ describe('AdminUserActions component', () => {
           });
         });
 
-        it('passes the organization user GID to the action component', () => {
+        it('passes the user details to the action component', () => {
           const component = wrapper.findComponent(Actions.RemoveFromOrganization);
 
-          expect(component.props('organizationUserGid')).toBe(organizationUserGid);
-          expect(component.props('username')).toBe(user.name);
+          expect(component.props()).toMatchObject({
+            organizationUserGid,
+            username: user.name,
+            userId: user.id,
+          });
         });
 
         it('renders the action inside the bordered destructive group', () => {

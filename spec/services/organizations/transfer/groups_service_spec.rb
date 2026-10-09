@@ -1432,6 +1432,18 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         service.execute
       end
 
+      it 'tracks the exception with the transfer log context' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(StandardError),
+          group_path: group.full_path,
+          group_id: group.id,
+          new_organization_path: new_organization.full_path,
+          new_organization_id: new_organization.id
+        )
+
+        service.execute
+      end
+
       it_behaves_like 'rolls back organization_id updates' do
         let(:records) do
           [

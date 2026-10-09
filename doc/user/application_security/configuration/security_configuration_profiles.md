@@ -24,6 +24,8 @@ title: Managing security configuration profiles
 - Feature flag `security_remediation_profiles` removed in GitLab 19.4.
 - SAST scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617070) in GitLab 19.4 as an [experiment](../../../policy/development_stages_support.md), available through the GraphQL API only.
 - Dependency scanning scan profile configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/629403) in GitLab 19.5 as an [experiment](../../../policy/development_stages_support.md#experiment), available through the GraphQL API only.
+- Custom profiles in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/624191) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `custom_scan_profiles_ui`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259962) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -296,26 +298,45 @@ To apply a security configuration profile:
 
 {{< /details >}}
 
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the
+> history.
+
 Customize a secret detection profile to override the configuration the scanner uses when it runs.
 Each setting maps to an existing [secret detection CI/CD variable](../secret_detection/_index.md).
 
-This feature is available through the GraphQL API only.
+You can customize a secret detection profile in the UI or with the GraphQL API.
 
 Prerequisites:
 
 - The Maintainer or Security Manager role for the associated group.
 
-To customize a secret detection profile, use the `securityScanProfileCreate` or `securityScanProfileUpdate`
+To customize a secret detection profile in the UI:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Secure** > **Security configuration**.
+1. Select the **Scanners** tab.
+1. On the **Secret detection** row, select **Manage profiles**.
+1. Select **Create new profile**.
+1. Enter a **Name** and a **Description**.
+1. Under **Scan triggers**, turn on the triggers you want.
+1. Optional. Under **Advanced configuration**, add the settings to override.
+1. Select **Create profile**.
+
+To change a profile later, select it, then select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit**, then **Save changes**.
+Changes apply to every project that uses the profile.
+
+To customize a secret detection profile with the GraphQL API, use the `securityScanProfileCreate` or `securityScanProfileUpdate`
 mutation. Set a `configuration.secretDetection` object on the trigger you want to customize.
 
-| Field | Description | Equivalent CI/CD variable |
-| ----- | ----------- | ------------------------- |
-| `secureAnalyzersPrefix` | Prefix for the container registry the analyzer image is pulled from. | `SECURE_ANALYZERS_PREFIX` |
-| `imageSuffix` | Suffix appended to the analyzer image name. Set to `DEFAULT` or `FIPS`. | `SECRET_DETECTION_IMAGE_SUFFIX` |
-| `historicScan` | Whether to scan the full Git history instead of only the current state. | `SECRET_DETECTION_HISTORIC_SCAN` |
-| `logOptions` | Options passed to `git log` to control the commit range scanned. | `SECRET_DETECTION_LOG_OPTIONS` |
-| `excludedPaths` | Glob paths excluded from the scan. | `SECRET_DETECTION_EXCLUDED_PATHS` |
-| `rulesetGitReference` | Git reference of the remote ruleset configuration to use. | `SECRET_DETECTION_RULESET_GIT_REFERENCE` |
+| Field | UI setting | Description | Equivalent CI/CD variable |
+| ----- | ---------- | ----------- | ------------------------- |
+| `secureAnalyzersPrefix` | **Analyzer image registry** | Prefix for the container registry the analyzer image is pulled from. | `SECURE_ANALYZERS_PREFIX` |
+| `imageSuffix` | **Image variant** (Default, FIPS) | Suffix appended to the analyzer image name. Set to `DEFAULT` or `FIPS`. | `SECRET_DETECTION_IMAGE_SUFFIX` |
+| `historicScan` | **Historic scan** | Whether to scan the full Git history instead of only the current state. | `SECRET_DETECTION_HISTORIC_SCAN` |
+| `logOptions` | **Log options** | Options passed to `git log` to control the commit range scanned. | `SECRET_DETECTION_LOG_OPTIONS` |
+| `excludedPaths` | **Paths to exclude** | Glob paths excluded from the scan. | `SECRET_DETECTION_EXCLUDED_PATHS` |
+| `rulesetGitReference` | **Ruleset Git reference** | Git reference of the remote ruleset configuration to use. | `SECRET_DETECTION_RULESET_GIT_REFERENCE` |
 
 For example, to create a secret detection profile with a customized merge request pipeline trigger:
 
@@ -355,27 +376,46 @@ For the full list of arguments, see the
 
 ## Customize a SAST profile
 
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the
+> history.
+
 Customize a SAST profile to override the scanner configuration used when the profile runs.
 Each setting maps to an existing [SAST CI/CD variable](../sast/_index.md).
 
-This feature is an [experiment](../../../policy/development_stages_support.md) and is available through the GraphQL API only.
+This feature is an [experiment](../../../policy/development_stages_support.md). You can customize a SAST profile in the UI or with the GraphQL API.
 
 Prerequisites:
 
 - The Maintainer or Security Manager role for the associated group.
 
-To customize a SAST profile, use the `securityScanProfileCreate` or `securityScanProfileUpdate`
+To customize a SAST profile in the UI:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Secure** > **Security configuration**.
+1. Select the **Scanners** tab.
+1. On the **Static application security testing (SAST)** row, select **Manage profiles**.
+1. Select **Create new profile**.
+1. Enter a **Name** and a **Description**.
+1. Under **Scan triggers**, turn on the triggers you want.
+1. Optional. Under **Advanced configuration**, add the settings to override.
+1. Select **Create profile**.
+
+To change a profile later, select it, then select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit**, then **Save changes**.
+Changes apply to every project that uses the profile.
+
+To customize a SAST profile with the GraphQL API, use the `securityScanProfileCreate` or `securityScanProfileUpdate`
 mutation. Set a `configuration.sast` object on the trigger you want to customize.
 
-| Field | Description | Equivalent CI/CD variable |
-| ----- | ----------- | ------------------------- |
-| `secureAnalyzersPrefix` | Prefix for the container registry the analyzer image is pulled from. | `SECURE_ANALYZERS_PREFIX` |
-| `imageSuffix` | Suffix appended to the analyzer image name. Set to `DEFAULT` or `FIPS`. | `SAST_IMAGE_SUFFIX` |
-| `analyzerImageTag` | Tag of the analyzer image to use. Overrides the pinned image tag for all SAST analyzers, which can cause analyzer failures if a specific version is required. | `SAST_ANALYZER_IMAGE_TAG` |
-| `excludedAnalyzers` | Analyzers excluded from the scan. | `SAST_EXCLUDED_ANALYZERS` |
-| `excludedPaths` | Glob paths excluded from the scan. | `SAST_EXCLUDED_PATHS` |
-| `advancedSastPartialScan` | Controls [diff-based scanning](../sast/gitlab_advanced_sast.md) for GitLab Advanced SAST. Set to `DIFFERENTIAL` or `DISABLED`. | `ADVANCED_SAST_PARTIAL_SCAN` |
-| `gitlabAdvSastIncrScan` | Whether [incremental scanning](../sast/gitlab_advanced_sast.md) is enabled for GitLab Advanced SAST. | `GITLAB_ADV_SAST_INCR_SCAN` |
+| Field | UI setting | Description | Equivalent CI/CD variable |
+| ----- | ---------- | ----------- | ------------------------- |
+| `secureAnalyzersPrefix` | **Analyzer image registry** | Prefix for the container registry the analyzer image is pulled from. | `SECURE_ANALYZERS_PREFIX` |
+| `imageSuffix` | **Image variant** (Default, FIPS) | Suffix appended to the analyzer image name. Set to `DEFAULT` or `FIPS`. | `SAST_IMAGE_SUFFIX` |
+| `analyzerImageTag` | **Analyzer image tag** | Tag of the analyzer image to use. Overrides the pinned image tag for all SAST analyzers, which can cause analyzer failures if a specific version is required. | `SAST_ANALYZER_IMAGE_TAG` |
+| `excludedAnalyzers` | **Analyzers to skip** | Analyzers excluded from the scan. | `SAST_EXCLUDED_ANALYZERS` |
+| `excludedPaths` | **Paths to exclude** | Glob paths excluded from the scan. | `SAST_EXCLUDED_PATHS` |
+| `advancedSastPartialScan` | **Advanced SAST partial scanning** (Enabled, Disabled) | Controls [diff-based scanning](../sast/gitlab_advanced_sast.md) for GitLab Advanced SAST. Set to `DIFFERENTIAL` or `DISABLED`. | `ADVANCED_SAST_PARTIAL_SCAN` |
+| `gitlabAdvSastIncrScan` | **Advanced SAST incremental scanning** | Whether [incremental scanning](../sast/gitlab_advanced_sast.md) is enabled for GitLab Advanced SAST. | `GITLAB_ADV_SAST_INCR_SCAN` |
 
 For example, to create a SAST profile with a customized merge request pipeline trigger:
 

@@ -17,8 +17,10 @@ module Mcp
           {
             id: resolve_work_item_id,
             includeNotes: facets.include?('notes'),
+            includeDiscussions: facets.include?('discussions'),
             includeRelatedMergeRequests: facets.include?('related_merge_requests'),
             **notes_pagination_variables(facets),
+            **discussions_variables(facets),
             # The canonical params win over the deprecated aliases kept for
             # callers of the replaced DAP tool.
             relatedMergeRequestsFirst: params[:related_merge_requests_first] ||
@@ -54,6 +56,17 @@ module Mcp
           else
             { notesFirst: params[:notes_first] || DEFAULT_NOTES_PAGE_SIZE, notesAfter: params[:notes_after] }
           end
+        end
+
+        # The discussions connection only pages forward, so there is no last/before pair here.
+        def discussions_variables(facets)
+          return {} unless facets.include?('discussions')
+
+          {
+            discussionsFirst: params[:discussions_first] || Mcp::Tools::Concerns::CursorPagination::DEFAULT_PAGE_SIZE,
+            discussionsAfter: params[:discussions_after],
+            discussionsFilter: params[:discussions_filter]&.upcase
+          }
         end
 
         def resource_not_found_error

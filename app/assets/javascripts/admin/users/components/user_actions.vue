@@ -139,6 +139,7 @@ export default {
             :is="getActionComponent('removeFromOrganization')"
             v-if="hasRemoveOrganizationAction"
             :username="user.name"
+            :user-id="user.id"
             :organization-user-gid="user.organizationUserGid"
           >
             {{ $options.i18n.removeFromOrganization }}

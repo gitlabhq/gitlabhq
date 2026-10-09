@@ -10,8 +10,6 @@ attributes:
   - redacted_description_html
   app/models/supply_chain/slsa/provenance_statement.rb:
   - invocation_id
-  ee/app/services/epics/transfer_service.rb:
-  - epic_created_events
 constants:
   app/controllers/graphql_controller.rb:
   - CACHED_INTROSPECTION_QUERY_STRING

@@ -4,6 +4,7 @@
 query getWorkItem(
   $id: WorkItemID!
   $includeNotes: Boolean = false
+  $includeDiscussions: Boolean = false
   $includeRelatedMergeRequests: Boolean = false
   $relatedMergeRequestsFirst: Int
   $relatedMergeRequestsAfter: String
@@ -11,6 +12,9 @@ query getWorkItem(
   $notesAfter: String
   $notesLast: Int
   $notesBefore: String
+  $discussionsFirst: Int
+  $discussionsAfter: String
+  $discussionsFilter: NotesFilterType
 ) {
   workItem(id: $id) {
     id
@@ -108,6 +112,40 @@ query getWorkItem(
             }
             discussion {
               id
+            }
+          }
+        }
+      }
+      ... on WorkItemWidgetNotes @include(if: $includeDiscussions) {
+        discussions(
+          first: $discussionsFirst
+          after: $discussionsAfter
+          filter: $discussionsFilter
+        ) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          nodes {
+            id
+            resolvable
+            resolved
+            notes {
+              nodes {
+                id
+                body
+                internal
+                system
+                systemNoteIconName
+                createdAt
+                updatedAt
+                author {
+                  id
+                  name
+                  username
+                  webUrl
+                }
+              }
             }
           }
         }

@@ -90,6 +90,10 @@ RSpec.describe Backup::Options, feature_category: :backup_restore do
   end
 
   describe '#initialize' do
+    it 'checks storage by default' do
+      expect(options.skip_storage_check?).to be(false)
+    end
+
     it 'can be initialized without providing any parameter' do
       expect { described_class.new }.not_to raise_exception
     end
@@ -100,6 +104,52 @@ RSpec.describe Backup::Options, feature_category: :backup_restore do
   end
 
   describe '#extract_from_env!' do
+    context 'with BACKUP_SKIP_STORAGE_CHECK' do
+      where(:env_value, :expected) do
+        [
+          [nil, false], ['', false], ['unknown', false],
+          ['true', true], ['1', true], ['yes', true], ['on', true], ['TRUE', true], ['YeS', true],
+          ['false', false], ['0', false], ['no', false], ['off', false], ['FALSE', false], ['OfF', false]
+        ]
+      end
+
+      with_them do
+        it 'parses the bypass as a boolean' do
+          stub_env('BACKUP_SKIP_STORAGE_CHECK', env_value)
+
+          options.extract_from_env!
+
+          expect(options.skip_storage_check?).to be(expected)
+        end
+      end
+
+      context 'with an explicit constructor value' do
+        subject(:options) { described_class.new(skip_storage_check: true) }
+
+        where(:env_value, :expected) do
+          [[nil, true], ['', true], ['unknown', true], ['true', true], ['false', false]]
+        end
+
+        with_them do
+          it 'uses the constructor value only for unrecognized values' do
+            stub_env('BACKUP_SKIP_STORAGE_CHECK', env_value)
+
+            options.extract_from_env!
+
+            expect(options.skip_storage_check?).to be(expected)
+          end
+        end
+      end
+
+      it 'retains the parsed value when the environment changes' do
+        stub_env('BACKUP_SKIP_STORAGE_CHECK', 'false')
+        options.extract_from_env!
+        stub_env('BACKUP_SKIP_STORAGE_CHECK', 'true')
+
+        expect(options.skip_storage_check?).to be(false)
+      end
+    end
+
     it 'extracts BACKUP env' do
       env_value = '11493107454_2018_04_25_10.6.4-ce'
       stub_env('BACKUP' => env_value)

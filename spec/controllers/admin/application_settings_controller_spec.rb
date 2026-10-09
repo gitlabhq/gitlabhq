@@ -686,4 +686,16 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       expect(response).to have_gitlab_http_status(:ok)
     end
   end
+
+  describe 'GET #ci_cd', feature_category: :continuous_integration do
+    before do
+      sign_in(admin)
+    end
+
+    it 'assigns the instance plans' do
+      get :ci_cd
+
+      expect(assigns(:plans)).to eq([::GitlabSubscriptions::SystemDefined::Plan.default])
+    end
+  end
 end

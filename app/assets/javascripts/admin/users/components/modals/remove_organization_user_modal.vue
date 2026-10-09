@@ -1,31 +1,46 @@
 <script>
 import { GlModal, GlSprintf } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { refreshCurrentPageWithAlerts } from '~/lib/utils/url_utility';
 import showToast from '~/vue_shared/plugins/global_toast';
+import SoloOwnedGroupsList from '~/organizations/shared/components/solo_owned_groups_list.vue';
 import removeOrganizationUserMutation from '~/admin/users/graphql/mutations/remove_organization_user.mutation.graphql';
 import eventHub, {
   EVENT_OPEN_REMOVE_FROM_ORGANIZATION_MODAL,
 } from './remove_from_organization_modal_event_hub';
+
+const SOLO_OWNED_GROUPS_LOADING_STATUS = { loading: true, count: 0, error: false };
 
 export default {
   name: 'RemoveOrganizationUserModal',
   components: {
     GlModal,
     GlSprintf,
+    SoloOwnedGroupsList,
   },
   data() {
     return {
       username: '',
+      userId: null,
       organizationUserGid: '',
       loading: false,
+      soloOwnedGroups: SOLO_OWNED_GROUPS_LOADING_STATUS,
     };
   },
   computed: {
+    title() {
+      return sprintf(s__('AdminUsers|Remove user %{username}'), { username: this.username }, false);
+    },
+    hasSoloOwnedGroups() {
+      return this.soloOwnedGroups.count > 0;
+    },
+    isRemovalBlocked() {
+      return this.soloOwnedGroups.loading || this.soloOwnedGroups.error || this.hasSoloOwnedGroups;
+    },
     actionPrimary() {
       return {
-        text: __('Remove'),
-        attributes: { variant: 'danger', loading: this.loading },
+        text: s__('AdminUsers|Remove user'),
+        attributes: { variant: 'danger', loading: this.loading, disabled: this.isRemovalBlocked },
       };
     },
     actionCancel() {
@@ -42,10 +57,18 @@ export default {
     eventHub.$off(EVENT_OPEN_REMOVE_FROM_ORGANIZATION_MODAL, this.onOpenEvent);
   },
   methods: {
-    onOpenEvent({ username, organizationUserGid }) {
+    onOpenEvent({ username, userId, organizationUserGid }) {
+      if (userId !== this.userId) {
+        this.soloOwnedGroups = SOLO_OWNED_GROUPS_LOADING_STATUS;
+      }
+
       this.username = username;
+      this.userId = userId;
       this.organizationUserGid = organizationUserGid;
       this.$refs.modal.show();
+    },
+    onSoloOwnedGroupsChange(status) {
+      this.soloOwnedGroups = status;
     },
     async onSubmit() {
       this.loading = true;
@@ -90,12 +113,34 @@ export default {
   <gl-modal
     ref="modal"
     modal-id="remove-from-organization-modal"
-    :title="s__('AdminUsers|Remove user from the organization?')"
+    :title="title"
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
     @primary.prevent="onSubmit"
   >
-    <p>
+    <solo-owned-groups-list
+      v-if="userId"
+      :key="userId"
+      :user-id="userId"
+      :username="username"
+      @change="onSoloOwnedGroupsChange"
+    >
+      <template #help>
+        <gl-sprintf
+          :message="
+            s__(
+              'AdminUsers|To remove %{username} from the organization, assign another owner to each group above. Their account isn\'t deleted.',
+            )
+          "
+        >
+          <template #username
+            ><strong>{{ username }}</strong></template
+          >
+        </gl-sprintf>
+      </template>
+    </solo-owned-groups-list>
+
+    <p v-if="!isRemovalBlocked">
       <gl-sprintf
         :message="
           s__(

@@ -462,6 +462,20 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:found)
       end
 
+      context 'when creating a group in an organization' do
+        it 'creates group in organization and redirects to unscoped URL' do
+          sign_in(user)
+
+          expect do
+            post organization_groups_path(current_organization), params: { group: { name: 'new_group', path: 'new_group' } }
+          end.to change { Group.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to("/new_group")
+          expect(Group.order(:id).last.organization).to eq(current_organization)
+        end
+      end
+
       it 'allows an admin to create a group', :aggregate_failures do
         sign_in(admin)
 

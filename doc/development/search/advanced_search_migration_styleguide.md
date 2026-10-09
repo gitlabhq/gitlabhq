@@ -863,7 +863,7 @@ end
 - `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
   enough time to finish. Additionally, the time should be less than 5 minutes because that is how often the
   [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic/migration_worker.rb)
-  cron worker runs. The default value is 3 minutes.
+  cron worker runs. The default value is 3 minutes. The minimum value is 2 seconds. Passing a lower value raises an `ArgumentError`.
 - `pause_indexing!` - Pause indexing while the migration runs. This setting records the indexing setting before
   the migration runs and set it back to that value when the migration is completed.
 - `space_requirements!` - Verify that enough free space is available in the cluster when the migration runs. This setting

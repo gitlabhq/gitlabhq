@@ -54,6 +54,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     failed_outdated_deployment_job: N_('Job|The deployment job is older than the latest deployment, and therefore failed.'),
     reached_downstream_pipeline_trigger_rate_limit: N_('Job|Too many downstream pipelines triggered in the last minute. Try again later.'),
     job_router_failure: N_('Job|The Job Router failed to run this job.'),
+    pipeline_variables_file_missing: N_('Job|This job could not be executed because the pipeline variables file is missing from storage. Run a new pipeline.'),
     job_token_expired: N_('Job|The CI job token has expired. The job may have exceeded the maximum time limit.'),
     id_token_burned_project_path: N_('Job|ID token issuance is disabled in CI because a project path in the `sub` claim was previously used by a different project. ' \
       'To restore ID tokens, set `ci_id_token_sub_claim_components` to start with the ID component that matches the path component ' \

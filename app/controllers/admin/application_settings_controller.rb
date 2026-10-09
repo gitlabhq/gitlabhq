@@ -135,7 +135,7 @@ module Admin
 
     def set_application_setting
       @application_setting = ApplicationSetting.current_without_cache
-      @plans = Plan.all
+      @plans = ::GitlabSubscriptions::SystemDefined::Plan.instance_plans
     end
 
     # Overridden in EE. GitLab Duo in Slack is an EE-only feature.

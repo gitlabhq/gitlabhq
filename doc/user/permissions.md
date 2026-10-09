@@ -456,7 +456,7 @@ Project permissions for [application security](application_security/secure_your_
 [GitLab CI/CD](../ci/_index.md) permissions for some roles can be modified by these settings:
 
 - [Project-based pipeline visibility](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
-  When set to public, gives access to certain CI/CD features to Guest project members.
+  When set to public, gives access to certain CI/CD features to project members with the Guest or Planner role.
 - [Pipeline visibility](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects):
   When set to **Everyone with Access**, gives access to certain CI/CD "view" features to non-project members.
 
@@ -465,14 +465,14 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Action                                                                                                      | Non-member | Guest | Planner | Reporter | Security Manager | Developer | Maintainer |
 | ----------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :--------------: | :-------: | :--------: |
 | View instance runner                                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
-| View existing artifacts[^non-members-guests]                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View existing artifacts[^existing-artifacts]                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | View list of jobs[^non-members-project]                                                                              |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | View artifacts[^project-ci-non-members-project]                                                                                 |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | Download artifacts[^project-ci-non-members-project]                                                                             |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
-| View [environments](../ci/environments/_index.md)[^non-members-guests]                                              |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View [environments](../ci/environments/_index.md)[^non-members-guests-planners]                                              |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | View job logs and job details page[^non-members-project]                                                             |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | View pipelines and pipeline details pages[^non-members-project]                                                      |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
-| View pipelines tab in MR[^non-members-guests]                                                                       |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
+| View pipelines tab in MR[^mr-pipelines-planners]                                                                       |     ✓      |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |
 | View [vulnerabilities in a pipeline](application_security/detect/security_scanning_results.md#view-pipeline-security-report) |            |       |         |          |        ✓         |     ✓     |     ✓      |
 | Run deployment job for a protected environment[^reporters-user-part]                                                 |            |       |         |    ✓     |                  |     ✓     |     ✓      |
 | View [agents for Kubernetes](clusters/agent/_index.md)                                                      |            |       |         |          |                  |     ✓     |     ✓      |
@@ -510,15 +510,19 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Take ownership of pipeline schedules                                                                        |            |       |         |          |                  |           |     ✓      |
 | Delete others' pipeline schedules                                                                           |            |       |         |          |                  |           |     ✓      |
 
-[^non-members-guests]: Non-members and guests: Only if the project is public.
+[^existing-artifacts]: Non-members: Only if the project is public.
+    <br>Guests and Planners: Only if the project is public or **Project-based pipeline visibility** is enabled.
 [^non-members-project]: Non-members: Only if the project is public and **Project-based pipeline visibility** is enabled.
-    <br>Guests: Only if **Project-based pipeline visibility** is enabled.
+    <br>Guests and Planners: Only if **Project-based pipeline visibility** is enabled.
 [^project-ci-non-members-project]: Non-members: Only if the project is public, **Project-based pipeline visibility** is enabled,
     and [`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic) is not set on the job.
-    <br>Guests: Only if **Project-based pipeline visibility** is enabled and
+    <br>Guests and Planners: Only if **Project-based pipeline visibility** is enabled and
     `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false`
     is not set on the job.<br>The `artifacts:public` setting only affects GitLab UI and API access.
     CI/CD job tokens can still access artifacts with the runner API.
+[^non-members-guests-planners]: Non-members, Guests, and Planners: Only if the project is public.
+[^mr-pipelines-planners]: Non-members and Guests: Only if the project is public.
+    <br>Planners: Only if the project is public or **Project-based pipeline visibility** is enabled.
 [^reporters-user-part]: Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
     <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
 [^developers-maintainers-user]: Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
@@ -596,8 +600,8 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | [View](project/merge_requests/_index.md#view-merge-requests) a merge request[^project-merge-guest-role-limited] |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) merge requests and comments[^project-merge-guest-role-limited]           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Approve](project/merge_requests/approvals/_index.md) merge requests[^approval-planner-reporter]         |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| Add internal note                                                                         |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| Comment and add suggestions                                                               |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Add internal note[^project-merge-planner-members-only]                                    |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Comment and add suggestions[^project-merge-planner-members-only]                          |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create [snippets](snippets.md)                                                            |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create [merge request](project/merge_requests/creating_merge_requests.md)[^external-contributions]    |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 | Update merge request details[^project-merge-external-contributions]                                                 |       |         |          |                  |     ✓     |     ✓      |   ✓   |
@@ -607,11 +611,19 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 
 [^project-merge-guest-role-limited]: On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
     and internal projects (not on private projects). [External users](../administration/external_users.md)
-    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
+    must be given explicit access (at least the **Planner** role) even if the project is internal. Users
     with the Guest role on GitLab.com are only able to perform this action on public projects because
-    internal visibility is not available.
+    internal visibility is not available. Users with the Guest or Planner role can't perform this action
+    if [merge requests](public_access.md#change-the-visibility-of-individual-features-in-a-project)
+    are set to **Only Project Members**.
 [^approval-planner-reporter]: Approval from Planner and Reporter roles is available only if
     [enabled for the project](project/merge_requests/approvals/rules.md#enable-approval-permissions-for-additional-users).
+    Users with the Planner role can't approve if
+    [merge requests](public_access.md#change-the-visibility-of-individual-features-in-a-project)
+    are set to **Only Project Members**.
+[^project-merge-planner-members-only]: Users with the Planner role can't perform this action if
+    [merge requests](public_access.md#change-the-visibility-of-individual-features-in-a-project)
+    are set to **Only Project Members**.
 [^external-contributions]: In projects that accept contributions from external members, users can create, edit, and close their
     own merge requests. For **private** projects, this excludes the Guest role as those users
     [cannot clone private projects](public_access.md#private-projects-and-groups). For **internal**

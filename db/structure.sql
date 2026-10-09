@@ -35485,7 +35485,7 @@ CREATE TABLE work_item_current_statuses (
     system_defined_status_id bigint,
     custom_status_id bigint,
     updated_at timestamp with time zone NOT NULL,
-    CONSTRAINT check_0734284d2c CHECK ((num_nonnulls(custom_status_id, system_defined_status_id) > 0))
+    CONSTRAINT check_wi_current_statuses_single_status CHECK ((num_nonnulls(custom_status_id, system_defined_status_id) = 1))
 );
 
 CREATE SEQUENCE work_item_current_statuses_id_seq

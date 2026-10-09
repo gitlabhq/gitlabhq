@@ -43,6 +43,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
 
   before do
     stub_env('force', 'yes')
+    allow(Sys::Filesystem).to receive(:stat).with(backup_path.to_s)
+      .and_return(instance_double(Sys::Filesystem::Stat, bytes_available: 2**50))
     FileUtils.rm(tars_glob, force: true)
     FileUtils.mkdir_p('tmp/tests/public/uploads')
     reenable_backup_sub_tasks
@@ -177,6 +179,29 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
   end
 
   describe 'backup_restore' do
+    context 'with insufficient storage' do
+      before do
+        stub_env('BACKUP', '1')
+        stub_env('BACKUP_SKIP_STORAGE_CHECK', nil)
+        File.write(backup_path.join('1_gitlab_backup.tar'), 'backup')
+        allow(Sys::Filesystem).to receive(:stat)
+          .and_return(instance_double(Sys::Filesystem::Stat, bytes_available: 0))
+      end
+
+      it 'stops before restoring data and releases the PID file', :aggregate_failures, :silence_stdout do
+        expect(Kernel).not_to receive(:system)
+        expect_next_instance_of(::Backup::Manager) do |manager|
+          expect(manager).not_to receive(:run_restore_task)
+        end
+        expect(Rake::Task['gitlab:shell:setup']).not_to receive(:invoke)
+
+        expect { run_rake_task('gitlab:backup:restore') }.to raise_error(SystemExit) do |error|
+          expect(error.status).to eq(1)
+        end
+        expect(File).not_to exist(backup_restore_pid_path)
+      end
+    end
+
     context 'with gitlab version' do
       before do
         allow(Dir).to receive(:glob).and_return(['1_gitlab_backup.tar'])

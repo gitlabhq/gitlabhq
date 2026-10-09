@@ -40,7 +40,10 @@ module Projects
       end
 
       def valid_token?(token)
-        token == integration.token
+        expected_token = integration.token
+        return false unless token.is_a?(String) && expected_token
+
+        ActiveSupport::SecurityUtils.secure_compare(expected_token, token)
       end
     end
   end

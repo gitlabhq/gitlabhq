@@ -143,6 +143,29 @@ RSpec.describe ProjectsController, :with_license, feature_category: :groups_and_
 
     it_behaves_like 'enforces step-up authentication (request spec)'
 
+    context 'when creating a project in an organization', :with_current_organization do
+      let_it_be(:group_in_org) { create(:group, :public, organization: current_organization, owners: user) }
+
+      let(:project_params) do
+        {
+          name: 'Test Project',
+          path: 'test-project',
+          namespace_id: group_in_org.id,
+          visibility_level: Gitlab::VisibilityLevel::PRIVATE
+        }
+      end
+
+      it 'creates project in organization and redirects to unscoped URL' do
+        sign_in(user)
+
+        post organization_projects_path(current_organization), params: { project: project_params }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to("/#{group_in_org.path}/test-project")
+        expect(Project.order(:id).last.organization).to eq(current_organization)
+      end
+    end
+
     context 'when rate limiting project creation' do
       let_it_be(:current_user) { user }
       let_it_be(:create_params) do

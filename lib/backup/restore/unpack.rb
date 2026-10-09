@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
+require 'sys/filesystem'
+
 module Backup
   module Restore
     class Unpack
       FILE_NAME_SUFFIX = '_gitlab_backup.tar'
+
+      # Conservative headroom for extraction and component restores sharing the backup filesystem.
+      # The existing archive is already accounted for in used space; this is not an exact size estimate.
+      RESTORE_SPACE_MULTIPLIER = 3
 
       attr_reader :backup_id, :backup_path, :manifest_filepath, :options, :logger
 
@@ -22,7 +28,7 @@ module Backup
         @logger = logger
       end
 
-      def run!
+      def run!(check_disk_space: false)
         if backup_id.blank? && non_tarred_backup?
           logger.info "Non tarred backup found in #{backup_path}, using that"
           return
@@ -38,6 +44,7 @@ module Backup
 
           # Validates if backup file exists
           validate_tar_file_existence!
+          check_disk_space! if check_disk_space
 
           # Starts unpack
           start_unpack!
@@ -112,6 +119,29 @@ module Backup
 
           exit 1
         end
+      end
+
+      def check_disk_space!
+        if options.skip_storage_check?
+          logger.warn 'Skipping disk space check because BACKUP_SKIP_STORAGE_CHECK is enabled.'
+          return
+        end
+
+        required_bytes = File.size(tar_file) * RESTORE_SPACE_MULTIPLIER
+        available_bytes = Sys::Filesystem.stat(backup_path.to_s).bytes_available
+        return if available_bytes >= required_bytes
+
+        logger.error "Insufficient disk space in #{backup_path}: #{format_size(available_bytes)} available, " \
+          "estimated #{format_size(required_bytes)} required. Set BACKUP_SKIP_STORAGE_CHECK=true to bypass this check."
+        exit 1
+      rescue Sys::Filesystem::Error, SystemCallError => e
+        logger.error "Unable to check disk space in #{backup_path}: #{e.message}. " \
+          'Set BACKUP_SKIP_STORAGE_CHECK=true to bypass this check.'
+        exit 1
+      end
+
+      def format_size(bytes)
+        "#{ActiveSupport::NumberHelper.number_to_human_size(bytes)} (#{bytes} bytes)"
       end
     end
   end

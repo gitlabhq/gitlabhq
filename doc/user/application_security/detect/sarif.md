@@ -346,7 +346,7 @@ On the pipeline's **Security** tab, you might see a **Warning parsing security r
 that contains a message similar to:
 
 ```plaintext
-[Ingestion] 8 of 69 result(s) were skipped during ingestion. Causes: text field exceeded length limit (8). Check application logs for per-result details.
+[Ingestion] 8 of 69 result(s) were skipped during ingestion. Causes: text field exceeded length limit (8) [message]. Check application logs for per-result details.
 ```
 
 This issue occurs when results in the SARIF report do not meet the requirements described in
@@ -370,8 +370,8 @@ To investigate the cause:
   [`application_json.log`](../../../administration/logs/_index.md#application_jsonlog) for
   `Result skipped:` or `SARIF finding skipped:`.
 
-The logs identify which field or property caused the skipped results, but do not identify
-individual results.
+The message and the logs identify which field or property caused the skipped results, but do not
+identify individual results.
 
 On GitLab Self-Managed, you can also read the stored messages from a
 [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):

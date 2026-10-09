@@ -699,6 +699,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         post :publish, params: params.merge!(reviewer_state: 'approved')
 
         expect(merge_request.approvals.reload.size).to be(1)
+        expect(json_response).not_to have_key('reviewer_state_error')
       end
 
       it 'does not approve merge request' do
@@ -723,9 +724,33 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
           post :publish, params: params.merge!(reviewer_state: 'approved')
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).not_to have_key('reviewer_state_error')
 
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to have_received(:track_submit_review_approve).with(user: user)
+        end
+      end
+
+      context 'when merge request is merged' do
+        before do
+          merge_request.mark_as_merged!
+        end
+
+        it 'publishes the review and returns the approval error' do
+          expect { post :publish, params: params.merge!(reviewer_state: 'approved') }
+            .to change { Note.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['review_id']).to eq(merge_request.reviews.sole.id)
+          expect(json_response['reviewer_state_error']).to eq('Merge request is already merged')
+          expect(merge_request.approvals.reload).to be_empty
+        end
+
+        it 'does not track merge request activity' do
+          post :publish, params: params.merge!(reviewer_state: 'approved')
+
+          expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+            .not_to have_received(:track_submit_review_approve)
         end
       end
     end

@@ -118,7 +118,7 @@ class ProjectsController < Projects::ApplicationController
 
     if @project.saved?
       redirect_to(
-        project_path(@project, custom_import_params),
+        project_path(@project, custom_import_params.merge({ organization_path: nil })),
         notice: safe_format(_("Project '%{project_name}' was successfully created."), project_name: @project.name)
       )
     else

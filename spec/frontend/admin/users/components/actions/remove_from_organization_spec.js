@@ -18,6 +18,7 @@ describe('RemoveFromOrganization', () => {
 
   const defaultPropsData = {
     username: 'John Doe',
+    userId: 1,
     organizationUserGid: 'gid://gitlab/Organizations::OrganizationUser/1',
   };
 
@@ -35,13 +36,14 @@ describe('RemoveFromOrganization', () => {
   });
 
   describe('when action is clicked', () => {
-    it('emits the open modal event with username and organization user GID', async () => {
+    it('emits the open modal event with username, user ID, and organization user GID', async () => {
       createComponent();
 
       await wrapper.find('button').trigger('click');
 
       expect(eventHub.$emit).toHaveBeenCalledWith(EVENT_OPEN_REMOVE_FROM_ORGANIZATION_MODAL, {
         username: defaultPropsData.username,
+        userId: defaultPropsData.userId,
         organizationUserGid: defaultPropsData.organizationUserGid,
       });
     });

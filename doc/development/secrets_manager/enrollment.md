@@ -93,8 +93,8 @@ It is also the place that decides whether to consult namespace enrollment or ins
 | `for_project?(project)` | License and `enabled_for_project?`. |
 | `for_group?(group)` | License and `enabled_for_group?`. |
 | `for_instance?` | License and `InstanceEnrollment.enrolled?`. |
-| `enabled_for_project?(project)` | Feature flag and enrollment. No license check. Only called from `for_project?`, so never call it on an access path. |
-| `enabled_for_group?(group)` | Feature flag and enrollment, with the paid top-level group exception below. No license check. Only called from `for_group?`, so never call it on an access path. |
+| `enabled_for_project?(project)` | Enrollment. No license check. Only called from `for_project?`, so never call it on an access path. |
+| `enabled_for_group?(group)` | Enrollment, with the paid top-level group exception below. No license check. Only called from `for_group?`, so never call it on an access path. |
 
 `enabled_for_group?` and `for_group?` route like this:
 
@@ -145,7 +145,7 @@ This lets the enrollment toggle work even before a namespace is enrolled.
 
 Permission definitions live at `config/authz/permissions/secrets_manager_enrollment/{create,delete,read}.yml`, and are granted to the Owner role in `config/authz/roles/owner.yml`.
 
-For the group case, `EE::GroupPolicy` only grants all three abilities when `NamespaceEnrollment.enrollment_allowed?(@subject)` is true. That method checks the license, whether the group is a licensed GitLab.com top-level group, and the enrollment feature flag.
+For the group case, `EE::GroupPolicy` only grants all three abilities when `NamespaceEnrollment.enrollment_allowed?(@subject)` is true. That method checks the license and whether the group is a licensed GitLab.com top-level group.
 For the instance case, `EE::GlobalPolicy` enables all three abilities for an `admin` when `InstanceEnrollment.enrollment_allowed?` is true.
 
 `SecretsManagement::NamespaceEnrollmentPolicy` (`ee/app/policies/secrets_management/namespace_enrollment_policy.rb`) delegates straight to the group policy of the enrollment's namespace.

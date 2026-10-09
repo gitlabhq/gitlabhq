@@ -64,16 +64,80 @@ module Gitlab
 
           @ignore_whitespace_change = position.ignore_whitespace_change
 
-          if position.added?
-            trace_added_line(position)
-          elsif position.removed?
-            trace_removed_line(position)
-          else # unchanged
-            trace_unchanged_line(position)
-          end
+          result = if position.added?
+                     trace_added_line(position)
+                   elsif position.removed?
+                     trace_removed_line(position)
+                   else # unchanged
+                     trace_unchanged_line(position)
+                   end
+
+          trace_line_range(position, result)
         end
 
         private
+
+        def trace_line_range(old_position, result)
+          new_position = result[:position]
+          return result if result[:outdated] || new_position.nil? || old_position.line_range.blank?
+          return result unless Feature.enabled?(:trace_diff_note_line_range, project, type: :gitlab_com_derisk)
+
+          note_endpoint = line_range_endpoint(new_position)
+          line_range = traced_line_range(old_position, new_position, note_endpoint) ||
+            { 'start' => note_endpoint, 'end' => note_endpoint }
+
+          result.merge(position: Position.new(new_position.to_h.merge(line_range: line_range)))
+        end
+
+        def traced_line_range(old_position, new_position, note_endpoint)
+          range_start, range_end = old_position.line_range.values_at('start', 'end')
+          return if range_start == range_end
+
+          new_start, new_end = [range_start, range_end].map do |endpoint|
+            line_range_endpoint(trace_range_endpoint(old_position, new_position, endpoint))
+          end
+          return unless new_start && new_end
+
+          orders = [new_start, note_endpoint, new_end].map { |endpoint| diff_order(endpoint) }
+          return unless orders == orders.sort
+
+          { 'start' => new_start, 'end' => new_end }
+        end
+
+        def trace_range_endpoint(old_position, new_position, endpoint)
+          lines = range_endpoint_lines(endpoint)
+          return unless lines
+          return new_position if lines == { old_line: old_position.old_line, new_line: old_position.new_line }
+
+          result = trace(Position.new(old_position.to_h.merge(line_range: nil, **lines)))
+          result[:position] unless result[:outdated]
+        end
+
+        def range_endpoint_lines(endpoint)
+          endpoint = endpoint.to_h
+          lines = { old_line: endpoint['old_line'], new_line: endpoint['new_line'] }
+          return lines if lines.values.any?
+
+          _, old_pos, new_pos = endpoint['line_code'].to_s.split('_')
+          return unless new_pos
+
+          {
+            old_line: (old_pos.to_i unless endpoint['type'] == 'new'),
+            new_line: (new_pos.to_i unless endpoint['type'] == 'old')
+          }
+        end
+
+        def line_range_endpoint(position)
+          line_code = position&.line_code(project.repository)
+          return unless line_code
+
+          { 'line_code' => line_code, 'type' => position.type, 'old_line' => position.old_line,
+            'new_line' => position.new_line }
+        end
+
+        def diff_order(endpoint)
+          endpoint['line_code'].split('_').last(2).map(&:to_i).reverse
+        end
 
         def trace_added_line(position)
           b_path = position.new_path

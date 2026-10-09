@@ -94,7 +94,11 @@ export function publishReview(noteData = {}) {
 
   return service
     .publish(this.getNotesData.draftsPublishPath, noteData)
-    .then(() => this[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]())
+    .then(({ data }) => {
+      this[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]();
+
+      return data;
+    })
     .catch((e) => {
       this[types.RECEIVE_PUBLISH_REVIEW_ERROR]();
 
@@ -132,8 +136,12 @@ export async function publishReviewInBatches(noteData = {}, batchSize = 20) {
     if (isLastChunk) {
       this.publishReviewId = null;
       this[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]();
+
+      return response;
     }
   }
+
+  return undefined;
 }
 
 export async function updateDraft({ note, noteText, resolveDiscussion, position }) {

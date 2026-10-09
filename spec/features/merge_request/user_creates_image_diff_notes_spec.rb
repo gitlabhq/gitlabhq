@@ -138,8 +138,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
         .from(a_string_matching('left: 1px'))
     end
 
-    it 'shows both images at the same position', skip: 'Rapid Diffs: image overlay alignment / onion-skin drag in .rd-image-with-discussions; ' \
-                                                   'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248300' do
+    it 'shows both images at the same position' do
       drag_and_drop_by(find('.swipe-bar'), 40, 0)
 
       expect(left_position('.frame.added img'))
@@ -148,8 +147,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
   end
 
   shared_examples 'onion skin' do
-    it 'resets opacity when toggling between view modes', skip: 'Rapid Diffs: image overlay alignment / onion-skin drag in .rd-image-with-discussions; ' \
-                                                            'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248300' do
+    it 'resets opacity when toggling between view modes' do
       # Simulate dragging onion-skin slider
       drag_and_drop_by(find('.dragger'), -30, 0)
 

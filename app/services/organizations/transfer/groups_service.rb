@@ -48,6 +48,7 @@ module Organizations
         log_transfer_success
         ServiceResponse.success
       rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e, **(@log_context || {}))
         log_transfer_error(e.message)
         ServiceResponse.error(message: e.message)
       end
