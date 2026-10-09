@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import TwoFactorAuthentication from './sessions/components/two_factor_authentication.vue';
 
 export const mount2faAuthentication = () => {

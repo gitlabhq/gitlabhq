@@ -97,9 +97,18 @@ module Mcp
           raise ArgumentError, 'Provide name to rename the pipeline' if arguments[:name].blank?
 
           pipeline = ::Ci::Pipeline.find_by_id(arguments[:pipeline_id])
+          message = 'Pipeline not found or inaccessible.'
 
-          unless pipeline && Ability.allowed?(current_user, :read_pipeline, pipeline)
-            return ::Mcp::Tools::Base::Response.error('Pipeline not found or inaccessible.')
+          unless pipeline
+            return ::Mcp::Tools::Base::Response.error(
+              message, reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+            )
+          end
+
+          unless Ability.allowed?(current_user, :read_pipeline, pipeline)
+            return ::Mcp::Tools::Base::Response.error(
+              message, reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+            )
           end
 
           response = ::Ci::Pipelines::UpdateMetadataService
@@ -111,10 +120,15 @@ module Mcp
           # Readable but not renamable maps to the same uniform message; other
           # failures carry the service's own error strings.
           if response.reason == :forbidden
-            return ::Mcp::Tools::Base::Response.error('Pipeline not found or inaccessible.')
+            return ::Mcp::Tools::Base::Response.error(
+              message, reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+            )
           end
 
-          ::Mcp::Tools::Base::Response.error(Array(response.payload).join(', ').presence || response.message)
+          ::Mcp::Tools::Base::Response.error(
+            Array(response.payload).join(', ').presence || response.message,
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
+          )
         end
 
         def update_response(pipeline)

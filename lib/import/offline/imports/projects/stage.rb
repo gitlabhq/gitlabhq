@@ -33,6 +33,11 @@ module Import
                 pipeline: ::BulkImports::Common::Pipelines::MilestonesPipeline,
                 stage: 2
               },
+              badges: {
+                pipeline: Import::Offline::Projects::Pipelines::BadgesPipeline,
+                minimum_source_version: '19.5.0',
+                stage: 2
+              },
               issues: {
                 pipeline: ::BulkImports::Projects::Pipelines::IssuesPipeline,
                 stage: 3

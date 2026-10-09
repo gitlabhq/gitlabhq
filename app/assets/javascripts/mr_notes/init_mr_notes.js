@@ -1,4 +1,5 @@
-import { parseBoolean, getCookie } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { getCookie } from '~/lib/utils/common_utils';
 import { getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';

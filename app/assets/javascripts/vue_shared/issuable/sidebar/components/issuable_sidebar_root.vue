@@ -1,7 +1,8 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
-import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
 import { USER_COLLAPSED_GUTTER_COOKIE } from '../constants';

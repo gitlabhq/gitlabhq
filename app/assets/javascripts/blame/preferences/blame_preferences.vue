@@ -7,9 +7,9 @@ import {
   GlToggle,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { InternalEvents } from '~/tracking';
 import { getParameterByName, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import AccessorUtilities from '~/lib/utils/accessor';

@@ -427,6 +427,14 @@
   - ".gitlab/duo/mr-review-instructions.yaml"
   - "gems/gitlab-ai-principles-distiller/lib/**/*"
 
+.ai-spelling-patterns: &ai-spelling-patterns
+  - ".ai/**/*.md"
+  - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - ".vale.ini"
+  - "**/AGENTS.md"
+  - "doc/.vale/gitlab_base/British.yml"
+
 .docs-i18n-patterns: &docs-i18n-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
   - ".gitlab/ci/rules.gitlab-ci.yml"
@@ -1673,6 +1681,11 @@
   rules:
     - <<: *if-default-refs
       changes: *ai-principles-manifest-patterns
+
+.docs:rules:ai-spelling:
+  rules:
+    - <<: *if-merge-request
+      changes: *ai-spelling-patterns
 
 # Strict Duo-fence guard: fires only on MRs that touch the fence's OWNED files
 # (the reconcile MR, the gem, or the guard script). On those refs a stale fence
@@ -4230,6 +4243,17 @@
     - <<: *if-missing-clickhouse-diff-stats-credentials
       when: never
     - *if-merge-request
+
+.rails:rules:file-based-spec-selection:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-merge-request-tier-3
+      changes: *backend-patterns
+    - <<: *if-merge-request-tier-3
+      changes: *backstage-patterns
 
 ###############################
 # Per-test coverage rules     #

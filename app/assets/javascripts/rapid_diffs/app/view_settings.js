@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { mapState, mapActions } from 'pinia';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import DiffAppControls from '~/diffs/components/diff_app_controls.vue';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';

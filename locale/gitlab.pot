@@ -98914,6 +98914,9 @@ msgstr[1] ""
 msgid "Your instance is approaching its seat limit"
 msgstr ""
 
+msgid "Your invitation has been accepted. Your access is pending approval from an owner."
+msgstr ""
+
 msgid "Your issues are being imported. Once finished, you'll get a confirmation email."
 msgstr ""
 

@@ -1,5 +1,5 @@
 import Clipboard from 'clipboard';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { __ } from '~/locale';
 import { fixTitle, add, show, hide, once } from '~/tooltips';
 

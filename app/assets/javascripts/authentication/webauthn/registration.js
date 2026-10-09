@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import WebAuthnRegistration from './components/registration.vue';
 import PasskeyRegistration from './components/passkey_registration.vue';
 

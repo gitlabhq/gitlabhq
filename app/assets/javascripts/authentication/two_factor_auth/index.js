@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { updateHistory, removeParams } from '~/lib/utils/url_utility';
 import RecoveryCodes from './components/recovery_codes.vue';
 import TwoFactorActionConfirm from './components/two_factor_action_confirm.vue';

@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import csrf from '~/lib/utils/csrf';
 import { sprintf } from '~/locale';
 import eventHub from '../event_hub';

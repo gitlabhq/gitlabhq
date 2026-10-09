@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Prints the rspec files the ClickHouse coverage map would select for this merge request, and how many.
+# It does not run them.
+
+require 'json'
+require 'gitlab_quality/test_tooling'
+
+require_relative '../lib/tooling/predictive_tests/file_based_selector'
+require_relative '../lib/tooling/predictive_tests/git_changes'
+require_relative '../quality/test_level'
+
+client = GitlabQuality::TestTooling::ClickHouse::Client.new(
+  url: ENV.fetch('GLCI_DA_CLICKHOUSE_URL'),
+  database: ENV.fetch('GLCI_CLICKHOUSE_CODE_COVERAGE_DB'),
+  username: ENV.fetch('GLCI_CLICKHOUSE_METRICS_USERNAME'),
+  password: ENV.fetch('GLCI_CLICKHOUSE_METRICS_PASSWORD')
+)
+
+git_changes = Tooling::PredictiveTests::GitChanges.new(
+  base_sha: ENV.fetch('CI_MERGE_REQUEST_DIFF_BASE_SHA'),
+  clickhouse_client: client,
+  project_path: ENV.fetch('CI_PROJECT_PATH')
+)
+changed_files = git_changes.mr_files
+
+result = Tooling::PredictiveTests::FileBasedSelector.new(
+  changed_files: changed_files,
+  recent_changed_files: git_changes.since_last_capture,
+  clickhouse_client: client,
+  project_path: ENV.fetch('CI_PROJECT_PATH')
+).execute
+
+puts "Changed files: #{changed_files.size}"
+
+# rubocop:disable Gitlab/Json -- standalone script, the app is not loaded
+File.write('file_based_selection.json', JSON.pretty_generate(
+  full_suite_reason: result.full_suite_reason, specs: result.specs, changed_files: changed_files
+))
+# rubocop:enable Gitlab/Json
+
+if result.full_suite_reason
+  puts "Would run the full suite: #{result.full_suite_reason}"
+else
+  puts "Selected #{result.specs.size} rspec files:"
+  puts result.specs
+
+  test_level = Quality::TestLevel.new(['', 'ee/', 'jh/'])
+  levels = result.specs.map { |spec| test_level.level_for(spec) }.tally
+  puts "By test level: #{levels.map { |level, count| "#{level} #{count}" }.join(', ')}"
+end

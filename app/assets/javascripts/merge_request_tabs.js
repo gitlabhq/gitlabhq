@@ -2,9 +2,10 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import createDefaultClient from '~/lib/graphql';
 import { createAlert } from '~/alert';
-import { getCookie, isMetaClick, parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, isMetaClick } from '~/lib/utils/common_utils';
 import { scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
 import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
 import { getScrollingElement } from '~/lib/utils/panels';

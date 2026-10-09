@@ -204,6 +204,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
         expect(message).to include(
           Gitlab::Routing.url_helpers.raw_project_job_artifacts_url(project, job, path: 'rails_sample.jpg')
         )
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 
@@ -215,6 +216,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
         message = result[:content].first[:text]
         expect(message).to include("Artifact file 'nope.txt' not found in the artifacts archive of job #{job.id}")
         expect(message).to include(text_file)
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 
@@ -246,6 +248,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('is not a regular file')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 
@@ -348,6 +351,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job #{remote_job.id}")
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
         expect(result[:content].first[:text]).to include(
           Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, remote_job)
         )
@@ -360,6 +364,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job #{remote_job.id}")
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
         expect(result[:content].first[:text]).to include(
           Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, remote_job)
         )
@@ -390,6 +395,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job")
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
         expect(result[:content].first[:text]).to include(
           Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, damaged_job)
         )
@@ -413,6 +419,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job")
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
         expect(result[:content].first[:text]).to include(
           Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, corrupt_job)
         )
@@ -427,6 +434,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include("Job #{bare_job.id} has no artifacts archive.")
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 
@@ -441,6 +449,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('The artifacts have expired.')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 
@@ -473,6 +482,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
         expect(result[:content].first[:text]).to include(
           Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, job)
         )
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 
@@ -491,6 +501,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
         expect(result[:content].first[:text]).to include(
           Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, job)
         )
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:bad_request)
       end
     end
 

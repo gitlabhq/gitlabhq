@@ -349,6 +349,45 @@ To turn off an override:
 1. Under **Per-user cap overrides**, turn the **Enabled** toggle off for the user.
 1. Select **Save**.
 
+#### Bulk update overrides
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257651) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `credit_caps_bulk_update`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use bulk updates to add or change overrides for many users at once.
+
+You can paste a CSV list of users, which merges into the existing list of overrides, adding new records or updating existing ones.
+
+To bulk update per-user cap overrides:
+
+1. Under **Per-user cap overrides**, select **Bulk update**.
+1. In the modal, paste a CSV list.
+1. Select **Save**.
+
+The input accepts three columns, separated by commas, and without a header row.
+If any validation fails or a username is not found, the entire update is rejected and no changes are saved.
+
+| Column | Type | Accepted values |
+|--------|------|-----------------|
+| `username` | String | GitLab username without the `@` prefix (for example, `jsmith`, not `@jsmith`) |
+| `cap` | Number | Non-negative number. Use `.` as the decimal separator for fractional values (for example, `0`, `500`, `1000.5`). |
+| `enabled` | Boolean | `true`, `True`, `TRUE`, `false`, `False`, `FALSE` |
+
+Example:
+
+```plaintext
+sidney.jones,500,true
+zhang.wei,1000.5,True
+alex.garcia,250,false
+```
+
 ## Usage control status
 
 {{< history >}}

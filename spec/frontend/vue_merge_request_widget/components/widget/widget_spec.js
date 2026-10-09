@@ -1,5 +1,6 @@
 import { GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -11,7 +12,6 @@ import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/vue_merge_request_widget/components/widget/telemetry', () => ({

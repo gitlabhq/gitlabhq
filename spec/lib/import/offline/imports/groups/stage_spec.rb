@@ -48,6 +48,11 @@ RSpec.describe Import::Offline::Imports::Groups::Stage, feature_category: :impor
           stage: 1
         }),
         hash_including({
+          pipeline: Import::Offline::Common::Pipelines::BadgesPipeline,
+          minimum_source_version: '19.5.0',
+          stage: 1
+        }),
+        hash_including({
           pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
           stage: 2
         }),

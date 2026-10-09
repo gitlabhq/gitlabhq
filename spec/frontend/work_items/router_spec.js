@@ -71,7 +71,6 @@ describe('Work items router', () => {
         isGroup: false,
         issuesListPath: 'full-path/-/issues',
         hasIssueWeightsFeature: false,
-        hasOkrsFeature: false,
         hasSubepicsFeature: false,
         hasLinkedItemsEpicsFeature: false,
         hasIssuableHealthStatusFeature: false,

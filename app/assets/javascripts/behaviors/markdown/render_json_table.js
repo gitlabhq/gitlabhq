@@ -1,8 +1,8 @@
 import { memoize } from 'lodash-es';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 // Async import component since we might not need it...
 const JSONTable = memoize(

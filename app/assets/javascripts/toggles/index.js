@@ -1,7 +1,7 @@
 import { kebabCase } from 'lodash-es';
 import Vue from 'vue';
 import { GlToggle } from '@gitlab/ui';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 
 export const initToggle = (el) => {
   if (!el) {

@@ -1,10 +1,10 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { __, s__ } from '~/locale';
 import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
 import { ERROR_POLICY_NONE } from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import { EXCLUDE_FORKS_FILTER_PARAM } from '~/search/sidebar/constants';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';

@@ -20,6 +20,7 @@ title: Developer Flow
 - Feature flags `duo_workflow_in_ci`, `duo_developer_button`, and `duo_workflow` removed in GitLab 18.9.
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - Mention triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228817) in GitLab 18.11.
+- [Images as context](#provide-images-as-context) introduced in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `dap_tool_image_input`. Disabled by default.
 
 {{< /history >}}
 
@@ -138,6 +139,44 @@ To use the flow in an Agentic Chat conversation:
    - Select **View Agent Session** in the conversation.
    - In the left sidebar, select **AI** > **Sessions**.
 
+### Provide images as context
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- Use a GitLab-managed model. Models that you host yourself are not supported.
+- For a flow that runs in a pipeline, the execution environment must include
+  GitLab Duo CLI 9.27.0 or later.
+
+The Developer Flow can read images and use them as context for a task.
+You can provide images when you use the flow in Agentic Chat, in the
+[GitLab Duo CLI](../../gitlab_duo_cli/use.md#provide-images-as-context),
+or in a flow started from a discussion or an issue.
+The flow can read:
+
+- Image files in the repository.
+- Images attached to an issue, merge request, or comment in the same project.
+
+You cannot upload an image directly in your prompt.
+Instead, name an image that already exists:
+
+- For a file in the repository, give the file path. For example, `docs/architecture.png`.
+- For an attachment, give the upload reference as it appears in the Markdown.
+  For example, `/uploads/<secret>/screenshot.png`.
+
+When the flow works on an issue, it can also read the images attached to that issue.
+
+#### Image requirements
+
+To use an image as context, the image must meet the following requirements:
+
+- Format: PNG, JPEG, or WebP file
+- Size: 10 MB or smaller
+- Dimensions: Not wider or taller than 8,000 pixels
+
 ## Best practices
 
 ### Provide clear context
@@ -150,6 +189,9 @@ The same practices that help a human collaborator apply here:
 - Include acceptance criteria that define what "done" looks like.
 - Specify exact file paths when you know them.
 - Include code examples of existing patterns to maintain consistency.
+- Attach screenshots, diagrams, or mockups to the issue, or commit them to the repository,
+  and name them in your request. For more information, see
+  [Provide images as context](#provide-images-as-context).
 
 ### Be explicit when mentioning Duo Developer in discussions
 
@@ -236,6 +278,30 @@ before making any changes:
 @duo-developer-<namespace> research whether the `PUT /api/users` endpoint also needs
 rate limiting like we added to the `POST /api/users` endpoint.
 Post your findings here.
+```
+
+### Use images as context
+
+The Developer Flow can read images from your repository or from attachments on issues and merge
+requests in the same project.
+Name the image in your prompt.
+
+You can ask the Developer Flow to fix a UI bug shown in a screenshot attached to an issue:
+
+```plaintext
+Look at the screenshot attached to issue 1234 and fix the alignment bug it shows.
+```
+
+You can ask the Developer Flow to explain an architecture diagram:
+
+```plaintext
+Read docs/architecture.png, explain the data flow, and identify any single points of failure.
+```
+
+You can ask the Developer Flow to turn a whiteboard photo into a design document:
+
+```plaintext
+Read whiteboard.jpg and turn it into a design document in docs/design.md.
 ```
 
 ### Use the Developer Flow in Agentic Chat

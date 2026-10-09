@@ -12,16 +12,22 @@ module WorkItems
       deduplicate :until_executed
 
       def handle_event(event)
-        case event.data[:source_type]
-        when GroupMember::SOURCE_TYPE
+        payload = event.is_a?(::Gitlab::EventStore::CloudEvent) ? event.event_data : event.data
+
+        # Legacy DestroyedEvent carries `member.source_type` (`Namespace`/`Project`);
+        # DestroyedCloudEvent derives it from the source class (`Group`/`Project`).
+        # Only `Group` needs adding: `Project.name == ProjectMember::SOURCE_TYPE`, but
+        # `GroupMember::SOURCE_TYPE` is `Namespace`, not `Group`.
+        case payload[:source_type]
+        when GroupMember::SOURCE_TYPE, Group.name
           ::WorkItems::UserPreference.delete_by(
-            user_id: event.data[:user_id],
-            namespace_id: event.data[:source_id]
+            user_id: payload[:user_id],
+            namespace_id: payload[:source_id]
           )
         when ProjectMember::SOURCE_TYPE
           ::WorkItems::UserPreference.delete_by(
-            user_id: event.data[:user_id],
-            namespace: Project.project_namespace_for(id: event.data[:source_id])
+            user_id: payload[:user_id],
+            namespace: Project.project_namespace_for(id: payload[:source_id])
           )
         end
       end

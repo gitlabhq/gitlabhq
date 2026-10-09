@@ -145,3 +145,17 @@ certificate bundle path in the Docker container:
 - `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
 
 Replace `/path/to/ca-bundle.pem` with the path to your certificate bundle.
+
+## Errors when sending billing events to an offline GitLab instance
+
+In an offline environment, the AI Gateway sends events to the
+`/api/v4/ai/billable_usage/events` API endpoint on your GitLab instance.
+If a request fails, check the response status in the AI Gateway logs:
+
+- `401`: `AIGW_BILLING_EVENT__API_KEY` is not set, or the token is invalid.
+- `403`: The token does not have the [`ai_features` scope](../security/tokens/access_token_scopes.md)
+  or does not belong to a [service account](../user/profile/service_accounts.md#create-a-service-account).
+- `404`: The `local_billing_persistence` feature flag is disabled on the GitLab instance.
+
+For more information, see
+[send billing events to your GitLab instance](install_ai_gateway.md#send-billing-events-to-an-offline-gitlab-instance).

@@ -1,6 +1,6 @@
 import Vue from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import ListboxInput from '~/vue_shared/components/listbox_input/listbox_input.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 export const initListboxInputs = () => {
   const els = [...document.querySelectorAll('.js-listbox-input')];

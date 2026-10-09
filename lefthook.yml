@@ -88,7 +88,7 @@ pre-push:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       exclude: 'doc/api/graphql/reference/_index.md'
-      glob: 'doc/*.md'
+      glob: '{doc/*.md,.ai/*.md,*AGENTS.md}'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     gettext:
       tags: backend frontend view haml
@@ -316,7 +316,7 @@ pre-commit:
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
       exclude: 'doc/api/graphql/reference/_index.md'
-      glob: 'doc/*.md'
+      glob: '{doc/*.md,.ai/*.md,*AGENTS.md}'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     validate-fe-islands-ci:
       tags: frontend

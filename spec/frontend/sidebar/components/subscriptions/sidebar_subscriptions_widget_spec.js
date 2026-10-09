@@ -1,10 +1,10 @@
 import { GlAnimatedNotificationIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
 import SidebarSubscriptionWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';

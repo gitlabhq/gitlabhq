@@ -1,11 +1,12 @@
 import $ from 'jquery';
 import { flatten } from 'lodash-es';
 import Vue, { defineAsyncComponent } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { MARKDOWN_EVENT_TOGGLE } from '~/behaviors/preview_markdown';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_SHORTCUT_CLICK } from '~/tracking/constants';
 import { Mousetrap, addStopCallback, suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
-import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
+import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { setGitlabNext, isGitlabNextEnabled } from '~/lib/utils/gitlab_next';
 import { waitForElement } from '~/lib/utils/dom_utils';
 import findAndFollowLink from '~/lib/utils/navigation_utility';

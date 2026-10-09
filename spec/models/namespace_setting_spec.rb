@@ -358,8 +358,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
   end
 
   describe '#prevent_sharing_groups_outside_hierarchy' do
-    let(:settings) { create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true) }
-    let!(:group) { create(:group, parent: parent, namespace_settings: settings) }
+    let(:settings) { build_stubbed(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true) }
+    let!(:group) { build_stubbed(:group, parent: parent, namespace_settings: settings) }
 
     subject(:group_sharing_setting) { settings.prevent_sharing_groups_outside_hierarchy }
 
@@ -372,7 +372,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     end
 
     context 'when this namespace is a descendant' do
-      let(:parent) { create(:group) }
+      let(:parent) { build_stubbed(:group, namespace_settings: build_stubbed(:namespace_settings)) }
 
       it 'returns the value stored for the parent settings' do
         expect(group_sharing_setting).to eq(parent.namespace_settings.prevent_sharing_groups_outside_hierarchy)
@@ -385,8 +385,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
     context 'when not a subgroup' do
       context 'when :show_diff_preview_in_email is false' do
         it 'returns false' do
-          settings = create(:namespace_settings, show_diff_preview_in_email: false)
-          group = create(:group, namespace_settings: settings)
+          settings = build_stubbed(:namespace_settings, show_diff_preview_in_email: false)
+          group = build_stubbed(:group, namespace_settings: settings)
 
           expect(group.show_diff_preview_in_email?).to be_falsey
         end
@@ -394,8 +394,8 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
 
       context 'when :show_diff_preview_in_email is true' do
         it 'returns true' do
-          settings = create(:namespace_settings, show_diff_preview_in_email: true)
-          group = create(:group, namespace_settings: settings)
+          settings = build_stubbed(:namespace_settings, show_diff_preview_in_email: true)
+          group = build_stubbed(:group, namespace_settings: settings)
 
           expect(group.show_diff_preview_in_email?).to be_truthy
         end
@@ -961,7 +961,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
 
     context 'when `granular_personal_access_tokens_enforcement_saas` is enabled for a different namespace' do
       before do
-        stub_feature_flags(granular_personal_access_tokens_enforcement_saas: create(:namespace))
+        stub_feature_flags(granular_personal_access_tokens_enforcement_saas: build_stubbed(:namespace))
       end
 
       it { is_expected.to be false }

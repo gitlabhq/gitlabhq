@@ -13,12 +13,10 @@ export default normalizeRender({
     return {
       hasIssueWeightsFeature: computed(() => this.metadata.hasIssueWeightsFeature),
       hasIterationsFeature: computed(() => this.metadata.hasIterationsFeature),
-      hasOkrsFeature: computed(() => this.metadata.hasOkrsFeature),
       hasSubepicsFeature: computed(() => this.metadata.hasSubepicsFeature),
       hasIssuableHealthStatusFeature: computed(() => this.metadata.hasIssuableHealthStatusFeature),
       hasEpicsFeature: computed(() => this.metadata.hasEpicsFeature),
       hasScopedLabelsFeature: computed(() => this.metadata.hasScopedLabelsFeature),
-      hasQualityManagementFeature: computed(() => this.metadata.hasQualityManagementFeature),
       hasLinkedItemsEpicsFeature: computed(() => this.metadata.hasLinkedItemsEpicsFeature),
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       hasBlockedIssuesFeature: computed(() => this.metadata.hasBlockedIssuesFeature),

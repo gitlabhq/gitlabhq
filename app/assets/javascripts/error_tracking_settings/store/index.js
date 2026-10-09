@@ -1,8 +1,9 @@
 import { isMatch, pick } from 'lodash-es';
 import { defineStore } from 'pinia';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import { getDisplayName, projectKeys, transformFrontendSettings } from '../utils';

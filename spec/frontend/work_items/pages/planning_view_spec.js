@@ -366,8 +366,6 @@ const mountComponent = async ({
       isGroupIssuesList: false,
       isServiceDeskSupported: true,
       hasEpicsFeature: false,
-      hasOkrsFeature: false,
-      hasQualityManagementFeature: false,
       workItemType: null,
       isIssueRepositioningDisabled: false,
       groupId: 'gid://gitlab/Group/1',

@@ -22671,6 +22671,12 @@
               "description": "Recommend reviewers assign feature setting",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "RISK_CLASSIFICATION",
+              "description": "Risk classification feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -27714,6 +27720,12 @@
             {
               "name": "RECOMMEND_REVIEWERS_ASSIGN",
               "description": "Recommend reviewers assign feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RISK_CLASSIFICATION",
+              "description": "Risk classification feature setting",
               "isDeprecated": false,
               "deprecationReason": null
             }

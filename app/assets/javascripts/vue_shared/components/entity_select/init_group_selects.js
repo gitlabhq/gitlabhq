@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import GroupSelect from './group_select.vue';
 
 const SELECTOR = '.js-vue-group-select';

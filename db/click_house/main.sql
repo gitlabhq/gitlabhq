@@ -2409,6 +2409,25 @@ CREATE TABLE siphon_p_ci_builds
             started_at,
             id,
             partition_id
+    ),
+    PROJECTION by_started_hour_runner_id
+    (
+        SELECT
+            id,
+            partition_id,
+            started_at,
+            queued_at,
+            runner_id,
+            status,
+            type,
+            _siphon_replicated_at,
+            _siphon_deleted
+        ORDER BY
+            toStartOfHour(started_at),
+            runner_id,
+            started_at,
+            id,
+            partition_id
     )
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)

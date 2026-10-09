@@ -62,4 +62,48 @@ RSpec.describe WorkItems::UserPreferences::DestroyWorker, feature_category: :tea
 
     it_behaves_like 'delete user preferences'
   end
+
+  context 'when source_type is unknown' do
+    let_it_be(:namespace) { create(:group, parent: root_namespace) }
+    let_it_be(:user_preference) { create(:work_item_user_preference, namespace: namespace, user: user) }
+
+    let(:source) { namespace }
+    let(:source_type) { 'Unknown' }
+
+    it 'does not delete any user preference' do
+      expect { consume_event(subscriber: described_class, event: event) }
+        .not_to change { WorkItems::UserPreference.count }
+
+      expect(WorkItems::UserPreference.exists?(id: user_preference.id)).to be(true)
+    end
+  end
+
+  context 'with a Members::DestroyedCloudEvent' do
+    let(:event) do
+      ::Members::DestroyedCloudEvent.build(
+        source: source,
+        current_user: user,
+        user_id: user.id,
+        root_namespace_id: root_namespace.id
+      )
+    end
+
+    it_behaves_like 'subscribes to event'
+
+    context 'when namespace is a group' do
+      let_it_be(:namespace) { create(:group, parent: root_namespace) }
+      let(:source) { namespace }
+
+      it_behaves_like 'delete user preferences'
+    end
+
+    context 'when namespace is a project' do
+      let_it_be(:project) { create(:project, group: root_namespace) }
+      let_it_be(:namespace) { project.project_namespace }
+
+      let(:source) { project }
+
+      it_behaves_like 'delete user preferences'
+    end
+  end
 end

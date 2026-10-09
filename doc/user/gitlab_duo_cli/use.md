@@ -342,6 +342,23 @@ When you use headless mode, the GitLab Duo CLI:
 - Does not maintain context from previous conversations.
   A new workflow starts every time you execute the `run` command.
 
+## Provide images as context
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.27.0) in GitLab Duo CLI 9.27.0, during the GitLab 19.5 release.
+
+{{< /history >}}
+
+In interactive and headless mode, GitLab Duo can read images and use them as context.
+You cannot attach an image to your prompt.
+Instead, in your prompt, name an image file in the repository or an image attached to an issue or
+merge request in the same project.
+
+For more information about how to reference images and the image requirements, see
+[provide images as context](../project/merge_requests/developer.md#provide-images-as-context).
+For example prompts, see [use images as context](../project/merge_requests/developer.md#use-images-as-context).
+
 ## Select a model
 
 {{< history >}}

@@ -44,7 +44,10 @@ This flow is available in VS Code, Visual Studio, and JetBrains.
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md#prerequisites).
-- Install and configure an [editor extension](_index.md) for your IDE.
+- Install and configure an [editor extension](_index.md) for your IDE:
+  - GitLab for VS Code 6.85.0 and later
+  - GitLab Duo plugin for JetBrains IDEs 3.40.0 and later
+  - GitLab for Visual Studio 0.79.0 and later
 
 ## Flow and Chat comparison
 

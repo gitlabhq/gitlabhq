@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module Members
+  # TODO: Remove this legacy event in 19.6 once in-flight events have drained.
+  # Dual-published alongside Members::DestroyedCloudEvent from Members::DestroyService
+  # during the transition. See https://gitlab.com/gitlab-org/gitlab/-/work_items/606864
   class DestroyedEvent < ::Gitlab::EventStore::Event
     def schema
       {

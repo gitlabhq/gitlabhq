@@ -1,7 +1,7 @@
 <script>
+import { parseBoolean } from '@gitlab/frontend-utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';

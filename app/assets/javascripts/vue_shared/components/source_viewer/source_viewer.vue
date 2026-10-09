@@ -2,11 +2,11 @@
 import { defineAsyncComponent } from 'vue';
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import LineHighlighter from '~/blob/line_highlighter';

@@ -73,7 +73,8 @@ module Mcp
 
         def missing_resource_error(resource)
           ::Mcp::Tools::Base::Response.error(
-            "#{resource} not found or inaccessible"
+            "#{resource} not found or inaccessible",
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
 

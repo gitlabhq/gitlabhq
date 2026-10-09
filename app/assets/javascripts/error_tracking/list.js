@@ -1,4 +1,4 @@
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ErrorTrackingList from './components/error_tracking_list.vue';
 import store from './store';

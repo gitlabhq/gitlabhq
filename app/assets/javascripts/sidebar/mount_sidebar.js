@@ -1,14 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST, NAMESPACE_PROJECT } from '~/issues/constants';
-import {
-  isInDesignPage,
-  isInIncidentPage,
-  isInIssuePage,
-  parseBoolean,
-} from '~/lib/utils/common_utils';
+import { isInDesignPage, isInIncidentPage, isInIssuePage } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { apolloProvider, defaultClient } from '~/graphql_shared/issuable_client';
 import { currentReviewers } from '~/graphql_shared/issuable_client_state';

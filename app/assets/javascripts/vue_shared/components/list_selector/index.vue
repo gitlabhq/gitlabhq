@@ -1,6 +1,7 @@
 <script>
 import { GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';

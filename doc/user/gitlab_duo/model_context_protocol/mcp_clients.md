@@ -281,6 +281,14 @@ GitLab uses a two-tier approval system for MCP tools:
 
 A tool is approved if either condition is met.
 
+### Sandbox settings
+
+When the [local sandbox](../../../editor_extensions/local_sandbox.md) is turned on,
+MCP servers that use the `stdio` transport run in the sandbox.
+To change the sandbox rules for one server, add a `sandbox` object to its configuration.
+For more information, see
+[configure the sandbox for an MCP server](../../../editor_extensions/local_sandbox.md#configure-the-sandbox-for-an-mcp-server).
+
 ### Example MCP server configurations
 
 Use the following code examples to help you create your MCP server configuration file.

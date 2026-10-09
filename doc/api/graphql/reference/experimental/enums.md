@@ -369,6 +369,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | `REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
+| `RISK_CLASSIFICATION` | Risk classification feature setting. |
 | `SAST_VULNERABILITY_FP_DETECTION` | Sast vulnerability fp detection feature setting. |
 | `SAST_VULNERABILITY_RESOLUTION` | Sast vulnerability resolution feature setting. |
 | `SECRET_VULNERABILITY_FP_DETECTION` | Secret vulnerability fp detection feature setting. |
@@ -489,6 +490,7 @@ AI features that can be configured through the Model Selection feature settings.
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | `REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
+| `RISK_CLASSIFICATION` | Risk classification feature setting. |
 | `SAST_VULNERABILITY_FP_DETECTION` | Sast vulnerability fp detection feature setting. |
 | `SAST_VULNERABILITY_RESOLUTION` | Sast vulnerability resolution feature setting. |
 | `SECRET_VULNERABILITY_FP_DETECTION` | Secret vulnerability fp detection feature setting. |

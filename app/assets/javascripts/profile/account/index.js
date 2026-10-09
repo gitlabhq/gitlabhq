@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import DeleteAccountModal from './components/delete_account_modal.vue';
 import UpdateUsername from './components/update_username.vue';
 

@@ -247,12 +247,16 @@ module Members
     end
 
     def publish_destroyed_event
-      root_namespace_id = member.source.root_ancestor.id
+      member_source = member.source
+      root_namespace_id = member_source.root_ancestor.id
       member_source_id = member.source_id
       member_source_type = member.source_type
       member_user_id = member.user_id
+      event_actor = current_user
 
       member.run_after_commit_or_now do
+        # Dual-published with DestroyedCloudEvent during the transition; the legacy
+        # publish is slated for removal in 19.6 (see Members::DestroyedEvent).
         Gitlab::EventStore.publish(
           Members::DestroyedEvent.new(
             data: {
@@ -261,6 +265,15 @@ module Members
               source_type: member_source_type,
               user_id: member_user_id
             }
+          )
+        )
+
+        Gitlab::EventStore.publish(
+          Members::DestroyedCloudEvent.build(
+            source: member_source,
+            current_user: event_actor,
+            user_id: member_user_id,
+            root_namespace_id: root_namespace_id
           )
         )
       end

@@ -427,20 +427,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('parseBoolean', () => {
-    it.each`
-      input          | expected
-      ${'true'}      | ${true}
-      ${'false'}     | ${false}
-      ${'something'} | ${false}
-      ${null}        | ${false}
-      ${true}        | ${true}
-      ${false}       | ${false}
-    `('returns $expected for $input', ({ input, expected }) => {
-      expect(commonUtils.parseBoolean(input)).toBe(expected);
-    });
-  });
-
   describe('backOff', () => {
     beforeEach(() => {
       jest.spyOn(window, 'setTimeout');

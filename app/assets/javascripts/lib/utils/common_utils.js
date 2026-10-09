@@ -384,16 +384,6 @@ export const historyReplaceState = (newUrl) => {
   window.history.replaceState({}, document.title, newUrl);
 };
 
-/**
- * Returns true for a String value of "true" and false otherwise.
- * This is the opposite of Boolean(...).toString().
- * `parseBoolean` is idempotent.
- *
- * @param  {String} value
- * @returns {Boolean}
- */
-export const parseBoolean = (value) => (value && value.toString()) === 'true';
-
 export const BACKOFF_TIMEOUT = 'BACKOFF_TIMEOUT';
 
 /**

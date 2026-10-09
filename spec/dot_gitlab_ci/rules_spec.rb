@@ -154,7 +154,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.solargraph.yml.example',
         '.solargraph.yml',
         '.test_license_encryption_key.pub',
-        '.vale.ini',
         '.vscode/extensions.json',
         '.vscode/tasks.json',
         'ee/frontend_islands/apps/duo_next/.vscode/extensions.json',

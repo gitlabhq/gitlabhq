@@ -34,7 +34,9 @@ The execution environment sandbox is automatically applied when using a compatib
 The sandbox is enabled when:
 
 - Anthropic Sandbox Runtime (SRT) is available in the Docker image.
-- GitLab Duo Agent Platform sessions are being executed on a runner (local environments are not being sandboxed).
+- GitLab Duo Agent Platform sessions are being executed on a runner.
+
+For agents that run on your computer, see [local sandbox](../../editor_extensions/local_sandbox.md).
 
 For information about CI/CD variable differences between default and custom
 image configurations, see

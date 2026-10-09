@@ -1,6 +1,7 @@
 import { GlButtonGroup, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -11,7 +12,6 @@ import {
   mockMilestoneQueryResponse,
   mockMilestoneQueryList,
 } from 'jest/boards/mock_data';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
 import ItemCount from '~/boards/components/item_count.vue';
 import MilestonePopover from '~/issuable/popover/components/milestone_popover.vue';

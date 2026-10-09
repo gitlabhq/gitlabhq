@@ -1118,6 +1118,23 @@ rspec-ee:predictive:trigger single-db-ci-connection:
   variables:
     PIPELINE_NAME: 'rspec-ee:predictive single-db-ci-connection'
 
+# Proof of concept: prints the specs the coverage map would select. It does not run them.
+rspec:file-based-selection:print:
+  extends:
+    - .rails-job-base
+    - .rails:rules:file-based-spec-selection
+  stage: test
+  needs: []
+  allow_failure: true
+  variables:
+    SETUP_DB: "false"
+  script:
+    - bundle exec tooling/bin/file_based_spec_selection
+  artifacts:
+    expire_in: 7d
+    paths:
+      - file_based_selection.json
+
 rspec:predictive:system-full:trigger:
   extends:
     - .rails:rules:rspec-predictive:system-full:trigger

@@ -328,21 +328,24 @@ module Mcp
           message = "Job #{job.id} has no artifacts archive."
           message += ' The artifacts have expired.' if job.artifacts_expired?
 
-          error(message)
+          error(message, reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND)
         end
 
         def too_many_entries_error
           error("The artifacts archive of job #{job.id} has more than #{MAX_ARCHIVE_ENTRIES} entries, " \
-            "which exceeds what this tool reads. Download it from #{download_url} instead.")
+            "which exceeds what this tool reads. Download it from #{download_url} instead.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST)
         end
 
         def archive_too_large_error
           error("The artifacts archive of job #{job.id} is #{job.artifacts_size} bytes, which exceeds " \
-            "the #{MAX_ARCHIVE_BYTES} bytes this tool reads. Download it from #{download_url} instead.")
+            "the #{MAX_ARCHIVE_BYTES} bytes this tool reads. Download it from #{download_url} instead.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST)
         end
 
         def archive_unreadable_error
-          error("Could not read the artifacts archive of job #{job.id}. Download it from #{download_url} instead.")
+          error("Could not read the artifacts archive of job #{job.id}. Download it from #{download_url} instead.",
+            reason: ::Mcp::Tools::Base::Response::Reason::ERROR)
         end
 
         def entry_not_found_error
@@ -350,11 +353,12 @@ module Mcp
           paths = listable_paths
           message += " Files in the archive include: #{paths.join(', ')}." if paths.any?
 
-          error(message)
+          error(message, reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND)
         end
 
         def not_regular_file_error
-          error("Artifact path '#{artifact_path}' in job #{job.id} is not a regular file and cannot be read.")
+          error("Artifact path '#{artifact_path}' in job #{job.id} is not a regular file and cannot be read.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST)
         end
 
         # CE has no context exclusions. Overridden in EE.
@@ -363,7 +367,8 @@ module Mcp
         end
 
         def excluded_response
-          error("File '#{artifact_path}' is excluded from AI context by this project's settings and cannot be read.")
+          error("File '#{artifact_path}' is excluded from AI context by this project's settings and cannot be read.",
+            reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED)
         end
 
         def binary_error(sample, total_bytes)
@@ -371,7 +376,8 @@ module Mcp
 
           error("Artifact file '#{artifact_path}' in job #{job.id} is binary (#{file_type}) and cannot be " \
             "returned as text. Size: #{total_bytes} bytes. It can be viewed at " \
-            "#{::Gitlab::Routing.url_helpers.raw_project_job_artifacts_url(job.project, job, path: artifact_path)}.")
+            "#{::Gitlab::Routing.url_helpers.raw_project_job_artifacts_url(job.project, job, path: artifact_path)}.",
+            reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST)
         end
 
         def listable_paths
@@ -386,8 +392,8 @@ module Mcp
           ::Gitlab::Routing.url_helpers.download_project_job_artifacts_url(job.project, job)
         end
 
-        def error(message)
-          ::Mcp::Tools::Base::Response.error(message)
+        def error(message, reason:)
+          ::Mcp::Tools::Base::Response.error(message, reason: reason)
         end
       end
     end

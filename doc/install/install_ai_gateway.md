@@ -181,6 +181,10 @@ To copy an image and its signature, use `cosign copy`.
    - Forces the GitLab Duo Workflow Service to authenticate
      exclusively against the local GitLab instance.
    - Eliminates the 20-second delay caused by unreachable CustomersDot calls.
+
+   To record GitLab Duo usage on the instance, also
+   [send billing events to your GitLab instance](#send-billing-events-to-an-offline-gitlab-instance).
+
 1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 1. Optional. If your local GitLab Duo Agent Platform endpoint uses TLS:
    1. In the upper-right corner, select **Admin**.
@@ -562,6 +566,9 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    Before you run the command, mirror the TLS proxy's `nginx:alpine` image
    to `<your_internal_registry>/nginx`.
 
+   To record GitLab Duo usage on the instance, also
+   [send billing events to your GitLab instance](#send-billing-events-to-an-offline-gitlab-instance).
+
 You can find the list of AI Gateway versions that can be used as `image.tag` in the [container registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&search%5B%5D=self-hosted).
 
 This step can take a few seconds in order for all resources to be allocated
@@ -582,6 +589,56 @@ kubectl wait pod \
 ```
 
 When your pods are up and running, you can set up your IP ingresses and DNS records.
+
+## Send billing events to an offline GitLab instance
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259290) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `local_billing_persistence`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+In an offline environment, the AI Gateway cannot reach the GitLab billing collector on the internet.
+Instead, configure the AI Gateway to send GitLab Duo billing events to your GitLab instance,
+which records the usage locally.
+
+The AI Gateway authenticates to your GitLab instance with a personal access token
+that belongs to a service account. Tokens that belong to regular users are rejected.
+
+Prerequisites:
+
+- Administrator access.
+- A GitLab instance that uses an offline license.
+
+To send billing events to your GitLab instance:
+
+1. [Create an instance service account](../user/profile/service_accounts.md#create-a-service-account).
+1. [Create a personal access token for the service account](../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account)
+   with the [`ai_features` scope](../security/tokens/access_token_scopes.md).
+1. On the AI Gateway, set the following environment variables:
+
+   - `AIGW_BILLING_EVENT__ENABLED`: `true`.
+   - `AIGW_BILLING_EVENT__ENDPOINT`: `https://<your_gitlab_domain>/api/v4/ai/billable_usage/events`.
+   - `AIGW_BILLING_EVENT__API_KEY`: The personal access token of the service account.
+
+   For a Docker deployment, pass the variables with `-e`:
+
+   ```shell
+   -e AIGW_BILLING_EVENT__ENABLED=true \
+   -e AIGW_BILLING_EVENT__ENDPOINT=https://<your_gitlab_domain>/api/v4/ai/billable_usage/events \
+   -e AIGW_BILLING_EVENT__API_KEY=<service_account_token> \
+   ```
+
+   For a GitLab Helm chart deployment, add the variables to `extraEnvironmentVariables`.
+   Store the token in a Kubernetes secret rather than in plain text in your `values.yaml` file.
+
+1. Restart the AI Gateway.
+
+The AI Gateway sends events to the `/api/v4/ai/billable_usage/events` API endpoint on your GitLab instance.
 
 ## Connect to a GitLab instance or model endpoint with a self-signed SSL certificate
 

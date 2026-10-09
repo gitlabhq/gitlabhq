@@ -275,12 +275,13 @@ to the same `environment` line:
 ```
 
 The GitLab Duo CLI runs inside the Anthropic Sandbox Runtime (SRT), which starts with an
-empty environment. When the following certificate and proxy variables are set in the job,
+empty environment. When the following certificate, proxy, and locale variables are set in the job,
 they are forwarded into the sandbox:
 
 - `NODE_EXTRA_CA_CERTS`
 - `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY`
 - The lowercase equivalents `http_proxy`, `https_proxy`, and `no_proxy`
+- `LANG` and `LC_ALL`, so the sandbox keeps the locale of the image
 
 Set these variables in the runner's `environment` directive, or export them in the
 `setup_script` of your `agent-config.yml` file. Other variables are not forwarded.

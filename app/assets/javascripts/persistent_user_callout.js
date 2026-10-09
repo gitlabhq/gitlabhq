@@ -1,6 +1,6 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { createAlert } from '~/alert';
 import axios from './lib/utils/axios_utils';
-import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
 import { visitUrl } from './lib/utils/url_utility';
 

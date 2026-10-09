@@ -360,6 +360,22 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Pipeline not found')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
+      end
+    end
+
+    context 'when the caller can see the project but not its pipelines' do
+      let_it_be(:builds_private_project) { create(:project, :public, :builds_private) }
+      let_it_be(:hidden_pipeline) { create(:ci_pipeline, project: builds_private_project) }
+
+      let(:tool) { described_class.new(current_user: create(:user), params: params) }
+      let(:params) { { id: builds_private_project.full_path, pipeline_id: hidden_pipeline.id } }
+
+      it 'reports not_found, as for a missing pipeline', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:content].first[:text]).to eq('Pipeline not found or inaccessible')
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:not_found)
       end
     end
 
