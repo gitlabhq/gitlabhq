@@ -613,13 +613,13 @@ class Namespace < ApplicationRecord
     if Gitlab::SafeRequestStore.active?
       forks_in_namespace = Gitlab::SafeRequestStore.fetch("namespaces:#{id}:forked_projects") do
         Hash.new do |found_forks, project|
-          found_forks[project] = project.fork_network.find_forks_in(projects).first
+          found_forks[project] = uncached_fork_of(project)
         end
       end
 
       forks_in_namespace[project]
     else
-      project.fork_network.find_forks_in(projects).first
+      uncached_fork_of(project)
     end
   end
 
@@ -962,6 +962,13 @@ class Namespace < ApplicationRecord
   end
 
   private
+
+  # A project is a member of its own fork network, so it has to be excluded
+  # from the candidates. Otherwise a project in this namespace is returned as
+  # a fork of itself.
+  def uncached_fork_of(project)
+    project.fork_network.find_forks_in(projects.excluding(project)).first
+  end
 
   def parent_organization_match
     return unless parent

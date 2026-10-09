@@ -30892,6 +30892,18 @@
               "deprecationReason": null
             },
             {
+              "name": "CREATE_DUO_SUGGESTED_REVIEWERS",
+              "description": "Duo suggested reviewers for a merge request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ASSIGN_DUO_SUGGESTED_REVIEWER",
+              "description": "Duo suggested reviewers were added as reviewers to a merge request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DUO_WORKFLOW_WORKLOAD_COMPLETED",
               "description": "Duo Workflow workload was completed.",
               "isDeprecated": false,
@@ -31866,6 +31878,30 @@
             {
               "name": "PUBLISH_DUO_CODE_REVIEW_COMMENTS_ASC",
               "description": "Publish Duo Code Review Comments event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATE_DUO_SUGGESTED_REVIEWERS_DESC",
+              "description": "Create Duo Suggested Reviewers event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATE_DUO_SUGGESTED_REVIEWERS_ASC",
+              "description": "Create Duo Suggested Reviewers event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ASSIGN_DUO_SUGGESTED_REVIEWER_DESC",
+              "description": "Assign Duo Suggested Reviewer event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ASSIGN_DUO_SUGGESTED_REVIEWER_ASC",
+              "description": "Assign Duo Suggested Reviewer event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -113042,15 +113078,15 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. Introduced in GitLab 19.0: Status: Experiment.",
+              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "mergeRequest",
@@ -197041,15 +197077,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "trackedRefIds",
@@ -197943,15 +197979,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "securityAttributesFilters",
@@ -215428,15 +215464,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "securityAttributesFilters",
@@ -347198,15 +347234,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "trackedRefIds",
@@ -348124,15 +348160,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "securityAttributesFilters",
@@ -350367,6 +350403,12 @@
             {
               "name": "PENDING",
               "description": "Pending",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NOT_APPLICABLE",
+              "description": "Not applicable",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -377630,15 +377672,15 @@
                 },
                 {
                   "name": "malware",
-                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null,
-                  "isDeprecated": true,
-                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 },
                 {
                   "name": "trackedRefIds",
@@ -446345,15 +446387,15 @@
             },
             {
               "name": "malware",
-              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. Introduced in GitLab 19.0: Status: Experiment.",
+              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "mergeRequest",
@@ -481619,6 +481661,30 @@
           "description": "Requires ClickHouse. Premium and Ultimate only.",
           "fields": [
             {
+              "name": "assignDuoSuggestedReviewerEventCount",
+              "description": "Total count of `assign_duo_suggested_reviewer` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createDuoSuggestedReviewersEventCount",
+              "description": "Total count of `create_duo_suggested_reviewers` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "encounterDuoCodeReviewErrorDuringReviewEventCount",
               "description": "Total count of `encounter_duo_code_review_error_during_review` event.",
               "args": [],
@@ -481749,6 +481815,30 @@
           "name": "codeReviewUserMetrics",
           "description": "Code Review user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
           "fields": [
+            {
+              "name": "assignDuoSuggestedReviewerEventCount",
+              "description": "Total count of `assign_duo_suggested_reviewer` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createDuoSuggestedReviewersEventCount",
+              "description": "Total count of `create_duo_suggested_reviewers` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "encounterDuoCodeReviewErrorDuringReviewEventCount",
               "description": "Total count of `encounter_duo_code_review_error_during_review` event.",

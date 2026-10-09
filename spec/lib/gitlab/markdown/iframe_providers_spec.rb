@@ -95,6 +95,7 @@ RSpec.describe Gitlab::Markdown::IframeProviders, feature_category: :markdown do
 
       expect(described_class.frontend_config).to eq(
         'youtube' => {
+          name: 'YouTube',
           src_origin: 'https://www.youtube.com',
           sandbox: 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox',
           require_activation: false

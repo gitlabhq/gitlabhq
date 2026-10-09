@@ -58,7 +58,7 @@ The **Users** section displays the following metrics:
 The **Engagement** section displays the following metrics:
 
 - **Multi-activity users**: Number of users with sessions for multiple Agent Platform flow types.
-- **Abandonment**: Number of users who used Agent Platform only once.
+- **Abandonment**: Number of users who were active on only one day in the previous period and did not return in the selected period.
 - **Sessions by tier and top capabilities**: Number of sessions by user tier for the five most used Agent Platform capabilities.
 
 The **Adoption tiers** section displays the following metrics:

@@ -201,7 +201,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
           # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all instances for N+1 spec
-          allow_any_instance_of(EE::Namespace).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Namespace).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
           # rubocop:enable RSpec/AnyInstanceOf
         end
       end
@@ -740,7 +743,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
           # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Project).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
           # rubocop:enable RSpec/AnyInstanceOf
         end
       end
@@ -1960,7 +1966,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
           if Gitlab.ee?
             # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-            allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+            allow_any_instance_of(EE::Project).to receive_messages(
+              auto_duo_code_review_settings_available?: false,
+              duo_code_review_decisions_available?: false
+            )
             # rubocop:enable RSpec/AnyInstanceOf
           end
         end
@@ -2058,7 +2067,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
           # rubocop:disable RSpec/AnyInstanceOf -- Need to stub all project instances for N+1 spec
-          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Project).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
           # rubocop:enable RSpec/AnyInstanceOf
         end
 

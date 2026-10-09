@@ -1860,14 +1860,8 @@ RSpec.shared_examples 'a container registry auth service' do
 
     let(:current_params) { { scopes: ["repository:#{project.full_path}:push,pull"] } }
 
-    context 'when the organization_maintenance_enforcement feature flag is disabled' do
-      before do
-        stub_feature_flags(organization_maintenance_enforcement: false)
-        organization.reload.start_maintenance(maintenance_reason: 'migration')
-        organization.confirm_maintenance
-      end
-
-      it 'allows write actions even when the organization is in maintenance' do
+    context 'when the organization is active' do
+      it 'allows both pull and push' do
         is_expected.to include(:token)
         expect(payload['access']).to contain_exactly(
           include('actions' => contain_exactly('pull', 'push'))
@@ -1875,117 +1869,102 @@ RSpec.shared_examples 'a container registry auth service' do
       end
     end
 
-    context 'when the organization_maintenance_enforcement feature flag is enabled' do
+    context 'when the organization is in maintenance state' do
       before do
-        stub_feature_flags(organization_maintenance_enforcement: true)
+        organization.reload.start_maintenance(maintenance_reason: 'migration')
+        organization.confirm_maintenance
       end
 
-      context 'when the organization is active' do
-        it 'allows both pull and push' do
-          is_expected.to include(:token)
-          expect(payload['access']).to contain_exactly(
-            include('actions' => contain_exactly('pull', 'push'))
-          )
-        end
-      end
+      it_behaves_like 'an inaccessible'
+      it_behaves_like 'logs an auth warning', %w[push pull]
 
-      context 'when the organization is in maintenance state' do
-        before do
-          organization.reload.start_maintenance(maintenance_reason: 'migration')
-          organization.confirm_maintenance
-        end
+      context 'when requesting push only' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
 
         it_behaves_like 'an inaccessible'
-        it_behaves_like 'logs an auth warning', %w[push pull]
-
-        context 'when requesting push only' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['push']
-        end
-
-        context 'when requesting delete' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['delete']
-        end
-
-        context 'when requesting wildcard (*)' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['*']
-        end
-
-        context 'when requesting pull only' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['pull']
-        end
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['push']
       end
 
-      context 'when the organization is in maintenance_initialization state' do
-        before do
-          organization.reload.start_maintenance(maintenance_reason: 'migration')
-        end
+      context 'when requesting delete' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
 
         it_behaves_like 'an inaccessible'
-        it_behaves_like 'logs an auth warning', %w[push pull]
-
-        context 'when requesting push only' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['push']
-        end
-
-        context 'when requesting delete' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['delete']
-        end
-
-        context 'when requesting wildcard (*)' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['*']
-        end
-
-        context 'when requesting pull only' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['pull']
-        end
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['delete']
       end
 
-      context 'when the project belongs to the default organization' do
-        let_it_be(:default_org) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required to test default organization is never in maintenance
-        let_it_be_with_reload(:default_project) { create(:project, organization: default_org) }
-        let_it_be_with_reload(:default_user) { create(:user, maintainer_of: default_project) }
+      context 'when requesting wildcard (*)' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
 
-        let(:current_user) { default_user }
-        let(:current_params) { { scopes: ["repository:#{default_project.full_path}:push,pull"] } }
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['*']
+      end
 
-        it 'allows both pull and push (default org is never in maintenance)' do
-          is_expected.to include(:token)
-          expect(payload['access']).to contain_exactly(
-            include('actions' => contain_exactly('pull', 'push'))
-          )
-        end
+      context 'when requesting pull only' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['pull']
+      end
+    end
+
+    context 'when the organization is in maintenance_initialization state' do
+      before do
+        organization.reload.start_maintenance(maintenance_reason: 'migration')
+      end
+
+      it_behaves_like 'an inaccessible'
+      it_behaves_like 'logs an auth warning', %w[push pull]
+
+      context 'when requesting push only' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['push']
+      end
+
+      context 'when requesting delete' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['delete']
+      end
+
+      context 'when requesting wildcard (*)' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['*']
+      end
+
+      context 'when requesting pull only' do
+        let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+        it_behaves_like 'logs an auth warning', ['pull']
+      end
+    end
+
+    context 'when the project belongs to the default organization' do
+      let_it_be(:default_org) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required to test default organization is never in maintenance
+      let_it_be_with_reload(:default_project) { create(:project, organization: default_org) }
+      let_it_be_with_reload(:default_user) { create(:user, maintainer_of: default_project) }
+
+      let(:current_user) { default_user }
+      let(:current_params) { { scopes: ["repository:#{default_project.full_path}:push,pull"] } }
+
+      it 'allows both pull and push (default org is never in maintenance)' do
+        is_expected.to include(:token)
+        expect(payload['access']).to contain_exactly(
+          include('actions' => contain_exactly('pull', 'push'))
+        )
       end
     end
   end

@@ -1,5 +1,6 @@
 ---
 name: local_billing_persistence
+description: Record billable usage locally on offline-licensed instances, which cannot reach the billing collector
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249324
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/628679
 milestone: '19.5'

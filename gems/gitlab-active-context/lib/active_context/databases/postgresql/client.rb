@@ -12,11 +12,25 @@ module ActiveContext
 
         BULK_OPERATIONS = [:upsert, :delete].freeze
 
-        attr_reader :connection_pool, :options
+        attr_reader :options
 
         def initialize(options)
           @options = options.with_indifferent_access
-          setup_connection_pool
+          @pool_mutex = Mutex.new
+        end
+
+        def connection_pool
+          @connection_pool || pool_mutex.synchronize { @connection_pool ||= setup_connection_pool }
+        end
+
+        def close
+          pool_mutex.synchronize do
+            next unless @connection_model
+
+            @connection_model.remove_connection
+            @connection_model = nil
+            @connection_pool = nil
+          end
         end
 
         # source_fields is accepted for interface compatibility but not used.
@@ -82,6 +96,8 @@ module ActiveContext
 
         private
 
+        attr_reader :pool_mutex
+
         def handle_connection(raw_connection: false)
           connection_pool.with_connection do |conn|
             yield(raw_connection ? conn.raw_connection : conn)
@@ -96,13 +112,12 @@ module ActiveContext
         end
 
         def setup_connection_pool
-          model_class = create_connection_model
-          model_class.establish_connection(build_database_config.stringify_keys)
-          @connection_pool = model_class.connection_pool
+          connection_model.establish_connection(build_database_config.stringify_keys)
+          connection_model.connection_pool
         end
 
-        def create_connection_model
-          Class.new(::ActiveRecord::Base) do
+        def connection_model
+          @connection_model ||= Class.new(::ActiveRecord::Base) do
             self.abstract_class = true
 
             def self.name
@@ -117,10 +132,6 @@ module ActiveContext
 
         def build_database_config
           Config.build_database_config(options)
-        end
-
-        def close
-          connection_pool&.disconnect!
         end
 
         # rubocop:disable Rails/SkipsModelValidations -- bulk_upsert is more performant and we don't have validations

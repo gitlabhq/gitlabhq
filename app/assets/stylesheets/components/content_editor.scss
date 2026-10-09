@@ -84,11 +84,14 @@
   audio.ProseMirror-selectednode,
   .ProseMirror-selectednode audio,
   video.ProseMirror-selectednode,
-  .ProseMirror-selectednode video,
-  iframe.ProseMirror-selectednode,
-  .ProseMirror-selectednode iframe {
+  .ProseMirror-selectednode video {
     outline: 3px solid $blue-200;
     outline-offset: -3px;
+  }
+
+  .ProseMirror-selectednode .iframe-embed,
+  .content-editor-selection .iframe-embed {
+    outline: 3px solid $blue-200;
   }
 
   .selectedCell::after {

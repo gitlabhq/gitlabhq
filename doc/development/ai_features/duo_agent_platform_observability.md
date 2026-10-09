@@ -87,7 +87,7 @@ triggered by `UpdateWorkflowStatusEventWorker`. Also has an extra tracker
 
 ### MCP tool calls
 
-Carry `tool_name`, `session_id`. Identifiers: `user`, `namespace`.
+Carry `tool_name`, `request_id`. Identifiers: `user`, `namespace`.
 Also have an extra tracker (`Gitlab::Tracking::AiTracking`).
 
 | Event | Additional properties | What it tracks |

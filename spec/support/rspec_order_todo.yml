@@ -3089,7 +3089,6 @@
 - './spec/features/work_items/issues/viewing_relocated_work_items_spec.rb'
 - './spec/finders/abuse_reports_finder_spec.rb'
 - './spec/finders/access_requests_finder_spec.rb'
-- './spec/finders/admin/plans_finder_spec.rb'
 - './spec/finders/alert_management/alerts_finder_spec.rb'
 - './spec/finders/alert_management/http_integrations_finder_spec.rb'
 - './spec/finders/analytics/cycle_analytics/stage_finder_spec.rb'

@@ -36,7 +36,6 @@
 # For example:
 # BarFinder  # See <ISSUE_URL>
 - AccessRequestsFinder
-- Admin::PlansFinder
 - Analytics::CycleAnalytics::StageFinder
 - ApplicationsFinder
 - Autocomplete::GroupFinder

@@ -64,6 +64,11 @@ export default {
       required: false,
       default: () => [],
     },
+    footerRows: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -245,6 +250,9 @@ export default {
         <tbody>
           <tr v-for="item in sortedItems" :key="item.rowIndex" v-adopt-cells="item.cells"></tr>
         </tbody>
+        <tfoot v-if="footerRows.length">
+          <tr v-for="(cells, index) in footerRows" :key="index" v-adopt-cells="cells"></tr>
+        </tfoot>
       </table>
     </div>
     <div v-if="canSort" class="gl-sr-only" role="status" aria-live="polite" aria-atomic="true">

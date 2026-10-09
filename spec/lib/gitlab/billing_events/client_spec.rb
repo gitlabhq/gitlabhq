@@ -24,7 +24,7 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
   end
 
   before do
-    allow(Gitlab::Tracking).to receive(:billing_event)
+    allow(Gitlab::Tracking).to receive(:billing_event).and_return(true)
   end
 
   describe '.track_billing_event' do
@@ -289,6 +289,36 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
           namespace_id: namespace.id
         )
       )
+    end
+
+    context 'when the tracker does not emit the event' do
+      before do
+        allow(Gitlab::Tracking).to receive(:billing_event).and_return(false)
+        allow(Gitlab::AppLogger).to receive(:info)
+      end
+
+      it 'logs that emission was skipped instead of tracked', :aggregate_failures do
+        track
+
+        expect(Gitlab::AppLogger).to have_received(:info).with(
+          hash_including(
+            message: 'BillingEvents: billing event emission skipped',
+            event_type: event_type,
+            namespace_id: namespace.id
+          )
+        )
+        expect(Gitlab::AppLogger).not_to have_received(:info).with(
+          hash_including(message: 'BillingEvents: billing event tracked')
+        )
+      end
+
+      it 'still tracks the internal event' do
+        expect(Gitlab::InternalEvents).to receive(:track_event).with(
+          'usage_billing_event', hash_including(category: category)
+        )
+
+        track
+      end
     end
 
     context 'with invalid quantity' do

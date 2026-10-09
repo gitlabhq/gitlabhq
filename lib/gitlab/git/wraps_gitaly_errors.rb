@@ -33,6 +33,8 @@ module Gitlab
         case error
         when Gitaly::ReferenceNotFoundError
           raise Gitlab::Git::ReferenceNotFoundError.new(exception, error.reference_name)
+        when Gitaly::ReferenceUnresolvableError
+          raise Gitlab::Git::ReferenceUnresolvableError.new(exception, error.reference_name, error.oid)
         when Gitaly::FindCommitsError
           raise Gitlab::Git::Repository::CommitNotFound, exception
         when Gitaly::AmbiguousReferenceError

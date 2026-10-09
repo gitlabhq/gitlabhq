@@ -2396,6 +2396,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `dap_powered` value for `reviewer_assignment_strategy` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4.
 - `feature_flags_minimum_role` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8239) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `feature_flag_management_permissions`. Disabled by default.
 - `ci_skip_branch_pipelines_for_mrs` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/607869) in GitLab 19.4.
+- `duo_code_review_decisions_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254980) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `duo_code_review_decisions`. Disabled by default.
 
 {{< /history >}}
 
@@ -2445,6 +2446,7 @@ Supported general project attributes:
 | `container_registry_enabled`                       | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                      | string            | No       | Short project description. |
+| `duo_code_review_decisions_enabled`                | boolean           | No       | Enable approval and change requests by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code). Ultimate only. |
 | `duo_remote_flows_enabled`                         | boolean           | No       | Determine whether or not [flows](../user/duo_agent_platform/flows/_index.md) can run in your project. |
 | `duo_sast_fp_detection_enabled` | boolean | No | If `true`, turns on SAST false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on SAST false positive detection](../user/application_security/vulnerabilities/false_positive_detection.md#turn-on-for-a-project). |
 | `duo_secret_detection_fp_enabled` | boolean | No | If `true`, turns on secret detection false positive detection. Requires the Security Manager, Maintainer, or Owner role. See [turn on secret detection false positive detection](../user/application_security/vulnerabilities/secret_false_positive_detection.md#turn-on-for-a-project). |

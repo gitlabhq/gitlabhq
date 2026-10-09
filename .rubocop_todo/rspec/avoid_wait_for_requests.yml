@@ -212,7 +212,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/issuables/task_lists_spec.rb'
     - 'spec/features/jira_connect/branches_spec.rb'
     - 'spec/features/markdown/copy_as_gfm_spec.rb'
-    - 'spec/features/markdown/iframe_spec.rb'
     - 'spec/features/markdown/json_table_spec.rb'
     - 'spec/features/markdown/math_spec.rb'
     - 'spec/features/merge_request/batch_comments_spec.rb'

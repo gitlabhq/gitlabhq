@@ -608,15 +608,6 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
         it { is_expected.to eq(expected) }
       end
     end
-
-    context 'when the enforcement feature flag is disabled' do
-      before do
-        stub_feature_flags(organization_maintenance_enforcement: false)
-        organization.update_column(:state, described_class.states[:maintenance])
-      end
-
-      it { is_expected.to be false }
-    end
   end
 
   describe '#user?' do

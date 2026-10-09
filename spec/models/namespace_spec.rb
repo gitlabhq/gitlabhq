@@ -2632,6 +2632,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#find_fork_of?' do
+    let_it_be(:namespace) { create(:namespace, :with_namespace_settings) }
     let(:project) { create(:project, :public) }
     let!(:forked_project) { fork_project(project, namespace.owner, namespace: namespace) }
 
@@ -2649,6 +2650,25 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       other_fork = fork_project(forked_project, other_namespace.owner, namespace: other_namespace)
 
       expect(other_namespace.find_fork_of(project)).to eq(other_fork)
+    end
+
+    context 'when the project itself is in the namespace' do
+      let_it_be_with_reload(:project) { create(:project, :public, namespace: namespace) }
+
+      it 'returns the fork and not the project itself' do
+        expect(namespace.find_fork_of(project)).to eq(forked_project)
+      end
+
+      context 'when the fork has been deleted' do
+        before do
+          forked_project.destroy!
+          project.reload
+        end
+
+        it 'does not consider the project a fork of itself' do
+          expect(namespace.find_fork_of(project)).to be_nil
+        end
+      end
     end
 
     context 'with request store enabled', :request_store do

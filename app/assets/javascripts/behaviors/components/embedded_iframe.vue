@@ -1,14 +1,22 @@
 <script>
-import { embedStyle, getIframeClasses, getIframeStyle } from '../markdown/external_content';
+import { embedDimensions, getIframeStyle } from '../markdown/external_content';
+import ExternalContent from './external_content.vue';
 
 export default {
   name: 'EmbeddedIframe',
+  components: {
+    ExternalContent,
+  },
   props: {
     provider: {
       type: Object,
       required: true,
     },
     src: {
+      type: String,
+      required: true,
+    },
+    canonicalSrc: {
       type: String,
       required: true,
     },
@@ -24,27 +32,41 @@ export default {
     },
   },
   computed: {
-    iframeClasses() {
-      return getIframeClasses(this.width, this.height);
+    dimensions() {
+      return embedDimensions(this.width, this.height);
     },
     iframeStyle() {
-      return getIframeStyle(this.width, this.height);
+      return getIframeStyle(this.dimensions.width, this.dimensions.height);
     },
   },
-  embedStyle,
+  methods: {
+    focusIframe() {
+      this.$refs.iframe.focus();
+    },
+  },
 };
 </script>
 <template>
-  <div :style="$options.embedStyle">
+  <external-content
+    #default="{ title }"
+    :provider="provider"
+    :href="canonicalSrc"
+    :width="dimensions.width"
+    :height="dimensions.height"
+    data-gfm-ignore
+    @activated="focusIframe"
+  >
     <iframe
+      ref="iframe"
       :src="src"
+      :title="title"
       :sandbox="provider.sandbox"
       allowfullscreen="true"
       referrerpolicy="strict-origin-when-cross-origin"
-      :width="width"
-      :height="height"
+      :width="dimensions.width"
+      :height="dimensions.height"
       :style="iframeStyle"
-      :class="iframeClasses"
+      class="gl-min-w-full gl-border-none"
     ></iframe>
-  </div>
+  </external-content>
 </template>

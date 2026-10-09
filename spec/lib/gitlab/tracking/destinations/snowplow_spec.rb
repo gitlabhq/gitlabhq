@@ -168,6 +168,47 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
+  describe '#event return value' do
+    it 'returns true when the event is handed to the emitter' do
+      expect(subject.event('category', 'action')).to be(true)
+    end
+
+    context 'when event is ineligible' do
+      let(:event_eligible) { false }
+
+      it 'returns false' do
+        expect(subject.event('category', 'action')).to be(false)
+      end
+    end
+  end
+
+  context 'with snowplow and product usage data disabled' do
+    before do
+      allow(Gitlab::Tracking::EventEligibilityChecker).to receive(:new).and_call_original
+      stub_application_setting(snowplow_enabled?: false)
+      stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'false')
+
+      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
+      allow(tracker).to receive(:track_struct_event).and_call_original
+    end
+
+    it 'drops events on the regular destination', :aggregate_failures do
+      expect(subject.event('category', 'action')).to be(false)
+      expect(tracker).not_to have_received(:track_struct_event)
+    end
+
+    context 'with a billing destination configuration' do
+      subject(:billing_destination) do
+        described_class.new(Gitlab::Tracking::Destinations::DestinationConfiguration.billing_configuration)
+      end
+
+      it 'emits the event', :aggregate_failures do
+        expect(billing_destination.event('category', 'secrets_read')).to be(true)
+        expect(tracker).to have_received(:track_struct_event).with(hash_including(action: 'secrets_read'))
+      end
+    end
+  end
+
   context 'callbacks' do
     describe 'on success' do
       it 'increase gitlab_successful_snowplow_events_total counter' do

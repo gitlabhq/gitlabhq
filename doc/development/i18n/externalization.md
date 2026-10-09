@@ -48,8 +48,8 @@ The following tools are used:
 ## Preparing a page for translation
 
 You must mark strings as translatable with the following available helpers. Keep in mind that
-strings are translated in tools where their context of use might not be obvious. Consider
-[namespacing](#namespaces) domain-specific strings to provide more context to the translators.
+strings are translated in tools where their context of use might not be obvious. Add a
+[namespace](#namespaces) to UI text to provide more context to the translators.
 
 There are four file types:
 
@@ -78,14 +78,14 @@ You can mark that content for translation with:
 
 ```ruby
 def hello
-  _("Hello world!")
+  s_("Example|Hello world!")
 end
 ```
 
 Or:
 
 ```ruby
-hello = _("Hello world!")
+hello = s_("Example|Hello world!")
 ```
 
 Be careful when translating strings at the class or module level because these are only evaluated once
@@ -135,7 +135,7 @@ Given the following content in HAML:
 You can mark that content for translation with:
 
 ```ruby
-%h1= _("Hello world!")
+%h1= s_("Example|Hello world!")
 ```
 
 ### ERB files
@@ -149,7 +149,7 @@ Given the following content in ERB:
 You can mark that content for translation with:
 
 ```html
-<h1><%= _("Hello world!") %></h1>
+<h1><%= s_("Example|Hello world!") %></h1>
 ```
 
 ### JavaScript files
@@ -184,7 +184,7 @@ This means you can externalize strings in Vue templates without having to import
 ```html
 <template>
   <h1>{{ s__('Branches|Create a new branch') }}</h1>
-  <gl-button>{{ __('Create branch') }}</gl-button>
+  <gl-button>{{ s__('Branches|Create branch') }}</gl-button>
 </template>
 ```
 
@@ -212,9 +212,9 @@ expect(rendered).to have_content('Thank you for your feedback!')
 Good:
 
 ```ruby
-click_button _('Submit review')
+click_button s_('MergeRequestReview|Submit review')
 
-expect(rendered).to have_content(_('Thank you for your feedback!'))
+expect(rendered).to have_content(s_('Feedback|Thank you for your feedback!'))
 ```
 
 ### Test files (Jest)
@@ -242,7 +242,7 @@ Also, it makes refactoring easier as we do not have to maintain variables in add
 
 ```javascript
 // Bad. A variable is defined far from where it is used
-const TITLE = __('Organisations');
+const TITLE = s__('Organization|Organisations');
 
 function transform() {
   return TITLE;
@@ -250,7 +250,7 @@ function transform() {
 
 // Good.
 function transform() {
-  return __('Organisations');
+  return s__('Organization|Organisations');
 }
 ```
 
@@ -268,7 +268,7 @@ If using variables with translations is preferred in a particular case, follow t
 In JavaScript files, declare a constant with the translation:
 
 ```javascript
-const ORGANISATIONS_TITLE = __('Organisations');
+const ORGANISATIONS_TITLE = s__('Organization|Organisations');
 ```
 
 For Vue components, see [Vue single-file components](#vue-single-file-components).
@@ -399,7 +399,7 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
 - In Ruby/HAML:
 
   ```ruby
-  format(_("Hello %{name}"), name: 'Joe') => 'Hello Joe'
+  format(s_("UserWelcome|Hello %{name}"), name: 'Joe') => 'Hello Joe'
   ```
 
 - In Vue:
@@ -426,13 +426,13 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
 
   ```html
   <script>
-  import { __, sprintf } from '~/locale';
+  import { s__, sprintf } from '~/locale';
 
   export default {
     ...
     computed: {
       userWelcome() {
-        return sprintf(__('Hello %{username}'), { username: this.user.name });
+        return sprintf(s__('UserWelcome|Hello %{username}'), { username: this.user.name });
       }
     }
     ...
@@ -447,9 +447,9 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
 - In JavaScript (when Vue cannot be used):
 
   ```javascript
-  import { __, sprintf } from '~/locale';
+  import { s__, sprintf } from '~/locale';
 
-  sprintf(__('Hello %{username}'), { username: 'Joe' }); // => 'Hello Joe'
+  sprintf(s__('UserWelcome|Hello %{username}'), { username: 'Joe' }); // => 'Hello Joe'
   ```
 
   If you need to use markup within the translation, use `sprintf` and stop it
@@ -459,20 +459,20 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
 
   ```javascript
   import { escape } from 'lodash-es';
-  import { __, sprintf } from '~/locale';
+  import { s__, sprintf } from '~/locale';
 
   let someDynamicValue = '<script>alert("evil")</script>';
 
   // Dangerous:
-  sprintf(__('This is %{value}'), { value: `<strong>${someDynamicValue}</strong>`, false);
+  sprintf(s__('Example|This is %{value}'), { value: `<strong>${someDynamicValue}</strong>`, false);
   // => 'This is <strong><script>alert('evil')</script></strong>'
 
   // Incorrect:
-  sprintf(__('This is %{value}'), { value: `<strong>${someDynamicValue}</strong>` });
+  sprintf(s__('Example|This is %{value}'), { value: `<strong>${someDynamicValue}</strong>` });
   // => 'This is &lt;strong&gt;&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;&lt;/strong&gt;'
 
   // OK:
-  sprintf(__('This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>` }, false);
+  sprintf(s__('Example|This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>` }, false);
   // => 'This is <strong>&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;</strong>'
   ```
 
@@ -499,7 +499,11 @@ A namespace:
 
 Some languages are more contextual than English.
 For example, `cancel` can be translated in different ways depending on how it's used.
-To define the context of use, always add a namespace to UI text in English.
+To define the context of use, add a namespace to UI text in English:
+
+- Use a namespaced helper for UI text: `s_()` in Ruby and HAML, or `s__()` in JavaScript and Vue.
+- Use the un-namespaced `_()` or `__()` only for a short, generic term reused across the UI,
+  such as "Open", "Edit", or "New".
 
 Namespaces should be PascalCase. A linter does not enforce this yet.
 
@@ -561,14 +565,14 @@ To include formatting in the translated string, you can do the following:
 - In Ruby/HAML:
 
   ```ruby
-  safe_format(_('Some %{strongOpen}bold%{strongClose} text.'), tag_pair(tag.strong, :strongOpen, :strongClose))
+  safe_format(s_('Example|Some %{strongOpen}bold%{strongClose} text.'), tag_pair(tag.strong, :strongOpen, :strongClose))
   # => 'Some <strong>bold</strong> text.'
   ```
 
 - In JavaScript:
 
   ```javascript
-    sprintf(__('Some %{strongOpen}bold%{strongClose} text.'), { strongOpen: '<strong>', strongClose: '</strong>'}, false);
+    sprintf(s__('Example|Some %{strongOpen}bold%{strongClose} text.'), { strongOpen: '<strong>', strongClose: '</strong>'}, false);
 
     // => 'Some <strong>bold</strong> text.'
   ```
@@ -589,7 +593,7 @@ instead:
 - In Ruby/HAML:
 
   ```ruby
-  safe_format(_('In &lt; 1 hour'))
+  safe_format(s_('Duration|In &lt; 1 hour'))
 
   # => 'In < 1 hour'
   ```
@@ -599,7 +603,7 @@ instead:
   ```javascript
   import { sanitize } from '~/lib/dompurify';
 
-  const i18n = { LESS_THAN_ONE_HOUR: sanitize(__('In &lt; 1 hour'), { ALLOWED_TAGS: [] }) };
+  const i18n = { LESS_THAN_ONE_HOUR: sanitize(s__('Duration|In &lt; 1 hour'), { ALLOWED_TAGS: [] }) };
 
   // ... using the string
   element.innerHTML = i18n.LESS_THAN_ONE_HOUR;
@@ -610,7 +614,7 @@ instead:
 - In Vue:
 
   ```vue
-  <gl-sprintf :message="s__('In &lt; 1 hours')"/>
+  <gl-sprintf :message="s__('Duration|In &lt; 1 hour')"/>
 
   // => 'In < 1 hour'
   ```

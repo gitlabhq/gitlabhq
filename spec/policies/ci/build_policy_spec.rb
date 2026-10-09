@@ -228,6 +228,78 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
   end
 
+  describe ':read_build_trace' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:duo_workflow_build) do
+      create(:ci_build, pipeline: create(:ci_empty_pipeline, project: public_project, source: :duo_workflow))
+    end
+
+    let_it_be(:push_build) do
+      create(:ci_build, pipeline: create(:ci_empty_pipeline, project: public_project, source: :push))
+    end
+
+    let_it_be(:non_member) { create(:user) }
+    let_it_be(:guest) { create(:user, guest_of: public_project) }
+    let_it_be(:planner) { create(:user, planner_of: public_project) }
+    let_it_be(:reporter) { create(:user, reporter_of: public_project) }
+    let_it_be(:security_manager) { create(:user, security_manager_of: public_project) }
+    let_it_be(:developer) { create(:user, developer_of: public_project) }
+    let_it_be(:maintainer) { create(:user, maintainer_of: public_project) }
+    let_it_be(:owner) { create(:user, owner_of: public_project) }
+
+    where(:build, :user, :allowed) do
+      ref(:duo_workflow_build) | nil                    | false
+      ref(:duo_workflow_build) | ref(:non_member)       | false
+      ref(:duo_workflow_build) | ref(:guest)            | false
+      ref(:duo_workflow_build) | ref(:planner)          | false
+      ref(:duo_workflow_build) | ref(:reporter)         | false
+      ref(:duo_workflow_build) | ref(:security_manager) | false
+      ref(:duo_workflow_build) | ref(:developer)        | true
+      ref(:duo_workflow_build) | ref(:maintainer)       | true
+      ref(:duo_workflow_build) | ref(:owner)            | true
+      ref(:push_build)         | nil                    | true
+      ref(:push_build)         | ref(:non_member)       | true
+      ref(:push_build)         | ref(:guest)            | true
+      ref(:push_build)         | ref(:planner)          | true
+      ref(:push_build)         | ref(:reporter)         | true
+      ref(:push_build)         | ref(:security_manager) | true
+      ref(:push_build)         | ref(:developer)        | true
+      ref(:push_build)         | ref(:maintainer)       | true
+      ref(:push_build)         | ref(:owner)            | true
+    end
+
+    with_them do
+      it { expect(policy.allowed?(:read_build_trace)).to eq(allowed) }
+    end
+
+    context 'when user is an admin' do
+      let_it_be(:user) { create(:admin) }
+      let(:build) { duo_workflow_build }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect(policy).to be_allowed(:read_build_trace) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect(policy).to be_disallowed(:read_build_trace) }
+      end
+    end
+
+    context 'when the project is archived' do
+      let_it_be(:archived_project) { create(:project, :public, :archived) }
+      let_it_be(:user) { create(:user, developer_of: archived_project) }
+      let_it_be(:build) do
+        create(:ci_build, pipeline: create(:ci_empty_pipeline, project: archived_project, source: :duo_workflow))
+      end
+
+      it 'allows developers to read the log of a duo_workflow job' do
+        expect(policy).to be_allowed(:read_build_trace)
+      end
+    end
+  end
+
   describe '#rules' do
     context 'when user does not have access to the project' do
       let_it_be_with_reload(:project) { create(:project, :private) }

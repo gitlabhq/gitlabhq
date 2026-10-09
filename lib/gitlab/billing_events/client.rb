@@ -5,12 +5,6 @@ module Gitlab
     class Client
       BILLABLE_USAGE_SCHEMA = 'iglu:com.gitlab/billable_usage/jsonschema/1-0-3'
 
-      REALM_MAP = {
-        'saas' => 'SaaS',
-        'self-managed' => 'SM',
-        'dedicated' => 'Dedicated'
-      }.freeze
-
       COUNTER = :counter
       SNAPSHOT = :snapshot
 
@@ -81,26 +75,15 @@ module Gitlab
 
         # An air-gapped instance cannot reach the billing collector, so the local path
         # replaces emission rather than supplementing it, and when local persistence is
-        # off emission is skipped rather than attempted. EventEligibilityChecker checks
-        # telemetry settings, not licensing, so it does not stop the attempt on its own.
+        # off emission is skipped rather than attempted. The billing destination skips
+        # EventEligibilityChecker, which checks telemetry settings, not licensing.
         # Only emission is affected: the internal event is a separate concern that works
         # without connectivity, so it is tracked in every case.
         if local_persistence_enabled?
           # Defined in EE. Unreachable here, since local_persistence_enabled? is
           # always false without it.
           persist_local_aggregate(context, quantity_kind)
-        elsif emission_enabled?
-          billing_context = SnowplowTracker::SelfDescribingJson.new(
-            BILLABLE_USAGE_SCHEMA,
-            context
-          )
-
-          Gitlab::Tracking.billing_event(
-            category,
-            event_type,
-            context: [billing_context]
-          )
-
+        elsif emission_enabled? && emit(category, event_type, context)
           Gitlab::AppLogger.info(
             message: 'BillingEvents: billing event tracked',
             event_type: event_type,
@@ -154,6 +137,20 @@ module Gitlab
         )
       end
 
+      # Returns whether the tracker handed the event to the emitter.
+      def emit(category, event_type, context)
+        billing_context = SnowplowTracker::SelfDescribingJson.new(
+          BILLABLE_USAGE_SCHEMA,
+          context
+        )
+
+        Gitlab::Tracking.billing_event(
+          category,
+          event_type,
+          context: [billing_context]
+        )
+      end
+
       def build_context( # rubocop:disable Metrics/ParameterLists -- mirrors billing schema fields
         event_id:, event_type:, unit_of_measure:, quantity:, timestamp:,
         namespace:, root_namespace:, user:, project:, metadata:
@@ -166,14 +163,8 @@ module Gitlab
           timestamp: (timestamp || Time.current).iso8601,
           namespace_id: namespace.id,
           root_namespace_id: root_namespace&.id,
-          realm: realm,
-          deployment_type: deployment_type,
-          instance_id: ::Gitlab::GlobalAnonymousId.instance_id,
-          unique_instance_id: unique_instance_id,
-          instance_version: Gitlab.version_info.to_s,
-          host_name: Gitlab.config.gitlab.host,
           correlation_id: ::Labkit::Correlation::CorrelationId.current_or_new_id
-        }
+        }.merge(InstanceIdentity.to_h)
 
         payload[:project_id] = project.id if project
 
@@ -192,18 +183,6 @@ module Gitlab
         return SecureRandom.uuid if idempotency_key.blank?
 
         Digest::UUID.uuid_v5(::Gitlab::GlobalAnonymousId.instance_uuid, idempotency_key)
-      end
-
-      def unique_instance_id
-        ::Gitlab::GlobalAnonymousId.instance_uuid
-      end
-
-      def realm
-        'SM'
-      end
-
-      def deployment_type
-        'self-managed'
       end
     end
   end

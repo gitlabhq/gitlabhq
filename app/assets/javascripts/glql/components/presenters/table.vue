@@ -32,6 +32,34 @@ const NO_TREND = '—';
 // sortable.
 const TREND_CELL_KEY = '__trendCell';
 
+// The engines return NULL for a hierarchy dimension when the flow sits outside the requested
+// level, so the row is a real bucket that needs a name. A deleted namespace's ID no longer
+// resolves either, which the panel description covers. The engines default `depth` to 1.
+const DIMENSION_NULL_LABELS = {
+  group: (field) => {
+    // Parameters arrive from the compiler as strings.
+    const depth = Number(field.parameters?.depth ?? 1);
+
+    // At depth 2 the NULL bucket holds the top-level group's own projects and flows, plus
+    // anything whose group the viewer cannot see.
+    if (depth === 2) {
+      return {
+        text: s__('Glql|Not in a subgroup'),
+        hint: s__('Glql|May include subgroups you cannot see'),
+      };
+    }
+
+    return {
+      text: s__('Glql|No group'),
+      hint: sprintf(s__('Glql|No group at depth %{depth}'), { depth }),
+    };
+  },
+  project: () => ({
+    text: s__('Glql|No project'),
+    hint: s__('Glql|Not tied to a project, or a project you cannot see'),
+  }),
+};
+
 export default {
   name: 'TablePresenter',
   components: {
@@ -185,6 +213,14 @@ export default {
     isMetricColumn(field) {
       return field.type === FIELD_TYPES.METRIC;
     },
+    dimensionNullLabel(field, item) {
+      const label = DIMENSION_NULL_LABELS[baseFieldKeyOf(field)];
+      if (label && field.type === FIELD_TYPES.DIMENSION && item[field.key] == null) {
+        return label(field);
+      }
+
+      return null;
+    },
     trendCellFor(row) {
       const trend = trendPresentationFor(this.source, this.trendField, {
         value: row[this.trendField.key],
@@ -277,6 +313,21 @@ export default {
               >
                 {{ $options.NO_VALUE }}
               </span>
+              <!-- A null group or project dimension is a real bucket, not a missing value. -->
+              <div
+                v-else-if="dimensionNullLabel(field, item)"
+                class="gl-text-subtle"
+                data-testid="dimension-no-value"
+              >
+                {{ dimensionNullLabel(field, item).text }}
+                <div
+                  v-if="dimensionNullLabel(field, item).hint"
+                  class="gl-text-sm"
+                  data-testid="dimension-no-value-hint"
+                >
+                  {{ dimensionNullLabel(field, item).hint }}
+                </div>
+              </div>
               <field-presenter
                 v-else
                 :item="item"

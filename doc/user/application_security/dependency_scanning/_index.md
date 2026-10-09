@@ -42,12 +42,9 @@ For details, see [Dependency Scanning using SBOM](dependency_scanning_sbom/_inde
 {{< history >}}
 
 - Matching against malware advisories [introduced](https://gitlab.com/groups/gitlab-org/-/epics/21156) in GitLab 19.4 [with a flag](../../../administration/feature_flags/_index.md) named `cvs_malware_advisories`. Enabled by default.
+- Matching against malware advisories [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/629303) in GitLab 19.5. Feature flag `cvs_malware_advisories` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of malware advisory matching is controlled by a feature flag.
-> For more information, see the history.
 
 Continuously rescans the SBOM components from your default branch's latest
 successful pipeline whenever the [GitLab advisory database](../gitlab_advisory_database/_index.md) or

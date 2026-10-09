@@ -77,6 +77,10 @@ module Ci
       @subject.debug_mode?
     end
 
+    condition(:duo_workflow_job, scope: :subject) do
+      @subject.pipeline.duo_workflow?
+    end
+
     condition(:can_read_project_build) do
       can?(:read_build, @subject.project)
     end
@@ -93,6 +97,10 @@ module Ci
       can?(:_read_maintainer_job_artifact, @subject.project)
     end
 
+    condition(:can_read_agent_build) do
+      can?(:_read_agent_build, @subject.project)
+    end
+
     # Use admin_ci_minutes for detailed quota and usage reporting
     # this is limited to total usage and total quota for a builds namespace
     rule { can_read_project_build }.policy do
@@ -101,6 +109,9 @@ module Ci
     end
 
     rule { debug_mode & ~project_update_build }.prevent :read_build_trace
+
+    # Agent flow logs can echo content posted as internal notes, so limit them to Developer+
+    rule { duo_workflow_job & ~can_read_agent_build }.prevent :read_build_trace
 
     rule { ~has_access_to_protected_environment & protected_ref }.policy do
       prevent(*all_job_write_abilities)

@@ -18,7 +18,6 @@ A free and open-source version of the GitLab advisory database is also available
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -26,11 +25,9 @@ A free and open-source version of the GitLab advisory database is also available
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.3 [with flags](../../../administration/feature_flags/_index.md) named `sync_malware_advisories` and `ingest_malware_advisories`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249740) in GitLab 19.3.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.5. Feature flags `sync_malware_advisories` and `ingest_malware_advisories` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 GitLab maintains a private database of advisories for known malicious packages found in package registries.
 GitLab malware advisories (GLAM) are separate from the GLAD advisories described elsewhere on this page.

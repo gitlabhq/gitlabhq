@@ -42,20 +42,6 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
           .to eq(_('This organization is unavailable.'))
       end
     end
-
-    context 'when enforcement is disabled' do
-      before do
-        maintenance_organization.start_maintenance(maintenance_reason: 'migration')
-        maintenance_organization.confirm_maintenance
-        stub_feature_flags(organization_maintenance_enforcement: false)
-      end
-
-      it 'issues a token' do
-        expect { request }.to change { Doorkeeper::AccessToken.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
   end
 
   describe 'POST /oauth/token' do

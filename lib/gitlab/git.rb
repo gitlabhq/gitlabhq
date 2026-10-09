@@ -57,6 +57,16 @@ module Gitlab
       end
     end
 
+    class ReferenceUnresolvableError < CommandError
+      attr_reader :name, :oid
+
+      def initialize(msg = nil, name = "", oid = "")
+        super(msg)
+        @name = name
+        @oid = oid
+      end
+    end
+
     class << self
       include Gitlab::EncodingHelper
 

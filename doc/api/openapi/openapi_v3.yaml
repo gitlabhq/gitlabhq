@@ -2946,6 +2946,8 @@ paths:
           enum:
           - claude-code
           - opencode
+          - cursor
+          - codex
           nullable: true
         in: query
       - name: status
@@ -84782,6 +84784,8 @@ components:
           type: string
         auto_duo_code_review_enabled:
           type: string
+        duo_code_review_decisions_enabled:
+          type: string
         web_based_commit_signing_enabled:
           type: string
         allow_personal_snippets:
@@ -93511,6 +93515,8 @@ components:
           type: string
         auto_duo_code_review_enabled:
           type: string
+        duo_code_review_decisions_enabled:
+          type: string
         elasticsearch_index_settings:
           type: array
           description: Elasticsearch index settings.
@@ -95536,6 +95542,8 @@ components:
           type: string
         auto_duo_code_review_enabled:
           type: string
+        duo_code_review_decisions_enabled:
+          type: string
         reviewer_assignment_strategy:
           type: string
           example: code_owners
@@ -96014,6 +96022,8 @@ components:
           type: string
         auto_duo_code_review_enabled:
           type: string
+        duo_code_review_decisions_enabled:
+          type: string
         reviewer_assignment_strategy:
           type: string
           example: code_owners
@@ -96465,6 +96475,8 @@ components:
         prevent_merge_without_jira_issue:
           type: string
         auto_duo_code_review_enabled:
+          type: string
+        duo_code_review_decisions_enabled:
           type: string
         reviewer_assignment_strategy:
           type: string
@@ -101470,6 +101482,8 @@ components:
           type: string
         auto_duo_code_review_enabled:
           type: string
+        duo_code_review_decisions_enabled:
+          type: string
         web_based_commit_signing_enabled:
           type: string
         allow_personal_snippets:
@@ -102466,6 +102480,7 @@ components:
           enum:
           - pass
           - fail
+          - not_applicable
           description: Status of the control.
           minLength: 1
       required:
@@ -102761,6 +102776,8 @@ components:
           enum:
           - claude-code
           - opencode
+          - cursor
+          - codex
           description: The type of agent.
           minLength: 1
         agent_identity_id:
@@ -102823,6 +102840,8 @@ components:
           enum:
           - claude-code
           - opencode
+          - cursor
+          - codex
           description: Type of agent being registered.
           minLength: 1
         machine_fingerprint:
@@ -111564,6 +111583,11 @@ components:
           description: If `true`, enables automatic reviews by GitLab Duo on merge
             requests.
           nullable: true
+        duo_code_review_decisions_enabled:
+          type: boolean
+          description: If `true`, GitLab Duo can approve and request changes on merge
+            requests.
+          nullable: true
         security_scan_stale_after_days:
           type: integer
           description: 'Number of days to retain security scan data before purging.
@@ -116353,6 +116377,11 @@ components:
           type: boolean
           description: Enable automatic reviews by GitLab Duo on merge requests
           nullable: true
+        duo_code_review_decisions_enabled:
+          type: boolean
+          description: Enable approval and change requests by GitLab Duo on merge
+            requests
+          nullable: true
         duo_remote_flows_enabled:
           type: boolean
           description: Enable GitLab Duo remote flows for this project
@@ -116921,6 +116950,11 @@ components:
         auto_duo_code_review_enabled:
           type: boolean
           description: Enable automatic reviews by GitLab Duo on merge requests
+          nullable: true
+        duo_code_review_decisions_enabled:
+          type: boolean
+          description: Enable approval and change requests by GitLab Duo on merge
+            requests
           nullable: true
         duo_remote_flows_enabled:
           type: boolean
@@ -117492,6 +117526,11 @@ components:
         auto_duo_code_review_enabled:
           type: boolean
           description: Enable automatic reviews by GitLab Duo on merge requests
+          nullable: true
+        duo_code_review_decisions_enabled:
+          type: boolean
+          description: Enable approval and change requests by GitLab Duo on merge
+            requests
           nullable: true
         duo_remote_flows_enabled:
           type: boolean
@@ -118584,6 +118623,11 @@ components:
               type: boolean
               description: Enable automatic reviews by GitLab Duo on merge requests
               nullable: true
+            duo_code_review_decisions_enabled:
+              type: boolean
+              description: Enable approval and change requests by GitLab Duo on merge
+                requests
+              nullable: true
             duo_remote_flows_enabled:
               type: boolean
               description: Enable GitLab Duo remote flows for this project
@@ -119211,6 +119255,11 @@ components:
             auto_duo_code_review_enabled:
               type: boolean
               description: Enable automatic reviews by GitLab Duo on merge requests
+              nullable: true
+            duo_code_review_decisions_enabled:
+              type: boolean
+              description: Enable approval and change requests by GitLab Duo on merge
+                requests
               nullable: true
             duo_remote_flows_enabled:
               type: boolean
@@ -119863,6 +119912,11 @@ components:
             auto_duo_code_review_enabled:
               type: boolean
               description: Enable automatic reviews by GitLab Duo on merge requests
+              nullable: true
+            duo_code_review_decisions_enabled:
+              type: boolean
+              description: Enable approval and change requests by GitLab Duo on merge
+                requests
               nullable: true
             duo_remote_flows_enabled:
               type: boolean
@@ -134175,6 +134229,11 @@ components:
         auto_duo_code_review_enabled:
           type: boolean
           description: Enable automatic reviews by GitLab Duo on merge requests
+          nullable: true
+        duo_code_review_decisions_enabled:
+          type: boolean
+          description: Enable approval and change requests by GitLab Duo on merge
+            requests
           nullable: true
         ai_audit_events_storage_enabled:
           type: boolean

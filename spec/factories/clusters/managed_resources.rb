@@ -3,9 +3,9 @@
 FactoryBot.define do
   factory :managed_resource, class: 'Clusters::Agents::ManagedResource' do
     project
-    environment
-    association :cluster_agent
-    association :build, factory: :ci_build
+    environment { association(:environment, project: project) }
+    cluster_agent { association(:cluster_agent, project: project) }
+    build { association(:ci_build, project: project) }
     deletion_strategy { :on_stop }
 
     tracked_objects do

@@ -47,6 +47,7 @@ function parseTable(table) {
   const [tbody] = table.tBodies;
   const [headerRow] = thead.rows;
   const bodyRows = tbody ? Array.from(tbody.rows) : [];
+  const footerRows = Array.from(table.tFoot?.rows ?? [], (row) => Array.from(row.cells));
 
   if (!headerRow) return null;
 
@@ -67,7 +68,7 @@ function parseTable(table) {
     return item;
   });
 
-  return { fields, items };
+  return { fields, items, footerRows };
 }
 
 /**
@@ -97,7 +98,7 @@ export default function renderMarkdownTables(els) {
   }
 
   return loadMarkdownTable().then(({ default: MarkdownTable }) => {
-    claimed.forEach(({ table, fields, items }) => {
+    claimed.forEach(({ table, fields, items, footerRows }) => {
       if (!table.parentNode) {
         // eslint-disable-next-line no-param-reassign
         delete table.dataset.markdownTableApplied;
@@ -107,7 +108,7 @@ export default function renderMarkdownTables(els) {
       const app = new Vue({
         el: table,
         name: 'MarkdownTableRoot',
-        render: (h) => h(MarkdownTable, { props: { fields, items } }),
+        render: (h) => h(MarkdownTable, { props: { fields, items, footerRows } }),
       });
 
       observeRemoval(table, app);

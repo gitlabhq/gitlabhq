@@ -517,7 +517,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
 
       it 'does not increase the number of queries when the project is forked' do
-        expected_query = /#{public_project.fork_network.find_forks_in(other_user.namespace).to_sql}/
+        expected_query = /#{Regexp.escape(public_project.fork_network.find_forks_in(other_user.namespace.projects).to_sql)}/
 
         expect { get(:show, params: { namespace_id: public_project.namespace, id: public_project }) }
           .not_to exceed_query_limit(2).for_query(expected_query)

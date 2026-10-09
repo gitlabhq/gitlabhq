@@ -147,8 +147,7 @@ module Organizations
     end
 
     def under_maintenance?
-      (maintenance? || maintenance_initialization?) &&
-        Feature.enabled?(:organization_maintenance_enforcement, self)
+      maintenance? || maintenance_initialization?
     end
 
     def to_param

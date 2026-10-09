@@ -125,8 +125,7 @@ It is deduplicated per namespace, including scheduled jobs, and defers when data
 ## Audit logs and billable events
 
 OpenBao waits for the response of `POST /internal/secrets_manager/audit_logs` before it answers its own request.
-Behind a feature flag, the endpoint skips request-type lines and enqueues `AuditLogWorker`.
-With the flag off, it writes the audit log and emits `secrets_read` inline.
+The endpoint skips request-type lines and enqueues `AuditLogWorker`.
 
 - `AuditLogWorker` is low urgency, deduplicated on the raw payload, and defers when audit tables are unhealthy.
 - Each processed read resolves the entitlement for billing metadata, so it can call CustomersDot.

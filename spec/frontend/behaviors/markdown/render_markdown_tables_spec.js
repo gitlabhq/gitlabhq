@@ -139,6 +139,29 @@ describe('renderMarkdownTables', () => {
       expect(container.querySelectorAll('th')).toHaveLength(0);
     });
 
+    it('keeps the table footer', async () => {
+      const table = buildTable();
+      const tfoot = document.createElement('tfoot');
+      const footerRow = document.createElement('tr');
+      ['Average', '30'].forEach((content) => {
+        footerRow.appendChild(createCell('td', content));
+      });
+      tfoot.appendChild(footerRow);
+      table.appendChild(tfoot);
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const renderedTable = container.querySelector('table');
+      expect(renderedTable.tFoot).not.toBeNull();
+      expect(renderedTable.tFoot.textContent).toContain('Average');
+      expect(Array.from(renderedTable.children, (el) => el.tagName)).toEqual([
+        'THEAD',
+        'TBODY',
+        'TFOOT',
+      ]);
+    });
+
     describe('cell content', () => {
       it('adopts the original cell elements', async () => {
         const link = document.createElement('a');

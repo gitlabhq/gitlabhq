@@ -728,18 +728,17 @@ Copy each dataset into place with the steps in its own section:
 {{< details >}}
 
 - Tier: Ultimate
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.3 [with flags](../../administration/feature_flags/_index.md) named `sync_malware_advisories` and `ingest_malware_advisories`. Enabled by default.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.5. Feature flags `sync_malware_advisories` and `ingest_malware_advisories` removed.
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
+> [!note]
 > Besides Ultimate, this feature is available to Premium customers with the dependency firewall add-on.
 
 [GitLab malware advisories](../../user/application_security/gitlab_advisory_database/_index.md#gitlab-malware-advisories) cover known malicious packages found in package registries.
@@ -1119,10 +1118,7 @@ The `storage_type` field on that event tells you which case you are in: `offline
 On Kubernetes this field is more reliable than the preceding `File.exist?` check, because it comes from the process that runs the sync.
 
 If no `PackageMetadata::MalwareAdvisorySyncService` events appear at all, look for a `PackageMetadata::MalwareAdvisoriesSyncWorker` event with `DEBUG` severity.
-It names the reason the run did not start, such as a disabled `sync_malware_advisories` feature flag.
-
-A `Malware advisory upsert skipped: ingest_malware_advisories disabled` event means the `ingest_malware_advisories` feature flag is off.
-The sync reads the files on every run but writes nothing, and the checkpoint does not advance.
+It names the reason the run did not start, such as neither the `dependency_scanning` license nor the dependency firewall being available.
 
 A first import of a large registry can run for several minutes, and the cron fires again every five minutes while it does.
 Each overlapping run logs `Cannot obtain an exclusive lease. There must be another instance already in execution.` to `application_json.log` with `ERROR` severity and then exits.

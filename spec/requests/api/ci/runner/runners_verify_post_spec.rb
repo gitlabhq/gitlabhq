@@ -143,7 +143,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let_it_be_with_reload(:organization) { create(:organization) }
 
         let(:params) { { token: runner.token } }
-        let(:success_status) { :ok }
 
         def request
           verify

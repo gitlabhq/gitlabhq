@@ -888,18 +888,6 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
           end
         end
 
-        context 'when the feature flag is disabled' do
-          before do
-            organization.start_maintenance(maintenance_reason: 'migration')
-            organization.confirm_maintenance
-            stub_feature_flags(organization_maintenance_enforcement: false)
-
-            post_lfs_json(batch_url(project), download_body(sample_object), headers)
-          end
-
-          it_behaves_like 'LFS http 200 response'
-        end
-
         context 'when the requester has no access to the project' do
           let_it_be(:other_user) { create(:user) }
 

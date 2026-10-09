@@ -75,18 +75,6 @@ RSpec.describe Gitlab::GitAccessDesign do
         end
       end
 
-      context 'when enforcement is disabled' do
-        before do
-          organization.start_maintenance(maintenance_reason: 'migration')
-          organization.confirm_maintenance
-          stub_feature_flags(organization_maintenance_enforcement: false)
-        end
-
-        it 'allows the request' do
-          is_expected.to be_a(::Gitlab::GitAccessResult::Success)
-        end
-      end
-
       context 'when the container is a design repository' do
         let_it_be(:container) { create(:design_management_repository, project: project) }
 

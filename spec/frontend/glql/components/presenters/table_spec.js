@@ -41,6 +41,8 @@ describe('TablePresenter', () => {
   };
 
   const getCells = (row) => row.findAll('td').wrappers.map((td) => td.text());
+  // Collapses the line breaks between a cell's label and its hint.
+  const getCellsText = (row) => getCells(row).map((text) => text.replace(/\s+/g, ' '));
 
   it('renders header rows with sentence cased field names', async () => {
     await createWrapper({ data: MOCK_ISSUES, fields: MOCK_FIELDS });
@@ -158,7 +160,7 @@ describe('TablePresenter', () => {
 
   describe('null values', () => {
     const fields = [
-      { key: 'project', label: 'Project', name: 'project', type: 'dimension' },
+      { key: 'status', label: 'Status', name: 'status', type: 'dimension' },
       { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
       { key: 'creditsUsedSum', label: 'Credits', name: 'creditsUsedSum', type: 'metric' },
     ];
@@ -166,7 +168,7 @@ describe('TablePresenter', () => {
     beforeEach(async () => {
       await createWrapper(
         {
-          data: { nodes: [{ id: '1', project: null, usersCount: 864, creditsUsedSum: null }] },
+          data: { nodes: [{ id: '1', status: null, usersCount: 864, creditsUsedSum: null }] },
           fields,
         },
         mountExtended,
@@ -176,6 +178,93 @@ describe('TablePresenter', () => {
     it('renders a dash, not "None", for a null metric', () => {
       expect(getCells(wrapper.findByTestId('table-row-0'))).toEqual(['None', '864', '—']);
       expect(wrapper.findByTestId('metric-no-value').exists()).toBe(true);
+    });
+
+    it('names a null group or project bucket instead of rendering "None"', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', Group: null, project: null, usersCount: 864 }] },
+          fields: [
+            {
+              key: 'Group',
+              field: 'group',
+              label: 'Group',
+              name: 'group',
+              type: 'dimension',
+              // The compiler passes parameters as strings.
+              parameters: { depth: '2' },
+            },
+            { key: 'project', label: 'Project', name: 'project', type: 'dimension' },
+            { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+          ],
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'Not in a subgroup May include subgroups you cannot see',
+        'No project Not tied to a project, or a project you cannot see',
+        '864',
+      ]);
+      expect(wrapper.findAllByTestId('dimension-no-value-hint')).toHaveLength(2);
+    });
+
+    it('says which depth a null group bucket is missing at', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', group: null, usersCount: 12 }] },
+          fields: [
+            {
+              key: 'group',
+              label: 'Group',
+              name: 'group',
+              type: 'dimension',
+              parameters: { depth: 3 },
+            },
+            { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+          ],
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'No group No group at depth 3',
+        '12',
+      ]);
+    });
+
+    it('treats a group dimension without parameters as depth 1', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', group: null, usersCount: 5 }] },
+          fields: [
+            { key: 'group', label: 'Group', name: 'group', type: 'dimension' },
+            { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+          ],
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'No group No group at depth 1',
+        '5',
+      ]);
+    });
+
+    it('leaves a null project alone outside analytics mode', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', title: 'An issue', project: null }] },
+          fields: [
+            { key: 'title', label: 'Title', name: 'title' },
+            { key: 'project', label: 'Project', name: 'project' },
+          ],
+        },
+        mountExtended,
+      );
+
+      expect(getCells(wrapper.findByTestId('table-row-0'))).toEqual(['An issue', 'None']);
+      expect(wrapper.findByTestId('dimension-no-value').exists()).toBe(false);
     });
 
     it('keeps the null presenter for a null dimension', () => {

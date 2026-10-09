@@ -64,6 +64,16 @@ describe('MarkdownTable', () => {
     });
   };
 
+  const createFooterRows = (rows) =>
+    rows.map((contents) => contents.map((content) => createCell('td', content)));
+
+  const expectFooter = (text) => {
+    const renderedFoot = wrapper.find('table tfoot');
+    expect(renderedFoot.exists()).toBe(true);
+    expect(renderedFoot.text()).toContain(text);
+    expect(wrapper.find('table').element.lastElementChild).toBe(renderedFoot.element);
+  };
+
   const findHeaders = () => wrapper.findAll('thead th');
   const findShadowOverlayWrapper = () => wrapper.findByTestId('table-shadow-overlay');
   const findStickyHeaderWrapper = () => wrapper.find('[data-sticky-header]');
@@ -114,6 +124,20 @@ describe('MarkdownTable', () => {
       expect(findHeaders().at(0).find('code').element).toBe(label);
       expect(findHeaders().at(1).attributes('align')).toBe('right');
       expect(findHeaders().at(2).attributes('style')).toBe('text-align: center;');
+    });
+
+    it('renders the footer when provided', () => {
+      createWrapper([['Alice', '25']], {
+        footerRows: createFooterRows([['Average', '25']]),
+      });
+
+      expectFooter('Average');
+    });
+
+    it('renders no footer element when not provided', () => {
+      createWrapper([['Alice', '25']]);
+
+      expect(wrapper.find('table tfoot').exists()).toBe(false);
     });
   });
 
@@ -192,6 +216,21 @@ describe('MarkdownTable', () => {
 
     it('renders rows in original order', () => {
       expect(getRowTexts(0)).toEqual(['Charlie', 'Alice', 'Bob']);
+    });
+
+    it('keeps the footer in place when sorting', async () => {
+      createWrapper(
+        [
+          ['Bob', '35'],
+          ['Alice', '25'],
+        ],
+        { footerRows: createFooterRows([['Average', '30']]) },
+      );
+
+      await clickHeader(0);
+
+      expect(getRowTexts(0)).toEqual(['Alice', 'Bob']);
+      expectFooter('Average');
     });
 
     it('starts with an empty live region outside the table', () => {

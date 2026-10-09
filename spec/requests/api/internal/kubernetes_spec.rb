@@ -547,8 +547,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         create(:cluster_agent_token, agent: create(:cluster_agent, project: project))
       end
 
-      let(:success_status) { :success }
-
       def request
         send_request(headers: agent_token_headers)
       end
@@ -638,7 +636,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       end
 
       let(:project_id) { project.id }
-      let(:success_status) { :no_content }
 
       def request
         send_request(params: { id: project_id }, headers: agent_token_headers)

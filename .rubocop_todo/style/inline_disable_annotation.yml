@@ -95,7 +95,6 @@ Style/InlineDisableAnnotation:
     - 'app/controllers/snippets/notes_controller.rb'
     - 'app/controllers/users/namespace_visits_controller.rb'
     - 'app/controllers/users/unsubscribes_controller.rb'
-    - 'app/finders/admin/plans_finder.rb'
     - 'app/finders/applications_finder.rb'
     - 'app/finders/autocomplete/group_users_finder.rb'
     - 'app/finders/autocomplete/users_finder.rb'

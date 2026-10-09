@@ -22,8 +22,12 @@ module Gitlab
           @event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
         end
 
+        # Returns whether the event was handed to the emitter.
+        #
+        # The eligibility check is a telemetry opt-out. Billing usage is not
+        # telemetry, so the billing destination does not depend on it.
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
-          return unless @event_eligibility_checker.eligible?(action)
+          return false unless billing_auth? || @event_eligibility_checker.eligible?(action)
 
           tracker.track_struct_event(
             category: category,
@@ -36,6 +40,8 @@ module Gitlab
             tstamp: (Time.now.to_f * 1000).to_i
           )
           increment_total_events_counter
+
+          true
         end
 
         def emit_event_payload(payload)

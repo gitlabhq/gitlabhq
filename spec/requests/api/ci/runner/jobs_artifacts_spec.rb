@@ -321,8 +321,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       it_behaves_like 'an API request enforcing organization maintenance mode' do
         include_context 'with a job in a maintenance organization'
 
-        let(:success_status) { :ok }
-
         def request
           authorize_artifacts_with_token_in_headers(filesize: 100)
         end
@@ -971,8 +969,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       it_behaves_like 'an API request enforcing organization maintenance mode' do
         include_context 'with a job in a maintenance organization'
 
-        let(:success_status) { :created }
-
         def request
           upload_artifacts(file_upload, headers_with_token)
         end
@@ -1264,8 +1260,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           create(:ci_build, :artifacts, :pending, user: user, project: project, pipeline: pipeline,
             runner_id: runner.id)
         end
-
-        let(:success_status) { :ok }
 
         def request
           get api("/jobs/#{job.id}/artifacts"), params: { token: job.token }, headers: headers

@@ -66,9 +66,6 @@ The dashboard displays summary cards of key metrics:
 {{< /history >}}
 
 > [!note]
-> This dashboard displays usage of all credit-based features, including non-billable
-> beta and experiment features. To view billable usage only, go to the Customers Portal.
->
 > Some pre-release features, such as the Security Review Flow, are billable and subject to
 > GitLab Credits charges.
 
@@ -77,8 +74,8 @@ Use the dashboard to understand which users, groups, or projects are driving usa
 
 The dashboard displays the following information:
 
-- **Organization usage**: Total credit usage, active users, daily credit average, and peak day usage across your GitLab instance or group
-- **Total credit consumption**: Daily credit consumption over all products, displayed as a bar chart
+- **Organization usage**: Total credit usage (billed and non-billable), active users, daily credit average, and peak day usage across your GitLab instance or group
+- **Total credit consumption**: Daily billed and non-billable credit consumption over all products, displayed as a stacked bar chart
 - **Usage by user**: Number of credits used by each user
 - **User drill-down view**: Individual usage events for each user, with links to session details for each credit-based feature
 - **Usage by product**: Number of credits used and percentage of total credits for credit-based features
@@ -87,6 +84,32 @@ The dashboard displays the following information:
 > While [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md) is in beta,
 > GitLab does not bill for usage. Secrets Manager appears in the Credits dashboard
 > but displays no usage data until the beta period ends.
+
+### Non-billable usage
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23876) in GitLab 19.5.
+
+{{< /history >}}
+
+Non-billable usage is credit consumption that GitLab does not bill.
+The **Total credit consumption** chart displays:
+
+- **Billed**: Number of billed credits used
+- **Non-billable**: Number of non-billable credits used, shown only when the selected period includes non-billable usage
+- **Stacked bars**: Daily credits used, with **Billed usage** and **Non-billable usage** reasons as separate series
+
+The chart displays the following non-billable usage series:
+
+| Series | Description |
+|--------|-------------|
+| **Non-billable usage (Promotional)** | Usage covered by a promotion. |
+| **Non-billable usage (Beta)** | Usage of a feature that is not billable yet. |
+| **Non-billable usage (Other)** | Usage that was not billed for any other reason. |
+
+The chart displays only the reasons for usage in the selected period.
+If non-billable usage data is temporarily unavailable, the chart displays billed usage only.
 
 ## View the GitLab Credits dashboard
 

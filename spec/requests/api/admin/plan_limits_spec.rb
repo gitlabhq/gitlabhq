@@ -85,9 +85,13 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
         end
       end
 
-      context 'when the plan has no plans row', if: Gitlab.ee? do
+      context 'when the plan has no plans row' do
+        before do
+          Plan.by_name(Plan::DEFAULT).delete_all
+        end
+
         it 'returns not found', :aggregate_failures do
-          get api(path, admin, admin_mode: true), params: { plan_name: 'premium' }
+          get api(path, admin, admin_mode: true), params: { plan_name: 'default' }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Plan Not Found')
@@ -224,10 +228,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
         end
       end
 
-      context 'when the plan has no plans row', if: Gitlab.ee? do
+      context 'when the plan has no plans row' do
+        before do
+          Plan.by_name(Plan::DEFAULT).delete_all
+        end
+
         it 'returns not found without creating a plan limits row', :aggregate_failures do
           expect do
-            put api(path, admin, admin_mode: true), params: { plan_name: 'premium', maven_max_file_size: 100 }
+            put api(path, admin, admin_mode: true), params: { plan_name: 'default', maven_max_file_size: 100 }
           end.not_to change { PlanLimits.count }
 
           expect(response).to have_gitlab_http_status(:not_found)

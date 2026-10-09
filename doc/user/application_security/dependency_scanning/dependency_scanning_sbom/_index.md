@@ -212,12 +212,6 @@ The dependency scanning report is:
 
 ### Malicious packages
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 Dependency scanning identifies malicious packages when it ingests a CycloneDX SBOM. GitLab
 compares the components in the SBOM against
 [GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories),

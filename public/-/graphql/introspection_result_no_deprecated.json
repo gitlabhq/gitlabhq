@@ -43012,6 +43012,18 @@
               "deprecationReason": null
             },
             {
+              "name": "malware",
+              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mergeRequest",
               "description": "Merge request that fixes the vulnerability.",
               "args": [],
@@ -87695,6 +87707,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "malware",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -88208,6 +88230,16 @@
                     "ofType": null
                   },
                   "defaultValue": "false"
+                },
+                {
+                  "name": "malware",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -95922,6 +95954,16 @@
                     "ofType": null
                   },
                   "defaultValue": "false"
+                },
+                {
+                  "name": "malware",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -171503,6 +171545,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "malware",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -172016,6 +172068,16 @@
                     "ofType": null
                   },
                   "defaultValue": "false"
+                },
+                {
+                  "name": "malware",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {
@@ -184277,6 +184339,16 @@
                 {
                   "name": "hasRemediations",
                   "description": "Returns only the vulnerabilities which have remediations.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "malware",
+                  "description": "Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -228579,6 +228651,18 @@
               "type": {
                 "kind": "UNION",
                 "name": "VulnerabilityLocation",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "malware",
+              "description": "Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,

@@ -192,7 +192,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         # These queries are unrelated to what this N+1 spec is testing.
         # TODO: Remove this workaround once https://gitlab.com/gitlab-org/gitlab/-/issues/442164 is addressed
         if Gitlab.ee?
-          allow_any_instance_of(EE::Project).to receive(:auto_duo_code_review_settings_available?).and_return(false)
+          allow_any_instance_of(EE::Project).to receive_messages(
+            auto_duo_code_review_settings_available?: false,
+            duo_code_review_decisions_available?: false
+          )
         end
       end
 

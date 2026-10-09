@@ -73,6 +73,8 @@
   - 1
 - - ai_catalog_item_consumers_bulk_create
   - 1
+- - ai_catalog_item_consumers_sync_project_service_accounts
+  - 1
 - - ai_daily_flow_on_push
   - 1
 - - ai_duo_workflows_cancel_associated_pipelines

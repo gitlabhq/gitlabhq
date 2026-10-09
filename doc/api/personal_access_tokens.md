@@ -242,7 +242,7 @@ Other possible responses:
 
 {{< history >}}
 
-- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632314) in GitLab 19.6.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632314) in GitLab 19.5.
 
 {{< /history >}}
 

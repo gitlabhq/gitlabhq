@@ -52,6 +52,7 @@ function renderIframeEl(el) {
     props: {
       provider,
       src,
+      canonicalSrc: el.dataset.iframeCanonicalSrc,
       width: el.getAttribute('width'),
       height: el.getAttribute('height'),
     },

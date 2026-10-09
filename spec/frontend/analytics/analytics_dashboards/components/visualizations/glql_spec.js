@@ -1,7 +1,5 @@
 import { nextTick } from 'vue';
-import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GlqlVisualization from '~/analytics/analytics_dashboards/components/visualizations/glql.vue';
 import PanelState from '~/analytics/shared/components/panel_state.vue';
@@ -23,30 +21,14 @@ jest.mock('~/lib/utils/copy_to_clipboard');
 describe('GlqlVisualization', () => {
   let wrapper;
 
-  // Panels near the viewport appear as soon as their observer mounts, as they do on screen.
-  const createWrapper = async (
-    props = {},
-    { attachTo, nearViewport = true, glFeatures = {} } = {},
-  ) => {
+  const createWrapper = async (props = {}) => {
     wrapper = shallowMountExtended(GlqlVisualization, {
       propsData: props,
-      attachTo,
-      provide: { glFeatures },
-      stubs: nearViewport
-        ? {
-            GlIntersectionObserver: stubComponent(GlIntersectionObserver, {
-              mounted() {
-                this.$emit('appear');
-              },
-            }),
-          }
-        : {},
     });
     await nextTick();
   };
 
   const findResolver = () => wrapper.findComponent(GlqlResolver);
-  const findViewportObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findModal = () => wrapper.findComponent(GlqlViewSourceModal);
   const findPanelState = () => wrapper.findComponent(PanelState);
   const findEmptyState = () => {
@@ -70,66 +52,6 @@ describe('GlqlVisualization', () => {
       queue: 'glql-queue-dashboard',
       priority: 0,
       bindings: [],
-    });
-  });
-
-  describe('when the panel is offscreen', () => {
-    beforeEach(async () => {
-      await createWrapper({ data: 'type = Issue AND state = opened' }, { nearViewport: false });
-    });
-
-    it('waits for the panel to near the viewport before mounting the resolver', () => {
-      expect(findResolver().exists()).toBe(false);
-      expect(findViewportObserver().props('options')).toEqual({
-        root: null,
-        rootMargin: '50% 0px',
-      });
-    });
-
-    describe('when the dashboard scrolls inside a page panel', () => {
-      let scrollPanel;
-
-      beforeEach(async () => {
-        scrollPanel = document.createElement('div');
-        scrollPanel.classList.add('js-static-panel-inner');
-        const mountPoint = document.createElement('div');
-        scrollPanel.appendChild(mountPoint);
-        document.body.appendChild(scrollPanel);
-
-        await createWrapper(
-          { data: 'type = Issue AND state = opened' },
-          { nearViewport: false, attachTo: mountPoint },
-        );
-      });
-
-      afterEach(() => {
-        scrollPanel.remove();
-      });
-
-      it('observes the panel against the page panel', () => {
-        expect(findViewportObserver().props('options').root).toBe(scrollPanel);
-      });
-    });
-
-    describe('when the panel nears the viewport', () => {
-      beforeEach(async () => {
-        findViewportObserver().vm.$emit('appear');
-        await nextTick();
-      });
-
-      // The observer is removed with it, so leaving the viewport again never unmounts the resolver.
-      it('mounts the resolver and stops observing', () => {
-        expect(findResolver().exists()).toBe(true);
-        expect(findViewportObserver().exists()).toBe(false);
-      });
-
-      it('waits for the viewport again when the query changes', async () => {
-        wrapper.setProps({ data: 'type = Issue AND state = closed' });
-        await nextTick();
-
-        expect(findResolver().exists()).toBe(false);
-        expect(findViewportObserver().exists()).toBe(true);
-      });
     });
   });
 
@@ -169,35 +91,10 @@ describe('GlqlVisualization', () => {
     });
   });
 
-  describe('when the glqlDashboardPanelsInReadingOrder feature flag is enabled', () => {
-    const glFeatures = { glqlDashboardPanelsInReadingOrder: true };
+  it('passes the panel load priority to the resolver', async () => {
+    await createWrapper({ data: 'type = Issue AND state = opened', loadPriority: 27 });
 
-    it('mounts the resolver without waiting for the viewport', async () => {
-      await createWrapper(
-        { data: 'type = Issue AND state = opened' },
-        { nearViewport: false, glFeatures },
-      );
-
-      expect(findResolver().exists()).toBe(true);
-      expect(findViewportObserver().exists()).toBe(false);
-    });
-
-    it('passes the panel load priority to the resolver', async () => {
-      await createWrapper(
-        { data: 'type = Issue AND state = opened', loadPriority: 27 },
-        { glFeatures },
-      );
-
-      expect(findResolver().props('priority')).toBe(27);
-    });
-  });
-
-  describe('when the glqlDashboardPanelsInReadingOrder feature flag is disabled', () => {
-    it('ignores the panel load priority', async () => {
-      await createWrapper({ data: 'type = Issue AND state = opened', loadPriority: 27 });
-
-      expect(findResolver().props('priority')).toBe(0);
-    });
+    expect(findResolver().props('priority')).toBe(27);
   });
 
   // The resolver does not re-query on prop changes, so the panel remounts it instead.

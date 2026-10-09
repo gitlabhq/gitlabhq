@@ -1,6 +1,10 @@
 import { sanitize } from '~/lib/dompurify';
 import { getSelectedFragment, insertText } from '~/lib/utils/common_utils';
 
+const removeIgnored = (documentFragment) => {
+  [...documentFragment.querySelectorAll('[data-gfm-ignore]')].forEach((el) => el.remove());
+};
+
 const delegatedTarget = (event, selector) => {
   const el =
     event.target.nodeType === Node.ELEMENT_NODE ? event.target : event.target.parentElement;
@@ -121,6 +125,8 @@ export class CopyAsGFM {
   }
 
   static transformGFMSelection(documentFragment) {
+    removeIgnored(documentFragment);
+
     const gfmElements = documentFragment.querySelectorAll('.md');
     switch (gfmElements.length) {
       case 0: {
@@ -146,7 +152,7 @@ export class CopyAsGFM {
   static transformCodeSelection(documentFragment, target) {
     // Strip ignored presentational overlays (coverage and code quality indicators,
     // or the blob viewer's inert syntax-highlight overlay) before extracting lines.
-    [...documentFragment.querySelectorAll('[data-gfm-ignore]')].forEach((el) => el.remove());
+    removeIgnored(documentFragment);
 
     let lineSelector = '.line';
 

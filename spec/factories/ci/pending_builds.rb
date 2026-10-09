@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :ci_pending_build, class: 'Ci::PendingBuild' do
-    build factory: :ci_build
     project
+    build { association(:ci_build, project: project) }
     protected { build.protected }
     instance_runners_enabled { true }
     namespace { project.namespace }

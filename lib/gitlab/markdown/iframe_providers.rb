@@ -51,6 +51,7 @@ module Gitlab
         def frontend_config
           enabled_providers.to_h do |provider|
             [provider.id, {
+              name: provider.name,
               src_origin: provider.src_origin,
               sandbox: provider.sandbox.join(' '),
               require_activation: provider.require_activation

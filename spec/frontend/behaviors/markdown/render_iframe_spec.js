@@ -1,8 +1,11 @@
+import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { iframeProviders, YOUTUBE_SANDBOX, FIGMA_SANDBOX } from 'helpers/iframe_providers';
 import renderIframes from '~/behaviors/markdown/render_iframe';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import {
+  YOUTUBE_URL,
   YOUTUBE_EMBED_URL,
   fixtureDefault,
   fixtureWithDimensions,
@@ -21,6 +24,14 @@ describe('Embedded iframe renderer', () => {
     renderIframes([...document.querySelectorAll('.js-render-iframe')]);
     jest.runAllTimers();
   };
+
+  const findWarning = () => document.querySelector('[data-testid="external-content-warning"]');
+  const findOpenInNewTab = () =>
+    document.querySelector('[data-testid="external-content-open-in-new-tab"]');
+  const findActivationButton = () =>
+    document.querySelector('[data-testid="activate-external-content"]');
+  const findPlaceholder = () =>
+    document.querySelector('[data-testid="external-content-placeholder"]');
 
   beforeEach(() => {
     window.gon = {
@@ -53,7 +64,7 @@ describe('Embedded iframe renderer', () => {
     expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)[0].getAttribute('sandbox')).toBe(YOUTUBE_SANDBOX);
   });
 
-  it("applies the matched provider's sandbox", () => {
+  it("applies the matched provider's sandbox", async () => {
     const figmaEmbedUrl = 'https://embed.figma.com/design/abc?embed-host=gitlab';
     setHTMLFixture(fixtureDefault);
     const img = document.querySelector('img');
@@ -61,8 +72,28 @@ describe('Embedded iframe renderer', () => {
     img.dataset.iframeProviderId = 'figma';
 
     renderAllIframes();
+    findActivationButton().click();
+    await nextTick();
 
     expect(findEmbeddedIframes(figmaEmbedUrl)[0].getAttribute('sandbox')).toBe(FIGMA_SANDBOX);
+  });
+
+  it('warns that the content is external', () => {
+    setHTMLFixture(fixtureDefault);
+
+    renderAllIframes();
+
+    expect(findWarning().textContent).toContain(
+      'You are viewing external content from www.youtube.com. GitLab does not control this content.',
+    );
+  });
+
+  it('links to the canonical source in a new tab', () => {
+    setHTMLFixture(fixtureDefault);
+
+    renderAllIframes();
+
+    expect(findOpenInNewTab().getAttribute('href')).toBe(YOUTUBE_URL);
   });
 
   it('keeps the original image hidden alongside the embed', () => {
@@ -96,10 +127,71 @@ describe('Embedded iframe renderer', () => {
       renderAllIframes();
     });
 
+    it('copies no plain text', () => {
+      expect(copySelection().textContent.trim()).toBe('');
+    });
+
     it('copies the embed as GFM', async () => {
       expect(await CopyAsGFM.nodeToGFM(copySelection())).toBe(
         `![YouTube embed](${YOUTUBE_EMBED_URL})`,
       );
+    });
+  });
+
+  it('names the frame after the provider and host', () => {
+    setHTMLFixture(fixtureDefault);
+
+    renderAllIframes();
+
+    expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)[0].getAttribute('title')).toBe(
+      'External content from YouTube (www.youtube.com)',
+    );
+  });
+
+  describe('when the provider requires activation', () => {
+    beforeEach(() => {
+      setHTMLFixture(fixtureDefault);
+      window.gon.iframe_rendering_providers.youtube.require_activation = true;
+      renderAllIframes();
+    });
+
+    it('does not load the iframe', () => {
+      expect(findEmbeddedIframes()).toHaveLength(0);
+    });
+
+    it('does not warn yet', () => {
+      expect(findWarning()).toBeNull();
+    });
+
+    it('shows an activation button', () => {
+      expect(findActivationButton().textContent.trim()).toBe('Load external content');
+    });
+
+    it('sizes the placeholder like the default iframe', () => {
+      expect(findPlaceholder().style.width).toBe('560px');
+    });
+
+    describe('when the user activates the content', () => {
+      beforeEach(async () => {
+        findActivationButton().click();
+        await waitForPromises();
+      });
+
+      it('loads the iframe', () => {
+        expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)).toHaveLength(1);
+      });
+
+      it('moves focus to the iframe', () => {
+        expect(document.activeElement).toBe(findEmbeddedIframes(YOUTUBE_EMBED_URL)[0]);
+      });
+
+      it('removes the activation button', () => {
+        expect(findActivationButton()).toBeNull();
+      });
+
+      it('warns that the content is external', () => {
+        expect(findWarning()).not.toBeNull();
+      });
     });
   });
 
@@ -199,12 +291,6 @@ describe('Embedded iframe renderer', () => {
         expect(iframe.style.maxHeight).toBe('min(80vh, 315px)');
         expect(iframe.style.height).toBe('auto');
       });
-
-      it('does not add full-width/height styles', () => {
-        const iframe = findIframe();
-        expect(iframe.classList.contains('gl-w-full')).toBe(false);
-        expect(iframe.classList.contains('gl-h-full')).toBe(false);
-      });
     });
 
     describe('when only width is provided', () => {
@@ -229,13 +315,12 @@ describe('Embedded iframe renderer', () => {
         renderAllIframes();
       });
 
-      it('uses full-width/height', () => {
+      it('defaults to 560 by 315', () => {
         const iframe = findIframe();
-        expect(iframe.classList.contains('gl-w-full')).toBe(true);
-        expect(iframe.classList.contains('gl-h-full')).toBe(true);
-        expect(iframe.style.maxHeight).toBe('80vh');
-        expect(iframe.getAttribute('width')).toBeNull();
-        expect(iframe.getAttribute('height')).toBeNull();
+        expect(iframe.getAttribute('width')).toBe('560');
+        expect(iframe.getAttribute('height')).toBe('315');
+        expect(iframe.style.maxHeight).toBe('min(80vh, 315px)');
+        expect(iframe.style.height).toBe('auto');
       });
     });
   });

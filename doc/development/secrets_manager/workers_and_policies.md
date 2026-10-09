@@ -33,7 +33,7 @@ OpenBao also calls back into GitLab through an internal API to deliver audit log
 | `SecretRotationReminderBatchWorker` | Deprecated, does nothing, replaced by the two workers below | None. It is no longer scheduled. |
 | `ProjectSecretRotationReminderBatchWorker` | Sends rotation reminders for project secrets | Cron |
 | `GroupSecretRotationReminderBatchWorker` | Sends rotation reminders for group secrets | Cron |
-| `AuditLogWorker` | Processes one OpenBao audit log line into a GitLab audit event and a billing event | `API::Internal::SecretsManager`, behind a feature flag |
+| `AuditLogWorker` | Processes one OpenBao audit log line into a GitLab audit event and a billing event | `API::Internal::SecretsManager` |
 
 For the business meaning of the billing events, see [Secrets Manager fulfillment and entitlement](fulfillment.md).
 For the destroy and transfer flows that create deprovision maintenance tasks, see [Secrets Manager states and side effects](states_and_side_effects.md).
@@ -129,8 +129,7 @@ Request handling:
 - Authentication is a shared secret compared against the `Gitlab-Openbao-Auth-Token` header. The secret is read from a file at a path from `Gitlab.config.openbao.authentication_token_secret_file_path`.
 That path is resolved with `Pathname#realpath` and checked against an allowlist of root paths (`Rails.root`, or `/etc/gitlab/` outside development and test), to block symlink-based path traversal.
 - OpenBao emits two lines per operation, one `request` type and one `response` type. Only the `response` line carries the outcome, so `request` lines are dropped before any processing.
-- Behind a feature flag, processing is asynchronous: the endpoint enqueues `SecretsManagement::AuditLogWorker` and returns `202 Accepted` without waiting on the database. With the flag off, the endpoint parses and audits the line synchronously in the request.
-This happens inside a rescue block that only tracks errors, so a failure there never causes OpenBao to see a failed response.
+- Processing is asynchronous: the endpoint enqueues `SecretsManagement::AuditLogWorker` and returns `202 Accepted` without waiting on the database.
 
 ## Audit log processing
 

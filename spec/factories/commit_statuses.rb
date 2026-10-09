@@ -6,7 +6,7 @@ FactoryBot.define do
     stage_idx { 0 }
     status { 'success' }
     description { 'commit status' }
-    pipeline factory: :ci_pipeline
+    pipeline { association(:ci_pipeline, **@overrides.slice(:project).compact) }
     started_at { 'Tue, 26 Jan 2016 08:21:42 +0100' }
     finished_at { 'Tue, 26 Jan 2016 08:23:42 +0100' }
     partition_id { pipeline&.partition_id }

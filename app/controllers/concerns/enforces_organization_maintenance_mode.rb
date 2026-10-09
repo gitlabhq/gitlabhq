@@ -6,8 +6,7 @@
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/607966.
 #
 # Enforcement gates on the single `Organizations::Organization#under_maintenance?`
-# predicate, which is wrapped in the `organization_maintenance_enforcement`
-# feature flag, so it ships dark and is a complete no-op when the flag is disabled.
+# predicate.
 #
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/618032.
 module EnforcesOrganizationMaintenanceMode

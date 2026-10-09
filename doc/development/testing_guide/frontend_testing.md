@@ -202,6 +202,86 @@ The line between unit and integration tests can be quite blurry in a component h
 
 For example, it's better to use the generated markup to trigger a button click and validate the markup changed accordingly than to call a method manually and verify data structures or computed properties. There's always the chance of accidentally breaking the user flow, while the tests pass and provide a false sense of security.
 
+## Test structure
+
+Follow BDD (Behavior-Driven Development) conventions:
+
+- Use `describe` blocks to define the context or state the system is in.
+- Use `it` blocks to declare the specific behavior being verified.
+- Use `beforeEach` to set up the state shared by a `describe` block.
+
+Group related tests together under a shared `describe` block.
+
+### Set up the context in `beforeEach`
+
+The `beforeEach` of a `describe` block must perform the setup that the block's name promises,
+including mounting the component, so that every `it` inside it starts from that state.
+If the block is named `when the user is signed in`, the sign-in mock belongs in that `beforeEach`,
+not in each `it`.
+
+**Bad**:
+
+```javascript
+describe('when the user is signed in', () => {
+  it('shows the edit button', () => {
+    window.gon.current_user_id = 1;
+    createComponent();
+
+    expect(findEditButton().exists()).toBe(true);
+  });
+});
+```
+
+**Good**:
+
+```javascript
+describe('when the user is signed in', () => {
+  beforeEach(() => {
+    window.gon.current_user_id = 1;
+    createComponent();
+  });
+
+  it('shows the edit button', () => {
+    expect(findEditButton().exists()).toBe(true);
+  });
+});
+```
+
+### Extract conditions into `describe` blocks
+
+When "when X" appears inside an `it` block description, extract the condition into
+its own `describe` block with a `beforeEach` that performs the setup.
+Context-driven specs group related tests together, and help both humans and AI agents
+see which scenarios are already covered and update specs in the right place.
+
+**Bad**:
+
+```javascript
+it('displays an alert when the request fails', () => {
+  createComponent({ props: { hasError: true } });
+
+  expect(findAlert().exists()).toBe(true);
+});
+```
+
+**Good**:
+
+```javascript
+describe('when the request fails', () => {
+  beforeEach(() => {
+    createComponent({ props: { hasError: true } });
+  });
+
+  it('displays an alert', () => {
+    expect(findAlert().exists()).toBe(true);
+  });
+});
+```
+
+For the same reason, avoid `it` blocks that re-create the component when an outer
+`beforeEach` already did.
+Move them into their own `describe` block with dedicated setup instead.
+
 ## Common practices
 
 These are some general common practices included as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
@@ -311,41 +391,6 @@ describe('methodName', () => {
   });
 });
 ```
-
-### Extract conditions into `describe` blocks
-
-When "when X" appears inside an `it` block description, extract the condition into
-its own `describe` block with a `beforeEach` that performs the setup.
-Context-driven specs group related tests together, and help both humans and AI agents
-see which scenarios are already covered and update specs in the right place.
-
-**Bad**:
-
-```javascript
-it('displays an alert when the request fails', () => {
-  createComponent({ props: { hasError: true } });
-
-  expect(findAlert().exists()).toBe(true);
-});
-```
-
-**Good**:
-
-```javascript
-describe('when the request fails', () => {
-  beforeEach(() => {
-    createComponent({ props: { hasError: true } });
-  });
-
-  it('displays an alert', () => {
-    expect(findAlert().exists()).toBe(true);
-  });
-});
-```
-
-For the same reason, avoid `it` blocks that re-create the component when an outer
-`beforeEach` already did.
-Move them into their own `describe` block with dedicated setup instead.
 
 ### Testing promises
 

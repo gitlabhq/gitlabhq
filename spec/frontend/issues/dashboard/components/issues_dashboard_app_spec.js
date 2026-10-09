@@ -71,8 +71,6 @@ describe('IssuesDashboardApp component', () => {
     hasBlockedIssuesFeature: true,
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
-    hasOkrsFeature: true,
-    hasQualityManagementFeature: true,
     hasScopedLabelsFeature: true,
     hasStatusFeature: true,
     hasStatusSortFeature: false,

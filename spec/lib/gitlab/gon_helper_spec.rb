@@ -99,6 +99,7 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       it 'exposes the enabled providers' do
         expect(gon).to receive(:iframe_rendering_providers=).with({
           'example' => {
+            name: 'Example',
             src_origin: 'https://embed.example.com',
             sandbox: 'allow-scripts allow-popups',
             require_activation: true

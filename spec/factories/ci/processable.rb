@@ -8,7 +8,7 @@ FactoryBot.define do
     stage_idx { ci_stage.try(:position) || 0 }
     ref { 'master' }
     tag { false }
-    pipeline factory: :ci_pipeline
+    pipeline { association(:ci_pipeline, **@overrides.slice(:project).compact) }
     project { pipeline.project }
     scheduling_type { 'stage' }
     partition_id { pipeline.partition_id }

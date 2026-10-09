@@ -8260,6 +8260,9 @@ msgstr ""
 msgid "AgentArtifacts|Client type"
 msgstr ""
 
+msgid "AgentArtifacts|Codex"
+msgstr ""
+
 msgid "AgentArtifacts|Content"
 msgstr ""
 
@@ -8267,6 +8270,9 @@ msgid "AgentArtifacts|Created after"
 msgstr ""
 
 msgid "AgentArtifacts|Created before"
+msgstr ""
+
+msgid "AgentArtifacts|Cursor"
 msgstr ""
 
 msgid "AgentArtifacts|Details"
@@ -8710,6 +8716,9 @@ msgid "AiGovernance|Claude Code (glab)"
 msgstr ""
 
 msgid "AiGovernance|Cloud access"
+msgstr ""
+
+msgid "AiGovernance|Codex"
 msgstr ""
 
 msgid "AiGovernance|Connected"
@@ -37557,6 +37566,21 @@ msgstr ""
 msgid "ExternalConfigEmptyState|To view or edit the pipeline configuration, check your project's CI/CD settings for the external file location, then navigate to that project or repository."
 msgstr ""
 
+msgid "ExternalContent|External content from %{provider} (%{host})"
+msgstr ""
+
+msgid "ExternalContent|If you load this content, %{host} receives your IP address and browser information. GitLab cannot verify how %{host} uses this data. Do not enter passwords, tokens, or other sensitive information."
+msgstr ""
+
+msgid "ExternalContent|Load external content"
+msgstr ""
+
+msgid "ExternalContent|Open in new tab"
+msgstr ""
+
+msgid "ExternalContent|You are viewing external content from %{host}. GitLab does not control this content."
+msgstr ""
+
 msgid "ExternalIssueIntegration|Another issue tracker is already in use"
 msgstr ""
 
@@ -41701,6 +41725,24 @@ msgid "Glql|Heavy (25–99)"
 msgstr ""
 
 msgid "Glql|Light (1–4)"
+msgstr ""
+
+msgid "Glql|May include subgroups you cannot see"
+msgstr ""
+
+msgid "Glql|No group"
+msgstr ""
+
+msgid "Glql|No group at depth %{depth}"
+msgstr ""
+
+msgid "Glql|No project"
+msgstr ""
+
+msgid "Glql|Not in a subgroup"
+msgstr ""
+
+msgid "Glql|Not tied to a project, or a project you cannot see"
 msgstr ""
 
 msgid "Glql|Other (%{count})"
