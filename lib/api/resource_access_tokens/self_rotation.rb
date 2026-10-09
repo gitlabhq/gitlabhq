@@ -29,10 +29,13 @@ module API
             tags %w[access_tokens]
           end
           params do
-            requires :id, type: String, desc: "The #{source_type} ID"
+            requires :id, type: String, desc: "ID or URL-encoded path of the #{source_type}."
             optional :expires_at,
               type: Date,
-              desc: "The expiration date of the token",
+              desc: 'Date when the access token expires. If omitted, the new token expires one week after ' \
+                'rotation when [token expiry is ' \
+                'enforced](https://docs.gitlab.com/user/profile/personal_access_tokens/#access-token-expiration), ' \
+                'and does not expire otherwise.',
               documentation: { example: '2021-01-31' }
           end
           route_setting :authorization, permissions: :rotate_resource_access_token, boundary_type: source_type.to_sym

@@ -28,6 +28,9 @@ module API
           values: 1..20
         use :pagination
       end
+      given configuration[:tier] do
+        route_setting :tier, configuration[:tier]
+      end
       route_setting :authorization, permissions: :read_webhook_event, boundary_type: configuration[:boundary_type]
       get "events" do
         search_params = declared_params(include_missing: false)

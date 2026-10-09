@@ -80,6 +80,31 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       sign_in(user)
     end
 
+    context 'valid branch, whitespace-only file that exists' do
+      let_it_be_with_reload(:project) { create(:project, :repository, maintainers: user) }
+
+      before do
+        project.repository.create_file(
+          user, ' ', 'content',
+          message: 'Add file with space name', branch_name: 'master'
+        )
+      end
+
+      it 'is successful' do
+        get project_commits_path(project, 'master/ ')
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when branch has only empty commits' do
+      it 'allows to see commits' do
+        get project_commits_path(project, 'empty-branch')
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'with an invalid limit' do
       it 'uses the default limit' do
         expect_next_instance_of(Repository) do |instance|

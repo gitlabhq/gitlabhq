@@ -15,5 +15,3 @@ export { default as localRulesVueNoWebUrl } from './local-rules-vue-no-web-url.m
 export { default as tailwindcssNoArbitraryValue } from './tailwindcss-no-arbitrary-value.mjs';
 
 export { default as vueNoUnusedPropertiesInject } from './vue-no-unused-properties-inject.mjs';
-
-export { default as vueNoRequiredPropWithDefault } from './vue-no-required-prop-with-default.mjs';

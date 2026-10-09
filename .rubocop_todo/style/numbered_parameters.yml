@@ -9,7 +9,6 @@ Style/NumberedParameters:
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/project.rb'
-    - 'ee/app/models/ee/project.rb'
     - 'ee/lib/ee/gitlab/quick_actions/users_extractor.rb'
     - 'ee/spec/models/vulnerabilities/statistic_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'

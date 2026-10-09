@@ -24,6 +24,7 @@ module API
         optional :name, type: String, desc: 'Name of the user'
         optional :username, type: String, desc: 'Username of the user'
         optional :email, type: String, desc: 'Custom email address for the user'
+        optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
       end
 
       route_setting :authorization, permissions: :create_service_account, boundary_type: :instance,
@@ -94,6 +95,7 @@ module API
         optional :name, type: String, desc: 'Name of the user'
         optional :username, type: String, desc: 'Username of the user'
         optional :email, type: String, desc: 'Custom email address for the user'
+        optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
       end
 
       route_setting :authorization, permissions: :update_service_account, boundary_type: :instance,

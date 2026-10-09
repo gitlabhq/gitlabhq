@@ -71,6 +71,88 @@ The GitLab Duo CLI stops the current operation and returns to the prompt.
 
 Use the <kbd>↑</kbd> key to view your prompt history, or <kbd>Control</kbd>+<kbd>R</kbd> to search it.
 
+When you start a new session, the prompt placeholder might show a tip about a GitLab Duo CLI feature.
+
+### Startup cards
+
+{{< history >}}
+
+- Welcome card [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 9.11.0, during the GitLab 19.4 release.
+- `--startup-cards` option and `STARTUP_CARDS` environment variable [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.17.0) in GitLab Duo CLI 9.17.0, during the GitLab 19.4 release.
+- Onboarding card [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.28.0) in GitLab Duo CLI 9.28.0, during the GitLab 19.5 release.
+
+{{< /history >}}
+
+Startup cards appear in your terminal when you start a new session in interactive mode:
+an onboarding card on your first run, and a welcome card on later runs.
+The cards do not appear when you resume an existing session.
+
+Startup cards are enabled by default, but you can turn them off.
+
+#### Onboarding card
+
+The first time you run the GitLab Duo CLI on a machine, an onboarding card helps you
+[connect MCP servers](#model-context-protocol-mcp-connections) and install
+[plugins](customize.md#plugins) from the GitLab marketplace.
+
+The card displays navigation hints to select and run the steps. Completed steps show a checkmark
+with the number of connected MCP servers or installed plugins.
+
+The card stays until you send your first prompt, even after you complete both steps.
+It does not appear again on later runs.
+
+#### Welcome card
+
+Every time you start a new session, a welcome card appears by default.
+You can turn off the card with the [**Show work items on session start**](#settings) setting.
+
+The card suggests prompts to kick off common tasks and displays navigation hints for browsing
+and running prompts. For example, when you work in a GitLab project, the suggested prompts are
+built from your open merge requests and issues. Otherwise, the card shows generic examples.
+
+When you select a prompt for one of your merge requests and its source branch exists, the
+prompt tells GitLab Duo to check out that branch first.
+
+If the [**Run suggested prompts as /goal sessions**](#settings) setting is enabled and your
+instance is GitLab 19.3 or later, the prompt to address review feedback runs as a `/goal` session.
+
+#### Hide the startup cards
+
+Startup cards are enabled by default. To turn them off, set `--startup-cards` to `false`:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo cli --startup-cards false
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo --startup-cards false
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+Alternatively, set the `STARTUP_CARDS` environment variable to `false`.
+If you set both, the `--startup-cards` option takes precedence over the environment variable.
+
+### Status bar
+
+The bottom of the screen shows a status bar with:
+
+- The current working directory and Git branch.
+- The detected GitLab project and, if one exists, the open merge request for the current branch
+  and its pipeline status.
+- The progress of a running `/goal` session.
+- The status of configured MCP servers.
+
 ### Switch modes
 
 In interactive mode, you can switch the GitLab Duo CLI between modes as you work:
@@ -97,6 +179,10 @@ The GitLab Duo CLI displays the current mode under the `>` prompt. To switch bet
 - `/mcp` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.95.0) in GitLab Duo CLI 8.95.0, during the GitLab 19.0 release.
 - `/goal` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.17.0) in GitLab Duo CLI 9.17.0, during the GitLab 19.4 release, as a [beta](../../policy/development_stages_support.md#beta).
 - `/goal` slash command [generally available](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.27.0) in GitLab Duo CLI 9.27.0, during the GitLab 19.5 release.
+- `/compact` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.109.0) in GitLab Duo CLI 8.109.0, during the GitLab 19.2 release.
+- `/export` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0) in GitLab Duo CLI 9.11.0, during the GitLab 19.4 release.
+- `/review` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.14.0) in GitLab Duo CLI 9.14.0, during the GitLab 19.4 release.
+- `/whatsnew` slash command [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.20.0) in GitLab Duo CLI 9.20.0, during the GitLab 19.4 release.
 
 {{< /history >}}
 
@@ -107,18 +193,24 @@ The following slash commands are available:
 
 | Command     | Description                                          |
 |-------------|------------------------------------------------------|
+| `/compact`  | Compress the conversation history to save context space. |
 | `/copy`     | Copy the last GitLab Duo response to the clipboard.  |
 | `/doctor`   | Show diagnostics for the GitLab Duo CLI environment. |
 | `/exit`     | Exit the GitLab Duo CLI.                             |
+| `/export`   | Export the session as a portable JSON bundle.        |
 | `/feedback` | Submit a bug report or feature request.              |
 | `/goal`     | Start a session that works toward a goal. Requires GitLab 19.3 or later. |
-| `/help`     | Display a list of available slash commands.          |
+| `/help`     | Display available shortcuts, modes, and slash commands. |
 | `/mcp`      | View configured MCP servers and their status.        |
 | `/model`    | Switch the AI model for the current session.         |
 | `/new`      | Start a new chat session.                            |
+| `/review`   | Review your changes with the code review subagent.   |
 | `/sessions` | Browse, search, and switch sessions.                 |
 | `/settings` | Open the settings panel.                             |
 | `/skills`   | List available Agent Skills in the current project.  |
+| `/whatsnew` | Show recent changes to the GitLab Duo CLI.           |
+
+To close a panel or dialog that a slash command opens, press <kbd>Escape</kbd>.
 
 You can also create your own slash commands.
 For more information, see [custom slash commands](customize.md#custom-slash-commands).

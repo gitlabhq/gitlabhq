@@ -54,9 +54,9 @@ module API
             documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :updated_after, type: DateTime, desc: 'Return pipelines updated on or after the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :created_before, type: DateTime, desc: 'Return pipelines created on or before the specified time.',
+          optional :created_before, type: DateTime, desc: 'Return pipelines created before the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
-          optional :created_after, type: DateTime, desc: 'Return pipelines created on or after the specified time.',
+          optional :created_after, type: DateTime, desc: 'Return pipelines created after the specified time.',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :order_by, type: String, values: ::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
             desc: 'Sort results by the specified field.',

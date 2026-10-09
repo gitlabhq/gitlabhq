@@ -30077,6 +30077,9 @@ msgstr ""
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr ""
 
+msgid "Dependencies|There was a problem fetching the locations for this dependency."
+msgstr ""
+
 msgid "Dependencies|There was a problem fetching the refs for this dependency."
 msgstr ""
 
@@ -32667,6 +32670,9 @@ msgid_plural "DuoAgenticChat|%{count} suggestions for %{category}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgenticChat|%{filename} (%{size})"
+msgstr ""
+
 msgid "DuoAgenticChat|%{filename} could not be read and was not attached."
 msgstr ""
 
@@ -32760,10 +32766,13 @@ msgstr ""
 msgid "DuoAgenticChat|Development"
 msgstr ""
 
-msgid "DuoAgenticChat|Drop images to attach them"
+msgid "DuoAgenticChat|Drop to add file"
 msgstr ""
 
 msgid "DuoAgenticChat|File limit: %{limit}"
+msgstr ""
+
+msgid "DuoAgenticChat|File type not supported"
 msgstr ""
 
 msgid "DuoAgenticChat|Get GitLab Duo turned on"
@@ -32995,6 +33004,9 @@ msgid "DuoAgenticChat|Summarize and compact this conversation"
 msgstr ""
 
 msgid "DuoAgenticChat|Supported formats: .png, .jpg, .jpeg, .webp"
+msgstr ""
+
+msgid "DuoAgenticChat|Supported formats: PNG, JPEG, WebP"
 msgstr ""
 
 msgid "DuoAgenticChat|Talk to sales"
@@ -33398,6 +33410,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Goal"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Goal cannot exceed %{maxLength} characters."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Hour (24-hour)"
 msgstr ""
 
@@ -33477,6 +33495,9 @@ msgid "DuoAgentsPlatform|On a schedule"
 msgstr ""
 
 msgid "DuoAgentsPlatform|On an event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Optional. Tell the agent or flow what to do when this condition is met."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Path to configuration file"
@@ -33636,6 +33657,9 @@ msgid "DuoAgentsPlatform|Status"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status changed to %{statusNames}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Summarize the failing jobs."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Supplemental"
@@ -46454,6 +46478,12 @@ msgid "Integrations|Mattermost slash commands"
 msgstr ""
 
 msgid "Integrations|Notification settings"
+msgstr ""
+
+msgid "Integrations|Organization owners can set up integrations that all groups and projects in the organization inherit and use by default. These integrations apply to all groups and projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}integration management%{link_end}."
+msgstr ""
+
+msgid "Integrations|Organization-level integration management"
 msgstr ""
 
 msgid "Integrations|Perform common tasks with slash commands."
@@ -60105,6 +60135,9 @@ msgid "Organization|Organization URL is too short (minimum is 2 characters)."
 msgstr ""
 
 msgid "Organization|Organization URL successfully changed."
+msgstr ""
+
+msgid "Organization|Organization access"
 msgstr ""
 
 msgid "Organization|Organization administration"
@@ -74160,12 +74193,6 @@ msgstr ""
 msgid "SecretsManagerPermissions|Allow the secrets manager to be enabled in any project or subgroup in this group."
 msgstr ""
 
-msgid "SecretsManagerPermissions|An error occurred while disabling the secrets manager."
-msgstr ""
-
-msgid "SecretsManagerPermissions|An error occurred while enabling the secrets manager."
-msgstr ""
-
 msgid "SecretsManagerPermissions|An error occurred while fetching the secrets manager enrollment status. Please refresh the page."
 msgstr ""
 
@@ -74196,9 +74223,6 @@ msgstr ""
 msgid "SecretsManagerPermissions|Delete"
 msgstr ""
 
-msgid "SecretsManagerPermissions|Enable GitLab Secrets Manager for this group"
-msgstr ""
-
 msgid "SecretsManagerPermissions|Failed to create secrets manager permission. Please try again."
 msgstr ""
 
@@ -74209,18 +74233,6 @@ msgid "SecretsManagerPermissions|Failed to fetch secrets manager permissions. Pl
 msgstr ""
 
 msgid "SecretsManagerPermissions|GitLab Secrets Manager"
-msgstr ""
-
-msgid "SecretsManagerPermissions|GitLab Secrets Manager has been deprovisioned for this group."
-msgstr ""
-
-msgid "SecretsManagerPermissions|GitLab Secrets Manager has been deprovisioned for this project."
-msgstr ""
-
-msgid "SecretsManagerPermissions|GitLab Secrets Manager has been provisioned for this group."
-msgstr ""
-
-msgid "SecretsManagerPermissions|GitLab Secrets Manager has been provisioned for this project."
 msgstr ""
 
 msgid "SecretsManagerPermissions|GitLab Secrets Manager is disabled for this namespace."
@@ -83442,6 +83454,9 @@ msgstr ""
 msgid "Suggested change"
 msgstr ""
 
+msgid "Suggested change ready"
+msgstr ""
+
 msgid "SuggestedColors|Blue"
 msgstr ""
 
@@ -89678,8 +89693,13 @@ msgstr ""
 msgid "UsageBilling|Automated flow"
 msgstr ""
 
-msgid "UsageBilling|Billed usage"
+msgid "UsageBilling|Billable usage"
 msgstr ""
+
+msgid "UsageBilling|Billable: %{count} credit"
+msgid_plural "UsageBilling|Billable: %{count} credits"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "UsageBilling|Blocked usage"
 msgstr ""
@@ -89920,16 +89940,10 @@ msgstr ""
 msgid "UsageBilling|Non-billable usage (Beta)"
 msgstr ""
 
-msgid "UsageBilling|Non-billable usage (Internal)"
-msgstr ""
-
-msgid "UsageBilling|Non-billable usage (No reason provided)"
-msgstr ""
-
-msgid "UsageBilling|Non-billable usage (Orbit promotional)"
-msgstr ""
-
 msgid "UsageBilling|Non-billable usage (Other)"
+msgstr ""
+
+msgid "UsageBilling|Non-billable usage (Promotional)"
 msgstr ""
 
 msgid "UsageBilling|Non-billable: %{count} credit"
@@ -90044,11 +90058,6 @@ msgstr ""
 
 msgid "UsageBilling|Total usage"
 msgstr ""
-
-msgid "UsageBilling|Total: %{count} credit"
-msgid_plural "UsageBilling|Total: %{count} credits"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "UsageBilling|Track monthly credit consumption and the main drivers of credit usage."
 msgstr ""

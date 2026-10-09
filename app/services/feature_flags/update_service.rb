@@ -90,7 +90,7 @@ module FeatureFlags
     end
 
     def deleted_strategy_message(strategy)
-      scopes = strategy.scopes.map { |scope| scope.environment_scope }.join(', ')
+      scopes = strategy.scopes.map(&:environment_scope).join(', ')
       "Deleted strategy #{strategy.name} with environment scopes #{scopes}."
     end
 

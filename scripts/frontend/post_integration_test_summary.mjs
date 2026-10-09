@@ -58,7 +58,7 @@ function spliceSection(body, name, content) {
 function placeholderSection(name, { jobPresent }) {
   const state = jobPresent
     ? '_Pending — results appear when the job finishes._'
-    : '_Did not run for this merge request._';
+    : '_Did not run for this merge request, or had nothing to report._';
 
   return `### ${SECTIONS[name].label}\n\n${state}`;
 }
@@ -92,6 +92,11 @@ const SPEC_FILE_RE = /_spec\.js$/;
 // Deleted spec files: JS only. RSpec deletions are not credited here because
 // the master baseline is built from a Jest report, which never contains `.rb` paths.
 const DELETED_SPEC_FILE_RE = /_spec\.js$/;
+
+// Paths that belong to the frontend integration (MSW) suite — the files this
+// summary reports on. Mirrors MSW_SPEC_FILE_RE in scripts/post_rspec_test_summary.rb
+// so both scripts decide "does this MR touch the suite?" by the same rule.
+const MSW_SPEC_FILE_RE = /^(?:ee|jh)\/spec\/frontend\/integration\/.*_spec\.js$/;
 
 // How far we page through the MR diffs API. 100 diffs/page × 5 pages = 500
 // files — a generous safety cap. Past this the per-file breakdown is truncated,
@@ -301,6 +306,24 @@ function computeActionable({ changedFiles, deletedFiles = [], report, baseline }
   // there are no net-new tests to penalise, so perTestS is null.
   const perTestS = addedTests > 0 ? addedRuntimeS / addedTests : null;
   return { files, deletedFiles: resolvedDeletedFiles, addedRuntimeS, addedTests, perTestS };
+}
+
+// Whether the MR gives this summary nothing to report: no changed or deleted
+// integration spec files, with an untruncated diff listing to prove it.
+// Decided from the diff paths alone — not from the Jest report or the master
+// baseline — so a deleted spec with no baseline row, or a job that died before
+// writing its report, still posts; and the rule stays in lockstep with the
+// Ruby script's placeholder gate. A skippable summary never creates a note —
+// it only fills its section when the counterpart script created the note first.
+function shouldSkipSummary({ changedFiles, deletedFiles, truncated, fetchFailed }) {
+  if (truncated || fetchFailed) return false;
+
+  // Renames count under either path, matching the Ruby script.
+  const paths = [
+    ...changedFiles.flatMap((f) => [f.path, f.oldPath]),
+    ...deletedFiles.map((f) => f.path),
+  ];
+  return !paths.some((path) => path && MSW_SPEC_FILE_RE.test(path));
 }
 
 function buildFileRow(f) {
@@ -516,12 +539,14 @@ async function apiRequest(method, path, body) {
  *   files: Array<{ path: string, isNew: boolean, oldPath: string }>,
  *   deletedFiles: Array<{ path: string }>,
  *   truncated: boolean,
+ *   fetchFailed: boolean,
  * }>}
  */
 async function fetchChangedSpecFiles(projectId, mrIid) {
   const files = [];
   const deletedFiles = [];
   let truncated = false;
+  let fetchFailed = false;
   try {
     for (let page = 1; page <= MAX_DIFF_PAGES; page += 1) {
       // Pages fetched sequentially so we can stop once a short (last) page is hit.
@@ -554,9 +579,10 @@ async function fetchChangedSpecFiles(projectId, mrIid) {
       if (page === MAX_DIFF_PAGES) truncated = true;
     }
   } catch (err) {
+    fetchFailed = true;
     console.warn(`[Integration] Could not fetch MR changed files: ${err.message}`);
   }
-  return { files, deletedFiles, truncated };
+  return { files, deletedFiles, truncated, fetchFailed };
 }
 
 /**
@@ -663,10 +689,11 @@ async function run() {
 
   // Fetch the master baseline and the MR's changed files in parallel
   // (both best-effort — neither blocks the comment from posting).
-  const [baseline, { files: changedFiles, deletedFiles, truncated }] = await Promise.all([
-    fetchMasterBaseline(projectId, opts.jobName, opts.artifactPath),
-    fetchChangedSpecFiles(projectId, mrIid),
-  ]);
+  const [baseline, { files: changedFiles, deletedFiles, truncated, fetchFailed }] =
+    await Promise.all([
+      fetchMasterBaseline(projectId, opts.jobName, opts.artifactPath),
+      fetchChangedSpecFiles(projectId, mrIid),
+    ]);
 
   const actionable = computeActionable({ changedFiles, deletedFiles, report: stats, baseline });
 
@@ -686,9 +713,16 @@ async function run() {
     `[Integration] New tests: +${actionable.addedTests} | Added runtime: ${formatSignedDuration(Math.round(actionable.addedRuntimeS))} | Per new test: ${perTestStr} | ${threshold.label || 'no baseline'}`,
   );
 
+  const skippable = shouldSkipSummary({ changedFiles, deletedFiles, truncated, fetchFailed });
+
   if (opts.dryRun) {
     console.log('\n[Integration] --dry-run: comment NOT posted. Rendered comment below:\n');
     console.log(comment);
+    if (skippable) {
+      console.log(
+        '\n[Integration] --dry-run: no integration spec changes — would not create a new note (an existing one would still be updated).',
+      );
+    }
     if (threshold.level === 'action') {
       console.log(`\n[Integration] --dry-run: would exit 1 (action required).`);
     }
@@ -698,6 +732,12 @@ async function run() {
   const existing = await findExistingNote(projectId, mrIid);
 
   if (!existing) {
+    if (skippable) {
+      console.log(
+        '[Integration] No integration spec changes and no existing summary note — skipping comment.',
+      );
+      return;
+    }
     const counterpartPresent = await counterpartJobPresent(projectId, SECTIONS.rspec.job);
     await apiRequest('POST', `/projects/${projectId}/merge_requests/${mrIid}/notes`, {
       body: buildCombinedComment('msw', comment, { counterpartPresent }),
@@ -737,7 +777,7 @@ async function run() {
 }
 
 // Only run when invoked directly (node scripts/frontend/post_integration_test_summary.mjs).
-// When imported by the unit test, the pure functions are exercised instead.
+// When imported by the unit test, this guard keeps `run` from firing on import.
 if (process.argv[1]?.endsWith('post_integration_test_summary.mjs')) {
   run().catch((err) => {
     // Posting the summary is best-effort: never fail the (already-finished)
@@ -759,7 +799,9 @@ export {
   perFileFromReport,
   parseReport,
   computeActionable,
+  shouldSkipSummary,
   thresholdInfo,
+  run,
   buildComment,
   buildDeletedFileRow,
   apiRequest,

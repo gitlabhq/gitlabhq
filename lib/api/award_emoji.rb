@@ -59,6 +59,7 @@ module API
           params do
             use :pagination
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"read_#{permission_suffix}", boundary_type: boundary_type
           get endpoint, feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
@@ -84,6 +85,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'ID of the emoji reaction.'
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"read_#{permission_suffix}", boundary_type: boundary_type
           get "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
@@ -104,6 +106,7 @@ module API
           params do
             requires :name, type: String, desc: 'Name of the emoji without colons.'
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"create_#{permission_suffix}", boundary_type: boundary_type
           post endpoint, feature_category: awardable_params[:feature_category] do
             not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
@@ -129,6 +132,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'ID of an emoji reaction.'
           end
+          route_setting :tier, awardable_params[:tier] if awardable_params[:tier]
           route_setting :authorization, permissions: :"delete_#{permission_suffix}", boundary_type: boundary_type
           delete "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             award = awardable.award_emoji.find(params[:award_id])

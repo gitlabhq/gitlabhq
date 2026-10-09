@@ -204,7 +204,6 @@ RSpec/VerifiedDoubles:
     - 'spec/controllers/projects/import/jira_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests/diffs_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests_controller_spec.rb'
-    - 'spec/controllers/projects/notes_controller_spec.rb'
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
     - 'spec/controllers/projects/registry/tags_controller_spec.rb'
     - 'spec/controllers/projects/settings/operations_controller_spec.rb'

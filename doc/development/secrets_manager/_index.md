@@ -3,7 +3,6 @@ stage: Security Platform
 group: Secrets Manager Application
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Secrets Manager development guidelines
-ignore_in_report: true
 ---
 
 GitLab Secrets Manager stores secrets in OpenBao, an open source secrets management engine.

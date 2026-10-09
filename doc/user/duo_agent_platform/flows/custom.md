@@ -246,6 +246,8 @@ To enable a flow:
 1. For **Add triggers**, select:
    - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
    - If needed for the trigger event type, a trigger event action.
+1. Optional. For an event, in the **Goal** field, enter text that tells the flow what to do.
+   For more information, see [Add a goal](../triggers/_index.md#add-a-goal).
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -266,6 +268,8 @@ To enable a flow:
 1. For **Add triggers**, select:
    - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
    - If needed for the trigger event type, a trigger event action.
+1. Optional. For an event, in the **Goal** field, enter text that tells the flow what to do.
+   For more information, see [Add a goal](../triggers/_index.md#add-a-goal).
 1. Select **Enable**.
 
 {{< /tab >}}
@@ -296,6 +300,8 @@ To enable a flow in a project:
 1. For **Add triggers**, select:
    - The [event types that trigger the flow](../triggers/_index.md#trigger-event-types).
    - If needed for the trigger event type, a trigger event action.
+1. Optional. For an event, in the **Goal** field, enter text that tells the flow what to do.
+   For more information, see [Add a goal](../triggers/_index.md#add-a-goal).
 1. Select **Enable**.
 
 The flow appears in the project's **AI** > **Flows** list.

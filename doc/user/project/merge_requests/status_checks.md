@@ -52,10 +52,12 @@ By default, merge requests in projects can be merged even if external status che
 
 ## Lifecycle
 
-External status checks have an asynchronous workflow. Merge requests emit a merge request webhook payload to an external service whenever:
+External status checks have an asynchronous workflow. Merge requests emit a [merge request webhook payload](../integrations/webhook_events.md#merge-request-events) to an external service whenever:
 
 - A merge request is updated, closed, reopened, approved, unapproved, or merged.
 - Code is pushed to the source branch of the merge request.
+
+The payload also includes an `external_approval_rule` object with the `id`, `name`, and `external_url` of the status check.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

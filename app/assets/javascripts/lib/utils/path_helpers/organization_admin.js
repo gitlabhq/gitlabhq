@@ -33,3 +33,92 @@ export const inviteSearchOrganizationAdminUsersPath = /*#__PURE__*/ __jsr.r({"or
  */
 export const generalOrganizationAdminSettingsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"general"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/o/:organization_path/admin/settings/integrations/:id/overrides(.:format)`
+ * - Path helper: `overrides_organization_admin_settings_integration_path`
+ * - URL helper: `overrides_organization_admin_settings_integration_url`
+ * - controller#action: `admin/organizations/integrations#overrides`
+ *
+ * @param {any} organizationPath
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const overridesOrganizationAdminSettingsIntegrationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"integrations"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"overrides"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/o/:organization_path/admin/settings/integrations/:id/test(.:format)`
+ * - Path helper: `test_organization_admin_settings_integration_path`
+ * - URL helper: `test_organization_admin_settings_integration_url`
+ * - controller#action: `admin/organizations/integrations#test`
+ *
+ * @param {any} organizationPath
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const testOrganizationAdminSettingsIntegrationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"integrations"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"test"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/o/:organization_path/admin/settings/integrations/:id/reset(.:format)`
+ * - Path helper: `reset_organization_admin_settings_integration_path`
+ * - URL helper: `reset_organization_admin_settings_integration_url`
+ * - controller#action: `admin/organizations/integrations#reset`
+ *
+ * @param {any} organizationPath
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const resetOrganizationAdminSettingsIntegrationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"integrations"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"reset"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/o/:organization_path/admin/settings/integrations(.:format)`
+ * - Path helper: `organization_admin_settings_integrations_path`
+ * - URL helper: `organization_admin_settings_integrations_url`
+ * - controller#action: `admin/organizations/integrations#index`
+ *
+ * @param {any} organizationPath
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const organizationAdminSettingsIntegrationsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"integrations"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/o/:organization_path/admin/settings/integrations/:id/edit(.:format)`
+ * - Path helper: `edit_organization_admin_settings_integration_path`
+ * - URL helper: `edit_organization_admin_settings_integration_url`
+ * - controller#action: `admin/organizations/integrations#edit`
+ *
+ * @param {any} organizationPath
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const editOrganizationAdminSettingsIntegrationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"integrations"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/o/:organization_path/admin/settings/integrations/:id(.:format)`
+ * - Path helper: `organization_admin_settings_integration_path`
+ * - URL helper: `organization_admin_settings_integration_url`
+ * - controller#action: `admin/organizations/integrations#update`
+ *
+ * @param {any} organizationPath
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const organizationAdminSettingsIntegrationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"settings"],[2,[7,"/"],[2,[6,"integrations"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
+

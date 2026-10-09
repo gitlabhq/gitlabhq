@@ -96,9 +96,9 @@ The dashboard displays the following information:
 Non-billable usage is credit consumption that GitLab does not bill.
 The **Total credit consumption** chart displays:
 
-- **Billed**: Number of billed credits used
+- **Billable**: Number of billable credits used
 - **Non-billable**: Number of non-billable credits used, shown only when the selected period includes non-billable usage
-- **Stacked bars**: Daily credits used, with **Billed usage** and **Non-billable usage** reasons as separate series
+- **Stacked bars**: Daily credits used, with **Billable usage** and **Non-billable usage** reasons as separate series
 
 The chart displays the following non-billable usage series:
 
@@ -109,7 +109,7 @@ The chart displays the following non-billable usage series:
 | **Non-billable usage (Other)** | Usage that was not billed for any other reason. |
 
 The chart displays only the reasons for usage in the selected period.
-If non-billable usage data is temporarily unavailable, the chart displays billed usage only.
+If non-billable usage data is temporarily unavailable, the chart displays billable usage only.
 
 ## View the GitLab Credits dashboard
 
@@ -371,7 +371,8 @@ To bulk update per-user cap overrides:
 1. In the modal, paste a CSV list.
 1. Select **Save**.
 
-The input accepts three columns, separated by commas, and without a header row.
+The input accepts three columns, separated by commas.
+You can add an optional header row on the first line. The header row must be `username,cap,enabled`, and is not case-sensitive.
 If any validation fails or a username is not found, the entire update is rejected and no changes are saved.
 
 | Column | Type | Accepted values |
@@ -381,6 +382,15 @@ If any validation fails or a username is not found, the entire update is rejecte
 | `enabled` | Boolean | `true`, `True`, `TRUE`, `false`, `False`, `FALSE` |
 
 Example:
+
+```plaintext
+username,cap,enabled
+sidney.jones,500,true
+zhang.wei,1000.5,True
+alex.garcia,250,false
+```
+
+Example without a header row:
 
 ```plaintext
 sidney.jones,500,true

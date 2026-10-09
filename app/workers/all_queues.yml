@@ -90,7 +90,7 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :auto_merge
 - :name: background_operations:database_background_operation_base_orchestrator

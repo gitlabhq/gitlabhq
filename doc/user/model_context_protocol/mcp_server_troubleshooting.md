@@ -10,7 +10,7 @@ title: Troubleshooting the GitLab MCP server
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
+- Status: Generally available
 
 {{< /details >}}
 

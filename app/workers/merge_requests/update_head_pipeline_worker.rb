@@ -15,9 +15,7 @@ module MergeRequests
       pipeline = Ci::Pipeline.in_partition(event.data[:partition_id]).find_by_id(event.data[:pipeline_id])
       return unless pipeline
 
-      pipeline.all_merge_requests.opened.each do |merge_request|
-        merge_request.update_head_pipeline
-      end
+      pipeline.all_merge_requests.opened.each(&:update_head_pipeline)
     end
   end
 end

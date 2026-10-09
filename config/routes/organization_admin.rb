@@ -13,6 +13,14 @@ namespace :admin do
 
     resource :settings, only: [] do
       get :general
+
+      resources :integrations, only: [:index, :edit, :update] do
+        member do
+          get :overrides
+          put :test
+          post :reset
+        end
+      end
     end
   end
 end

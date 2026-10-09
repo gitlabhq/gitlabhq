@@ -23,7 +23,7 @@ Both also take the project or group in their constructor.
 Each client method builds a JWT (`ProjectSecretsManagerJwt`, `GroupSecretsManagerJwt`, or a user JWT) and wraps it in a `SecretsManagerClient`.
 `user_client` authenticates with a user JWT and CEL (Common Expression Language) auth. It is the client that secret CRUD services use.
 Create is the one exception: it writes metadata with the application client, so a `create` grant can finish a creation without `update`.
-For entitlement checks, billing states, and the `secrets_manager_paid_experience` behavior, see [Secrets Manager fulfillment](fulfillment.md).
+For entitlement checks and billing states, see [Secrets Manager fulfillment](fulfillment.md).
 
 ## Service concerns
 

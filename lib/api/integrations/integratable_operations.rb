@@ -81,6 +81,8 @@ module API
               end
             end
           end
+          tier = ::API::Helpers::IntegrationsHelpers.integration_tier(slug)
+          route_setting :tier, tier if tier
           route_setting :authorization, permissions: :update_integration,
             boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
           put("#{configuration[:path]}/#{slug}") do

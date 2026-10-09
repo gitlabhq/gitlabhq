@@ -48,3 +48,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Organizations::Menus::ManageMenu.prepend_mod

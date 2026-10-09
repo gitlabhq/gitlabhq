@@ -18,6 +18,9 @@ module API
         params do
           requires :value, type: String, desc: 'Value of the URL variable.'
         end
+        given configuration[:tier] do
+          route_setting :tier, configuration[:tier]
+        end
         route_setting :authorization, permissions: :update_webhook_url_variable,
           boundary_type: configuration[:boundary_type]
         put ":key" do
@@ -34,6 +37,9 @@ module API
         desc 'Delete a URL variable' do
           detail 'Deletes a URL variable from a specified webhook.'
           tags ['hooks']
+        end
+        given configuration[:tier] do
+          route_setting :tier, configuration[:tier]
         end
         route_setting :authorization, permissions: :delete_webhook_url_variable,
           boundary_type: configuration[:boundary_type]

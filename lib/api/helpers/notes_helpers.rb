@@ -5,13 +5,16 @@ module API
     module NotesHelpers
       include ::RendersNotes
 
-      NoteableType = Data.define(:noteable_class, :feature_category, :noteables_str, :parent_type, :policy_base) do
+      NoteableType = Data.define(
+        :noteable_class, :feature_category, :noteables_str, :parent_type, :policy_base, :tier
+      ) do
         def initialize(
           noteable_class:,
           feature_category:,
           noteables_str: noteable_class.to_s.underscore.pluralize,
           parent_type: noteable_class.parent_class.to_s.underscore,
-          policy_base: nil
+          policy_base: nil,
+          tier: nil
         )
           super
         end

@@ -6,6 +6,7 @@ module API
       expose :email, documentation: { type: 'String', example: 'service_account@example.com' }
       expose :unconfirmed_email, if: ->(service_account) { service_account.unconfirmed_email.present? },
         documentation: { type: 'String', example: 'updated_service_account@example.com' }
+      expose :external, documentation: { type: 'Boolean', example: true }
     end
   end
 end

@@ -20,6 +20,11 @@ RSpec.describe AutoMergeProcessWorker, feature_category: :continuous_delivery do
       end
     end
 
+    it_behaves_like 'an idempotent worker' do
+      let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
+      let(:job_args) { [{ 'merge_request_id' => merge_request.id }] }
+    end
+
     context 'when merge request is not found' do
       let(:args) { { 'merge_request_id' => -1 } }
 

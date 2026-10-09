@@ -54,7 +54,7 @@ module Users
           email: email,
           username: username,
           user_type: :service_account,
-          external: true,
+          external: external_param,
           skip_confirmation: skip_confirmation,
           organization_id: params[:organization_id],
           avatar: params[:avatar].presence,
@@ -86,6 +86,12 @@ module Users
 
       def private_profile
         params[:private_profile] || false
+      end
+
+      def external_param
+        return true if params[:external].nil?
+
+        params[:external]
       end
 
       # Skip confirmation only for auto-generated email address.

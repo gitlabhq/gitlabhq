@@ -297,7 +297,7 @@ semgrep-appsec-custom-rules:
     - if: $CI_MERGE_REQUEST_DRAFT == "true"
       when: never
     - !reference [.semgrep-appsec-custom-rules:rules, rules]
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}returntocorp/semgrep:1.99.0
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}semgrep/semgrep:1.99.0
   script:
     - git clone $CUSTOM_RULES_REPOSITORY sast-custom-rules
     - |

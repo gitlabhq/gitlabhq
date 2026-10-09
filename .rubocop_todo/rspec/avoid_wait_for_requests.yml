@@ -276,7 +276,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/projects/blobs/edit_spec.rb'
     - 'spec/features/projects/branches/new_branch_ref_dropdown_spec.rb'
     - 'spec/features/projects/branches_spec.rb'
-    - 'spec/features/projects/ci/editor_spec.rb'
     - 'spec/features/projects/commit/builds_spec.rb'
     - 'spec/features/projects/commit/cherry_pick_spec.rb'
     - 'spec/features/projects/commit/comments/user_adds_comment_spec.rb'

@@ -38,6 +38,8 @@ GitLab produces several sources of security-relevant data that you can use to de
 | [Credentials inventory](../administration/credentials_inventory.md) | Ultimate | Personal, group, and project access tokens, SSH keys, and GPG keys that exist in your instance or top-level group. |
 | [Secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md) and [secret detection](../user/application_security/secret_detection/_index.md) | Secret push protection: Ultimate. Pipeline secret detection: All tiers. | Secrets that users attempt to push, or that are committed to a repository. |
 
+For more information about what each source contains and how to collect it on each offering and subscription tier, see [security telemetry](security_telemetry.md).
+
 To detect suspicious authentication, such as sign-ins from unexpected locations or changes to two-factor authentication, review [system access audit events](../user/compliance/audit_event_types.md#system-access).
 
 ### Centralize and stream events to a SIEM
@@ -202,5 +204,6 @@ Before you ask GitLab for help, search the [GitLab documentation](https://docs.g
 ## Related topics
 
 - [Security incidents](security_incidents.md)
+- [Security telemetry](security_telemetry.md)
 - [Secure GitLab](_index.md)
 - [Audit event types](../user/compliance/audit_event_types.md)

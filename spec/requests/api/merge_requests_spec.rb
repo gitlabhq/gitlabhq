@@ -2256,6 +2256,18 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response.first['title']).to eq(context_commit.title)
     end
 
+    it 'returns the attributes of the entity the endpoint documents' do
+      route = described_class.routes.find do |r|
+        r.request_method == 'GET' && r.path.include?('/merge_requests/:merge_request_iid/context_commits')
+      end
+      documented_keys = route.options[:entity].root_exposures.map { |exposure| exposure.key.to_s }
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.first.keys).to match_array(documented_keys)
+    end
+
     it 'returns a 404 when merge_request_iid not found' do
       get api("/projects/#{project.id}/merge_requests/0/context_commits", user)
       expect(response).to have_gitlab_http_status(:not_found)

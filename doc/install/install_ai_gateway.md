@@ -638,8 +638,6 @@ To send billing events to your GitLab instance:
 
 1. Restart the AI Gateway.
 
-The AI Gateway sends events to the `/api/v4/ai/billable_usage/events` API endpoint on your GitLab instance.
-
 ## Connect to a GitLab instance or model endpoint with a self-signed SSL certificate
 
 If your GitLab instance or model endpoint is configured with a self-signed certificate, you must add your root certificate authority (CA) certificate to the AI Gateway's certificate bundle.

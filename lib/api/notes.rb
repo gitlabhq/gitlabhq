@@ -29,6 +29,7 @@ module API
       noteables_str = noteable_type.noteables_str
       feature_category = noteable_type.feature_category
       noteable_class = noteable_type.noteable_class
+      tier = noteable_type.tier
       boundary_type = parent_type.to_sym
       noteable_name = noteable_type.human_name
       noteable_article = noteable_name.match?(/\A[aeiou]/i) ? 'an' : 'a'
@@ -68,6 +69,7 @@ module API
           )
         end
 
+        route_setting :tier, tier if tier
         route_setting :authorization, authorization_settings
 
         # rubocop: disable CodeReuse/ActiveRecord
@@ -115,6 +117,7 @@ module API
           )
         end
 
+        route_setting :tier, tier if tier
         route_setting :authorization, authorization_settings
 
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
@@ -136,6 +139,7 @@ module API
           optional :merge_request_diff_head_sha, type: String, desc: "SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. Required for the [`/merge`](https://docs.gitlab.com/user/project/quick_actions/#merge) quick action."
         end
 
+        route_setting :tier, tier if tier
         route_setting :authorization,
           permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'POST'),
           boundary_type: boundary_type
@@ -180,6 +184,7 @@ module API
             desc: 'If `true`, the note must already be confidential. If `false`, it must not be. Confidentiality cannot be changed after a note is created. Deprecated.'
         end
 
+        route_setting :tier, tier if tier
         route_setting :authorization,
           permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'PUT'),
           boundary_type: boundary_type
@@ -200,6 +205,7 @@ module API
           requires :note_id, type: Integer, desc: 'ID of the note.'
         end
 
+        route_setting :tier, tier if tier
         route_setting :authorization,
           permissions: Helpers::NotesHelpers.permission_name_for(noteable_type, 'DELETE'),
           boundary_type: boundary_type

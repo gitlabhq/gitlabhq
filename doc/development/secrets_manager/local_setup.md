@@ -3,7 +3,6 @@ stage: Security Platform
 group: Secrets Manager Application
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Set up Secrets Manager locally
-ignore_in_report: true
 ---
 
 This page walks you through setting up Secrets Manager in the GDK, so you can develop and test features locally.

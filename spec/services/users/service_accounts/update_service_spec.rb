@@ -103,6 +103,24 @@ RSpec.describe Users::ServiceAccounts::UpdateService, feature_category: :user_ma
       end
     end
 
+    context 'when external is set to false' do
+      let(:params) { { external: false } }
+
+      it 'updates the external attribute' do
+        expect(result.status).to eq(:success)
+        expect(result.payload[:user].external).to be(false)
+      end
+    end
+
+    context 'when external is set to true' do
+      let(:params) { { external: true } }
+
+      it 'updates the external attribute' do
+        expect(result.status).to eq(:success)
+        expect(result.payload[:user].external).to be(true)
+      end
+    end
+
     context 'when username is already taken' do
       let(:existing_user) { create(:user, username: 'existing_username') }
       let(:params) { { username: existing_user.username } }

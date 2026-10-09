@@ -1959,11 +1959,11 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           },
           'created_after' => {
             type: 'string',
-            description: 'Return pipelines created on or after the specified time.'
+            description: 'Return pipelines created after the specified time.'
           },
           'created_before' => {
             type: 'string',
-            description: 'Return pipelines created on or before the specified time.'
+            description: 'Return pipelines created before the specified time.'
           },
           'order_by' => {
             type: 'string',

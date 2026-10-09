@@ -8,29 +8,34 @@ module API
       GRANULAR_SCOPE_ACCESS_VALUES = ::Authz::GranularScope::Access::LEVELS.keys.map(&:to_s).freeze
 
       params :access_token_params do
-        optional :revoked, type: Boolean, desc: 'Filter tokens where revoked state matches parameter',
+        optional :revoked, type: Boolean, desc: 'If `true`, only returns revoked tokens. If `false`, ' \
+                                            'only returns tokens that are not revoked.',
           documentation: { example: false }
-        optional :state, type: String, desc: 'Filter tokens which are either active or not',
+        optional :state, type: String, desc: 'Return tokens with the specified state.',
           values: %w[active inactive], documentation: { example: 'active' }
-        optional :created_before, type: DateTime, desc: 'Filter tokens which were created before given datetime',
+        optional :created_before, type: DateTime, desc: 'Return tokens created on or before the specified time.',
           documentation: { example: '2022-01-01T00:00:00Z' }
-        optional :created_after, type: DateTime, desc: 'Filter tokens which were created after given datetime',
+        optional :created_after, type: DateTime, desc: 'Return tokens created on or after the specified time.',
           documentation: { example: '2021-01-01T00:00:00Z' }
-        optional :last_used_before, type: DateTime, desc: 'Filter tokens which were used before given datetime',
+        optional :last_used_before, type: DateTime, desc: 'Return tokens last used on or before the specified time.',
           documentation: { example: '2021-01-01T00:00:00Z' }
-        optional :last_used_after, type: DateTime, desc: 'Filter tokens which were used after given datetime',
+        optional :last_used_after, type: DateTime, desc: 'Return tokens last used on or after the specified time.',
           documentation: { example: '2022-01-01T00:00:00Z' }
-        optional :expires_before, type: Date, desc: 'Filter tokens which expire before given datetime',
+        optional :expires_before, type: Date, desc: 'Return tokens that expire before the specified date.',
           documentation: { example: '2022-01-01' }
-        optional :expires_after, type: Date, desc: 'Filter tokens which expire after given datetime',
+        optional :expires_after, type: Date, desc: 'Return tokens that expire on or after the specified date.',
           documentation: { example: '2021-01-01' }
-        optional :search, type: String, desc: 'Filters tokens by name', documentation: { example: 'token' }
-        optional :sort, type: String, desc: 'Sort tokens', documentation: { example: 'created_at_desc' }
+        optional :search, type: String, desc: 'Return tokens that include the specified value in their ' \
+                                          'name.', documentation: { example: 'token' }
+        optional :sort, type: String, desc: 'Sort results by the specified field and direction. Possible ' \
+                                        'values are `created_asc`, `created_desc`, `expires_asc`, ' \
+                                        '`expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, ' \
+                                        'and `name_desc`.', documentation: { example: 'created_desc' }
       end
 
       params :create_personal_access_token_params do
-        requires :name, type: String, desc: 'The name of the access token', documentation: { example: 'My token' }
-        optional :description, type: String, desc: 'The description of the access token',
+        requires :name, type: String, desc: 'Name of the access token.', documentation: { example: 'My token' }
+        optional :description, type: String, desc: 'Description of the access token. Limited to 255 characters.',
           documentation: { example: 'A token used for k8s' }
         optional :expires_at, type: Date, desc: "Expiration date of the access token in ISO format (YYYY-MM-DD). " \
                                             "If undefined, the date is set to the maximum allowable lifetime limit.",
@@ -38,14 +43,14 @@ module API
       end
 
       params :granular_scope_params do
-        optional :granular_scopes, type: Array, desc: 'List of granular scopes to assign to the token' do
+        optional :granular_scopes, type: Array, desc: 'List of granular scopes to assign to the token.' do
           requires :access, type: String, values: GRANULAR_SCOPE_ACCESS_VALUES,
             desc: 'Access to configure for the granular scope.'
-          requires :permissions, type: Array[String], desc: 'List of permissions for the granular scope'
+          requires :permissions, type: Array[String], desc: 'List of permissions for the granular scope.'
           optional :project_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-            desc: 'IDs of projects to associate with the granular scope, when access is `selected_memberships`'
+            desc: 'IDs of projects to associate with the granular scope, when access is `selected_memberships`.'
           optional :group_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-            desc: 'IDs of groups to associate with the granular scope, when access is `selected_memberships`'
+            desc: 'IDs of groups to associate with the granular scope, when access is `selected_memberships`.'
         end
       end
 

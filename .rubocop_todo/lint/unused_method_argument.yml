@@ -68,7 +68,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_trace_chunks/database.rb'
     - 'app/models/ci/processable.rb'
-    - 'app/models/ci/runner.rb'
     - 'app/models/concerns/bulk_insert_safe.rb'
     - 'app/models/concerns/cache_markdown_field.rb'
     - 'app/models/concerns/cross_database_modification.rb'

@@ -31,6 +31,9 @@ module API
           desc: 'Type of webhook event to test.',
           values: ProjectHook.triggers.values.map(&:to_s)
       end
+      given configuration[:tier] do
+        route_setting :tier, configuration[:tier]
+      end
       route_setting :authorization, permissions: :test_webhook, boundary_type: configuration[:boundary_type]
       post ":hook_id/test/:trigger" do
         hook = find_hook

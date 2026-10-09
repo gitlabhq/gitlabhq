@@ -32,6 +32,15 @@ Parameters:
 | `id`                | integer | Yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid` | integer | Yes | The internal ID of the merge request. |
 
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/15/merge_requests/12/context_commits"
+```
+
+Example response:
+
 ```json
 [
     {
@@ -39,14 +48,38 @@ Parameters:
         "short_id": "4a24d82d",
         "created_at": "2017-04-11T10:08:59.000Z",
         "parent_ids": null,
-        "title": "Update README.md to include `Usage in testing and development`",
-        "message": "Update README.md to include `Usage in testing and development`",
-        "author_name": "Example \"Sample\" User",
+        "title": "Update README.md to include usage in testing and development",
+        "message": "Update README.md to include usage in testing and development",
+        "author_name": "Example User",
         "author_email": "user@example.com",
         "authored_date": "2017-04-11T10:08:59.000Z",
-        "committer_name": "Example \"Sample\" User",
+        "committer_name": "Example User",
         "committer_email": "user@example.com",
-        "committed_date": "2017-04-11T10:08:59.000Z"
+        "committed_date": "2017-04-11T10:08:59.000Z",
+        "trailers": {},
+        "extended_trailers": null,
+        "web_url": "https://gitlab.example.com/example/project/-/commit/4a24d82dbca5c11c61556f3b35ca472b7463187e",
+        "author": {
+            "id": 1,
+            "username": "example",
+            "public_email": null,
+            "name": "Example User",
+            "state": "active",
+            "locked": false,
+            "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+            "web_url": "https://gitlab.example.com/example",
+            "show_status": false,
+            "path": "/example"
+        },
+        "author_gravatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "commit_url": "https://gitlab.example.com/example/project/-/commit/4a24d82dbca5c11c61556f3b35ca472b7463187e",
+        "commit_path": "/example/project/-/commit/4a24d82dbca5c11c61556f3b35ca472b7463187e",
+        "description_html": "",
+        "title_html": "Update README.md to include usage in testing and development",
+        "signature_html": null,
+        "prev_commit_id": null,
+        "next_commit_id": null,
+        "pipeline_status_path": null
     }
 ]
 ```

@@ -20,6 +20,9 @@ module API
         requires :hook_id, type: Integer, desc: 'ID of the hook.'
         requires :hook_log_id, type: Integer, desc: 'ID of the hook log entry.'
       end
+      given configuration[:tier] do
+        route_setting :tier, configuration[:tier]
+      end
       route_setting :authorization, permissions: :resend_webhook_event, boundary_type: configuration[:boundary_type]
       post ":hook_id/events/:hook_log_id/resend" do
         hook = find_hook

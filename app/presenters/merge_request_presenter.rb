@@ -53,7 +53,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     if user_can_fork_project? && cached_can_be_reverted?
       continue_params = {
         to: merge_request_path(merge_request),
-        notice: format(_('%{edit_in_new_fork_notice} Try to cherry-pick this commit again.'), edit_in_new_fork_notice: edit_in_new_fork_notice),
+        notice: format(_('%{edit_in_new_fork_notice} Try to revert this commit again.'), edit_in_new_fork_notice: edit_in_new_fork_notice),
         notice_now: edit_in_new_fork_notice_now
       }
 
@@ -65,7 +65,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     if user_can_fork_project? && can_be_cherry_picked?
       continue_params = {
         to: merge_request_path(merge_request),
-        notice: format(_('%{edit_in_new_fork_notice} Try to revert this commit again.'), edit_in_new_fork_notice: edit_in_new_fork_notice),
+        notice: format(_('%{edit_in_new_fork_notice} Try to cherry-pick this commit again.'), edit_in_new_fork_notice: edit_in_new_fork_notice),
         notice_now: edit_in_new_fork_notice_now
       }
 

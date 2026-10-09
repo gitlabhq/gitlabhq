@@ -1,8 +1,12 @@
 <script>
 import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
-import { isEmpty } from 'lodash-es';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { projectCommitsPath } from '~/lib/utils/path_helpers/repository';
+import { encodeUrlHash } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+
+const SYMBOLIC_REF_PREFIX = /^refs\/(heads|tags)\//;
 
 /**
  * Pipeline Stop Modal.
@@ -30,14 +34,29 @@ export default {
   },
   emits: ['close-modal', 'submit'],
   computed: {
-    hasRef() {
-      return !isEmpty(this.pipeline.ref);
+    pipelineId() {
+      return getIdFromGraphQLId(this.pipeline.id);
+    },
+    refName() {
+      const { ref, refPath } = this.pipeline;
+
+      if (refPath) return refPath.replace(SYMBOLIC_REF_PREFIX, '');
+
+      return ref;
+    },
+    refHref() {
+      const { refUrl, project } = this.pipeline;
+
+      if (refUrl) return refUrl;
+      if (!this.refName || !project?.fullPath) return null;
+
+      return encodeUrlHash(projectCommitsPath(project.fullPath, this.refName));
     },
     modalTitle() {
       return sprintf(
         s__('Pipeline|Stop pipeline #%{pipelineId}?'),
         {
-          pipelineId: `${this.pipeline.id}`,
+          pipelineId: `${this.pipelineId}`,
         },
         false,
       );
@@ -81,24 +100,24 @@ export default {
     <p>
       <gl-sprintf :message="modalText">
         <template #pipelineId>
-          <strong>{{ pipeline.id }}</strong>
+          <strong>{{ pipelineId }}</strong>
         </template>
       </gl-sprintf>
     </p>
 
     <p>
       <ci-icon
-        v-if="pipeline.details"
-        :status="pipeline.details.status"
+        v-if="pipeline.detailedStatus"
+        :status="pipeline.detailedStatus"
         class="vertical-align-middle"
       />
 
       <span class="gl-font-bold">{{ __('Pipeline') }}</span>
 
-      <a :href="pipeline.path" class="js-pipeline-path link-commit">#{{ pipeline.id }}</a>
-      <template v-if="hasRef">
+      <a :href="pipeline.path" data-testid="pipeline-path">#{{ pipelineId }}</a>
+      <template v-if="refHref">
         {{ __('from') }}
-        <a :href="pipeline.ref.path" class="link-commit ref-name">{{ pipeline.ref.name }}</a>
+        <a :href="refHref" class="ref-name" data-testid="pipeline-ref">{{ refName }}</a>
       </template>
     </p>
 
@@ -106,8 +125,8 @@ export default {
       <p>
         <span class="gl-font-bold">{{ __('Commit') }}</span>
 
-        <gl-link :href="pipeline.commit.commit_path" class="js-commit-sha commit-sha link-commit">
-          {{ pipeline.commit.short_id }}
+        <gl-link :href="pipeline.commit.webPath" class="commit-sha" data-testid="commit-sha">
+          {{ pipeline.commit.shortId }}
         </gl-link>
       </p>
       <p>{{ pipeline.commit.title }}</p>

@@ -339,7 +339,8 @@ module API
                 status :ok
 
                 new_token = response.payload[:personal_access_token]
-                present new_token, with: Entities::PersonalAccessTokenWithToken
+                present new_token, with: Entities::PersonalAccessTokenWithToken,
+                  **granular_scopes_options_for([new_token])
               else
                 bad_request!(response.message)
               end

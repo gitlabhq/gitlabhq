@@ -1,6 +1,5 @@
 ---
 Gitlab/DocumentationLinks/HardcodedUrl:
-  Details: grace period
   Exclude:
     - 'app/components/pajamas/experiment_badge_component.rb'
     - 'app/controllers/jira_connect/app_descriptor_controller.rb'

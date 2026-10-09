@@ -42,6 +42,29 @@ describe('MarkdownTable', () => {
       return item;
     });
 
+  const createCaption = (text) => {
+    const caption = document.createElement('caption');
+    caption.textContent = text;
+    return caption;
+  };
+
+  const expectCaption = (text) => {
+    const renderedCaption = wrapper.find('table caption');
+    expect(renderedCaption.exists()).toBe(true);
+    expect(renderedCaption.text()).toBe(text);
+    expect(wrapper.find('table').element.firstElementChild).toBe(renderedCaption.element);
+  };
+
+  const createFooterRows = (rows) =>
+    rows.map((contents) => contents.map((content) => createCell('td', content)));
+
+  const expectFooter = (text) => {
+    const renderedFoot = wrapper.find('table tfoot');
+    expect(renderedFoot.exists()).toBe(true);
+    expect(renderedFoot.text()).toContain(text);
+    expect(wrapper.find('table').element.lastElementChild).toBe(renderedFoot.element);
+  };
+
   const createWrapper = (
     rows,
     { headers = ['Name', 'Age'], stubTooltip = true, ...props } = {},
@@ -62,16 +85,6 @@ describe('MarkdownTable', () => {
       },
       propsData: { fields, items, ...props },
     });
-  };
-
-  const createFooterRows = (rows) =>
-    rows.map((contents) => contents.map((content) => createCell('td', content)));
-
-  const expectFooter = (text) => {
-    const renderedFoot = wrapper.find('table tfoot');
-    expect(renderedFoot.exists()).toBe(true);
-    expect(renderedFoot.text()).toContain(text);
-    expect(wrapper.find('table').element.lastElementChild).toBe(renderedFoot.element);
   };
 
   const findHeaders = () => wrapper.findAll('thead th');
@@ -126,17 +139,26 @@ describe('MarkdownTable', () => {
       expect(findHeaders().at(2).attributes('style')).toBe('text-align: center;');
     });
 
-    it('renders the footer when provided', () => {
+    it('renders the caption and footer, caption first and footer last', () => {
       createWrapper([['Alice', '25']], {
+        caption: createCaption('Team members'),
         footerRows: createFooterRows([['Average', '25']]),
       });
 
+      expectCaption('Team members');
       expectFooter('Average');
+      expect(Array.from(wrapper.find('table').element.children, (el) => el.tagName)).toEqual([
+        'CAPTION',
+        'THEAD',
+        'TBODY',
+        'TFOOT',
+      ]);
     });
 
-    it('renders no footer element when not provided', () => {
+    it('renders neither a caption nor a footer when not provided', () => {
       createWrapper([['Alice', '25']]);
 
+      expect(wrapper.find('table caption').exists()).toBe(false);
       expect(wrapper.find('table tfoot').exists()).toBe(false);
     });
   });
@@ -218,18 +240,22 @@ describe('MarkdownTable', () => {
       expect(getRowTexts(0)).toEqual(['Charlie', 'Alice', 'Bob']);
     });
 
-    it('keeps the footer in place when sorting', async () => {
+    it('keeps the caption and footer in place when sorting', async () => {
       createWrapper(
         [
           ['Bob', '35'],
           ['Alice', '25'],
         ],
-        { footerRows: createFooterRows([['Average', '30']]) },
+        {
+          caption: createCaption('Team members'),
+          footerRows: createFooterRows([['Average', '30']]),
+        },
       );
 
       await clickHeader(0);
 
       expect(getRowTexts(0)).toEqual(['Alice', 'Bob']);
+      expectCaption('Team members');
       expectFooter('Average');
     });
 

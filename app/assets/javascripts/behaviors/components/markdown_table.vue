@@ -69,6 +69,11 @@ export default {
       required: false,
       default: () => [],
     },
+    caption: {
+      type: HTMLElement,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -186,6 +191,7 @@ export default {
         data-print-scale-target
         class="gl-min-w-full gl-overflow-y-hidden"
       >
+        <caption v-if="caption" v-adopt-content="caption"></caption>
         <thead>
           <tr>
             <th

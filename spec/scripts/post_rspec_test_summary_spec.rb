@@ -399,8 +399,8 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
       expect(placeholder_section('msw', job_present: true)).to include('Pending')
     end
 
-    it 'reports a counterpart job absent from the pipeline as not run' do
-      expect(placeholder_section('msw', job_present: false)).to include('Did not run')
+    it 'reports a counterpart that is absent or had nothing to report' do
+      expect(placeholder_section('msw', job_present: false)).to include('Did not run', 'nothing to report')
     end
   end
 
@@ -508,6 +508,24 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
       expect(fetch_changed_spec_files('1', '2')[:files].first).to include(old_path: 'spec/models/old_spec.rb')
     end
 
+    it 'flags integration (MSW) spec changes, including deletions' do
+      allow(self).to receive(:api_request).and_return([
+        mr_diff(new_path: 'ee/spec/frontend/integration/work_items/work_items_spec.js', deleted_file: true)
+      ])
+
+      expect(fetch_changed_spec_files('1', '2')[:msw_changes]).to be(true)
+    end
+
+    it 'does not flag unit-level JS specs or non-spec files as MSW changes' do
+      allow(self).to receive(:api_request).and_return([
+        mr_diff(new_path: 'spec/frontend/boards/board_list_spec.js'),
+        mr_diff(new_path: 'spec/models/user_spec.rb'),
+        mr_diff(new_path: 'app/models/user.rb')
+      ])
+
+      expect(fetch_changed_spec_files('1', '2')[:msw_changes]).to be(false)
+    end
+
     it 'flags truncation when the page cap is reached' do
       page = Array.new(DIFFS_PER_PAGE) { |i| mr_diff(new_path: "spec/models/user#{i}_spec.rb") }
       allow(self).to receive(:api_request).and_return(page)
@@ -516,12 +534,14 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
 
       expect(result[:truncated]).to be(true)
       expect(result[:files].size).to eq(DIFFS_PER_PAGE * MAX_DIFF_PAGES)
+      # A truncated listing cannot prove the MR has no integration spec changes.
+      expect(result[:msw_changes]).to be(true)
     end
 
-    it 'warns and reports no changed files when the diffs endpoint fails' do
+    it 'warns, reports no changed files, and assumes MSW changes when the diffs endpoint fails' do
       allow(self).to receive(:api_request).and_raise(StandardError, 'boom')
 
-      expect { expect(fetch_changed_spec_files('1', '2')).to eq(files: [], truncated: false) }
+      expect { expect(fetch_changed_spec_files('1', '2')).to eq(files: [], truncated: false, msw_changes: true) }
         .to output(/Could not fetch MR changed files/).to_stderr
     end
   end
@@ -1239,6 +1259,16 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
         expect(calls.first[:path]).to eq('/projects/1/merge_requests/2/notes')
         expect(calls.first[:payload][:body]).to include(COMBINED_MARKER, 'fresh rspec body', 'Pending')
       end
+
+      it 'uses the nothing-to-report placeholder when the MR has no integration spec changes' do
+        record_api_calls
+
+        expect { post_or_update_comment('1', '2', section, msw_changes: false) }
+          .to output(/Posted new test summary comment/).to_stdout
+
+        expect(calls.first[:payload][:body]).to include('nothing to report')
+        expect(calls.first[:payload][:body]).not_to include('Pending')
+      end
     end
 
     context 'when a summary note exists' do
@@ -1288,7 +1318,8 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
           is_deleted: false,
           old_path: 'spec/models/user_spec.rb'
         }],
-        truncated: false
+        truncated: false,
+        msw_changes: false
       }
     end
 
@@ -1301,9 +1332,9 @@ RSpec.describe 'post_rspec_test_summary', feature_category: :tooling do
       allow(self).to receive_messages(fetch_knapsack_baseline: knapsack, fetch_changed_spec_files: changed)
     end
 
-    it 'posts the rendered summary section' do
+    it 'posts the rendered summary section, passing the MSW-changes flag through' do
       expect(self).to receive(:post_or_update_comment)
-        .with('1', '2', a_string_including('### RSpec Test Result Summary'))
+        .with('1', '2', a_string_including('### RSpec Test Result Summary'), msw_changes: false)
 
       expect { run(argv) }.to output(/New examples/).to_stdout
     end

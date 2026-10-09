@@ -69,16 +69,13 @@ Both take `current_user:` for the audit trail and expose the same four operation
 | `enroll_with_add_on_intent` | Enrolls if needed, then stamps `add_on_requested_at`. Used by the paid add-on purchase flow. |
 | `revert_add_on_intent` | Undoes exactly what `enroll_with_add_on_intent` changed, used when a later step in that flow fails. |
 
-`NamespaceEnrollmentService#unenroll` behaves differently depending on the paid experience feature flag:
-
-- When the paid experience applies, `unenroll` sets `disabled_at` instead of deleting the row.
-  Stored secrets are kept, and re-enrolling resumes without losing the paid add-on intent.
-- Otherwise `unenroll` destroys the row, matching the older beta behavior.
+`NamespaceEnrollmentService#unenroll` sets `disabled_at` instead of deleting the row.
+Stored secrets are kept, and re-enrolling resumes without losing the paid add-on intent.
 
 `InstanceEnrollmentService#unenroll` always clears `secrets_manager_instance_enrolled` rather than deleting anything, because instance enrollment is a set of columns, not a row.
 
 Calling `enroll` on an already-enrolled namespace, or `unenroll` on one that already opted out, returns an error response and creates no audit event.
-Under the paid experience, `unenroll` on a group that never enrolled creates an opted-out row, records an audit event, and succeeds.
+`unenroll` on a group that never enrolled creates an opted-out row, records an audit event, and succeeds.
 
 Each service also clears the entitlement resolver cache on every write, through `SecretsManagement::Entitlement::Resolver.clear_cache`.
 Without this, CI job pickup could keep granting or denying secrets access for the length of the entitlement cache time to live (TTL) after an enrollment change.
@@ -103,11 +100,11 @@ It is also the place that decides whether to consult namespace enrollment or ins
 
 ### Paid top-level group exception on GitLab.com
 
-A top-level group on GitLab.com that has the paid experience feature flag enabled does not need an enrollment row to get access.
+A top-level group on GitLab.com does not need an enrollment row to get access.
 `enabled_for_group?` grants it automatically, so the trial call-to-action stays reachable before the group ever enrolls.
 An explicit opt-out still overrides this grant.
 If `NamespaceEnrollment.opted_out?(group)` is true, the group is unavailable even though the paid-experience grant would otherwise allow it.
-This exception only applies to root groups on GitLab.com with the paid experience active.
+This exception only applies to root groups on GitLab.com.
 Every other case, including GitLab Self-Managed and non-root groups, falls back to the plain `enrolled?` check.
 
 ## Where availability is enforced

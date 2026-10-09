@@ -13,7 +13,7 @@ module API
       helpers ::API::Helpers::VariablesHelpers
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID of a project or URL-encoded NAMESPACE/PROJECT_NAME of the project owned by the authenticated user'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
 
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -43,9 +43,9 @@ module API
           tags %w[ci_variables]
         end
         params do
-          requires :key, type: String, desc: 'The key of a variable'
-          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production' do
-            optional :environment_scope, type: String, desc: 'The environment scope of a variable'
+          requires :key, type: String, desc: 'Key of the project variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
+          optional :filter, type: Hash, desc: 'Filter results when multiple variables share the same key.' do
+            optional :environment_scope, type: String, desc: 'Environment scope of the variable.'
           end
         end
         route_setting :authorization, permissions: :read_variable, boundary_type: :project
@@ -68,15 +68,15 @@ module API
         end
         route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
         params do
-          requires :key, type: String, desc: 'The key of a variable'
-          requires :value, type: String, desc: 'The value of a variable'
-          optional :protected, type: Boolean, desc: 'Whether the variable is protected'
-          optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-          optional :masked_and_hidden, type: Boolean, desc: 'Whether the variable is masked and hidden'
-          optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
+          requires :key, type: String, desc: 'Key of the project variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
+          requires :value, type: String, desc: 'Value of the variable.'
+          optional :protected, type: Boolean, desc: 'If `true`, the variable is protected.'
+          optional :masked, type: Boolean, desc: 'If `true`, the variable is masked.'
+          optional :masked_and_hidden, type: Boolean, desc: 'If `true`, the variable is masked and hidden. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4.'
+          optional :raw, type: Boolean, desc: 'If `true`, the variable is treated as a raw string. If `false`, the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).'
           optional :variable_type, type: String, default: 'env_var', values: ::Ci::Variable.variable_types.keys, desc: 'The type of the variable.'
-          optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
-          optional :description, type: String, desc: 'The description of the variable'
+          optional :environment_scope, type: String, desc: 'Environment scope of the variable. Defaults to `*`.'
+          optional :description, type: String, desc: 'Description of the variable. Limited to 255 characters.'
         end
         route_setting :authorization, permissions: :create_variable, boundary_type: :project
         post ':id/variables' do
@@ -102,17 +102,17 @@ module API
         end
         route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
         params do
-          optional :key, type: String, desc: 'The key of a variable'
-          optional :value, type: String, desc: 'The value of a variable'
-          optional :protected, type: Boolean, desc: 'Whether the variable is protected'
-          optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-          optional :environment_scope, type: String, desc: 'The environment_scope of a variable'
-          optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
+          optional :key, type: String, desc: 'Key of the project variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
+          optional :value, type: String, desc: 'Value of the variable.'
+          optional :protected, type: Boolean, desc: 'If `true`, the variable is protected.'
+          optional :masked, type: Boolean, desc: 'If `true`, the variable is masked.'
+          optional :environment_scope, type: String, desc: 'Environment scope of the variable.'
+          optional :raw, type: Boolean, desc: 'If `true`, the variable is treated as a raw string. If `false`, the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).'
           optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
-          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production' do
-            optional :environment_scope, type: String, desc: 'The environment scope of a variable'
+          optional :filter, type: Hash, desc: 'Filter results when multiple variables share the same key.' do
+            optional :environment_scope, type: String, desc: 'Environment scope of the variable.'
           end
-          optional :description, type: String, desc: 'The description of the variable'
+          optional :description, type: String, desc: 'Description of the variable. Limited to 255 characters.'
         end
         route_setting :authorization, permissions: :update_variable, boundary_type: :project
         put ':id/variables/:key' do
@@ -140,9 +140,9 @@ module API
           tags %w[ci_variables]
         end
         params do
-          requires :key, type: String, desc: 'The key of a variable'
-          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production' do
-            optional :environment_scope, type: String, desc: 'The environment scope of the variable'
+          requires :key, type: String, desc: 'Key of the project variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
+          optional :filter, type: Hash, desc: 'Filter results when multiple variables share the same key.' do
+            optional :environment_scope, type: String, desc: 'Environment scope of the variable.'
           end
         end
         route_setting :authorization, permissions: :delete_variable, boundary_type: :project

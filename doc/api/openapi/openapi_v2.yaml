@@ -28338,7 +28338,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/API_Entities_Commit"
+              "$ref": "#/definitions/API_Entities_CommitWithLink"
         '404':
           description: Not found
       tags:
@@ -67110,6 +67110,167 @@ definitions:
     - state
     - created_at
     description: API_Entities_MergeRequestReviewer model
+  API_Entities_CommitWithLink:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 2695effb5807a22ff3d138d593fd856244e155e7
+      short_id:
+        type: string
+        example: 2695effb
+      created_at:
+        type: string
+        format: date-time
+        example: '2017-07-26T11:08:53.000+02:00'
+      parent_ids:
+        type: array
+        items:
+          type: string
+        example:
+        - 2a4b78934375d7f53875269ffd4f45fd83a84ebe
+      title:
+        type: string
+        example: Initial commit
+      message:
+        type: string
+        example: Initial commit
+      author_name:
+        type: string
+        example: John Smith
+      author_email:
+        type: string
+        example: john@example.com
+      authored_date:
+        type: string
+        format: date-time
+        example: '2012-05-28T04:42:42-07:00'
+      committer_name:
+        type: string
+        example: Jack Smith
+      committer_email:
+        type: string
+        example: jack@example.com
+      committed_date:
+        type: string
+        format: date-time
+        example: '2012-05-28T04:42:42-07:00'
+      trailers:
+        type: object
+        example:
+          Merged-By: Jane Doe janedoe@gitlab.com
+      extended_trailers:
+        type: object
+        example:
+          Signed-off-by:
+          - John Doe <johndoe@gitlab.com>
+          - Jane Doe <janedoe@gitlab.com>
+      web_url:
+        type: string
+        example: https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746
+      author:
+        "$ref": "#/definitions/API_Entities_UserPath"
+      author_gravatar_url:
+        type: string
+        example: https://www.gravatar.com/avatar/abc
+      commit_url:
+        type: string
+        example: https://gitlab.example.com/project/-/commit/abc
+      commit_path:
+        type: string
+        example: "/project/-/commit/abc"
+      description_html:
+        type: string
+        example: "<p>description</p>"
+      title_html:
+        type: string
+        example: "<p>title</p>"
+      signature_html:
+        type: string
+        example: "<p>signature</p>"
+      prev_commit_id:
+        type: string
+        example: 2695effb5807a22ff3d138d593fd856244e155e7
+      next_commit_id:
+        type: string
+        example: 2695effb5807a22ff3d138d593fd856244e155e7
+      pipeline_status_path:
+        type: string
+        example: "/project/pipelines/1"
+    required:
+    - id
+    - short_id
+    - created_at
+    - parent_ids
+    - title
+    - message
+    - author_name
+    - author_email
+    - authored_date
+    - committer_name
+    - committer_email
+    - committed_date
+    - trailers
+    - extended_trailers
+    - web_url
+    - author
+    - author_gravatar_url
+    - commit_url
+    - commit_path
+    description: API_Entities_CommitWithLink model
+  API_Entities_UserPath:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      username:
+        type: string
+        example: admin
+      public_email:
+        type: string
+        example: john@example.com
+      name:
+        type: string
+        example: Administrator
+      state:
+        type: string
+        example: active
+      locked:
+        type: boolean
+      avatar_url:
+        type: string
+        example: https://gravatar.com/avatar/1
+      avatar_path:
+        type: string
+        example: "/user/avatar/28/The-Big-Lebowski-400-400.png"
+      custom_attributes:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_CustomAttribute"
+      web_url:
+        type: string
+        example: https://gitlab.example.com/root
+      status_tooltip_html:
+        type: string
+      show_status:
+        type: string
+      availability:
+        type: string
+      path:
+        type: string
+    required:
+    - id
+    - username
+    - public_email
+    - name
+    - state
+    - locked
+    - avatar_url
+    - web_url
+    - show_status
+    - path
   postApiV4ProjectsIdMergeRequestsMergeRequestIidContextCommits:
     type: object
     properties:

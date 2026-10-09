@@ -27,14 +27,18 @@ module API
           requires :ref, type: String, desc: 'Reference',
             documentation: { example: 'develop' }
           optional :variables, type: Array, object_elements: true,
-            desc: 'Array of variables available in the pipeline' do
-            optional :key, type: String, desc: 'The key of the variable', documentation: { example: 'UPLOAD_TO_S3' }
-            optional :value, type: String, desc: 'The value of the variable', documentation: { example: 'true' }
+            desc: 'Array of variables to make available in the pipeline. If `variable_type` is omitted, it defaults ' \
+              'to `env_var`.' do
+            optional :key, type: String, desc: 'Key of the variable.', documentation: { example: 'UPLOAD_TO_S3' }
+            optional :value, type: String, desc: 'Value of the variable.', documentation: { example: 'true' }
             optional :variable_type, type: String,
               values: ::Ci::PipelineVariable.variable_types.keys, default: 'env_var',
-              desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
+              desc: 'Type of the variable.'
           end
-          optional :inputs, type: Hash, desc: 'The list of inputs to be used to create the pipeline.'
+          optional :inputs, type: Hash, desc: 'Map of inputs, as key-value pairs, to use when creating the pipeline. ' \
+                                          '[Generally ' \
+                                          'available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in ' \
+                                          'GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.'
         end
       end
     end

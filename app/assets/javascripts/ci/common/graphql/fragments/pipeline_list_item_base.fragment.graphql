@@ -11,6 +11,7 @@ fragment PipelineListItemBase on Pipeline {
   duration
   name
   ref
+  refPath
   commitPath
   commitTitle @gl_introduced(version: "19.5.0")
   commitAuthorName @gl_introduced(version: "19.5.0")

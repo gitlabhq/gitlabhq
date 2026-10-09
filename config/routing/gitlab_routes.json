@@ -416,6 +416,11 @@
     "dottedExample": "/john.doe/bar/john.doe/-/automate/flows/john.doe"
   },
   {
+    "template": "/*namespace_id/:project_id/-/automate/governance",
+    "example": "/foo/bar/foo/-/automate/governance",
+    "dottedExample": "/john.doe/bar/john.doe/-/automate/governance"
+  },
+  {
     "template": "/*namespace_id/:project_id/-/automate/mcp-servers",
     "example": "/foo/bar/foo/-/automate/mcp-servers",
     "dottedExample": "/john.doe/bar/john.doe/-/automate/mcp-servers"
@@ -16820,6 +16825,11 @@
     "dottedExample": "/groups/john.doe/bar/-/automate/flows/john.doe"
   },
   {
+    "template": "/groups/*group_id/-/automate/governance",
+    "example": "/groups/foo/bar/-/automate/governance",
+    "dottedExample": "/groups/john.doe/bar/-/automate/governance"
+  },
+  {
     "template": "/groups/*group_id/-/automate/mcp-servers",
     "example": "/groups/foo/bar/-/automate/mcp-servers",
     "dottedExample": "/groups/john.doe/bar/-/automate/mcp-servers"
@@ -19406,6 +19416,11 @@
     "template": "/o/:organization_path/*namespace_id/:project_id/-/automate/flows/:id",
     "example": "/o/foo/foo/bar/foo/-/automate/flows/foo",
     "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/automate/flows/john.doe"
+  },
+  {
+    "template": "/o/:organization_path/*namespace_id/:project_id/-/automate/governance",
+    "example": "/o/foo/foo/bar/foo/-/automate/governance",
+    "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/automate/governance"
   },
   {
     "template": "/o/:organization_path/*namespace_id/:project_id/-/automate/mcp-servers",
@@ -23199,6 +23214,11 @@
     "dottedExample": "/o/john.doe/-/abuse_reports/add_category"
   },
   {
+    "template": "/o/:organization_path/-/access",
+    "example": "/o/foo/-/access",
+    "dottedExample": "/o/john.doe/-/access"
+  },
+  {
     "template": "/o/:organization_path/-/acme-challenge",
     "example": "/o/foo/-/acme-challenge",
     "acceptsFormat": true,
@@ -24813,6 +24833,42 @@
     "dottedExample": "/o/john.doe/admin/settings/general"
   },
   {
+    "template": "/o/:organization_path/admin/settings/integrations",
+    "example": "/o/foo/admin/settings/integrations",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/settings/integrations"
+  },
+  {
+    "template": "/o/:organization_path/admin/settings/integrations/:id",
+    "example": "/o/foo/admin/settings/integrations/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/settings/integrations/john.doe"
+  },
+  {
+    "template": "/o/:organization_path/admin/settings/integrations/:id/edit",
+    "example": "/o/foo/admin/settings/integrations/foo/edit",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/settings/integrations/john.doe/edit"
+  },
+  {
+    "template": "/o/:organization_path/admin/settings/integrations/:id/overrides",
+    "example": "/o/foo/admin/settings/integrations/foo/overrides",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/settings/integrations/john.doe/overrides"
+  },
+  {
+    "template": "/o/:organization_path/admin/settings/integrations/:id/reset",
+    "example": "/o/foo/admin/settings/integrations/foo/reset",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/settings/integrations/john.doe/reset"
+  },
+  {
+    "template": "/o/:organization_path/admin/settings/integrations/:id/test",
+    "example": "/o/foo/admin/settings/integrations/foo/test",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/settings/integrations/john.doe/test"
+  },
+  {
     "template": "/o/:organization_path/admin/sidekiq",
     "example": "/o/foo/admin/sidekiq",
     "dottedExample": "/o/john.doe/admin/sidekiq"
@@ -25411,6 +25467,11 @@
     "template": "/o/:organization_path/groups/*group_id/-/automate/flows/:id",
     "example": "/o/foo/groups/foo/bar/-/automate/flows/foo",
     "dottedExample": "/o/john.doe/groups/john.doe/bar/-/automate/flows/john.doe"
+  },
+  {
+    "template": "/o/:organization_path/groups/*group_id/-/automate/governance",
+    "example": "/o/foo/groups/foo/bar/-/automate/governance",
+    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/automate/governance"
   },
   {
     "template": "/o/:organization_path/groups/*group_id/-/automate/mcp-servers",

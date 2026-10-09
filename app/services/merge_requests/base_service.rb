@@ -110,7 +110,7 @@ module MergeRequests
 
     def cancel_review_app_jobs!(merge_request)
       environments = merge_request.environments_in_head_pipeline.in_review_folder.available
-      environments.each { |environment| environment.cancel_deployment_jobs! }
+      environments.each(&:cancel_deployment_jobs!)
     end
 
     def source_project

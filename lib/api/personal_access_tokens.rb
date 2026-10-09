@@ -26,7 +26,8 @@ module API
         ]
       end
       params do
-        optional :user_id, type: Integer, desc: 'Filter PATs by User ID', documentation: { example: 2 }
+        optional :user_id, type: Integer, desc: 'Filter personal access tokens by user ID. Non-administrators can ' \
+                                            'only filter their own tokens.', documentation: { example: 2 }
         use :access_token_params
         use :pagination
       end
@@ -55,7 +56,7 @@ module API
         tags %w[access_tokens]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a personal access token'
+        requires :id, type: Integer, desc: 'ID of the personal access token.'
       end
       route_setting :authorization, permissions: :read_personal_access_token, boundary_type: :user
       get ':id' do
@@ -80,10 +81,13 @@ module API
         tags %w[access_tokens]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a personal access token'
+        requires :id, type: Integer, desc: 'ID of the personal access token.'
         optional :expires_at,
           type: Date,
-          desc: "The expiration date of the token",
+          desc: 'Date when the access token expires. If omitted, the new token expires one week after rotation ' \
+            'when [token expiry is ' \
+            'enforced](https://docs.gitlab.com/user/profile/personal_access_tokens/#access-token-expiration), ' \
+            'and does not expire otherwise.',
           documentation: { example: '2021-01-31' }
       end
       route_setting :authorization, permissions: :rotate_personal_access_token, boundary_type: :user
@@ -111,7 +115,7 @@ module API
         tags %w[access_tokens]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a personal access token'
+        requires :id, type: Integer, desc: 'ID of the personal access token.'
       end
       route_setting :authorization, permissions: :revoke_personal_access_token, boundary_type: :user
       delete ':id' do

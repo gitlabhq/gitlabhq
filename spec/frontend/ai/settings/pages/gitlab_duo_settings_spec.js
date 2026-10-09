@@ -1164,7 +1164,7 @@ describe('GitlabDuoSettings', () => {
   });
 
   describe('governance card', () => {
-    const governancePath = '/group/project/-/settings/gitlab_duo/governance';
+    const governancePath = '/group/project/-/automate/governance';
 
     it('is hidden when no governancePath is provided', () => {
       wrapper = createWrapper();

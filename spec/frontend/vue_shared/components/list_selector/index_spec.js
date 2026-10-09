@@ -4,7 +4,7 @@ import { GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Api from '~/api';
-import RestApi from '~/rest_api';
+import { getProjects } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -501,7 +501,7 @@ describe('List Selector spec', () => {
       beforeEach(() => emitSearchInput());
 
       it('calls query with correct variables when Search box receives an input', () => {
-        expect(RestApi.getProjects).toHaveBeenCalledWith(search, { membership: false });
+        expect(getProjects).toHaveBeenCalledWith(search, { membership: false });
       });
 
       it('renders a dropdown for the search results', () => {

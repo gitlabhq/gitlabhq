@@ -10,9 +10,6 @@ Entitlement decides what a namespace can do with Secrets Manager, based on its t
 Entitlement is separate from the license and enrollment gates described in [Availability gates](_index.md#availability-gates).
 All three must allow an action.
 
-The paid experience is behind a feature flag during rollout.
-When the flag is off, every entitlement check is skipped, and only the license and enrollment apply.
-
 For how entitlement combines with the other states, see [Fulfillment combinations](states_and_side_effects.md#fulfillment-combinations).
 
 ## Entitlement states

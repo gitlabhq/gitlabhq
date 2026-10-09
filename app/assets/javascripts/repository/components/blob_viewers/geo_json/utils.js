@@ -1,11 +1,10 @@
 import { map, tileLayer, geoJson, featureGroup, Icon } from 'leaflet';
-import { template, each } from 'lodash-es';
+import { escape } from 'lodash-es';
 import {
   OPEN_STREET_TILE_URL,
   MAP_ATTRIBUTION,
   OPEN_STREET_COPYRIGHT_LINK,
   ICON_CONFIG,
-  POPUP_CONTENT_TEMPLATE,
 } from './constants';
 
 const generateOpenStreetMapTiles = () => {
@@ -14,10 +13,14 @@ const generateOpenStreetMapTiles = () => {
 };
 
 export const popupContent = (popupProperties) => {
-  return template(POPUP_CONTENT_TEMPLATE)({
-    eachFunction: each,
-    popupProperties,
-  });
+  const rows = Object.entries(popupProperties)
+    .map(
+      ([label, value]) =>
+        `<div><strong>${escape(label)}:</strong> <span>${escape(value)}</span></div>`,
+    )
+    .join('');
+
+  return `<div class="gl-pt-4">${rows}</div>`;
 };
 
 const loadGeoJsonGroupAndBounds = (geoJsonData) => {

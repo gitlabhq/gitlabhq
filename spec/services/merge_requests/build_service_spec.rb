@@ -1152,12 +1152,16 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
         description: 'Description of the picked merge request')
     end
 
+    let_it_be(:pick_issue) { create(:issue, project: pick_project) }
+    let_it_be(:pick_source_branch) { "#{pick_issue.iid}-backport-fix" }
+
     before_all do
       # The template the inherited description has to win over.
       pick_project.repository.create_file(
-        pick_user, '.gitlab/merge_request_templates/default.md', "## From the template\n",
+        pick_user, '.gitlab/merge_request_templates/default.md', "## From the template\n%{closes_issue}",
         message: 'Add default merge request template', branch_name: pick_project.default_branch
       )
+      pick_project.repository.create_branch(pick_source_branch, pick_project.default_branch)
     end
 
     def build_merge_request(**params)
@@ -1174,6 +1178,16 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       expect(built.description).to eq('Description of the picked merge request')
     end
 
+    it 'appends the inferred issue reference after the picked description replaces the template' do
+      built = build_merge_request(
+        cherry_picked_merge_request_id: picked_merge_request.id,
+        source_branch: pick_source_branch
+      )
+      closing_reference = Gitlab::MergeRequests::MessageGenerator.closes_issue_reference(built, pick_issue)
+
+      expect(built.description).to eq("#{picked_merge_request.description}\n\n#{closing_reference}")
+    end
+
     it 'falls back to the template without a picked merge request' do
       expect(build_merge_request.description).to eq("## From the template\n")
     end
@@ -1184,6 +1198,18 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       built = build_merge_request(cherry_picked_merge_request_id: picked_merge_request.id)
 
       expect(built.description).to eq("## From the template\n")
+    end
+
+    it 'keeps the template reference once when the picked description is blank on an issue branch' do
+      picked_merge_request.update!(description: '')
+
+      built = build_merge_request(
+        cherry_picked_merge_request_id: picked_merge_request.id,
+        source_branch: pick_source_branch
+      )
+      closing_reference = Gitlab::MergeRequests::MessageGenerator.closes_issue_reference(built, pick_issue)
+
+      expect(built.description).to eq("## From the template\n#{closing_reference}")
     end
 
     it 'keeps a picked description verbatim, it is content rather than a template' do

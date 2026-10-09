@@ -141,6 +141,8 @@ default:
 
 .default-merge-request-variables: &default-merge-request-variables
   NO_SOURCEMAPS: "true"
+  FE_SOURCEMAPS: "false"
+  GLCI_ASSETS_TARGET: "ci"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
@@ -353,6 +355,7 @@ variables:
   GLCI_MEDIUM_RUNNER_REQUIRED: ""  # This should be a tag pointing to a valid "medium" runner. Newer versions of Chrome (133+) require at least medium runners (4 core / 16G RAM), otherwise system test jobs are unpredictably instable due to insufficient resources (postgres DB and Rails application will have random failures). Therefore, the default is an empty string, which will cause the jobs requesting this tag to never run. See https://issues.chromium.org/issues/447192720
   GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL: "gitlab-org-docker"  # this is set to GITLAB_LARGE_RUNNER_OPTIONAL on gitlab-org/gitlab and default to docker runners for dind to work correctly
   DEFAULT_RSPEC_PREDICTIVE_JOB_TAGS: "${DEFAULT_JOB_TAG}"  # Separated by commas, overridden in JiHu
+  GLCI_ASSETS_TARGET: "deploy"
   # We set $GITLAB_DEPENDENCY_PROXY to another variable (since it's set at the group level and has higher precedence than .gitlab-ci.yml)
   # so that we can override $GITLAB_DEPENDENCY_PROXY_ADDRESS in workflow rules.
   GITLAB_DEPENDENCY_PROXY_ADDRESS: "${GITLAB_DEPENDENCY_PROXY}"
@@ -499,3 +502,6 @@ include:
   - local: .gitlab/ci/overrides/assets-tmp-cache.yml
     rules:
       - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+  - local: .gitlab/ci/overrides/assets-cache.yml
+    rules:
+      - if: '$CI_MERGE_REQUEST_IID'

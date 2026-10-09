@@ -162,7 +162,7 @@ module API
 
           destroy_conditionally!(note) do |note|
             # Group-level work items have no project; the service accepts nil, as the GraphQL mutation does.
-            ::Notes::DestroyService.new(note.project, current_user).execute(note)
+            ::Notes::DestroyService.new(parent_work_item.project, current_user).execute(note)
           end
         end
       end

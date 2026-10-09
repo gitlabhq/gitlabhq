@@ -8,6 +8,6 @@ RSpec.describe API::Entities::ServiceAccount, feature_category: :user_management
   let(:service_account) { build(:user, :service_account) }
 
   it 'exposes correct attributes' do
-    expect(service_account_entity.keys).to contain_exactly(:email, :id, :name, :public_email, :username)
+    expect(service_account_entity.keys).to contain_exactly(:email, :external, :id, :name, :public_email, :username)
   end
 end

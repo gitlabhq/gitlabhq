@@ -153890,6 +153890,18 @@
               "deprecationReason": null
             },
             {
+              "name": "triggerSource",
+              "description": "Kind of initiator that started the session.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoWorkflowTriggerSource",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "user",
               "description": "User the session ran as. For triggered sessions, the account the trigger runs with.",
               "args": [],
@@ -156046,6 +156058,47 @@
               "description": "Approval granted through a pre-approved tool or pattern configuration. Introduced in GitLab 19.3: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DuoWorkflowTriggerSource",
+          "description": "Kind of initiator that started a Duo Workflow session.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "HUMAN",
+              "description": "Session started by a user action.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SYSTEM",
+              "description": "Session started by the system without a user.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SCHEDULED",
+              "description": "Session started by a flow schedule.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VERIFICATION",
+              "description": "Session started by a functional verification check.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FLOW",
+              "description": "Session started by another session.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -194983,7 +195036,7 @@
             },
             {
               "name": "secretsManagerEntitlement",
-              "description": "Secrets Manager entitlement for the top-level group. Returns null for non-root groups, when the `secrets_manager_paid_experience` feature flag is disabled, INELIGIBLE when unresolvable. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Secrets Manager entitlement for the top-level group. Returns null for non-root groups, INELIGIBLE when unresolvable. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -205611,7 +205664,7 @@
             },
             {
               "name": "writeDenialReason",
-              "description": "Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -357326,7 +357379,7 @@
             },
             {
               "name": "writeDenialReason",
-              "description": "Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "ENUM",

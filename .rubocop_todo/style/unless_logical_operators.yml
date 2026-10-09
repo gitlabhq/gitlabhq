@@ -20,5 +20,4 @@ Style/UnlessLogicalOperators:
     - 'lib/banzai/filter/truncate_visible_filter.rb'
     - 'lib/file_size_validator.rb'
     - 'lib/gitlab/auth.rb'
-    - 'lib/sidebars/groups/menus/observability_menu.rb'
     - 'spec/lib/gitlab/import_export/import_test_coverage_spec.rb'

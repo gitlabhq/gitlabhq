@@ -74,7 +74,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/api/internal/base.rb'
     - 'lib/api/markdown.rb'
     - 'lib/api/pagination_params.rb'
-    - 'lib/api/usage_data_non_sql_metrics.rb'
     - 'lib/feature/definition.rb'
     - 'lib/feature/gitaly.rb'
     - 'lib/gitlab/ci/pipeline/chain/command.rb'

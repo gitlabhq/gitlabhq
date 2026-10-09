@@ -165,6 +165,11 @@ describe('TablePresenter', () => {
       { key: 'creditsUsedSum', label: 'Credits', name: 'creditsUsedSum', type: 'metric' },
     ];
 
+    const projectFields = [
+      { key: 'project', label: 'Project', name: 'project', type: 'dimension' },
+      { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+    ];
+
     beforeEach(async () => {
       await createWrapper(
         {
@@ -197,6 +202,7 @@ describe('TablePresenter', () => {
             { key: 'project', label: 'Project', name: 'project', type: 'dimension' },
             { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
           ],
+          source: 'DuoWorkflows',
         },
         mountExtended,
       );
@@ -207,6 +213,49 @@ describe('TablePresenter', () => {
         '864',
       ]);
       expect(wrapper.findAllByTestId('dimension-no-value-hint')).toHaveLength(2);
+    });
+
+    it('explains a null project bucket for agent platform sessions', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', project: null, usersCount: 864 }] },
+          fields: projectFields,
+          source: 'AgentPlatformSessions',
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual([
+        'No project Not tied to a project, or a project you cannot see',
+        '864',
+      ]);
+    });
+
+    it('names a null project bucket without the hint for pipelines', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', project: null, usersCount: 864 }] },
+          fields: projectFields,
+          source: 'Pipelines',
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual(['No project', '864']);
+      expect(wrapper.findByTestId('dimension-no-value-hint').exists()).toBe(false);
+    });
+
+    it('names a null project bucket without the hint when the source is unknown', async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', project: null, usersCount: 864 }] },
+          fields: projectFields,
+        },
+        mountExtended,
+      );
+
+      expect(getCellsText(wrapper.findByTestId('table-row-0'))).toEqual(['No project', '864']);
+      expect(wrapper.findByTestId('dimension-no-value-hint').exists()).toBe(false);
     });
 
     it('says which depth a null group bucket is missing at', async () => {

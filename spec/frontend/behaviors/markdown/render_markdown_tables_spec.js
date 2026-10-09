@@ -162,6 +162,26 @@ describe('renderMarkdownTables', () => {
       ]);
     });
 
+    it('keeps the table caption', async () => {
+      const table = buildTable();
+      const caption = document.createElement('caption');
+      caption.textContent = 'Team members';
+      table.insertBefore(caption, table.firstChild);
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const renderedTable = container.querySelector('table');
+      const renderedCaption = renderedTable.caption;
+      expect(renderedCaption).not.toBeNull();
+      expect(renderedCaption.textContent).toBe('Team members');
+      expect(Array.from(renderedTable.children, (el) => el.tagName)).toEqual([
+        'CAPTION',
+        'THEAD',
+        'TBODY',
+      ]);
+    });
+
     describe('cell content', () => {
       it('adopts the original cell elements', async () => {
         const link = document.createElement('a');

@@ -32,6 +32,10 @@ const NO_TREND = '—';
 // sortable.
 const TREND_CELL_KEY = '__trendCell';
 
+// Sources where a run can happen outside any project, so a null project is a real bucket.
+// Everywhere else (Pipelines, for one) a null project means it was deleted or is unreadable.
+const PROJECTLESS_SOURCES = ['DuoWorkflows', 'AgentPlatformSessions'];
+
 // The engines return NULL for a hierarchy dimension when the flow sits outside the requested
 // level, so the row is a real bucket that needs a name. A deleted namespace's ID no longer
 // resolves either, which the panel description covers. The engines default `depth` to 1.
@@ -54,9 +58,11 @@ const DIMENSION_NULL_LABELS = {
       hint: sprintf(s__('Glql|No group at depth %{depth}'), { depth }),
     };
   },
-  project: () => ({
+  project: (field, source) => ({
     text: s__('Glql|No project'),
-    hint: s__('Glql|Not tied to a project, or a project you cannot see'),
+    hint: PROJECTLESS_SOURCES.includes(source)
+      ? s__('Glql|Not tied to a project, or a project you cannot see')
+      : null,
   }),
 };
 
@@ -216,7 +222,7 @@ export default {
     dimensionNullLabel(field, item) {
       const label = DIMENSION_NULL_LABELS[baseFieldKeyOf(field)];
       if (label && field.type === FIELD_TYPES.DIMENSION && item[field.key] == null) {
-        return label(field);
+        return label(field, this.source);
       }
 
       return null;

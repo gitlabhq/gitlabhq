@@ -2,6 +2,7 @@
 import {
   perFileFromReport,
   computeActionable,
+  shouldSkipSummary,
   thresholdInfo,
   formatDuration,
   buildComment,
@@ -12,6 +13,7 @@ import {
   formatSignedDuration,
   buildDeletedFileRow,
   apiRequest,
+  run,
 } from '../../../../scripts/frontend/post_integration_test_summary.mjs';
 
 // Helper: build a Jest --json-shaped testResults entry with the given
@@ -568,8 +570,151 @@ describe('placeholderSection', () => {
     expect(placeholderSection('rspec', { jobPresent: true })).toContain('Pending');
   });
 
-  it('reports a counterpart job absent from the pipeline as not run', () => {
-    expect(placeholderSection('rspec', { jobPresent: false })).toContain('Did not run');
+  it('reports a counterpart that is absent or had nothing to report', () => {
+    const section = placeholderSection('rspec', { jobPresent: false });
+
+    expect(section).toContain('Did not run');
+    expect(section).toContain('nothing to report');
+  });
+});
+
+describe('shouldSkipSummary', () => {
+  const changes = ({
+    changedFiles = [],
+    deletedFiles = [],
+    truncated = false,
+    fetchFailed = false,
+  } = {}) => ({
+    changedFiles,
+    deletedFiles,
+    truncated,
+    fetchFailed,
+  });
+  const specPath = 'ee/spec/frontend/integration/work_items/work_items_spec.js';
+
+  it('skips when the MR changes no integration spec files', () => {
+    const changedFiles = [
+      {
+        path: 'spec/frontend/boards/board_list_spec.js',
+        oldPath: 'spec/frontend/boards/board_list_spec.js',
+      },
+    ];
+
+    expect(shouldSkipSummary(changes({ changedFiles }))).toBe(true);
+  });
+
+  it('posts when the MR changes an integration spec file', () => {
+    expect(
+      shouldSkipSummary(changes({ changedFiles: [{ path: specPath, oldPath: specPath }] })),
+    ).toBe(false);
+  });
+
+  it('posts when the MR deletes an integration spec file, even without a master baseline', () => {
+    expect(shouldSkipSummary(changes({ deletedFiles: [{ path: specPath }] }))).toBe(false);
+  });
+
+  it('posts when the MR renames a spec file out of the integration suite', () => {
+    const changedFiles = [{ path: 'spec/frontend/moved_spec.js', oldPath: specPath }];
+
+    expect(shouldSkipSummary(changes({ changedFiles }))).toBe(false);
+  });
+
+  it('posts when the diff listing is truncated, since it cannot prove there are no changes', () => {
+    expect(shouldSkipSummary(changes({ truncated: true }))).toBe(false);
+  });
+
+  it('posts when the diff fetch failed, since it cannot prove there are no changes', () => {
+    expect(shouldSkipSummary(changes({ fetchFailed: true }))).toBe(false);
+  });
+});
+
+describe('run', () => {
+  const okResponse = (payload) => ({ ok: true, json: () => Promise.resolve(payload) });
+  const integrationSpecPath = 'ee/spec/frontend/integration/work_items/work_items_spec.js';
+  let originalEnv;
+
+  // Serves the GitLab API endpoints run() touches; everything not listed is a
+  // note mutation (POST/PUT), which the assertions inspect via mutationCalls().
+  const mockApi = ({ diffs = [], notes = [], diffsFail = false } = {}) => {
+    global.fetch = jest.fn((url, { method } = {}) => {
+      if (url.includes('/diffs')) {
+        // 404 is non-retryable, so a failing diffs call surfaces immediately.
+        if (diffsFail) {
+          return Promise.resolve({ ok: false, status: 404, text: () => Promise.resolve('gone') });
+        }
+        return Promise.resolve(okResponse(diffs));
+      }
+      if (url.endsWith('/user')) return Promise.resolve(okResponse({ username: 'bot' }));
+      if (method === 'GET' && url.includes('/notes')) return Promise.resolve(okResponse(notes));
+      return Promise.resolve(okResponse({}));
+    });
+  };
+
+  const mutationCalls = () => global.fetch.mock.calls.filter(([, init]) => init?.method !== 'GET');
+
+  beforeEach(() => {
+    originalEnv = process.env;
+    process.env = {
+      ...originalEnv,
+      CI_PROJECT_ID: '1',
+      CI_MERGE_REQUEST_IID: '2',
+      PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE: 'token',
+    };
+    // The counterpart-job lookup must not fire against the mocked pipeline API.
+    delete process.env.CI_PIPELINE_ID;
+    // run() narrates its progress; silence it for the shared console guard.
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+    delete global.fetch;
+  });
+
+  it('creates no note when the MR has no integration spec changes and no note exists', async () => {
+    mockApi({ diffs: [{ new_path: 'spec/frontend/boards/board_list_spec.js' }] });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(0);
+  });
+
+  it('still fills its section when the counterpart already created the note', async () => {
+    const body = buildCombinedComment('rspec', 'rspec body', { counterpartPresent: true });
+    mockApi({ notes: [{ id: 7, body, author: { username: 'bot' } }] });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(1);
+    const [url, init] = mutationCalls()[0];
+    expect(init.method).toBe('PUT');
+    expect(url).toContain('/notes/7');
+
+    const updated = JSON.parse(init.body).body;
+    expect(updated).toContain('rspec body');
+    expect(updated).toContain('no JSON report found');
+  });
+
+  it('creates the note when the diff fetch fails, since it cannot rule out spec changes', async () => {
+    mockApi({ diffsFail: true });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(1);
+    expect(mutationCalls()[0][1].method).toBe('POST');
+  });
+
+  it('creates the combined note when the MR changes an integration spec file', async () => {
+    mockApi({ diffs: [{ new_path: integrationSpecPath, new_file: true }] });
+
+    await run();
+
+    expect(mutationCalls()).toHaveLength(1);
+    const [url, init] = mutationCalls()[0];
+    expect(init.method).toBe('POST');
+    expect(url).toContain('/merge_requests/2/notes');
+    expect(JSON.parse(init.body).body).toContain(COMBINED_MARKER);
   });
 });
 

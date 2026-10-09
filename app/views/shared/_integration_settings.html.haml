@@ -2,8 +2,8 @@
 
 %div
   - if @default_integration
-    .js-vue-default-integration-settings{ data: integration_form_data(@default_integration, group: @group, project: @project) }
-  .js-vue-integration-settings{ data: integration_form_data(integration, group: @group, project: @project) }
+    .js-vue-default-integration-settings{ data: integration_form_data(@default_integration, group: @group, project: @project, organization: @organization) }
+  .js-vue-integration-settings{ data: integration_form_data(integration, group: @group, project: @project, organization: @organization) }
     .js-integration-help-html.gl-hidden
       -# All content below will be repositioned in Vue
       - if lookup_context.template_exists?('help', "shared/integrations/#{integration.to_param}", true)

@@ -45029,6 +45029,7 @@ Fields:
 | <a id="duoworkflowagentpresence-sessionid"></a>`sessionId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Global ID of the session that created the object. |
 | <a id="duoworkflowagentpresence-sourcelink"></a>`sourceLink` | [`String`](#string) | URL or deep link to the location where the session was triggered from. Null unless the current user can read the session. |
 | <a id="duoworkflowagentpresence-sourcetype"></a>`sourceType` | [`DuoWorkflowSourceType`](#duoworkflowsourcetype) | Type of source that initiated the session. |
+| <a id="duoworkflowagentpresence-triggersource"></a>`triggerSource` | [`DuoWorkflowTriggerSource`](#duoworkflowtriggersource) | Kind of initiator that started the session. |
 | <a id="duoworkflowagentpresence-user"></a>`user` | [`UserCore`](#usercore) | User the session ran as. For triggered sessions, the account the trigger runs with. |
 | <a id="duoworkflowagentpresence-userpermissions"></a>`userPermissions` | [`DuoWorkflowAgentPresencePermissions!`](#duoworkflowagentpresencepermissions) | Permissions for the current user on the session. |
 
@@ -48104,7 +48105,7 @@ Fields:
 | <a id="group-requiretwofactorauthentication"></a>`requireTwoFactorAuthentication` | [`Boolean`](#boolean) | Indicates if all users in the group are required to set up two-factor authentication. |
 | <a id="group-rootnamespace"></a>`rootNamespace` | [`Namespace!`](#namespace) | Top-level namespace of the namespace. |
 | <a id="group-rootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
-| <a id="group-secretsmanagerentitlement"></a>`secretsManagerEntitlement` {{< icon name="warning-solid" >}} | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Introduced in GitLab 19.2. Status: Experiment. Secrets Manager entitlement for the top-level group. Returns null for non-root groups, when the `secrets_manager_paid_experience` feature flag is disabled, INELIGIBLE when unresolvable. |
+| <a id="group-secretsmanagerentitlement"></a>`secretsManagerEntitlement` {{< icon name="warning-solid" >}} | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Introduced in GitLab 19.2. Status: Experiment. Secrets Manager entitlement for the top-level group. Returns null for non-root groups, INELIGIBLE when unresolvable. |
 | <a id="group-securitycategories"></a>`securityCategories` | [`[SecurityCategory!]`](#securitycategory) | Security categories for the group. |
 | <a id="group-securitypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="group-securityposturecounters"></a>`securityPostureCounters` {{< icon name="warning-solid" >}} | [`SecurityPostureCounters`](#securityposturecounters) | Introduced in GitLab 19.0. Status: Experiment. Security posture counters for the group. |
@@ -50878,7 +50879,7 @@ Fields:
 | <a id="groupsecretsmanager-readonly"></a>`readOnly` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether the instance is in strict read-only mode (Geo secondary or maintenance mode). No secrets or permissions can be created, updated, or deleted while it is true. |
 | <a id="groupsecretsmanager-status"></a>`status` | [`GroupSecretsManagerStatus`](#groupsecretsmanagerstatus) | Status of the group secrets manager. |
 | <a id="groupsecretsmanager-userpermissions"></a>`userPermissions` | [`GroupSecretsManagerPermissions!`](#groupsecretsmanagerpermissions) | Permissions for the current user on the resource. |
-| <a id="groupsecretsmanager-writedenialreason"></a>`writeDenialReason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. |
+| <a id="groupsecretsmanager-writedenialreason"></a>`writeDenialReason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them. |
 
 ### `GroupSecretsManagerPermissions`
 
@@ -62311,7 +62312,7 @@ Fields:
 | <a id="projectsecretsmanager-readonly"></a>`readOnly` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether the instance is in strict read-only mode (Geo secondary or maintenance mode). No secrets or permissions can be created, updated, or deleted while it is true. |
 | <a id="projectsecretsmanager-status"></a>`status` | [`ProjectSecretsManagerStatus`](#projectsecretsmanagerstatus) | Status of the project secrets manager. |
 | <a id="projectsecretsmanager-userpermissions"></a>`userPermissions` | [`ProjectSecretsManagerPermissions!`](#projectsecretsmanagerpermissions) | Permissions for the current user on the resource. |
-| <a id="projectsecretsmanager-writedenialreason"></a>`writeDenialReason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. |
+| <a id="projectsecretsmanager-writedenialreason"></a>`writeDenialReason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them. |
 
 ### `ProjectSecretsManagerPermissions`
 
@@ -72093,6 +72094,18 @@ Source of a Duo Workflow tool call approval decision, as reported by the client.
 | <a id="duoworkflowtoolcallapprovalsource-preapproved_config"></a>`PREAPPROVED_CONFIG` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Approval granted through a pre-approved tool or pattern configuration. |
 | <a id="duoworkflowtoolcallapprovalsource-pretooluse_hook"></a>`PRETOOLUSE_HOOK` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Approval granted automatically by a PreToolUse hook. |
 | <a id="duoworkflowtoolcallapprovalsource-user_explicit"></a>`USER_EXPLICIT` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Explicit approval by a user action. |
+
+### `DuoWorkflowTriggerSource`
+
+Kind of initiator that started a Duo Workflow session.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowtriggersource-flow"></a>`FLOW` | Session started by another session. |
+| <a id="duoworkflowtriggersource-human"></a>`HUMAN` | Session started by a user action. |
+| <a id="duoworkflowtriggersource-scheduled"></a>`SCHEDULED` | Session started by a flow schedule. |
+| <a id="duoworkflowtriggersource-system"></a>`SYSTEM` | Session started by the system without a user. |
+| <a id="duoworkflowtriggersource-verification"></a>`VERIFICATION` | Session started by a functional verification check. |
 
 ### `DuoWorkflowWorkItemLinkType`
 

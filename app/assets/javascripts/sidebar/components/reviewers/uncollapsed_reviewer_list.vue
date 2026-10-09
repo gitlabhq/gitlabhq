@@ -71,7 +71,7 @@ export default {
     },
     canRerequest: {
       type: Boolean,
-      required: true,
+      required: false,
       default: false,
     },
   },

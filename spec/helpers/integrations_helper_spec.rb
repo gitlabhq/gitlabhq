@@ -240,6 +240,95 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
   end
 
+  describe 'organization-scoped paths' do
+    let_it_be(:organization) { create(:organization) }
+    let(:integration) { build_stubbed(:jira_integration, :instance, organization: organization) }
+
+    describe '#scoped_integrations_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_integrations_path(organization: organization))
+          .to eq(organization_admin_settings_integrations_path(organization))
+      end
+    end
+
+    describe '#scoped_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_integration_path(integration, organization: organization))
+          .to eq(organization_admin_settings_integration_path(organization, integration))
+      end
+    end
+
+    describe '#scoped_edit_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_edit_integration_path(integration, organization: organization))
+          .to eq(edit_organization_admin_settings_integration_path(organization, integration))
+      end
+    end
+
+    describe '#scoped_overrides_integration_path' do
+      it 'returns the organization admin path and keeps extra options' do
+        expect(helper.scoped_overrides_integration_path(integration, organization: organization, format: :json))
+          .to eq(overrides_organization_admin_settings_integration_path(organization, integration, format: :json))
+      end
+    end
+
+    describe '#scoped_test_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_test_integration_path(integration, organization: organization))
+          .to eq(test_organization_admin_settings_integration_path(organization, integration))
+      end
+    end
+
+    describe '#scoped_reset_integration_path' do
+      it 'returns the organization admin path' do
+        expect(helper.scoped_reset_integration_path(integration, organization: organization))
+          .to eq(reset_organization_admin_settings_integration_path(organization, integration))
+      end
+
+      it 'returns an empty string for a new integration' do
+        expect(helper.scoped_reset_integration_path(build(:jira_integration, :instance), organization: organization))
+          .to eq('')
+      end
+    end
+
+    describe '#integration_form_data' do
+      before do
+        allow(helper).to receive(:request).and_return(double(referer: '/services'))
+      end
+
+      it 'uses organization admin paths' do
+        expect(helper.integration_form_data(integration, organization: organization)).to include(
+          cancel_path: organization_admin_settings_integrations_path(organization),
+          test_path: test_organization_admin_settings_integration_path(organization, integration),
+          reset_path: reset_organization_admin_settings_integration_path(organization, integration),
+          form_path: organization_admin_settings_integration_path(organization, integration)
+        )
+      end
+    end
+
+    describe '#integration_overrides_data' do
+      it 'uses organization admin paths' do
+        expect(helper.integration_overrides_data(integration, organization: organization)).to include(
+          edit_path: edit_organization_admin_settings_integration_path(organization, integration),
+          overrides_path: overrides_organization_admin_settings_integration_path(
+            organization, integration, format: :json
+          )
+        )
+      end
+    end
+
+    describe '#integration_list_data' do
+      it 'uses organization admin edit paths' do
+        parsed = Gitlab::Json.safe_parse(helper.integration_list_data([integration],
+          organization: organization)[:integrations])
+
+        expect(parsed.first).to include(
+          'edit_path' => edit_organization_admin_settings_integration_path(organization, integration)
+        )
+      end
+    end
+  end
+
   describe '#add_to_slack_link' do
     subject(:slack_link) { helper.add_to_slack_link(project, 'A12345') }
 

@@ -39,6 +39,7 @@ function observeRemoval(table, app) {
 function parseTable(table) {
   // Take care to grab only *this* table's cells, and not any nested tables'.
   const thead = table.tHead;
+  const { caption } = table;
 
   // A table without a declared header (e.g. hand-authored HTML) is left as-is;
   // promoting the first body row would fabricate a header that was never authored.
@@ -68,7 +69,7 @@ function parseTable(table) {
     return item;
   });
 
-  return { fields, items, footerRows };
+  return { fields, items, footerRows, caption };
 }
 
 /**
@@ -98,7 +99,7 @@ export default function renderMarkdownTables(els) {
   }
 
   return loadMarkdownTable().then(({ default: MarkdownTable }) => {
-    claimed.forEach(({ table, fields, items, footerRows }) => {
+    claimed.forEach(({ table, fields, items, footerRows, caption }) => {
       if (!table.parentNode) {
         // eslint-disable-next-line no-param-reassign
         delete table.dataset.markdownTableApplied;
@@ -108,7 +109,7 @@ export default function renderMarkdownTables(els) {
       const app = new Vue({
         el: table,
         name: 'MarkdownTableRoot',
-        render: (h) => h(MarkdownTable, { props: { fields, items, footerRows } }),
+        render: (h) => h(MarkdownTable, { props: { fields, items, footerRows, caption } }),
       });
 
       observeRemoval(table, app);

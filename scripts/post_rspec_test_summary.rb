@@ -74,7 +74,7 @@ def placeholder_section(name, job_present:)
   state = if job_present
             '_Pending -- results appear when the job finishes._'
           else
-            '_Did not run for this merge request._'
+            '_Did not run for this merge request, or had nothing to report._'
           end
 
   "### #{SECTIONS.fetch(name)[:label]}\n\n#{state}"
@@ -97,6 +97,12 @@ def build_combined_comment(name, content, counterpart_present:)
 end
 
 SPEC_FILE_RE = /_spec\.rb$/
+
+# Paths that belong to the frontend integration (MSW) suite. Mirrors the skip
+# rule in scripts/frontend/post_integration_test_summary.mjs: that script posts
+# no comment when the MR changes none of these, so the placeholder this script
+# writes for its section must not promise a pending summary.
+MSW_SPEC_FILE_RE = %r{\A(?:ee|jh)/spec/frontend/integration/.*_spec\.js\z}
 
 # Runtime is wall-clock measured on different runners in different pipelines, so
 # a small delta says nothing. System specs are the worst case: browser startup
@@ -604,13 +610,33 @@ def api_request(method, path, body = nil)
   end
 end
 
+# Whether a diff entry touches the frontend integration (MSW) suite, under
+# either its old or new path.
+def msw_spec_change?(diff)
+  [diff['new_path'], diff['old_path']].compact.any? { |path| MSW_SPEC_FILE_RE.match?(path) }
+end
+
+# Build a changed-file entry for a diff that touches an RSpec file, or nil.
+# Renamed and deleted files keep their old path for baseline lookup.
+def changed_spec_entry(diff)
+  new_path = diff['new_path']
+  old_path = diff['old_path'] || new_path
+  deleted = diff['deleted_file'] == true
+  # A deleted file has no content on this branch, so only its old path names it.
+  path = deleted ? old_path : new_path
+  return unless path && SPEC_FILE_RE.match?(path)
+
+  { path: path, is_new: diff['new_file'] == true, is_deleted: deleted, old_path: old_path }
+end
+
 # Fetch the list of added/modified/deleted spec files in this MR from the diffs
-# API. Renamed and deleted files keep their old path for baseline lookup.
+# API.
 #
 # @return [Hash] { files: Array<Hash>, truncated: Boolean }
 def fetch_changed_spec_files(project_id, mr_iid)
   files = []
   truncated = false
+  msw_changes = false
 
   (1..MAX_DIFF_PAGES).each do |page|
     diffs = api_request(
@@ -620,19 +646,9 @@ def fetch_changed_spec_files(project_id, mr_iid)
     break unless diffs.is_a?(Array) && !diffs.empty?
 
     diffs.each do |diff|
-      new_path = diff['new_path']
-      old_path = diff['old_path'] || new_path
-      deleted = diff['deleted_file'] == true
-      # A deleted file has no content on this branch, so only its old path names it.
-      path = deleted ? old_path : new_path
-      next unless path && SPEC_FILE_RE.match?(path)
-
-      files << {
-        path: path,
-        is_new: diff['new_file'] == true,
-        is_deleted: deleted,
-        old_path: old_path
-      }
+      msw_changes ||= msw_spec_change?(diff)
+      entry = changed_spec_entry(diff)
+      files << entry if entry
     end
 
     if diffs.length < DIFFS_PER_PAGE
@@ -642,10 +658,13 @@ def fetch_changed_spec_files(project_id, mr_iid)
     end
   end
 
-  { files: files, truncated: truncated }
+  # A truncated listing cannot prove the MR has no integration spec changes,
+  # and the integration script still posts in that case.
+  { files: files, truncated: truncated, msw_changes: msw_changes || truncated }
 rescue StandardError => e
   warn "[RSpec] Could not fetch MR changed files: #{e.message}"
-  { files: [], truncated: false }
+  # Like truncation, a failed fetch cannot prove there are no integration spec changes.
+  { files: [], truncated: false, msw_changes: true }
 end
 
 # Fetch the knapsack master report from the GitLab Pages URL.
@@ -752,14 +771,18 @@ rescue StandardError => e
 end
 
 # Write this script's section into the shared summary note, creating it if absent.
-def post_or_update_comment(project_id, mr_iid, section_content)
+#
+# msw_changes gates the integration placeholder: the integration script posts
+# nothing when the MR changes no integration spec files, so a "Pending"
+# placeholder for its section would never resolve.
+def post_or_update_comment(project_id, mr_iid, section_content, msw_changes: true)
   existing = find_existing_note(project_id, mr_iid)
 
   unless existing
     counterpart = SECTIONS.fetch('msw')
     comment = build_combined_comment(
       'rspec', section_content,
-      counterpart_present: counterpart_job_present?(project_id, counterpart[:job])
+      counterpart_present: msw_changes && counterpart_job_present?(project_id, counterpart[:job])
     )
     api_request('POST', "/projects/#{project_id}/merge_requests/#{mr_iid}/notes", { body: comment })
     puts 'Posted new test summary comment.'
@@ -845,7 +868,7 @@ def run(argv = ARGV)
     return
   end
 
-  post_or_update_comment(project_id, mr_iid, comment)
+  post_or_update_comment(project_id, mr_iid, comment, msw_changes: changed_result[:msw_changes])
 end
 
 # The job has no allow_failure, so a GitLab API error (a 403 on the token, a 500

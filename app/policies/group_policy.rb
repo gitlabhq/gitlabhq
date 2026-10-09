@@ -70,7 +70,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:design_management_enabled) do
-    group_projects_for(user: @user, group: @subject, exclude_shared: false).any? { |p| p.design_management_enabled? }
+    group_projects_for(user: @user, group: @subject, exclude_shared: false).any?(&:design_management_enabled?)
   end
 
   condition(:dependency_proxy_available, scope: :subject) do

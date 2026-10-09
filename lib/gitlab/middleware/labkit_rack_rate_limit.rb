@@ -37,6 +37,8 @@ module Gitlab
     # Zeitwerk autoloading is active, so it must not resolve autoloaded siblings at
     # load time.
     class LabkitRackRateLimit
+      BLOCK_MESSAGE = 'Rate_Limit_Block'
+
       def initialize(app)
         @app = app
       end
@@ -69,12 +71,17 @@ module Gitlab
         context = with_isolated_throttle_instrumentation { request.labkit_facts }
         checks = limiters.all.transform_values { |limiter| limiter.check(context) }
         results = checks.values
-        decision = { results: results, response: enforced_response(results) }
+        blocked = enforced_block(results)
+        decision = { results: results, response: blocked && throttled_response(blocked) }
 
         # Its own guard, not run's. Sharing run's would let a raise here return
         # nil for the whole decision, dropping a 429 the rules had already
         # counted, so instrumentation could switch enforcement off.
         guard { ::Gitlab::Instrumentation::RateLimitState.track(checks) }
+
+        # Its own guard, same reason as above. Must follow track: the line reads the
+        # state that call records.
+        guard { log_block(blocked, context) } if blocked
 
         decision
       end
@@ -91,7 +98,7 @@ module Gitlab
         return unless evaluation
 
         rate_limit_headers = ::Gitlab::RackAttack::RequestThrottleData
-          .from_labkit_result(name: throttle_name_for(evaluation.rule), result: evaluation)
+          .from_labkit_result(name: throttle_name_for(evaluation.rule.name), result: evaluation)
           &.common_response_headers
 
         headers.merge!(rate_limit_headers) if rate_limit_headers
@@ -114,14 +121,11 @@ module Gitlab
         evaluation
       end
 
-      # The byte-identical legacy 429 for the first blocking rule that enforces: a
-      # registry rule whose cohort enforces, or a rule with no entry (a plan rule is
-      # only built as :limit when its enforce flag is on). Nil when none does. The
-      # counter was already incremented in the limiter check, so reading the decision
-      # here never double-counts. Mirrors Gitlab::RackAttack's throttled_responder so
-      # a promoted throttle is indistinguishable from the legacy stack to clients.
-      def enforced_response(results)
-        blocked = results.find do |result|
+      # The first blocking rule that enforces: a registry rule whose cohort enforces,
+      # or a rule with no entry (a plan rule is only built as :limit when its enforce
+      # flag is on). Nil when none does.
+      def enforced_block(results)
+        results.find do |result|
           # An unmatched or synthetic-allow result carries no rule, so its cohort can
           # only be looked up once blocked? has confirmed a matched throttle blocked
           # (a block always carries its rule). Testing blocked? first also preserves
@@ -131,20 +135,85 @@ module Gitlab
           entry = entry_for_rule(result.rule.name)
           entry.nil? || registry.enforce_enabled?(entry.cohort)
         end
-        return unless blocked
+      end
 
+      # The byte-identical legacy 429. The counter was already incremented in the
+      # limiter check, so reading the decision here never double-counts. Mirrors
+      # Gitlab::RackAttack's throttled_responder so a promoted throttle is
+      # indistinguishable from the legacy stack to clients.
+      def throttled_response(blocked)
         headers = ::Gitlab::RackAttack::RequestThrottleData
-          .from_labkit_result(name: throttle_name_for(blocked.rule), result: blocked)
+          .from_labkit_result(name: throttle_name_for(blocked.rule.name), result: blocked)
           &.throttled_response_headers
 
         [429, { 'Content-Type' => 'text/plain' }.merge(headers || {}), [::Gitlab::Throttle.rate_limiting_response_text]]
       end
 
+      # A blocked request never reaches a controller, so lograge writes nothing for
+      # it. No meta.caller_id or meta.feature_category either: the controller that
+      # pushes those never runs.
+      #
+      # One line when a client first crosses a rule's limit, then only at 2x, 4x, 8x
+      # of it. The trigger is the counter labkit already returned, so a blocked
+      # request costs no extra Redis call: load there during an attack is what makes
+      # the limiter fail open and let more requests through.
+      def log_block(blocked, context)
+        info = blocked.info
+        return unless info && escalation_point?(info)
+
+        rule = blocked.rule
+
+        ::Gitlab::AuthLogger.error(
+          {
+            message: BLOCK_MESSAGE,
+            status: 429,
+            matched: throttle_name_for(rule.name),
+            rule: rule.name,
+            limit: info.resolved_limit,
+            period_s: info.resolved_period,
+            count: info.count.to_i,
+            counted_by: counted_by(rule, context),
+            applies_to: loggable_match(rule)
+          }.merge(::Gitlab::Instrumentation::RateLimitState.payload)
+        )
+      end
+
+      # The first block is one past the limit. After that only the doublings, so a
+      # client sending many times the limit produces a handful of lines rather than
+      # one for every limit's worth of requests.
+      # count is a Float and a count_distinct rule can report a fractional one, so
+      # both bounds are explicit: without them a count that truncates to the limit
+      # divides into a multiple of 1, which reads as a doubling and logs every
+      # blocked request.
+      def escalation_point?(info)
+        count = info.count.to_i
+        limit = info.resolved_limit.to_i
+        return false unless limit > 0
+        return false if count <= limit
+        return true if count == limit + 1
+
+        multiple, over = count.divmod(limit)
+        over == 0 && multiple > 1 && (multiple & (multiple - 1)) == 0
+      end
+
+      # The counting bucket by value, not only the characteristic names: the names
+      # alone cannot say which client was blocked. Taken from the same facts the
+      # rules matched on, so it is the bucket labkit counted.
+      def counted_by(rule, context)
+        rule.characteristics.index_with { |characteristic| context[characteristic] }
+      end
+
+      # Route regexes run to kilobytes, so only the scalar conditions are logged by
+      # value. The rule name is enough to look the rest up.
+      def loggable_match(rule)
+        rule.match.transform_values { |value| value.is_a?(Regexp) ? '(pattern)' : value }
+      end
+
       # The RateLimit-Name for a rule: the backing throttle's name (Entry#name), not
       # the rule name, so a registry rule's headers stay byte-identical to the legacy
       # Rack::Attack responder, a rule with no entry carries its own name.
-      def throttle_name_for(rule)
-        entry_for_rule(rule.name)&.name || rule.name
+      def throttle_name_for(rule_name)
+        entry_for_rule(rule_name)&.name || rule_name
       end
 
       # A dry-run throttle's rule is :log, so it never reports :block; the synthetic

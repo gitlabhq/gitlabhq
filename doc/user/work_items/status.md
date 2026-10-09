@@ -17,8 +17,13 @@ title: Status
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a feature flag](../../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/521286) in GitLab 18.4. Feature flag `work_item_status_feature_flag` removed.
+- Status for epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17709) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `work_item_status_for_epics`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of status for epics is controlled by a feature flag.
+> For more information, see the history.
 
 <!-- Turn off the future tense test because of "won't do". -->
 <!-- vale gitlab_base.FutureTense = NO -->
@@ -38,7 +43,8 @@ Use status to:
 - Standardize workflows across teams and projects.
 
 Status is available for tasks and issues.
-For information on plans to add status to epics and other work item types, see [epic 5099](https://gitlab.com/groups/gitlab-org/-/epics/5099).
+Status is also available for epics, but only when the `work_item_status_for_epics` feature flag is enabled.
+For information on plans to add status to other work item types, see [epic 5099](https://gitlab.com/groups/gitlab-org/-/epics/5099).
 
 ## Default statuses
 
@@ -83,6 +89,11 @@ Each lifecycle defines default transition statuses:
 - **Default open status**: Applied when creating and reopening work items.
 - **Default closed status**: Applied when closing work items.
 - **Default duplicated status**: Applied when marking work items as duplicates, moved, or promoted.
+
+When the `work_item_status_for_epics` feature flag is enabled for a top-level group that uses custom lifecycles, epics use the same lifecycle as issues.
+The epic type appears under the issue lifecycle in **Settings** > **Work items** > **Statuses**.
+To give epics a different lifecycle, [change the lifecycle for the epic type](#change-lifecycle-for-a-work-item-type).
+If you change the lifecycle for issues, epics keep their current lifecycle.
 
 ### Create a lifecycle
 

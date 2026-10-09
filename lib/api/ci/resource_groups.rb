@@ -18,7 +18,7 @@ module API
       params do
         requires :id,
           types: [String, Integer],
-          desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+          desc: 'ID or URL-encoded path of the project.'
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all resource groups' do
@@ -51,7 +51,8 @@ module API
           tags ci_resource_groups_tags
         end
         params do
-          requires :key, type: String, desc: 'The key of the resource group'
+          requires :key, type: String, desc: 'URL-encoded key of the resource group, for example `resource%5Fa` ' \
+                                         'instead of `resource_a`.'
         end
         route_setting :authorization, permissions: :read_resource_group, boundary_type: :project
         get ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
@@ -70,7 +71,8 @@ module API
           tags ci_resource_groups_tags
         end
         params do
-          requires :key, type: String, desc: 'The key of the resource group'
+          requires :key, type: String, desc: 'URL-encoded key of the resource group, for example `resource%5Fa` ' \
+                                         'instead of `resource_a`.'
         end
         route_setting :authorization, permissions: [:read_resource_group, :read_job], boundary_type: :project
         get ':id/resource_groups/:key/current_job', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
@@ -94,7 +96,8 @@ module API
           tags ci_resource_groups_tags
         end
         params do
-          requires :key, type: String, desc: 'The key of the resource group'
+          requires :key, type: String, desc: 'URL-encoded key of the resource group, for example `resource%5Fa` ' \
+                                         'instead of `resource_a`.'
 
           use :pagination
         end
@@ -122,11 +125,13 @@ module API
           tags ci_resource_groups_tags
         end
         params do
-          requires :key, type: String, desc: 'The key of the resource group'
+          requires :key, type: String, desc: 'URL-encoded key of the resource group, for example `resource%5Fa` ' \
+                                         'instead of `resource_a`.'
 
           optional :process_mode,
             type: String,
-            desc: 'The process mode of the resource group',
+            desc: 'Process mode of the resource group. Read [process ' \
+              'modes](https://docs.gitlab.com/ci/resource_groups/#process-modes) for more information.',
             values: ::Ci::ResourceGroup.process_modes.keys
         end
         route_setting :authorization, permissions: :update_resource_group, boundary_type: :project

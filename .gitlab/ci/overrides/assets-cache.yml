@@ -1,0 +1,3 @@
+# MR pipelines share one unprotected assets cache, so master never restores assets built by an MR
+.assets-cache:
+  unprotect: true

@@ -50,7 +50,6 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action do
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:duo_convert_ci_use_developer_flow, @project)
   end
 
   def new
@@ -114,6 +113,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = permitted_params[:content]
+    return head :bad_request unless @content.is_a?(String)
 
     if @content.bytesize >= MAX_PREVIEW_CONTENT
       return render json: { errors: ["Preview content too large"] }, status: :payload_too_large

@@ -52,9 +52,7 @@ module Ci
     end
 
     def accept_build_state!
-      build.trace_chunks.live.find_each do |chunk|
-        chunk.schedule_to_persist!
-      end
+      build.trace_chunks.live.find_each(&:schedule_to_persist!) # rubocop:disable CodeReuse/ActiveRecord -- false positive, the block-pass is parsed as an argument
 
       metrics.increment_trace_operation(operation: :accepted)
 

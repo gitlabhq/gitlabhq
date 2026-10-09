@@ -4,7 +4,6 @@ Gitlab/Authz/DisallowAbilityAllowed:
     - 'app/policies/ci/runner_project_policy.rb'
     - 'app/policies/concerns/policy_actor.rb'
     - 'app/policies/issue_policy.rb'
-    - 'app/policies/todo_policy.rb'
     - 'ee/app/policies/ai/setting_policy.rb'
     - 'ee/app/policies/compliance_management/compliance_framework/project_control_compliance_status_policy.rb'
     - 'ee/app/policies/compliance_management/framework_policy.rb'

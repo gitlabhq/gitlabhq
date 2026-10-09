@@ -1,9 +1,0 @@
-export default {
-  files: [
-    'app/assets/javascripts/sidebar/components/reviewers/uncollapsed_reviewer_list.vue',
-    'ee/app/assets/javascripts/security_orchestration/components/policy_editor/scope/scope_section.vue',
-  ],
-  rules: {
-    'vue/no-required-prop-with-default': 'off',
-  },
-};

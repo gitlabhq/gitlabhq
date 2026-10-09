@@ -10,7 +10,7 @@ title: GitLab MCP server tools
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
+- Status: Generally available
 
 {{< /details >}}
 
@@ -25,6 +25,7 @@ You can use these tools to interact directly with GitLab and perform common GitL
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200105) in GitLab 18.3.
+- Changed from [beta](../../policy/development_stages_support.md#beta) to [generally available](../../policy/development_stages_support.md#generally-available) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -360,7 +361,6 @@ Provide exactly one of `url` or `project_id`. Provide at most one of `flow`, `fl
 The flow must be enabled for the project, or for an ancestor group of the project. If the flow is
 not enabled, the tool returns an error.
 
-A flow in beta runs only when beta and experimental features are turned on. For more information, see [turn on beta and experimental features](../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features).
 A flow behind a feature flag runs only when that flag is enabled. If a flow doesn't meet these
 conditions, the tool returns an error.
 

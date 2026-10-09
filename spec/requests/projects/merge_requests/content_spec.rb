@@ -45,18 +45,5 @@ RSpec.describe 'merge request content spec', feature_category: :code_review_work
       expect(response).to have_gitlab_http_status(:ok)
       expect(MergeRequest.find(merge_request.id)).to be_unchecked
     end
-
-    context 'when the enqueue_widget_mergeability_check feature flag is disabled' do
-      before do
-        stub_feature_flags(enqueue_widget_mergeability_check: false)
-      end
-
-      it 'checks mergeability during the request' do
-        get_widget
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(MergeRequest.find(merge_request.id)).to be_can_be_merged
-      end
-    end
   end
 end

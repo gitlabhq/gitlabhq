@@ -578,7 +578,7 @@ module API
 
       desc 'List all context commits for a merge request' do
         detail 'Lists all context commits for a specified merge request.'
-        success Entities::Commit
+        success Entities::CommitWithLink
         is_array true
         failure [
           { code: 404, message: 'Not found' }

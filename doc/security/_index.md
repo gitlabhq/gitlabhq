@@ -77,6 +77,7 @@ GitLab Self-Managed customers and administrators are responsible for the securit
 ## Monitoring and response
 
 - [Security incidents](security_incidents.md).
+- [Security telemetry](security_telemetry.md).
 - [Security incident detection](detecting_security_incidents.md).
 - [Security incident response](responding_to_security_incidents.md).
 

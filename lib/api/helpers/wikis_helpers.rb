@@ -7,6 +7,10 @@ module API
         [:projects]
       end
 
+      def self.wiki_resource_tier(_kind)
+        nil
+      end
+
       def find_container(kind)
         return user_project if kind == :projects
 

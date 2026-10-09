@@ -145,13 +145,4 @@ RSpec.describe Authn::Groups::UpdateTwoFactorRequirementService, feature_categor
       end
     end
   end
-
-  describe '#include_minimal_access?' do
-    it 'is false' do
-      method = described_class.instance_method(:include_minimal_access?)
-      method = method.super_method until method.owner == described_class
-
-      expect(method.bind_call(described_class.new(group: group))).to be(false)
-    end
-  end
 end

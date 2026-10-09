@@ -27,6 +27,8 @@ The GitLab Duo CLI supports these options:
   `duo run --help`.
 - `-v`, `--version`: Display version information.
 - `--model <model>`: Select the AI model to use for the session.
+- `--startup-cards [value]`: Show the [welcome and onboarding cards](use.md#startup-cards) when a
+  session starts.
 
 For a complete list of options, see the GitLab Duo CLI complete reference.
 
@@ -72,6 +74,8 @@ You can configure the GitLab Duo CLI using environment variables:
 - `GITLAB_BASE_URL` or `GITLAB_URL`: GitLab instance URL.
 - `GITLAB_DUO_MODEL`: AI model to use for the session.
 - `GITLAB_OAUTH_TOKEN` or `GITLAB_TOKEN`: Authentication token.
+- `STARTUP_CARDS`: Show the [welcome and onboarding cards](use.md#startup-cards) when a session
+  starts.
 
 When the GitLab Duo CLI runs a command on your behalf, it sets the `AI_AGENT` environment variable
 in that process. Scripts and tools can read `AI_AGENT` to detect that they are running in an

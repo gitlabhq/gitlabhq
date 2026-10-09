@@ -50,61 +50,79 @@ module IntegrationsHelper
     "#{event}_events"
   end
 
-  def scoped_integrations_path(project: nil, group: nil)
+  def scoped_integrations_path(project: nil, group: nil, organization: nil)
     if project.present?
       project_settings_integrations_path(project)
     elsif group.present?
       group_settings_integrations_path(group)
+    elsif organization.present?
+      # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- We only want to generate org-scoped path here
+      organization_admin_settings_integrations_path(organization)
+      # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
     else
       integrations_admin_application_settings_path
     end
   end
 
-  def scoped_integration_path(integration, project: nil, group: nil)
+  def scoped_integration_path(integration, project: nil, group: nil, organization: nil)
     if project.present?
       project_settings_integration_path(project, integration)
     elsif group.present?
       group_settings_integration_path(group, integration)
+    elsif organization.present?
+      # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- We only want to generate org-scoped path here
+      organization_admin_settings_integration_path(organization, integration)
+      # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
     else
       admin_application_settings_integration_path(integration)
     end
   end
 
-  def scoped_edit_integration_path(integration, project: nil, group: nil)
+  def scoped_edit_integration_path(integration, project: nil, group: nil, organization: nil)
     if project.present?
       edit_project_settings_integration_path(project, integration)
     elsif group.present?
       edit_group_settings_integration_path(group, integration)
+    elsif organization.present?
+      edit_organization_admin_settings_integration_path(organization, integration)
     else
       edit_admin_application_settings_integration_path(integration)
     end
   end
 
-  def scoped_overrides_integration_path(integration, options = {})
-    overrides_admin_application_settings_integration_path(integration, options)
+  def scoped_overrides_integration_path(integration, organization: nil, **options)
+    if organization.present?
+      overrides_organization_admin_settings_integration_path(organization, integration, **options)
+    else
+      overrides_admin_application_settings_integration_path(integration, **options)
+    end
   end
 
-  def scoped_test_integration_path(integration, project: nil, group: nil)
+  def scoped_test_integration_path(integration, project: nil, group: nil, organization: nil)
     if project.present?
       test_project_settings_integration_path(project, integration)
     elsif group.present?
       test_group_settings_integration_path(group, integration)
+    elsif organization.present?
+      test_organization_admin_settings_integration_path(organization, integration)
     else
       test_admin_application_settings_integration_path(integration)
     end
   end
 
-  def scoped_reset_integration_path(integration, group: nil)
+  def scoped_reset_integration_path(integration, group: nil, organization: nil)
     return '' unless integration.persisted?
 
     if group.present?
       reset_group_settings_integration_path(group, integration)
+    elsif organization.present?
+      reset_organization_admin_settings_integration_path(organization, integration)
     else
       reset_admin_application_settings_integration_path(integration)
     end
   end
 
-  def integration_form_data(integration, project: nil, group: nil)
+  def integration_form_data(integration, project: nil, group: nil, organization: nil)
     form_data = {
       id: integration.id,
       project_id: integration.project_id,
@@ -125,11 +143,11 @@ module IntegrationsHelper
       inherit_from_id: integration.inherit_from_id,
       integration_level: integration_level(integration),
       editable: integration.editable?.to_s,
-      cancel_path: scoped_integrations_path(project: project, group: group),
+      cancel_path: scoped_integrations_path(project: project, group: group, organization: organization),
       can_test: integration.testable?.to_s,
-      test_path: scoped_test_integration_path(integration, project: project, group: group),
-      reset_path: scoped_reset_integration_path(integration, group: group),
-      form_path: scoped_integration_path(integration, project: project, group: group),
+      test_path: scoped_test_integration_path(integration, project: project, group: group, organization: organization),
+      reset_path: scoped_reset_integration_path(integration, group: group, organization: organization),
+      form_path: scoped_integration_path(integration, project: project, group: group, organization: organization),
       redirect_to: request.referer
     }
 
@@ -139,16 +157,20 @@ module IntegrationsHelper
     form_data
   end
 
-  def integration_overrides_data(integration, project: nil, group: nil)
+  def integration_overrides_data(integration, project: nil, group: nil, organization: nil)
     {
-      edit_path: scoped_edit_integration_path(integration, project: project, group: group),
-      overrides_path: scoped_overrides_integration_path(integration, format: :json)
+      edit_path: scoped_edit_integration_path(
+        integration, project: project, group: group, organization: organization
+      ),
+      overrides_path: scoped_overrides_integration_path(integration, organization: organization, format: :json)
     }
   end
 
-  def integration_list_data(integrations, group: nil, project: nil)
+  def integration_list_data(integrations, group: nil, project: nil, organization: nil)
     {
-      integrations: integrations.map { |i| serialize_integration(i, group: group, project: project) }.to_json
+      integrations: integrations.map do |i|
+        serialize_integration(i, group: group, project: project, organization: organization)
+      end.to_json
     }
   end
 
@@ -341,7 +363,7 @@ module IntegrationsHelper
     end
   end
 
-  def serialize_integration(integration, group: nil, project: nil)
+  def serialize_integration(integration, group: nil, project: nil, organization: nil)
     {
       id: integration.id,
       active: integration.activated?,
@@ -349,7 +371,9 @@ module IntegrationsHelper
       title: integration.title,
       description: integration.description,
       updated_at: integration.updated_at,
-      edit_path: scoped_edit_integration_path(integration, group: group, project: project),
+      edit_path: scoped_edit_integration_path(
+        integration, group: group, project: project, organization: organization
+      ),
       name: integration.to_param,
       icon: integration.try(:avatar_url)
     }

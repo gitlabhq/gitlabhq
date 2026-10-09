@@ -40,7 +40,6 @@ Style/RedundantRegexpEscape:
     - 'ee/lib/gitlab/ci/config/entry/gitlab_secrets_manager/secret.rb'
     - 'ee/lib/gitlab/code_owners/section_parser.rb'
     - 'ee/lib/gitlab/duo/chat/parsers/final_answer_parser.rb'
-    - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/gitlab/return_to_location.rb'
     - 'ee/lib/sbom/package_url/normalizer.rb'
     - 'ee/lib/search/elastic/queries.rb'

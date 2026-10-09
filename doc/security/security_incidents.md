@@ -20,6 +20,12 @@ Detection and response work together:
 1. Detect: Collect audit events and logs, centralize them in a security information and event management (SIEM) system, and deploy detection rules that alert you to suspicious activity.
 1. Respond: When a detection fires and you confirm an incident, contain the threat, determine its scope, and remediate the affected accounts, credentials, and settings.
 
+## Collect security telemetry
+
+Understand the kinds of security telemetry GitLab produces, what each one tells you, and what you can collect on your offering and subscription tier: audit events you can view, audit events you can stream to a SIEM, and application logs.
+
+For more information, see [security telemetry](security_telemetry.md).
+
 ## Detect security incidents
 
 Build detection coverage for security-relevant activity in GitLab. Learn which data sources to collect, how to stream audit events to a SIEM, how to use the open-source TLDR detection framework, and which signals to monitor for common incident scenarios.

@@ -48,7 +48,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/gpg_spec.rb'
     - 'spec/lib/gitlab/graphql/negatable_arguments_spec.rb'
     - 'spec/lib/gitlab/http_io_spec.rb'
-    - 'spec/lib/gitlab/memory/reports_daemon_spec.rb'
     - 'spec/lib/gitlab/metrics/background_transaction_spec.rb'
     - 'spec/lib/gitlab/metrics/web_transaction_spec.rb'
     - 'spec/lib/gitlab/profiler_spec.rb'

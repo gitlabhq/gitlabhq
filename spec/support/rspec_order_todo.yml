@@ -2232,7 +2232,6 @@
 - './spec/controllers/admin/cohorts_controller_spec.rb'
 - './spec/controllers/admin/dashboard_controller_spec.rb'
 - './spec/controllers/admin/dev_ops_report_controller_spec.rb'
-- './spec/controllers/admin/gitaly_servers_controller_spec.rb'
 - './spec/controllers/admin/groups_controller_spec.rb'
 - './spec/controllers/admin/health_check_controller_spec.rb'
 - './spec/controllers/admin/hooks_controller_spec.rb'

@@ -18,17 +18,8 @@ module Authn
       private
 
       def members
-        ::GroupMember.active_for_self_and_hierarchy(group, minimal_access: include_minimal_access?)
-      end
-
-      # Temporary EE extension point: a follow-up MR removes this hook so the
-      # Minimal Access decision lives only in the per-user recalculation.
-      # https://gitlab.com/gitlab-org/gitlab/-/work_items/611322
-      def include_minimal_access?
-        false
+        ::GroupMember.active_for_self_and_hierarchy(group, minimal_access: true)
       end
     end
   end
 end
-
-Authn::Groups::UpdateTwoFactorRequirementService.prepend_mod
