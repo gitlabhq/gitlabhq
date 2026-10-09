@@ -1037,6 +1037,17 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       it { is_expected.to eq(expected) }
     end
+
+    context 'when the user has forked the project in their personal namespace' do
+      let_it_be(:project) { create(:project, :small_repo, :public, namespace: user.namespace) }
+      let!(:forked_project) { fork_project(project, user, namespace: user.namespace) }
+
+      it 'returns the path to the existing fork' do
+        expect(helper.fork_button_data_attributes(project)).to include(
+          user_fork_url: namespace_project_path(user, forked_project)
+        )
+      end
+    end
   end
 
   describe '#star_count_data_attributes' do

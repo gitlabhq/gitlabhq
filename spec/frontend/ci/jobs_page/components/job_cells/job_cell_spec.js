@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import JobCell from '~/ci/jobs_page/components/job_cells/job_cell.vue';
-import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
+import CommitPopover from '~/vue_shared/components/commit_popover.vue';
 import { mockJobsNodes, mockJobsNodesAsGuest } from 'jest/ci/jobs_mock_data';
 
 describe('Job Cell', () => {

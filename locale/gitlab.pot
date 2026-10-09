@@ -14305,6 +14305,9 @@ msgstr ""
 msgid "Assessment has completed."
 msgstr ""
 
+msgid "Assessment result received, waiting for its score."
+msgstr ""
+
 msgid "Assets"
 msgstr ""
 
@@ -18538,6 +18541,9 @@ msgid "Cannot have multiple unresolved alerts"
 msgstr ""
 
 msgid "Cannot import because issues are not available in this project."
+msgstr ""
+
+msgid "Cannot import because updates from GitHub are on for this project."
 msgstr ""
 
 msgid "Cannot link more than %{limit} merge requests to a vulnerability"
@@ -38499,6 +38505,9 @@ msgstr ""
 msgid "Fetch cloud observability alerts"
 msgstr ""
 
+msgid "Fetch recommended reviewers"
+msgstr ""
+
 msgid "Fetching incoming email"
 msgstr ""
 
@@ -41292,6 +41301,12 @@ msgid "GithubIntegration|Static status check names (optional)"
 msgstr ""
 
 msgid "GithubIntegration|This requires mirroring your GitHub repository to this project. %{docs_link}"
+msgstr ""
+
+msgid "GithubUpdatesMirror|Stop GitHub updates before adding a repository mirror."
+msgstr ""
+
+msgid "GithubUpdatesReadOnly|Git push is not allowed because updates from GitHub are on for this project. Push to GitHub, or ask a project Maintainer or Owner to stop updates in project repository settings."
 msgstr ""
 
 msgid "GitlabSubscriptions|Cannot enable the Code Review flow for this namespace"
@@ -54433,6 +54448,22 @@ msgstr ""
 msgid "MrList|Review requested from %{name}"
 msgstr ""
 
+msgid "MrReports|%{count} new change"
+msgid_plural "MrReports|%{count} new changes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "MrReports|%{count} report"
+msgid_plural "MrReports|%{count} reports"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "MrReports|%{strong_start}Merge reports (%{reportCount})%{strong_end}"
+msgstr ""
+
+msgid "MrReports|%{strong_start}Merge reports (%{reportCount}):%{strong_end} %{changes} across %{reports}"
+msgstr ""
+
 msgid "MrReports|Accessibility"
 msgstr ""
 
@@ -54445,10 +54476,19 @@ msgstr ""
 msgid "MrReports|Code quality"
 msgstr ""
 
+msgid "MrReports|Collapse merge reports"
+msgstr ""
+
+msgid "MrReports|Expand merge reports"
+msgstr ""
+
 msgid "MrReports|License compliance"
 msgstr ""
 
 msgid "MrReports|Load performance"
+msgstr ""
+
+msgid "MrReports|Loading merge reports"
 msgstr ""
 
 msgid "MrReports|Metrics"
@@ -54488,6 +54528,9 @@ msgid "MrReports|View CI/CD documentation"
 msgstr ""
 
 msgid "MrReports|View report"
+msgstr ""
+
+msgid "MrReports|View reports"
 msgstr ""
 
 msgid "MrReports|View reports documentation"
@@ -83515,6 +83558,9 @@ msgid "SuggestedColors|Rose red"
 msgstr ""
 
 msgid "SuggestedColors|Titanium yellow"
+msgstr ""
+
+msgid "SuggestedReviewers|Fetch"
 msgstr ""
 
 msgid "SuggestedReviewers|Get suggestions for reviewers based on GitLab's machine learning tool."

@@ -9,7 +9,6 @@ title: Maintain OpenBao
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -33,7 +32,7 @@ generate a root token, see [recovery key management](recovery_key.md).
 
 GitLab authenticates to OpenBao with a JSON Web Token (JWT). OpenBao accepts the JWT only if its
 `iss` (issuer) and `aud` (audience) claims match the values that OpenBao stored. OpenBao stores
-these values when OpenBao is initialized, and when you turn on the secrets manager for each project
+these values when OpenBao is initialized, and when the GitLab Secrets Manager is provisioned for each project
 and group. OpenBao does not update the stored values when you change your configuration later.
 
 Authentication fails in these cases:
@@ -227,7 +226,8 @@ To reset OpenBao data:
 
 1. Create a new [recovery key](recovery_key.md).
 
-After the reset, turn on the secrets manager again for each project and group that needs it.
+After the reset, the GitLab Secrets Manager is provisioned again for each project and group the next time someone
+[creates a secret](../../ci/secrets/secrets_manager/_index.md#define-a-secret) in it.
 
 ## Enable secrets access from external requests
 
@@ -242,37 +242,29 @@ Secrets managers provisioned in GitLab 19.2 and later support
 If a secrets manager was provisioned for a project or group in GitLab 19.1 or earlier, this access
 is not supported.
 
-To enable this access for a secrets manager provisioned before GitLab 19.2, you can either:
+To enable this access for a secrets manager provisioned before GitLab 19.2,
+an administrator must run the `backfill_api_auth` Rake task.
+The secrets manager remains active while the Rake task runs, and existing secrets are preserved.
 
-- Disable and [re-enable the secrets manager](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager)
-  for the group or project.
+Prerequisites:
 
-  > [!warning]
-  > If you disable a group or project secrets manager, all the group or project's secrets are
-  > permanently deleted. These secrets cannot be recovered.
+- Administrator access.
 
-- Have an administrator run the `backfill_api_auth` Rake task. The secrets manager remains active
-  while the Rake task runs, and existing secrets are preserved.
+To backfill every group and project secrets manager on the instance:
 
-  Prerequisites:
+```shell
+# Linux package (Omnibus) and Helm chart (Kubernetes)
+sudo gitlab-rake gitlab:secrets_management:backfill_api_auth
 
-  - Administrator access.
+# Self-compiled (source)
+bundle exec rake gitlab:secrets_management:backfill_api_auth RAILS_ENV=production
+```
 
-  To backfill every group and project secrets manager on the instance:
+To scope the backfill to a single top-level group or user namespace instead, pass its ID:
 
-  ```shell
-  # Linux package (Omnibus) and Helm chart (Kubernetes)
-  sudo gitlab-rake gitlab:secrets_management:backfill_api_auth
+```shell
+sudo gitlab-rake "gitlab:secrets_management:backfill_api_auth[<root_namespace_id>]"
+```
 
-  # Self-compiled (source)
-  bundle exec rake gitlab:secrets_management:backfill_api_auth RAILS_ENV=production
-  ```
-
-  To scope the backfill to a single top-level group or user namespace instead, pass its ID:
-
-  ```shell
-  sudo gitlab-rake "gitlab:secrets_management:backfill_api_auth[<root_namespace_id>]"
-  ```
-
-  The task is idempotent and safe to run more than once. If it reports failures, fix the underlying
-  cause (for example, an unreachable OpenBao server) and run the task again.
+The task is idempotent and safe to run more than once. If it reports failures, fix the underlying
+cause (for example, an unreachable OpenBao server) and run the task again.

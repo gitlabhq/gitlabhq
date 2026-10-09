@@ -1,5 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import BlameSkeletonLoader from '~/vue_shared/components/source_viewer/components/blame_skeleton_loader.vue';
+import BlameSkeletonLoader from '~/blob/components/source_viewer/components/blame_skeleton_loader.vue';
 
 describe('BlameSkeletonLoader component', () => {
   let wrapper;

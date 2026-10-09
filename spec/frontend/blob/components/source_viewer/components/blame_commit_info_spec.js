@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
-import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
+import BlameCommitInfo from '~/blob/components/source_viewer/components/blame_commit_info.vue';
+import CommitPopover from '~/vue_shared/components/commit_popover.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
@@ -28,7 +28,7 @@ describe('BlameCommitInfo component', () => {
   // component in FOSS.
   const AgentSessionLinkStub = {
     name: 'AgentSessionLink',
-    props: ['href'],
+    props: ['href', 'trackingProperty'],
     template: '<a :href="href"><slot></slot></a>',
   };
   const AgentSessionPopoverStub = {
@@ -138,6 +138,10 @@ describe('BlameCommitInfo component', () => {
       it('links to the session from the commit popover', () => {
         expect(findAgentSessionLink().props('href')).toBe(sessionUrl);
         expect(findAgentSessionLink().text()).toBe('View session');
+      });
+
+      it('tracks clicks on the commit popover link', () => {
+        expect(findAgentSessionLink().props('trackingProperty')).toBe('commit_popover');
       });
     });
 

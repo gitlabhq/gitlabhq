@@ -3,9 +3,9 @@ import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
-import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
-import BlameSkeletonLoader from '~/vue_shared/components/source_viewer/components/blame_skeleton_loader.vue';
+import Chunk from '~/blob/components/source_viewer/components/chunk.vue';
+import BlameCommitInfo from '~/blob/components/source_viewer/components/blame_commit_info.vue';
+import BlameSkeletonLoader from '~/blob/components/source_viewer/components/blame_skeleton_loader.vue';
 import { addInteractionClass } from '~/code_navigation/utils';
 import { CHUNK_1, CHUNK_2, CHUNK_BLAME_GROUPS_MOCK } from '../mock_data';
 

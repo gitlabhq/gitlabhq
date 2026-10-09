@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Source viewer layout development guidelines (repository blob viewer)
 ---
 
-The source viewer at `app/assets/javascripts/vue_shared/components/source_viewer/` renders
+The source viewer at `app/assets/javascripts/blob/components/source_viewer/` renders
 repository files in chunks of 70 lines using CSS Grid to keep the blame gutter, line numbers,
 and code aligned without JavaScript measurement. For chunking, staged rendering, and syntax
 highlighting, see [Syntax highlighting development guidelines](blob_syntax_highlighting.md).

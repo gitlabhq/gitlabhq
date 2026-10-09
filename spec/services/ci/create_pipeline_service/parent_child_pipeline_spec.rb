@@ -465,11 +465,6 @@ RSpec.describe Ci::CreatePipelineService, '#execute',
       )
       expect(Ci::BuildDependencies.new(build).all).to be_empty
       expect(build).to have_valid_build_dependencies
-
-      stub_feature_flags(ci_optional_needs_for_cross_pipeline: false)
-
-      expect(Ci::BuildDependencies.new(build).all).to be_empty
-      expect(build).not_to have_valid_build_dependencies
     end
   end
 

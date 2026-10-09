@@ -12,8 +12,8 @@ import SimpleViewer from '~/blob/components/blob_viewers/simple_viewer.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as urlUtility from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
-import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
-import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
+import blameDataQuery from '~/blob/components/source_viewer/queries/blame_data.query.graphql';
+import Blame from '~/blob/components/source_viewer/components/blame_info.vue';
 
 import { BLAME_DATA_QUERY_RESPONSE_MOCK } from './mock_data';
 

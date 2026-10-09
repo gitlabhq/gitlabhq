@@ -2631,7 +2631,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#find_fork_of?' do
+  describe '#find_fork_of' do
     let_it_be(:namespace) { create(:namespace, :with_namespace_settings) }
     let(:project) { create(:project, :public) }
     let!(:forked_project) { fork_project(project, namespace.owner, namespace: namespace) }

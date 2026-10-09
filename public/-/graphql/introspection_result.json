@@ -261684,6 +261684,12 @@
               "description": "Assessment could not be completed.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SCORING",
+              "description": "Assessment result received, waiting for its score.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

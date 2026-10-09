@@ -172,6 +172,47 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
 
+    describe 'client identity' do
+      let(:logger) { instance_double(Gitlab::Mcp::Logger, conditional_info: nil) }
+      let(:user_agent) { 'Cursor/1.0.0 (darwin arm64)' }
+
+      subject(:tool_call) do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: params.to_json,
+          headers: { 'Content-Type' => 'application/json', 'User-Agent' => user_agent }
+      end
+
+      before do
+        allow(Gitlab::Mcp::Logger).to receive(:build).and_return(logger)
+      end
+
+      it 'logs the client from the User-Agent' do
+        tool_call
+
+        expect(logger).to have_received(:conditional_info).with(
+          user, hash_including(event_name: 'tool_call', mcp_client_name: 'Cursor', mcp_client_version: '1.0.0')
+        )
+      end
+
+      context 'when the request carries clientInfo in _meta (stateless revision)' do
+        let(:tool_params) do
+          {
+            name: 'get_issue',
+            arguments: { id: project.full_path, issue_iid: issue.iid },
+            _meta: { 'io.modelcontextprotocol/clientInfo' => { name: 'claude-code', version: '2.1.280' } }
+          }
+        end
+
+        it 'prefers the _meta clientInfo over the User-Agent' do
+          tool_call
+
+          expect(logger).to have_received(:conditional_info).with(
+            user, hash_including(event_name: 'tool_call', mcp_client_name: 'claude-code', mcp_client_version: '2.1.280')
+          )
+        end
+      end
+    end
+
     context 'with unknown tool name' do
       let(:params) do
         {

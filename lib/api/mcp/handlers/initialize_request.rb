@@ -43,7 +43,7 @@ module API
           track_internal_event(
             'initialize_mcp_connection',
             user: current_user,
-            additional_properties: { protocol_version: negotiated_version }
+            additional_properties: { protocol_version: negotiated_version, **client_fields, **declared_client_fields }
           )
           log_initialize(client_version, negotiated_version)
 
@@ -68,8 +68,22 @@ module API
             event_name: 'initialize',
             ai_component: 'mcp_server',
             requested_protocol_version: client_version,
-            protocol_version: negotiated_version
+            protocol_version: negotiated_version,
+            **client_fields,
+            **declared_client_fields
           )
+        end
+
+        def client_fields
+          client_info.to_h
+        end
+
+        # Kept apart from `client_fields`, which must match what later `tools/call` requests record.
+        def declared_client_fields
+          declared = ::Gitlab::Mcp::ClientInfo.declared(params)
+          return {} unless declared
+
+          { declared_client_name: declared.name, declared_client_version: declared.version }.compact
         end
 
         # A stateless revision has no `initialize` handshake, so a client that reaches this

@@ -73428,6 +73428,7 @@ Status of a merge request risk assessment.
 | <a id="mergerequestriskassessmentstatus-failed"></a>`FAILED` | Assessment could not be completed. |
 | <a id="mergerequestriskassessmentstatus-pending"></a>`PENDING` | Waiting to be assessed. |
 | <a id="mergerequestriskassessmentstatus-queued"></a>`QUEUED` | Queued for (re)assessment. |
+| <a id="mergerequestriskassessmentstatus-scoring"></a>`SCORING` | Assessment result received, waiting for its score. |
 
 ### `MergeRequestRiskConfidenceTier`
 

@@ -411,16 +411,6 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
         it { is_expected.not_to be_valid }
 
-        context 'when optional cross-pipeline needs are disabled' do
-          before do
-            stub_feature_flags(ci_optional_needs_for_cross_pipeline: false)
-          end
-
-          it 'ignores jobs from the current pipeline' do
-            expect(cross_pipeline_deps).to be_empty
-          end
-        end
-
         context 'when the need is optional' do
           let(:dependencies) do
             [{ pipeline: pipeline.id.to_s, job: dependency.name, artifacts: true, optional: true }]

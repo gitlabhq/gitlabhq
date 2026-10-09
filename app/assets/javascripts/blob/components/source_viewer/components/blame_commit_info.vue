@@ -8,8 +8,8 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import CommitPopover from '~/vue_shared/components/commit_popover.vue';
 import { getAgentSessionUrls } from '../utils';
-import CommitPopover from './commit_popover.vue';
 
 export default {
   name: 'BlameCommitInfo',
@@ -138,7 +138,11 @@ export default {
           data-testid="commit-agent-session"
         >
           <gl-icon name="session-ai" class="gl-text-subtle" />
-          <agent-session-link :href="agentSessionUrls[0]" data-testid="commit-agent-session-link">
+          <agent-session-link
+            :href="agentSessionUrls[0]"
+            tracking-property="commit_popover"
+            data-testid="commit-agent-session-link"
+          >
             {{ s__('Blame|View session') }}
           </agent-session-link>
         </div>

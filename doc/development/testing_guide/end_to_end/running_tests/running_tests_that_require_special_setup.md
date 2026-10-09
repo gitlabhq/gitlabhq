@@ -146,7 +146,7 @@ To execute tests that use a runner without errors, while creating the GitLab Doc
 
 Examples of tests which require a runner:
 
-- `qa/qa/specs/features/ee/browser_ui/13_secure/create_merge_request_with_secure_spec.rb`
+- `qa/qa/specs/features/ee/browser_ui/18_security_risk_management/merge_request_security_widget_displays_findings_spec.rb`
 - `qa/qa/specs/features/browser_ui/4_verify/runner/register_runner_spec.rb`
 
 Example:

@@ -7,7 +7,6 @@ export default {
   files: [
     'app/assets/javascripts/repository/components/header_area.vue',
     'app/assets/javascripts/repository/components/header_area/breadcrumbs.vue',
-    'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/add_on_eligible_user_list.vue',
   ],
   rules: {
     'vue/no-unused-properties': [

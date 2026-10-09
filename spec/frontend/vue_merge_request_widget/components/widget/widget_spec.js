@@ -692,4 +692,60 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(fetchCollapsedData).not.toHaveBeenCalled();
     });
   });
+
+  describe('when rendered as a row (level 2)', () => {
+    const createRow = (propsData = {}) =>
+      createComponent({
+        propsData: {
+          level: 2,
+          summary: { title: 'Code Quality scans detected 13 findings' },
+          statusIconName: 'warning',
+          actionButtons: [{ text: 'View report', href: '/reports/code-quality' }],
+          ...propsData,
+        },
+      });
+
+    it('renders a content row instead of a section, with one status icon', async () => {
+      await createRow();
+
+      expect(wrapper.findComponent(WidgetContentRow).exists()).toBe(true);
+      expect(wrapper.findByTestId('widget-extension').exists()).toBe(false);
+      expect(wrapper.findByTestId('widget-extension-row-summary').text()).toBe(
+        'Code Quality scans detected 13 findings',
+      );
+      expect(wrapper.findAllComponents(StatusIcon)).toHaveLength(1);
+    });
+
+    it('has no toggle and no expanded section even when collapsible', async () => {
+      await createRow({ isCollapsible: true });
+
+      expect(findToggleButton().exists()).toBe(false);
+      expect(findExpandedSection().exists()).toBe(false);
+    });
+
+    it('shows the error text when the fetch failed', async () => {
+      await createRow({ hasError: true, errorText: 'Failed to load the report' });
+
+      expect(wrapper.findByTestId('widget-extension-row-summary').text()).toBe(
+        'Failed to load the report',
+      );
+    });
+
+    it('shows the loading text while the collapsed data is still loading', async () => {
+      createRow({ fetchCollapsedData: () => new Promise(() => {}) });
+      await nextTick();
+
+      expect(wrapper.findByTestId('widget-extension-row-summary').text()).toBe('Loading widget');
+    });
+
+    it('still fetches its collapsed data', async () => {
+      const fetchCollapsedData = jest
+        .fn()
+        .mockResolvedValue({ headers: {}, status: HTTP_STATUS_OK });
+
+      await createRow({ fetchCollapsedData });
+
+      expect(fetchCollapsedData).toHaveBeenCalled();
+    });
+  });
 });

@@ -23,6 +23,11 @@ export default {
       type: Object,
       required: true,
     },
+    level: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
   },
   emits: ['loaded'],
   data() {
@@ -74,12 +79,13 @@ export default {
         .get(this.terraformReportsPath)
         .then((res) => {
           this.collapsedData = res.data;
-          this.$emit('loaded', terraformInvalidCount(res.data));
+          this.$emit('loaded', terraformInvalidCount(res.data), this.$options.WARNING_ICON);
 
           return res;
         })
         .catch(() => {
           this.collapsedData = { api_error: { tf_report_error: 'api_error' } };
+          this.$emit('loaded', 0, EXTENSION_ICONS.failed);
 
           return { data: this.collapsedData };
         });
@@ -92,6 +98,7 @@ export default {
 
 <template>
   <mr-widget
+    :level="level"
     :action-buttons="actionButtons"
     :error-text="$options.i18n.error"
     :status-icon-name="$options.WARNING_ICON"

@@ -3166,6 +3166,7 @@ GitLab sends the following events:
 | Event            | Trigger |
 |------------------|---------|
 | `flow.started`   | The agent begins work on the flow. |
+| `flow.progress`  | The agent updates its to-do list or writes a message while the flow runs. For more information, see [progress events](#progress-events). |
 | `flow.completed` | The flow finishes and produces a final message. |
 | `flow.failed`    | The flow fails, or finishes without a final message. |
 
@@ -3218,16 +3219,20 @@ Payload attributes:
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
+| `activity`         | string  | The agent's most recent message, in Markdown. Truncated to 1,500 characters. Present only for `flow.progress`. Omitted until the agent writes a message. |
 | `client_reference` | string  | Value of the `client_reference` attribute from the request that triggered the flow. Omitted when the request did not set it. |
 | `error`            | object  | Reason the flow failed. Present only for `flow.failed`. Contains only `reason`. |
 | `error.reason`     | string  | Machine-readable failure reason. `flow_failed` when the flow itself failed, or `no_response` when the flow finished without a final message. A `no_response` event has a `workflow.status` of `finished`. |
-| `event`            | string  | Event name. One of `flow.started`, `flow.completed`, or `flow.failed`. |
-| `event_id`         | string  | ID of the event. Repeated when GitLab retries a delivery. Use it to ignore an event you have already processed. |
+| `event`            | string  | Event name. One of `flow.started`, `flow.progress`, `flow.completed`, or `flow.failed`. |
+| `event_id`         | string  | ID of the event. Repeated when GitLab retries a delivery. Use it to ignore an event you have already processed. GitLab does not retry `flow.progress`, so every `flow.progress` event has a new ID. |
 | `object_kind`      | string  | Always `duo_workflow`. |
-| `project`          | object  | Project the flow ran in. Omitted for a flow that ran in a group. |
+| `plan`             | array   | The agent's to-do list, in the order the agent wrote it. Limited to 20 items. Present only for `flow.progress`. Omitted until the agent writes a to-do list. |
+| `plan[].description` | string | Description of the to-do item. Truncated to 200 characters. |
+| `plan[].status`    | string  | Status of the to-do item. One of `pending`, `in_progress`, `completed`, or `cancelled`. |
+| `project`          | object  | Project the flow ran in. Omitted for `flow.progress`, and for a flow that ran in a group. |
 | `result`           | object  | Final output of the flow. Present only for `flow.completed`. |
 | `result.message`   | string  | Final message from the agent. |
-| `user`             | object  | User who triggered the flow. |
+| `user`             | object  | User who triggered the flow. Omitted for `flow.progress`. |
 | `version`          | string  | Version of the payload structure. Always `1`. |
 | `workflow`         | object  | The flow. |
 | `workflow.id`      | integer | ID of the flow. |
@@ -3258,6 +3263,52 @@ GitLab also sends `project` and `user`:
   }
 }
 ```
+
+### Progress events
+
+While a flow runs, GitLab sends `flow.progress` events that show what the agent is working on.
+Each event contains the full current state, not only the changes from the previous event:
+
+- `plan`: The agent's complete to-do list.
+- `activity`: The agent's most recent message.
+
+To display progress, replace the previous state with the state from the latest event.
+
+GitLab sends a progress event when the agent updates its to-do list or writes a message.
+GitLab does not send an event for other agent activity, such as reading a file.
+GitLab waits two seconds and combines all progress from that time into one event.
+GitLab stops sending progress events when the flow finishes or fails.
+
+Events might arrive out of order.
+If a `flow.progress` event arrives after the `flow.completed` or `flow.failed` event for the same
+flow, ignore the progress event.
+
+A `flow.progress` payload contains `plan` and `activity` instead of a `result` or `error` object.
+The following example shows a `flow.progress` payload:
+
+```json
+{
+  "object_kind": "duo_workflow",
+  "version": "1",
+  "event": "flow.progress",
+  "event_id": "7b1c9e2a-4f6d-4a2e-9c1d-3e5f7a9b0c1d",
+  "client_reference": "run-abc123",
+  "plan": [
+    { "description": "Reproduce the failing pipeline", "status": "completed" },
+    { "description": "Fix the syntax error in .gitlab-ci.yml", "status": "in_progress" }
+  ],
+  "activity": "The job fails because of an indentation error in `.gitlab-ci.yml`.",
+  "workflow": {
+    "id": 1,
+    "status": "running",
+    "web_url": "https://gitlab.example.com/flightjs/Flight/-/automate/agent-sessions/1"
+  }
+}
+```
+
+The agent writes the plan and the activity.
+Both might include content that the agent read during the flow, such as code or command output.
+Use only a webhook endpoint that you trust with this content.
 
 For the delivery guarantees for these events, see
 [webhook callbacks](../../duo_agent_platform/flows/webhook_callbacks.md#handling-callbacks-in-your-endpoint).

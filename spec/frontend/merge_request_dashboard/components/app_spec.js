@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { createMockSubscription } from 'mock-apollo-client';
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import App from '~/merge_request_dashboard/components/app.vue';
@@ -31,7 +32,10 @@ describe('Merge requests app component', () => {
     resolve: jest.fn().mockReturnValue({ href: '/' }),
   };
 
-  function createComponent(lists = null, { vueSearchEnabled = false, filter = '' } = {}) {
+  function createComponent(
+    lists = null,
+    { vueSearchEnabled = false, filter = '', stubs = {} } = {},
+  ) {
     subscriptionHandler = createMockSubscription();
     assigneeQueryMock = jest.fn().mockResolvedValue({
       data: {
@@ -113,6 +117,7 @@ describe('Merge requests app component', () => {
         CollapsibleSection,
         GlLink,
         SearchList: true,
+        ...stubs,
       },
       mocks: {
         $router,
@@ -252,6 +257,36 @@ describe('Merge requests app component', () => {
 
       expect(activeTab.attributes('lazy')).toBeUndefined();
       expect(findSearchTab().attributes('lazy')).toBe('');
+    });
+
+    describe('count badge', () => {
+      const findSearchTabCount = () => wrapper.findByTestId('search-tab-count');
+      const emitCount = async (count) => {
+        wrapper.findComponent({ name: 'SearchList' }).vm.$emit('count-change', count);
+        await waitForPromises();
+      };
+
+      beforeEach(async () => {
+        createComponent(null, {
+          vueSearchEnabled: true,
+          filter: 'search',
+          stubs: { GlTab: stubComponent(GlTab, { template: RENDER_ALL_SLOTS_TEMPLATE }) },
+        });
+        await waitForPromises();
+      });
+
+      it('renders the formatted count only while the search list emits an integer', async () => {
+        expect(findSearchTabCount().exists()).toBe(false);
+
+        await emitCount(0);
+        expect(findSearchTabCount().text()).toBe('0');
+
+        await emitCount(12345);
+        expect(findSearchTabCount().text()).toBe('12,345');
+
+        await emitCount(null);
+        expect(findSearchTabCount().exists()).toBe(false);
+      });
     });
   });
 

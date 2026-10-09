@@ -6,7 +6,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TooltipOnTruncateDirective from '~/vue_shared/directives/tooltip_on_truncate';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ICONS, PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
-import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
+import CommitPopover from '~/vue_shared/components/commit_popover.vue';
 import PipelineLabels from './pipeline_labels.vue';
 
 export default {

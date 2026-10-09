@@ -63,8 +63,10 @@ config.ru @gitlab-org/maintainers/rails-backend
 /metrics_server/ @gitlab-org/maintainers/rails-backend
 /rubocop/ @gitlab-org/maintainers/rails-backend
 /shared/ @gitlab-org/maintainers/rails-backend
-/spec/ @gitlab-org/maintainers/rails-backend @gl-dx/maintainers
-/ee/spec/ @gitlab-org/maintainers/rails-backend @gl-dx/maintainers
+# @gitlab-bot is an owner here so its triage-ops auto-approval of
+# `gitlab-bot::auto-approve` MRs counts towards the code owner rule.
+/spec/ @gitlab-org/maintainers/rails-backend @gl-dx/maintainers @gitlab-bot
+/ee/spec/ @gitlab-org/maintainers/rails-backend @gl-dx/maintainers @gitlab-bot
 /qa/ @gitlab-org/maintainers/rails-backend @gl-dx/maintainers
 /sidekiq_cluster/ @gitlab-org/maintainers/rails-backend
 /tmp/ @gitlab-org/maintainers/rails-backend
@@ -254,6 +256,13 @@ yarn.lock @gitlab-org/maintainers/frontend
 /spec/tooling/ai_harness/ @gitlab-org/maintainers/ai-harness
 
 config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @tkuah
+
+[Duo Chat]
+/ee/app/assets/javascripts/ai/duo_agentic_chat/ @rfrederico @ealcantara @tbulva @donaldcook @rmcfadyen @ohoral @tristan.read @elwyn-gitlab @andrei.zubov
+/ee/spec/frontend/ai/duo_agentic_chat/ @rfrederico @ealcantara @tbulva @donaldcook @rmcfadyen @ohoral @tristan.read @elwyn-gitlab @andrei.zubov
+/ee/spec/frontend/integration/ai_duo_panel/duo_agentic_chat/ @rfrederico @ealcantara @tbulva @donaldcook @rmcfadyen @ohoral @tristan.read @elwyn-gitlab @andrei.zubov
+/ee/app/assets/javascripts/ai/tanuki_bot/ @rfrederico @ealcantara @tbulva @donaldcook @rmcfadyen @ohoral @tristan.read @elwyn-gitlab @andrei.zubov
+/ee/spec/frontend/ai/tanuki_bot/ @rfrederico @ealcantara @tbulva @donaldcook @rmcfadyen @ohoral @tristan.read @elwyn-gitlab @andrei.zubov
 
 ^[Source code editing]
 .solargraph.yml.example @igor.drozdov

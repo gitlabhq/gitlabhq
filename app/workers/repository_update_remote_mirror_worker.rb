@@ -21,6 +21,7 @@ class RepositoryUpdateRemoteMirrorWorker
   def perform(remote_mirror_id, scheduled_time, tries = 0)
     remote_mirror = RemoteMirror.find_by_id(remote_mirror_id)
     return unless remote_mirror
+    return if repository_mirroring_blocked?(remote_mirror.project)
     return if remote_mirror.updated_since?(scheduled_time)
 
     # If the update is already running, wait for it to finish before running again
@@ -42,6 +43,11 @@ class RepositoryUpdateRemoteMirrorWorker
 
   private
 
+  # overridden in EE
+  def repository_mirroring_blocked?(_project)
+    false
+  end
+
   def update_mirror(mirror, tries)
     project = mirror.project
     current_user = project.creator
@@ -62,3 +68,5 @@ class RepositoryUpdateRemoteMirrorWorker
     self.class.perform_in(mirror.backoff_delay, mirror.id, retry_time, tries + 1)
   end
 end
+
+RepositoryUpdateRemoteMirrorWorker.prepend_mod

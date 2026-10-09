@@ -537,36 +537,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
               expect(build).not_to have_valid_build_dependencies
             end
           end
-
-          context 'when the FF ci_optional_needs_for_cross_pipeline is disabled' do
-            before do
-              stub_feature_flags(ci_optional_needs_for_cross_pipeline: false)
-            end
-
-            context 'when the needed job exists in the parent pipeline' do
-              let!(:upstream_job) do
-                create(:ci_build, :success, pipeline: upstream_pipeline, name: 'create-artifact')
-              end
-
-              it 'resolves the cross-pipeline dependency and is valid' do
-                subject
-
-                build = pipeline.builds.find_by(name: 'use-artifact')
-                expect(Ci::BuildDependencies.new(build).all).to contain_exactly(upstream_job)
-                expect(build).to have_valid_build_dependencies
-              end
-            end
-
-            context 'when the needed job does not exist in the parent pipeline' do
-              it 'has no cross-pipeline dependency and is invalid because optional is ignored' do
-                subject
-
-                build = pipeline.builds.find_by(name: 'use-artifact')
-                expect(Ci::BuildDependencies.new(build).all).to be_empty
-                expect(build).not_to have_valid_build_dependencies
-              end
-            end
-          end
         end
 
         # Variables in a `trigger:include` path are expanded by the downstream pipeline, not by the

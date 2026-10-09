@@ -28,6 +28,7 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import SearchList from '~/merge_request_dashboard/components/search_list.vue';
 import getMergeRequestsQuery from 'ee_else_ce/merge_request_dashboard/queries/search/get_merge_requests.query.graphql';
 import getMergeRequestsApprovalsQuery from '~/merge_request_dashboard/queries/search/get_merge_requests_approvals.query.graphql';
+import getMergeRequestsCountQuery from '~/merge_request_dashboard/queries/search/get_merge_requests_count.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -77,6 +78,7 @@ describe('Merge request dashboard search list', () => {
   let wrapper;
   let mergeRequestsQueryHandler;
   let approvalsQueryHandler;
+  let countQueryHandler;
   let push;
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
@@ -97,6 +99,7 @@ describe('Merge request dashboard search list', () => {
       .fn()
       .mockResolvedValue({ data: { mergeRequests: { nodes: [mockMergeRequest], pageInfo } } });
     approvalsQueryHandler = jest.fn().mockResolvedValue({ data: { mergeRequests: { nodes: [] } } });
+    countQueryHandler = jest.fn().mockResolvedValue({ data: { mergeRequests: { count: 1234 } } });
     push = jest.fn();
 
     const apolloProvider = new VueApollo({
@@ -105,6 +108,7 @@ describe('Merge request dashboard search list', () => {
         searchClient: createMockClient([
           [getMergeRequestsQuery, mergeRequestsQueryHandler],
           [getMergeRequestsApprovalsQuery, approvalsQueryHandler],
+          [getMergeRequestsCountQuery, countQueryHandler],
         ]),
       },
     });
@@ -224,6 +228,7 @@ describe('Merge request dashboard search list', () => {
     it('does not query, and asks for a filter instead', () => {
       expect(mergeRequestsQueryHandler).not.toHaveBeenCalled();
       expect(approvalsQueryHandler).not.toHaveBeenCalled();
+      expect(countQueryHandler).not.toHaveBeenCalled();
       expect(findNoFilterEmptyState().exists()).toBe(true);
     });
   });
@@ -414,6 +419,50 @@ describe('Merge request dashboard search list', () => {
       ]);
       await waitForPromises();
 
+      expect(Sentry.captureException).toHaveBeenCalled();
+    });
+  });
+
+  describe('count', () => {
+    beforeEach(async () => {
+      jest.spyOn(Sentry, 'captureException').mockImplementation();
+      setWindowLocation('?assignee_username[]=root');
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('queries the count with only the filters and emits each new count', async () => {
+      countQueryHandler.mockResolvedValue({ data: { mergeRequests: { count: 0 } } });
+      await filterBy([assigneeToken('jane')]);
+
+      expect(countQueryHandler.mock.calls.map(([variables]) => variables)).toEqual([
+        { assigneeUsernames: 'root', state: STATUS_OPEN },
+        { assigneeUsernames: 'jane', state: STATUS_OPEN },
+      ]);
+      expect(wrapper.emitted('count-change')).toEqual([[1234], [0]]);
+    });
+
+    it('emits null when the last real filter is removed', async () => {
+      await filterBy([]);
+
+      expect(wrapper.emitted('count-change').at(-1)).toEqual([null]);
+    });
+
+    it('emits null when it is destroyed', () => {
+      wrapper.destroy();
+
+      expect(wrapper.emitted('count-change').at(-1)).toEqual([null]);
+    });
+
+    it('emits null and keeps the list when the count query fails', async () => {
+      countQueryHandler.mockRejectedValue(new Error('boom'));
+      await filterBy([assigneeToken('jane')]);
+
+      expect(wrapper.emitted('count-change').at(-1)).toEqual([null]);
+      expect(findIssuableList().props('error')).toBe(null);
+      expect(findIssuableList().props('issuables')).toEqual([
+        expect.objectContaining({ id: mockMergeRequest.id }),
+      ]);
       expect(Sentry.captureException).toHaveBeenCalled();
     });
   });

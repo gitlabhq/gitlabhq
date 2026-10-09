@@ -107,14 +107,24 @@ describe('Code Quality widget', () => {
   });
 
   describe('data fetching', () => {
-    it('emits loaded event with new error count', async () => {
+    it('emits loaded event with new error count and status', async () => {
       mockApi(HTTP_STATUS_OK, responseNewFindings);
 
       createComponent();
 
       await waitForPromises();
 
-      expect(wrapper.emitted('loaded')).toEqual([[1]]);
+      expect(wrapper.emitted('loaded')).toEqual([[1, 'warning']]);
+    });
+
+    it('emits loaded event with a failed status when the request fails', async () => {
+      mockApi(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+      createComponent();
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('loaded')).toEqual([[0, 'failed']]);
     });
 
     it('reports errors to Sentry', async () => {

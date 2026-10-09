@@ -2,13 +2,13 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
-import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
+import SourceViewer from '~/blob/components/source_viewer/source_viewer.vue';
+import Chunk from '~/blob/components/source_viewer/components/chunk.vue';
 import {
   EVENT_ACTION,
   EVENT_LABEL_VIEWER,
   CODEOWNERS_FILE_NAME,
-} from '~/vue_shared/components/source_viewer/constants';
+} from '~/blob/components/source_viewer/constants';
 import * as urlUtility from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -16,8 +16,8 @@ import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
-import BlameColumnResizer from '~/vue_shared/components/source_viewer/components/blame_column_resizer.vue';
+import blameDataQuery from '~/blob/components/source_viewer/queries/blame_data.query.graphql';
+import BlameColumnResizer from '~/blob/components/source_viewer/components/blame_column_resizer.vue';
 import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
 
 import {

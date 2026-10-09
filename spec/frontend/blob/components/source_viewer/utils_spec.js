@@ -10,7 +10,7 @@ import {
   createBlameSliceBuilder,
   getAgentSessionUrls,
   parseAgentSessionUrl,
-} from '~/vue_shared/components/source_viewer/utils';
+} from '~/blob/components/source_viewer/utils';
 import { SOURCE_CODE_CONTENT_MOCK, BLAME_DATA_MOCK } from './mock_data';
 
 describe('SourceViewer utils', () => {

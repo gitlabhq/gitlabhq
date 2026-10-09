@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import BlameColumnResizer from '~/vue_shared/components/source_viewer/components/blame_column_resizer.vue';
+import BlameColumnResizer from '~/blob/components/source_viewer/components/blame_column_resizer.vue';
 import AccessiblePanelResizer from '~/vue_shared/components/accessible_panel_resizer.vue';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -9,7 +9,7 @@ import {
   BLAME_COLUMN_MAX_WIDTH,
   BLAME_COLUMN_MIN_WIDTH,
   BLAME_COLUMN_WIDTH_STORAGE_KEY,
-} from '~/vue_shared/components/source_viewer/constants';
+} from '~/blob/components/source_viewer/constants';
 
 describe('BlameColumnResizer component', () => {
   let wrapper;

@@ -32,6 +32,11 @@ export default {
       type: Object,
       required: true,
     },
+    level: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
   },
   emits: ['loaded'],
   data() {
@@ -85,23 +90,32 @@ export default {
     },
   },
   methods: {
+    onFetchFailed(error) {
+      this.$emit('loaded', 0, EXTENSION_ICONS.failed);
+      throw error;
+    },
     fetchCollapsedData() {
-      return axios.get(this.mr.accessibilityReportPath).then((response) => {
-        if (response.data) {
-          this.collapsedData = response.data;
-          this.$emit('loaded', this.numberOfErrors);
-        } else if (!normalizeHeaders(response.headers)['POLL-INTERVAL']) {
-          this.statusMessage = s__('Reports|Accessibility scanning results are not available');
-        }
+      return axios
+        .get(this.mr.accessibilityReportPath)
+        .then((response) => {
+          if (response.data) {
+            this.collapsedData = response.data;
+            this.$emit('loaded', this.numberOfErrors, this.statusIcon);
+          } else if (!normalizeHeaders(response.headers)['POLL-INTERVAL']) {
+            this.statusMessage = s__('Reports|Accessibility scanning results are not available');
+            this.$emit('loaded', 0, this.statusIcon);
+          }
 
-        return response;
-      });
+          return response;
+        })
+        .catch(this.onFetchFailed);
     },
   },
 };
 </script>
 <template>
   <mr-widget
+    :level="level"
     :action-buttons="actionButtons"
     :error-text="$options.i18n.error"
     :status-icon-name="statusIcon"

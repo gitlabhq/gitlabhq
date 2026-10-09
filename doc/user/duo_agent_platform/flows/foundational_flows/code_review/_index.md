@@ -216,6 +216,48 @@ Settings cascade from instance to group to project. More specific settings overr
 
 {{< /tabs >}}
 
+## Follow-up reviews
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/608172) in GitLab 19.4 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `duo_code_review_previous_discussions`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258170) in GitLab 19.5. Feature flag `duo_code_review_previous_discussions` removed.
+
+{{< /history >}}
+
+To start a follow-up review, ask GitLab Duo to review the merge request again.
+If [**Start a new review on push**](#start-a-new-review-on-push) is turned on, pushing new changes also starts a follow-up review.
+
+When GitLab Duo re-reviews a merge request, it uses context from its earlier reviews to evaluate the new changes.
+
+### Context from earlier reviews
+
+A follow-up review uses this context:
+
+- Inline comment threads that GitLab Duo started in earlier reviews, including every reply and whether the thread is resolved.
+- The most recent commit that GitLab Duo left inline review comments on.
+
+GitLab Duo reads the whole diff and follows these rules when it comments:
+
+- It places comments on lines that were added after the last commit it commented on.
+- If no lines were added after that commit, it places comments anywhere in the diff.
+- If it identifies a correctness problem, such as a bug, security vulnerability, or data loss, it places comments anywhere in the diff.
+- It does not repeat points that its earlier threads already make, even if a thread is resolved.
+
+A follow-up review does not use threads that people started, general merge request comments, or the previous summary comment.
+If there are no previous inline comments from GitLab Duo, the next review is a full first-pass review.
+
+### Work with follow-up reviews
+
+GitLab Duo does not reply to or resolve its earlier threads.
+
+To get the most from follow-up reviews:
+
+- Reply on the thread to explain why the code is correct. GitLab Duo accepts the explanation and does not raise the point again.
+  Without a reply, GitLab Duo lists the finding as outstanding in the review summary, even if the thread is resolved.
+- Push fixes and let GitLab Duo verify them in the next review.
+- Keep discussion of a GitLab Duo finding in its thread. Follow-up reviews do not read comments outside GitLab Duo threads.
+
 ## Contextual awareness
 
 Code Review Flow runs in two stages:
@@ -232,6 +274,7 @@ Code Review Flow runs in two stages:
    - Merge request diffs.
    - Original versions of the files.
    - Filenames.
+   - On follow-up reviews, comment threads from previous GitLab Duo reviews, including replies.
    - Custom review instructions.
 
 To specify content to exclude, see
@@ -355,10 +398,11 @@ For information on how credit usage is attributed for automatic reviews, see
 
 {{< /history >}}
 
-GitLab Duo starts a new review when a user pushes to the source branch of a merge request and all of
-the following are true:
+When a user pushes to the source branch of a merge request, GitLab Duo starts a
+[follow-up review](#follow-up-reviews) if all of the following are true:
 
 - Automatic reviews are turned on for the project.
+- Code Review Flow, not GitLab Duo Code Review, runs for the merge request author.
 - The merge request is open and not a draft.
 - GitLab Duo is already a reviewer on the merge request.
 - The push changes the diff.
@@ -368,7 +412,7 @@ review.
 If a GitLab Duo review is in progress when the push occurs, GitLab stops that review and starts a
 new one.
 
-You can turn off automatic reviews after pushes for a project or group.
+**Start a new review on push** is turned on by default. You can turn it off for a project or group.
 
 {{< tabs >}}
 

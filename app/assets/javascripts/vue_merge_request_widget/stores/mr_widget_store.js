@@ -161,7 +161,9 @@ export default class MergeRequestStore {
     this.terraformReportsPath = data.terraform_reports_path;
     this.testResultsPath = data.test_reports_path;
     this.accessibilityReportPath = data.accessibility_report_path;
-    this.reportsTabPath = data.reportsTabPath;
+    if (!gon.features?.mergeRequestReportsWidgetGroup) {
+      this.reportsTabPath = data.reportsTabPath;
+    }
     this.exposedArtifactsPath = data.exposed_artifacts_path;
     this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
@@ -321,6 +323,7 @@ export default class MergeRequestStore {
   setPaths(data) {
     // Paths are set on the first load of the page and not auto-refreshed
     this.squashBeforeMergeHelpPath = data.squash_before_merge_help_path;
+    this.reportsTabPath = data.reportsTabPath;
     this.mrTroubleshootingDocsPath = data.mr_troubleshooting_docs_path;
     this.ciTroubleshootingDocsPath = data.ci_troubleshooting_docs_path;
     this.pipelineMustSucceedDocsPath = data.pipeline_must_succeed_docs_path;

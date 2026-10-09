@@ -396,9 +396,7 @@ module Gitlab
     end
 
     def check_push_access!
-      if project&.repository_read_only?
-        raise ForbiddenError, error_message(:read_only)
-      end
+      check_read_only_push!
 
       if project&.self_or_ancestors_archived?
         raise ForbiddenError, error_message(:archived)
@@ -415,6 +413,11 @@ module Gitlab
       end
 
       check_change_access!
+    end
+
+    # overridden in EE
+    def check_read_only_push!
+      raise ForbiddenError, error_message(:read_only) if project&.repository_read_only?
     end
 
     def user_can_download?

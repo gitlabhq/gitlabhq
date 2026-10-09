@@ -57,7 +57,17 @@ describe('Accessibility widget', () => {
 
     await waitForPromises();
 
-    expect(wrapper.emitted('loaded')[0]).toContain(5);
+    expect(wrapper.emitted('loaded')[0]).toEqual([5, 'warning']);
+  });
+
+  it('emits a failed status when the request fails', async () => {
+    mockApi(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+    createComponent();
+
+    await waitForPromises();
+
+    expect(wrapper.emitted('loaded')[0]).toEqual([0, 'failed']);
   });
 
   describe('summary', () => {
@@ -230,6 +240,7 @@ describe('Accessibility widget', () => {
 
     expect(wrapper.text()).toBe('Accessibility scanning results are not available');
     expect(findWidget().props('statusIconName')).toBe('warning');
+    expect(wrapper.emitted('loaded')).toEqual([[0, 'warning']]);
   });
 
   it('does not fail while the report is still being parsed', async () => {

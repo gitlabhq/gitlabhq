@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlPopover, GlAvatar, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
+import CommitPopover from '~/vue_shared/components/commit_popover.vue';
 
 const mockFormat = jest.fn(() => '2 days ago');
 

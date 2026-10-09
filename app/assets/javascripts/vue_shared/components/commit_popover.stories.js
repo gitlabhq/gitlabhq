@@ -2,7 +2,7 @@ import CommitPopover from './commit_popover.vue';
 
 export default {
   component: CommitPopover,
-  title: 'vue_shared/source_viewer/commit_popover',
+  title: 'vue_shared/commit_popover',
 };
 
 const defaultCommit = {

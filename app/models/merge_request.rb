@@ -2102,8 +2102,15 @@ class MergeRequest < ApplicationRecord
   end
 
   def can_be_merged_by?(user, skip_collaboration_check: false)
+    return false if read_only_target_project?
+
     access = ::Gitlab::UserAccess.new(user, container: project, skip_collaboration_check: skip_collaboration_check)
     access.can_update_branch?(target_branch)
+  end
+
+  # overridden in EE
+  def read_only_target_project?
+    false
   end
 
   def only_allow_merge_if_pipeline_succeeds?

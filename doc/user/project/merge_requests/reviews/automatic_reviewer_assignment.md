@@ -69,6 +69,7 @@ GitLab skips auto-assignment when:
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4 to use a flow trigger instead of a project setting. Feature flag `dap_powered_recommend_reviewers` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257534) in GitLab 19.5 to create a trigger that runs when a merge request is created.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257235) in GitLab 19.5 to recommend reviewers in the merge request sidebar instead of assigning them.
+- Requesting recommendations for existing merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260988) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -122,11 +123,25 @@ The flow runs when a person with at least the Developer role marks a draft merge
 For more information about creating and editing triggers, see
 [triggers](../../../duo_agent_platform/triggers/_index.md).
 
+### Request recommendations for an existing merge request
+
+If a merge request existed before you turned on the flow, you must start the flow manually.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To request recommendations for a merge request where the flow has not run:
+
+- In the right sidebar, under **Reviewers** > **Recommended**, select **Fetch**.
+
+**Fetch** is unavailable while the flow runs.
+
 ### Assign a recommended reviewer
 
 After the flow runs, recommended reviewers appear in the **Recommended** section under
 **Reviewers** in the right sidebar, grouped by approval rule.
-The section appears only when there is at least one recommendation.
+The section appears when there is at least one recommendation.
 
 To see why the flow recommended a user, and when, hover over the user.
 

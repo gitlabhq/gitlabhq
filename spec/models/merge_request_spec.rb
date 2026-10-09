@@ -7375,6 +7375,17 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#read_only_target_project?' do
+    it 'returns false' do
+      # EE replaces this method entirely rather than calling super, so walk
+      # past the override to exercise MergeRequest's own definition.
+      method = described_class.instance_method(:read_only_target_project?)
+      method = method.super_method until method.owner == described_class
+
+      expect(method.bind_call(subject)).to be(false)
+    end
+  end
+
   describe '#merge_request_diff_for' do
     let_it_be(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, importing: true, source_project: project) }

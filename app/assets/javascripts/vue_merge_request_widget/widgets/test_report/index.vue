@@ -46,6 +46,11 @@ export default {
       type: Object,
       required: true,
     },
+    level: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
   },
   emits: ['loaded'],
   data() {
@@ -136,22 +141,29 @@ export default {
     },
   },
   methods: {
+    onFetchFailed(error) {
+      this.$emit('loaded', 0, EXTENSION_ICONS.failed);
+      throw error;
+    },
     fetchCollapsedData() {
-      return axios.get(this.testResultsPath).then((response) => {
-        const { data = {}, status } = response;
+      return axios
+        .get(this.testResultsPath)
+        .then((response) => {
+          const { data = {}, status } = response;
 
-        this.collapsedData = {
-          ...response,
-          data: {
-            parsingInProgress: status === HTTP_STATUS_NO_CONTENT,
-            ...parseTestReport(data),
-          },
-        };
-        this.suites = this.prepareSuites(this.collapsedData);
-        this.$emit('loaded', data.summary?.failed || 0);
+          this.collapsedData = {
+            ...response,
+            data: {
+              parsingInProgress: status === HTTP_STATUS_NO_CONTENT,
+              ...parseTestReport(data),
+            },
+          };
+          this.suites = this.prepareSuites(this.collapsedData);
+          this.$emit('loaded', data.summary?.failed || 0, this.statusIcon);
 
-        return response;
-      });
+          return response;
+        })
+        .catch(this.onFetchFailed);
     },
     suiteIcon(suite) {
       if (suite.status === ERROR_STATUS) {
@@ -249,6 +261,7 @@ export default {
 <template>
   <div>
     <mr-widget
+      :level="level"
       :error-text="$options.i18n.error"
       :status-icon-name="statusIcon"
       :loading-state="shouldShowLoading"

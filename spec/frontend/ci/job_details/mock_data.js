@@ -185,36 +185,6 @@ export const mockPendingJobData = {
   },
 };
 
-export const mockPolicyJobResponse = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/20',
-      job: {
-        id: 'gid://gitlab/Ci::Build/13051',
-        manualVariables: {
-          nodes: [],
-          __typename: 'CiManualVariableConnection',
-        },
-        inputsSpec: [],
-        __typename: 'CiJob',
-        manualJob: false,
-        name: 'sast-analyzer',
-        source: 'scan_execution_policy',
-        detailedStatus: {
-          id: 'success-13051-13051',
-          icon: 'status_success',
-          text: 'Passed',
-          detailsPath: '/root/ci-project/-/jobs/13051',
-          __typename: 'DetailedStatus',
-        },
-        startedAt: '',
-        createdAt: '2025-04-21T16:19:15Z',
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
 export const mockJobInputsQueryHandler = {
   data: {
     project: {

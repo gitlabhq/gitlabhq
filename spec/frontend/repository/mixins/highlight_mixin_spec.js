@@ -8,10 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEXT_FILE_TYPE } from '~/repository/constants';
 import { LINES_PER_CHUNK } from '~/highlight_js/constants';
-import {
-  EVENT_ACTION,
-  EVENT_LABEL_FALLBACK,
-} from '~/vue_shared/components/source_viewer/constants';
+import { EVENT_ACTION, EVENT_LABEL_FALLBACK } from '~/blob/components/source_viewer/constants';
 import Tracking from '~/tracking';
 
 jest.mock('~/highlight_js/workers/highlight_utils', () => ({

@@ -558,6 +558,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     let!(:build) { create(:ci_build, :success, pipeline: head_pipeline, project: project) }
 
     before do
+      stub_feature_flags(merge_request_reports_widget_group: false)
       merge_request.update!(head_pipeline_id: head_pipeline.id)
     end
 

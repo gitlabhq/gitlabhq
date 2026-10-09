@@ -161,6 +161,63 @@ RSpec.describe API::Mcp, 'Initialize request', feature_category: :mcp_server do
       end
     end
 
+    describe 'client identity' do
+      let(:logger) { instance_double(Gitlab::Mcp::Logger, conditional_info: nil) }
+      let(:client_info) { { name: 'claude-code', version: '2.1.280' } }
+      let(:user_agent) { 'Cursor/1.0.0 (darwin arm64)' }
+
+      subject(:initialize_call) do
+        post api('/mcp', user, oauth_access_token: access_token),
+          params: base_params.merge(params: { protocolVersion: '2025-06-18', clientInfo: client_info }).to_json,
+          headers: { 'Content-Type' => 'application/json', 'User-Agent' => user_agent }
+      end
+
+      before do
+        allow(Gitlab::Mcp::Logger).to receive(:build).and_return(logger)
+      end
+
+      it 'records the User-Agent as the client and the clientInfo as declared', :aggregate_failures do
+        expect { initialize_call }
+          .to trigger_internal_events('initialize_mcp_connection')
+          .with(
+            user: user,
+            category: 'API::Mcp::Handlers::InitializeRequest',
+            additional_properties: {
+              protocol_version: '2025-06-18',
+              mcp_client_name: 'Cursor',
+              mcp_client_version: '1.0.0',
+              declared_client_name: 'claude-code',
+              declared_client_version: '2.1.280'
+            }
+          )
+
+        expect(logger).to have_received(:conditional_info).with(
+          user, hash_including(
+            event_name: 'initialize',
+            mcp_client_name: 'Cursor',
+            mcp_client_version: '1.0.0',
+            declared_client_name: 'claude-code',
+            declared_client_version: '2.1.280'
+          )
+        )
+      end
+
+      context 'when clientInfo is missing' do
+        let(:client_info) { nil }
+
+        it 'records only the User-Agent' do
+          initialize_call
+
+          expect(logger).to have_received(:conditional_info).with(
+            user, hash_including(event_name: 'initialize', mcp_client_name: 'Cursor', mcp_client_version: '1.0.0')
+          )
+          expect(logger).not_to have_received(:conditional_info).with(
+            user, hash_including(:declared_client_name)
+          )
+        end
+      end
+    end
+
     # Session IDs were optional for servers in the 2025 revisions and removed in 2026-07-28,
     # which tells a server to ignore the header rather than mint or echo an ID of its own.
     context 'for every supported protocol version' do

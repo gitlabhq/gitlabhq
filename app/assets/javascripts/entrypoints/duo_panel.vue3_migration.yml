@@ -1,0 +1,5 @@
+---
+status: rollout
+feature_flag: vue3_migrate_duo_panel
+group: group::duo chat
+migration_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/623999

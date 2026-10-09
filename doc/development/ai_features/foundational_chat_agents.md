@@ -275,6 +275,40 @@ Choose the version increment based on the change:
 Without `flow_version`, GitLab Duo Workflow Service falls back to its default resolution.
 Consider potential breaking changes to older GitLab versions before changing an agent.
 
+## Coding environment
+
+A foundational agent can run in a CI job, for example when the `start_duo_session` MCP tool
+starts it. By default, that job clones the project repository. Set `coding_environment: 'none'`
+when the agent does not need the clone:
+
+```ruby
+{
+  id: 5,
+  reference: 'analytics_agent',
+  version: 'v1',
+  flow_version: '^2.0.0',
+  coding_environment: 'none',
+  # ...
+}
+```
+
+Check the agent's flow configuration in GitLab Duo Workflow Service first. Set the value only when
+every tool there works without a repository checkout, like GitLab API, GraphQL, and MCP tools.
+File and command tools such as `read_file`, `grep`, `edit_file`, or `run_command` need the clone.
+The `tools` list in `FoundationalChatAgentsDefinitions` is only displayed in the AI Catalog, so
+it does not tell you which tools the agent runs with.
+
+Only an agent with a `flow_version` can set `coding_environment: 'none'`. An agent backed by an
+AI Catalog item gets its tools from the catalog item, which can change without a GitLab release.
+
+Adding a file or command tool to an agent that sets `coding_environment: 'none'` is a breaking
+change. GitLab instances on an older version still skip the clone, and a constraint like `^2.0.0`
+selects any new minor version. Add the tool in a new major flow configuration version, and in the
+same merge request, update `flow_version` to that major version and remove
+`coding_environment: 'none'`.
+
+The accepted values are the same as for [foundational flows](foundational_flows.md).
+
 ## Suggested questions
 
 GitLab Duo chat shows suggested question chips on the empty chat screen. By default, these questions

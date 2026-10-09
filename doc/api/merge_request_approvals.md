@@ -54,6 +54,13 @@ Supported attributes:
 | `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
 | `sha`               | string            | No       | The `HEAD` of the merge request. |
 
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the approval state
+of the merge request. The response has the same attributes as
+[retrieve approval state for a merge request](#retrieve-approval-state-for-a-merge-request),
+which depend on the deployed edition.
+
+Example response from GitLab Enterprise Edition:
+
 ```json
 {
   "id": 5,
@@ -65,15 +72,19 @@ Supported attributes:
   "created_at": "2016-06-08T00:19:52.638Z",
   "updated_at": "2016-06-09T21:32:14.105Z",
   "merge_status": "can_be_merged",
+  "approved": true,
   "approvals_required": 2,
   "approvals_left": 0,
+  "require_password_to_approve": false,
   "approved_by": [
     {
       "user": {
-        "name": "Administrator",
-        "username": "root",
         "id": 1,
+        "username": "root",
+        "public_email": "",
+        "name": "Administrator",
         "state": "active",
+        "locked": false,
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
       },
@@ -81,16 +92,53 @@ Supported attributes:
     },
     {
       "user": {
-        "name": "Nico Cartwright",
-        "username": "ryley",
         "id": 2,
+        "username": "ryley",
+        "public_email": "",
+        "name": "Nico Cartwright",
         "state": "active",
+        "locked": false,
         "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/ryley"
       },
       "approved_at": "2016-06-10T09:17:13.520Z"
     }
-  ]
+  ],
+  "suggested_approvers": [],
+  "approvers": [
+    {
+      "user": {
+        "id": 1,
+        "username": "root",
+        "public_email": "",
+        "name": "Administrator",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/root"
+      }
+    },
+    {
+      "user": {
+        "id": 2,
+        "username": "ryley",
+        "public_email": "",
+        "name": "Nico Cartwright",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/ryley"
+      }
+    }
+  ],
+  "approver_groups": [],
+  "user_has_approved": true,
+  "user_can_approve": false,
+  "approval_rules_left": [],
+  "has_approval_rules": true,
+  "merge_request_approvers_available": true,
+  "multiple_approval_rules_available": true,
+  "invalid_approvers_rules": []
 }
 ```
 
@@ -140,6 +188,11 @@ Supported attributes:
 |---------------------|-------------------|----------|-------------|
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the approval state
+of the merge request. The response has the same attributes as
+[retrieve approval state for a merge request](#retrieve-approval-state-for-a-merge-request),
+which depend on the deployed edition.
 
 ## Reset approvals for a merge request
 
@@ -337,7 +390,7 @@ Example response:
         "code_owner_approval_required": "false"
       }
     ],
-    "contains_hidden_groups": false,
+    "contains_hidden_groups": false
   },
   {
     "id": 2,
@@ -417,7 +470,7 @@ Example response:
         "code_owner_approval_required": "false"
       }
     ],
-    "contains_hidden_groups": false,
+    "contains_hidden_groups": false
   }
 ]
 ```
@@ -797,6 +850,13 @@ regardless of whether those approvals satisfy any approval rule. For more detail
 the approval rules in a merge request, and whether the approvals received satisfy those rules, see
 the [`/approval_state` endpoint](#retrieve-approval-details-for-a-merge-request).
 
+The attributes in the response depend on the deployed edition:
+
+- GitLab Enterprise Edition returns every attribute in the following table, with or without a
+  license. This includes GitLab.com and GitLab Dedicated.
+- GitLab Community Edition returns only `approved`, `approved_by`, `user_can_approve`, and
+  `user_has_approved`.
+
 The `approved` field reflects whether the merge request meets its approval requirements, and its
 value depends on the deployed edition:
 
@@ -816,6 +876,47 @@ Supported attributes:
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
 
+If successful, returns `200 OK` and the following response attributes:
+
+| Attribute                             | Type         | Description |
+|---------------------------------------|--------------|-------------|
+| `approval_rules_left`                 | object array | Approval rules that still require approvals. GitLab Enterprise Edition only. |
+| `approval_rules_left[].id`            | integer      | ID of the approval rule. |
+| `approval_rules_left[].name`          | string       | Name of the approval rule. |
+| `approval_rules_left[].rule_type`     | string       | Type of the approval rule. Possible values: `any_approver`, `code_owner`, `regular`, or `report_approver`. |
+| `approvals_left`                      | integer      | Number of approvals still required before the merge request is approved. GitLab Enterprise Edition only. |
+| `approvals_required`                  | integer      | Number of approvals that the approval rules require. GitLab Enterprise Edition only. |
+| `approved`                            | boolean      | If `true`, the merge request is approved based on the requirements for the deployed GitLab edition. |
+| `approved_by`                         | object array | Users who approved the merge request, regardless of whether their approvals satisfy an approval rule. |
+| `approved_by[].approved_at`           | datetime     | Timestamp of when the user approved the merge request. |
+| `approved_by[].user`                  | object       | The user who approved the merge request. |
+| `approver_groups`                     | object array | Groups of the first `regular` or `any_approver` approval rule. Deprecated. Use the [`/approval_state` endpoint](#retrieve-approval-details-for-a-merge-request) instead. GitLab Enterprise Edition only. |
+| `approver_groups[].group`             | object       | A group assigned to the approval rule. |
+| `approvers`                           | object array | Users of the first `regular` or `any_approver` approval rule. Deprecated. Use the [`/approval_state` endpoint](#retrieve-approval-details-for-a-merge-request) instead. GitLab Enterprise Edition only. |
+| `approvers[].user`                    | object       | A user assigned to the approval rule. |
+| `created_at`                          | datetime     | Timestamp of when the merge request was created. GitLab Enterprise Edition only. |
+| `description`                         | string       | Description of the merge request. GitLab Enterprise Edition only. |
+| `has_approval_rules`                  | boolean      | If `true`, at least one `regular` or `any_approver` approval rule applies to the merge request. GitLab Enterprise Edition only. |
+| `id`                                  | integer      | ID of the merge request. GitLab Enterprise Edition only. |
+| `iid`                                 | integer      | Internal ID of the merge request in the project. GitLab Enterprise Edition only. |
+| `invalid_approvers_rules`             | object array | Approval rules that have fewer eligible approvers than the approvals they require. GitLab Enterprise Edition only. |
+| `invalid_approvers_rules[].id`        | integer      | ID of the approval rule. |
+| `invalid_approvers_rules[].name`      | string       | Name of the approval rule. |
+| `invalid_approvers_rules[].rule_type` | string       | Type of the approval rule. Possible values: `any_approver`, `code_owner`, `regular`, or `report_approver`. |
+| `merge_request_approvers_available`   | boolean      | If `true`, approval rules are available in the project. GitLab Enterprise Edition only. |
+| `merge_status`                        | string       | Status of the merge request, such as `can_be_merged`. For all potential statuses, use `detailed_merge_status` from the [merge requests API](merge_requests.md#merge-status) instead. GitLab Enterprise Edition only. |
+| `multiple_approval_rules_available`   | boolean      | If `true`, the project can have more than one approval rule. GitLab Enterprise Edition only. |
+| `project_id`                          | integer      | ID of the target project of the merge request. GitLab Enterprise Edition only. |
+| `require_password_to_approve`         | boolean      | If `true`, approvers must authenticate again to approve. Deprecated. Use `require_reauthentication_to_approve` from the [project approval configuration](#retrieve-approval-configuration-for-a-project) instead. GitLab Enterprise Edition only. |
+| `state`                               | string       | State of the merge request. Possible values: `opened`, `closed`, `locked`, or `merged`. GitLab Enterprise Edition only. |
+| `suggested_approvers`                 | object array | Eligible approvers who have not approved the merge request yet. GitLab Enterprise Edition only. |
+| `title`                               | string       | Title of the merge request. GitLab Enterprise Edition only. |
+| `updated_at`                          | datetime     | Timestamp of when the merge request was last updated. GitLab Enterprise Edition only. |
+| `user_can_approve`                    | boolean      | If `true`, the current user can approve the merge request. |
+| `user_has_approved`                   | boolean      | If `true`, the current user has approved the merge request. |
+
+Example response from GitLab Enterprise Edition:
+
 ```json
 {
   "id": 5,
@@ -827,16 +928,96 @@ Supported attributes:
   "created_at": "2016-06-08T00:19:52.638Z",
   "updated_at": "2016-06-08T21:20:42.470Z",
   "merge_status": "cannot_be_merged",
+  "approved": false,
   "approvals_required": 2,
   "approvals_left": 1,
+  "require_password_to_approve": false,
+  "approved_by": [
+    {
+      "user": {
+        "id": 1,
+        "username": "root",
+        "public_email": "",
+        "name": "Administrator",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/root"
+      },
+      "approved_at": "2016-06-09T01:45:21.720Z"
+    }
+  ],
+  "suggested_approvers": [
+    {
+      "id": 2,
+      "username": "ryley",
+      "public_email": "",
+      "name": "Nico Cartwright",
+      "state": "active",
+      "locked": false,
+      "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
+      "web_url": "http://localhost:3000/ryley"
+    }
+  ],
+  "approvers": [
+    {
+      "user": {
+        "id": 1,
+        "username": "root",
+        "public_email": "",
+        "name": "Administrator",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/root"
+      }
+    },
+    {
+      "user": {
+        "id": 2,
+        "username": "ryley",
+        "public_email": "",
+        "name": "Nico Cartwright",
+        "state": "active",
+        "locked": false,
+        "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/ryley"
+      }
+    }
+  ],
+  "approver_groups": [],
+  "user_has_approved": false,
+  "user_can_approve": true,
+  "approval_rules_left": [
+    {
+      "id": 1,
+      "name": "Ruby",
+      "rule_type": "regular"
+    }
+  ],
+  "has_approval_rules": true,
+  "merge_request_approvers_available": true,
+  "multiple_approval_rules_available": true,
+  "invalid_approvers_rules": []
+}
+```
+
+Example response from GitLab Community Edition:
+
+```json
+{
+  "user_has_approved": false,
+  "user_can_approve": true,
   "approved": true,
   "approved_by": [
     {
       "user": {
-        "name": "Administrator",
-        "username": "root",
         "id": 1,
+        "username": "root",
+        "public_email": "",
+        "name": "Administrator",
         "state": "active",
+        "locked": false,
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
       },

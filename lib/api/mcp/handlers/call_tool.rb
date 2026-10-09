@@ -17,7 +17,9 @@ module API
           @manager = manager
         end
 
-        def invoke(request, params, current_user = nil, tool_name_prefix: nil)
+        # @param client_info [Gitlab::Mcp::ClientInfo, nil] the identity the client reports, if any
+        def invoke(request, params, current_user = nil, tool_name_prefix: nil, client_info: nil)
+          @client_info = client_info
           tool_name = params[:name]
           tool_name.delete_prefix!(tool_name_prefix) if tool_name_prefix.present?
           request_id = request[:id] || SecureRandom.uuid
@@ -31,7 +33,7 @@ module API
 
         private
 
-        attr_reader :manager
+        attr_reader :manager, :client_info
 
         def fetch_tool(tool_name, request_id, current_user, params)
           start = current_monotonic_time
@@ -95,8 +97,13 @@ module API
             ::Labkit::Fields::GL_ROOT_NAMESPACE_ID => namespace&.id,
             namespace: namespace,
             expanded: expanded,
+            **client_fields,
             **error_fields
           )
+        end
+
+        def client_fields
+          client_info.to_h
         end
 
         def canonical_tool_name_field(tool_name)

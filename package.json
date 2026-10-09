@@ -229,7 +229,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sass": "^1.98.0",
-    "sass-loader": "^17.0.0",
+    "sass-loader": "^17.0.1",
     "scrollparent": "^2.0.1",
     "semver": "^7.3.4",
     "sortablejs": "^1.10.2",

@@ -13,13 +13,14 @@ const baseEntryPoints = {
   super_sidebar: './entrypoints/super_sidebar.js',
   tracker: './entrypoints/tracker.js',
   graphql_explorer: './entrypoints/graphql_explorer.js',
+  duo_panel: './entrypoints/duo_panel.js',
 };
 
 const ALWAYS_LOADED_ENTRY_POINTS = ['super_sidebar', 'tracker', 'sentry', 'performance_bar'];
 
-// Only the EE layout loads the Duo Chat panel bundle.
+// The entry exists in FOSS too, as a no-op, so its vue3_migration.yml
+// resolves. Only the EE layout loads it.
 if (IS_EE) {
-  baseEntryPoints.duo_panel = './entrypoints/duo_panel.js';
   ALWAYS_LOADED_ENTRY_POINTS.push('duo_panel');
 }
 

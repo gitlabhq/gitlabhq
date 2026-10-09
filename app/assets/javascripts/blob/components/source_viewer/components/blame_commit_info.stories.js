@@ -2,7 +2,7 @@ import BlameCommitInfo from './blame_commit_info.vue';
 
 export default {
   component: BlameCommitInfo,
-  title: 'vue_shared/source_viewer/blame_commit_info',
+  title: 'blob/source_viewer/blame_commit_info',
 };
 
 const defaultCommit = {

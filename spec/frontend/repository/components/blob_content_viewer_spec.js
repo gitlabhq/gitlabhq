@@ -19,7 +19,7 @@ import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
-import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import SourceViewer from '~/blob/components/source_viewer/source_viewer.vue';
 import TooLargeViewer from '~/repository/components/blob_viewers/too_large_viewer.vue';
 import LfsViewer from '~/repository/components/blob_viewers/lfs_viewer.vue';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';

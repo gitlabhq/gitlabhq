@@ -47,6 +47,43 @@ RSpec.describe API::Mcp::Handlers::InitializeRequest, feature_category: :mcp_ser
       )
     end
 
+    context 'when the client identity is known' do
+      let(:client_info) { Gitlab::Mcp::ClientInfo.new(name: 'GitLab-Workhorse-Mcp-Client') }
+      let(:params) do
+        { protocolVersion: protocol_version, clientInfo: { name: 'mcp-client', version: 'v1.0.0' } }
+          .with_indifferent_access
+      end
+
+      subject(:handler) { described_class.new(params, nil, current_user, client_info: client_info) }
+
+      it 'tracks both the resolved and the declared client as properties' do
+        expect { handler.invoke }
+          .to trigger_internal_events('initialize_mcp_connection')
+          .with(
+            user: current_user,
+            additional_properties: {
+              protocol_version: '2025-06-18',
+              mcp_client_name: 'GitLab-Workhorse-Mcp-Client',
+              declared_client_name: 'mcp-client',
+              declared_client_version: 'v1.0.0'
+            }
+          )
+      end
+
+      it 'logs both the resolved and the declared client as indexed fields' do
+        handler.invoke
+
+        expect(logger).to have_received(:conditional_info).with(
+          current_user,
+          hash_including(
+            mcp_client_name: 'GitLab-Workhorse-Mcp-Client',
+            declared_client_name: 'mcp-client',
+            declared_client_version: 'v1.0.0'
+          )
+        )
+      end
+    end
+
     context 'when the client requests a stateless protocol version' do
       let(:protocol_version) { '2026-07-28' }
 

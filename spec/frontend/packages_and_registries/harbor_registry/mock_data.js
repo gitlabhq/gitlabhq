@@ -58,8 +58,6 @@ export const defaultConfig = {
   containersErrorImage: 'containersErrorImage',
 };
 
-export const defaultFullPath = 'flightjs/Flight';
-
 export const harborImagesResponse = [
   {
     id: 1,
@@ -85,12 +83,6 @@ export const harborImagesList = [
     location: 'https://demo.goharbor.io/harbor/projects/4/repositories/nginx',
   },
 ];
-
-export const dockerCommands = {
-  dockerBuildCommand: 'foofoo',
-  dockerPushCommand: 'barbar',
-  dockerLoginCommand: 'bazbaz',
-};
 
 export const mockArtifactDetail = {
   project: 'test-project',

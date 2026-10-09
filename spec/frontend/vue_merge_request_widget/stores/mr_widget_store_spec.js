@@ -132,6 +132,21 @@ describe('MergeRequestStore', () => {
 
       expect(store.securityReportsDocsPath).toBe('security-reports-docs-path');
     });
+
+    it.each`
+      flag     | expected
+      ${true}  | ${'/reports'}
+      ${false} | ${undefined}
+    `(
+      'sets reportsTabPath to $expected when later widget data does not include it and the flag is $flag',
+      ({ flag, expected }) => {
+        window.gon.features = { mergeRequestReportsWidgetGroup: flag };
+        store.setPaths({ ...mockData, reportsTabPath: '/reports' });
+        store.setData({ ...mockData });
+
+        expect(store.reportsTabPath).toBe(expected);
+      },
+    );
   });
 
   describe('preventMerge', () => {

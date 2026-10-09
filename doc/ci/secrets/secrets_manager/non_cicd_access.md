@@ -42,7 +42,7 @@ construct namespace, mount, or authentication paths yourself.
 
 ## Prerequisites
 
-- Secrets Manager is enabled for the project or group.
+- GitLab Secrets Manager is enabled.
 - The Secrets Manager was provisioned in GitLab 19.2 or later.
 - You authenticate with a personal access token, project or group access token, or service account
   token that has the `api` scope.

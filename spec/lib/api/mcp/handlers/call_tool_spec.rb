@@ -66,6 +66,31 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
         )
       end
 
+      it 'does not log client fields when the client is unknown' do
+        handler.invoke(request, params, current_user)
+
+        expect(logger).to have_received(:conditional_info).with(
+          current_user, hash_excluding(:mcp_client_name, :mcp_client_version)
+        )
+      end
+
+      context 'when the client identity is known' do
+        let(:client_info) { Gitlab::Mcp::ClientInfo.new(name: 'Cursor', version: '1.0.0') }
+
+        it 'logs the client name and version as indexed fields, outside expanded' do
+          handler.invoke(request, params, current_user, client_info: client_info)
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(
+              mcp_client_name: 'Cursor',
+              mcp_client_version: '1.0.0',
+              expanded: { arguments: { 'param' => 'value' } }
+            )
+          )
+        end
+      end
+
       it 'does not add canonical_tool_name for a canonical call' do
         handler.invoke(request, params, current_user)
 

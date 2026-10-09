@@ -127,9 +127,15 @@ module API
         def invoke_basic_handler
           method_name = params[:method]
           handler_class = JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
-          handler = handler_class.new(params[:params] || {}, oauth_access_token, current_user)
+          handler = handler_class.new(params[:params] || {}, oauth_access_token, current_user,
+            client_info: mcp_client_info)
           handler.invoke
         end
+
+        def mcp_client_info
+          ::Gitlab::Mcp::ClientInfo.from_request(params[:params], user_agent: headers['User-Agent'])
+        end
+        strong_memoize_attr :mcp_client_info
 
         def method_not_found!(method_name)
           # render error used to stop request and return early
@@ -224,7 +230,7 @@ module API
             case params[:method]
             when 'tools/call'
               Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user,
-                tool_name_prefix: mcp_server_tool_name_prefix)
+                tool_name_prefix: mcp_server_tool_name_prefix, client_info: mcp_client_info)
             when 'tools/list'
               allowed_tools = enabled_mcp_server_tools
               allowed_toolsets = ::Mcp::Tools::Toolsets.parse(headers['X-Gitlab-Enabled-Mcp-Server-Toolsets'])

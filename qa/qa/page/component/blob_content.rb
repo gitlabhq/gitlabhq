@@ -22,7 +22,7 @@ module QA
             element 'copy-contents-button'
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/source_viewer/source_viewer.vue' do
+          base.view 'app/assets/javascripts/blob/components/source_viewer/source_viewer.vue' do
             element 'blob-viewer-file-content'
           end
         end

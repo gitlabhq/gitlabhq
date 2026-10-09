@@ -1,0 +1,10 @@
+---
+name: merge_request_reports_widget_group
+description: Groups the merge request report widgets under one collapsible parent widget.
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255598
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632626
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

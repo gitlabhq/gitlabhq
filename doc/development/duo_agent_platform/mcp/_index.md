@@ -907,6 +907,34 @@ Fields that do not apply to the session are left out.
 For example, to find sessions that run the `developer` flow, use this query in Kibana:
 `json.event_name: "duo_session_created" and json.flow_name: "developer"`.
 
+### Identify the MCP client
+
+The `initialize_mcp_connection`, `start_mcp_tool_call`, and `finish_mcp_tool_call` events
+record the client in the `mcp_client_name` and `mcp_client_version` additional properties.
+The `initialize` and `tool_call` lines in `mcp.log` have fields with the same names.
+
+These are not the `client_name` and `client_type` fields of the standard context.
+Those come from [client identity](../../internal_analytics/internal_event_instrumentation/client_identity.md),
+which accepts only allowlisted values and sets `integration` and `mcp` for every MCP request.
+MCP clients report free-text names, so they are kept in separate properties.
+`Gitlab::Mcp::ClientInfo` resolves the client from the first source that has a name:
+
+1. `params._meta["io.modelcontextprotocol/clientInfo"]`, which the `2026-07-28` revision sends on every request.
+1. The first product token of the `User-Agent` header, for example `Cursor/1.0.0` or `node`.
+
+Both sources can be present on every request, so `initialize` and `tools/call` from the same
+client get the same value. The server is stateless and has no session to link the two requests.
+
+The `clientInfo` that a handshake-revision client sends on `initialize` is recorded separately,
+as `declared_client_name` and `declared_client_version`. These are additional properties of the
+`initialize_mcp_connection` event and fields on the `initialize` line in `mcp.log`.
+It is not used for `mcp_client_name`, because later `tools/call` requests do not send it.
+For example, GitLab Duo Agent Platform sessions declare `mcp-client` but send the
+`GitLab-Workhorse-Mcp-Client` User-Agent.
+
+All values are reported by the client. Only the name and version are kept. Control characters
+are removed, and each value is truncated to 64 characters.
+
 ### Gating a tool's availability
 
 Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.

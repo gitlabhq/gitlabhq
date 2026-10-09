@@ -6338,7 +6338,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6372,7 +6372,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -6427,7 +6427,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the vulnerability export
+        description: ID of the vulnerability export.
         schema:
           type: integer
         in: path
@@ -6453,7 +6453,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the vulnerability export
+        description: ID of the vulnerability export.
         schema:
           type: integer
         in: path
@@ -6480,7 +6480,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6517,7 +6517,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the vulnerability archive export
+        description: ID of the vulnerability archive export.
         schema:
           type: integer
         in: path
@@ -6543,7 +6543,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the vulnerability archive export
+        description: ID of the vulnerability archive export.
         schema:
           type: integer
         in: path
@@ -6570,7 +6570,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: integer
         in: path
@@ -6594,7 +6594,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: integer
         in: path
@@ -6625,13 +6625,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: integer
         in: path
       - name: issue_link_id
         required: true
-        description: The ID of a vulnerability-issue-link to delete
+        description: ID of the vulnerability-issue link.
         schema:
           type: integer
         in: path
@@ -104506,49 +104506,42 @@ components:
           default: false
         report_data:
           type: object
-          description: |
-            An object that contains report components mapped to frontend data assets.
-
-            Some report formats support embedding UI components from the
-            UI. For example, users can apply certain filters in the web UI, and
-            export the component to a PDF. The SVG is provided from
-            the frontend in the report data field.
-
-            Unsupported keys are discarded. If the data
-            does not fit the component it is keyed to, the
-            component is ignored and an error is logged.
+          description: 'Hash of report components mapped to frontend data assets to
+            use in the export, for example `{ project_vulnerabilities_history: ''<svg>some
+            report asset</svg>'' }`. Unsupported keys are discarded, and mismatched
+            components are ignored with an error logged.'
           properties:
             project_vulnerabilities_history:
               type: object
-              description: This object should include an SVG asset to be rendered
-                in PDF reports
+              description: Data for rendering the project vulnerabilities history
+                in PDF reports. Must include an SVG asset.
               nullable: true
             group_vulnerabilities_over_time:
               type: object
-              description: This object should include an SVG asset to be rendered
-                in PDF reports
+              description: Data for rendering the group vulnerabilities over time
+                in PDF reports. Must include an SVG asset.
               nullable: true
             project_security_status:
               type: object
-              description: Data for rendering the project grades summary in PDF reports
+              description: Data for rendering the project grades summary in PDF reports.
               nullable: true
             total_risk_score:
               type: object
-              description: Data for rendering the total risk score in PDF reports
+              description: Data for rendering the total risk score in PDF reports.
               nullable: true
             open_vulnerabilities_over_time:
               type: object
               description: Data for rendering the open vulnerabilities over time in
-                PDF reports
+                PDF reports.
               nullable: true
             vulnerabilities_by_age:
               type: object
-              description: Data for rendering the vulnerabilities by age in PDF reports
+              description: Data for rendering the vulnerabilities by age in PDF reports.
               nullable: true
             vulnerabilities_by_severity_count:
               type: object
               description: Data for rendering the vulnerabilities by severity count
-                in PDF reports
+                in PDF reports.
               properties:
                 critical:
                   type: object
@@ -104660,81 +104653,88 @@ components:
               - project
               - group
               - instance
-              description: The type of vulnerability grouping this report is being
-                created for
+              description: Type of vulnerability grouping this report is being created
+                for.
               nullable: true
             full_path:
               type: string
-              description: The full path of the vulnerable
+              description: Full path of the vulnerable.
               nullable: true
           default: {}
         filters:
           type: object
-          description: Filters to apply to the vulnerability export
+          description: Filters to apply to the vulnerability export.
           properties:
             severity:
               type: array
               items:
                 type: string
-              description: Filter by vulnerability severities
+              description: Filter by vulnerability severities.
               nullable: true
             state:
               type: array
               items:
                 type: string
-              description: Filter by vulnerability states
+              description: Filter by vulnerability states.
               nullable: true
             report_type:
               type: array
               items:
                 type: string
-              description: Filter by report types
+              description: Filter by report types.
               nullable: true
             scanner_id:
               type: array
               items:
                 type: string
-              description: Filter by scanner IDs
+              description: Filter by scanner IDs.
               nullable: true
             project_id:
               type: array
               items:
                 type: integer
-              description: Filter by project IDs
+              description: Filter by project IDs.
               nullable: true
             has_resolution:
               type: boolean
-              description: Filter by resolution availability
+              description: If `true`, includes only vulnerabilities resolved on the
+                default branch. If `false`, includes only vulnerabilities not resolved
+                on the default branch.
               nullable: true
             has_issues:
               type: boolean
-              description: Filter by linked issues
+              description: If `true`, includes only vulnerabilities with linked issues.
+                If `false`, includes only vulnerabilities without linked issues.
               nullable: true
             has_merge_request:
               type: boolean
-              description: Filter by linked merge requests
+              description: If `true`, includes only vulnerabilities with linked merge
+                requests. If `false`, includes only vulnerabilities without linked
+                merge requests.
               nullable: true
             has_remediations:
               type: boolean
-              description: Filter by remediations availability
+              description: If `true`, includes only vulnerabilities with available
+                remediations. If `false`, includes only vulnerabilities without available
+                remediations.
               nullable: true
             scanner:
               type: array
               items:
                 type: string
-              description: Filter by scanner external IDs
+              description: Filter by scanner external IDs.
               nullable: true
             image:
               type: array
               items:
                 type: string
-              description: Filter by container images
+              description: Filter by container images.
               nullable: true
             cluster_agent_id:
               type: array
               items:
                 type: string
-              description: Filter by cluster agent IDs
+              description: Filter by cluster agent IDs.
               nullable: true
           default: {}
     postApiV4SecurityGroupsIdVulnerabilityExportsRequest:
@@ -104754,49 +104754,42 @@ components:
           default: false
         report_data:
           type: object
-          description: |
-            An object that contains report components mapped to frontend data assets.
-
-            Some report formats support embedding UI components from the
-            UI. For example, users can apply certain filters in the web UI, and
-            export the component to a PDF. The SVG is provided from
-            the frontend in the report data field.
-
-            Unsupported keys are discarded. If the data
-            does not fit the component it is keyed to, the
-            component is ignored and an error is logged.
+          description: 'Hash of report components mapped to frontend data assets to
+            use in the export, for example `{ project_vulnerabilities_history: ''<svg>some
+            report asset</svg>'' }`. Unsupported keys are discarded, and mismatched
+            components are ignored with an error logged.'
           properties:
             project_vulnerabilities_history:
               type: object
-              description: This object should include an SVG asset to be rendered
-                in PDF reports
+              description: Data for rendering the project vulnerabilities history
+                in PDF reports. Must include an SVG asset.
               nullable: true
             group_vulnerabilities_over_time:
               type: object
-              description: This object should include an SVG asset to be rendered
-                in PDF reports
+              description: Data for rendering the group vulnerabilities over time
+                in PDF reports. Must include an SVG asset.
               nullable: true
             project_security_status:
               type: object
-              description: Data for rendering the project grades summary in PDF reports
+              description: Data for rendering the project grades summary in PDF reports.
               nullable: true
             total_risk_score:
               type: object
-              description: Data for rendering the total risk score in PDF reports
+              description: Data for rendering the total risk score in PDF reports.
               nullable: true
             open_vulnerabilities_over_time:
               type: object
               description: Data for rendering the open vulnerabilities over time in
-                PDF reports
+                PDF reports.
               nullable: true
             vulnerabilities_by_age:
               type: object
-              description: Data for rendering the vulnerabilities by age in PDF reports
+              description: Data for rendering the vulnerabilities by age in PDF reports.
               nullable: true
             vulnerabilities_by_severity_count:
               type: object
               description: Data for rendering the vulnerabilities by severity count
-                in PDF reports
+                in PDF reports.
               properties:
                 critical:
                   type: object
@@ -104908,12 +104901,12 @@ components:
               - project
               - group
               - instance
-              description: The type of vulnerability grouping this report is being
-                created for
+              description: Type of vulnerability grouping this report is being created
+                for.
               nullable: true
             full_path:
               type: string
-              description: The full path of the vulnerable
+              description: Full path of the vulnerable.
               nullable: true
           default: {}
     postApiV4SecurityVulnerabilityExportsRequest:
@@ -104948,7 +104941,7 @@ components:
           type: string
           enum:
           - csv
-          description: The format of export to be generated
+          description: Format of the export.
           default: csv
       required:
       - start_date
@@ -104958,7 +104951,7 @@ components:
       properties:
         target_issue_iid:
           type: integer
-          description: The IID of an issue to relate to
+          description: Internal ID of the issue to relate to the vulnerability.
           nullable: true
         target_project_id:
           type: string

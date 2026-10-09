@@ -526,6 +526,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
 
     it 'reports the same page mode on the Overview and Changes tabs' do
+      # Users::ActivityService's lease-gated last_activity_on write (plus a user_preferences insert)
+      # would otherwise land on the query-limited Changes request whenever a leaked lease expires.
+      User.find(user.id).update_column(:last_activity_on, Date.today) # rubocop:disable Rails/Date -- matches Users::ActivityService
+
       get project_merge_request_path(project, merge_request)
       overview = response.body
 

@@ -1557,6 +1557,17 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     end
   end
 
+  describe '#check_read_only_push!' do
+    # Non-project containers (e.g. group wikis) resolve `project` to nil, so the
+    # read-only check must not blow up when there is no project to query.
+    it 'does not raise when there is no project' do
+      git_access = access
+      allow(git_access).to receive(:project).and_return(nil)
+
+      expect { git_access.send(:check_read_only_push!) }.not_to raise_error
+    end
+  end
+
   context 'when archived' do
     let(:group) { create(:group, maintainers: user) }
     let(:project) { create(:project, :repository, group: group) }

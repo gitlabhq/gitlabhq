@@ -506,6 +506,13 @@ $diff-file-header-top: 11px;
   }
 }
 
+.reports-widgets-container > .mr-widget-section:last-child {
+  > :last-child {
+    border-bottom-left-radius: calc(var(--gl-border-radius-xl) - 1px);
+    border-bottom-right-radius: calc(var(--gl-border-radius-xl) - 1px);
+  }
+}
+
 .mr-state-widget {
   color: var(--gl-text-color-default);
 

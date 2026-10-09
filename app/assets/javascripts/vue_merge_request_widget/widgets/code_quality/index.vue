@@ -31,6 +31,11 @@ export default {
       type: Object,
       required: true,
     },
+    level: {
+      type: Number,
+      required: false,
+      default: 1,
+    },
   },
   emits: ['loaded'],
   data() {
@@ -107,6 +112,7 @@ export default {
   methods: {
     setCollapsedError(err) {
       this.hasError = true;
+      this.$emit('loaded', 0, EXTENSION_ICONS.failed);
 
       Sentry.captureException(err);
     },
@@ -119,7 +125,7 @@ export default {
           }
           if (data) {
             this.collapsedData = data;
-            this.$emit('loaded', this.collapsedData.new_errors.length);
+            this.$emit('loaded', this.collapsedData.new_errors.length, this.statusIcon);
           }
           return {
             headers,
@@ -137,6 +143,7 @@ export default {
 
 <template>
   <mr-widget
+    :level="level"
     :action-buttons="actionButtons"
     :fetch-collapsed-data="fetchCodeQuality"
     :error-text="$options.i18n.error"

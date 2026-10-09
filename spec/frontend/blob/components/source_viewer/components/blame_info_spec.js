@@ -1,9 +1,9 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
-import BlameInfo from '~/vue_shared/components/source_viewer/components/blame_info.vue';
-import BlameColumnResizer from '~/vue_shared/components/source_viewer/components/blame_column_resizer.vue';
-import * as utils from '~/vue_shared/components/source_viewer/utils';
+import BlameCommitInfo from '~/blob/components/source_viewer/components/blame_commit_info.vue';
+import BlameInfo from '~/blob/components/source_viewer/components/blame_info.vue';
+import BlameColumnResizer from '~/blob/components/source_viewer/components/blame_column_resizer.vue';
+import * as utils from '~/blob/components/source_viewer/utils';
 import { BLAME_DATA_MOCK } from '../mock_data';
 
 describe('BlameInfo component', () => {

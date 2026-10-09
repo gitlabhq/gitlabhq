@@ -1294,6 +1294,13 @@ of the project or group that the tool call targets. The field is empty if the to
 a project or group. The field is also empty if GitLab cannot find the project or group that the
 tool call names, for example because it does not exist or the lookup failed.
 
+The `initialize` and `tool_call` lines include `mcp_client_name` and `mcp_client_version` fields when the
+MCP client identifies itself. The values come from the `clientInfo` in the request `_meta`, or from
+the first product token of the `User-Agent` header, for example `Cursor/1.0.0`. The `initialize`
+line also has `declared_client_name` and `declared_client_version` fields from the `clientInfo` in
+the request. The values are reported by the client and are not verified. Each value is truncated
+to 64 characters.
+
 When a GitLab Duo session is created through the MCP server, a line with `event_name` set to
 `duo_session_created` is logged. This line has `source_type` set to `mcp`.
 The `duo_workflow_id` field holds the session ID.

@@ -13364,6 +13364,7 @@ CREATE TABLE ai_settings (
     allowed_domains text[] DEFAULT '{}'::text[] NOT NULL,
     denied_domains text[] DEFAULT '{}'::text[] NOT NULL,
     organization_id bigint,
+    require_sandbox boolean DEFAULT false NOT NULL,
     CONSTRAINT check_6e16f4d23e CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
     CONSTRAINT check_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
@@ -25420,6 +25421,7 @@ CREATE TABLE namespace_ai_settings (
     ai_catalog_restricted_to_group_hierarchy boolean DEFAULT false NOT NULL,
     web_search_enabled boolean DEFAULT false NOT NULL,
     configured_at jsonb DEFAULT '{}'::jsonb NOT NULL,
+    require_sandbox boolean DEFAULT false NOT NULL,
     CONSTRAINT check_namespace_ai_settings_configured_at_is_hash CHECK ((jsonb_typeof(configured_at) = 'object'::text)),
     CONSTRAINT check_namespace_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))
 );
