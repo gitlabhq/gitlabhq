@@ -549,6 +549,41 @@ To configure the per user and project limit:
 1. Set a value for **Maximum pipeline deletions per project**.
 1. Select **Save changes**.
 
+## Job erasure rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627274) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_job_erase`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Erasing a job removes its artifacts and log. One erase request is small, but a user who sends
+many requests can strain your instance. For example, a script that erases every job in a
+project can send hundreds of requests a minute. To protect your instance from this load,
+you can limit how often a user erases jobs.
+
+This rate limit applies to job erasures made with the
+[erase job REST API](../../api/jobs.md#erase-a-job) or the GitLab UI.
+
+GitLab enforces the following limits:
+
+- Per user and job: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `400` requests each minute.
+  Set the limit to `0` to disable this per-project limit. The per user and job limit still applies.
+
+If either limit is exceeded, the erase request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum job erasures per project**.
+1. Select **Save changes**.
+
 ## Maximum artifacts size
 
 Set size limits for job artifacts to control storage use.

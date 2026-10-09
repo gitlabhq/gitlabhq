@@ -1724,6 +1724,13 @@ Example response:
 
 ### Transfer a group
 
+{{< history >}}
+
+- Asynchronous transfers [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/586549) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- Asynchronous transfers [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250913) in GitLab 19.4. Feature flag `groups_and_projects_async_transfer` removed.
+
+{{< /history >}}
+
 Transfers a group to a new parent group or transforms a subgroup into a top-level group.
 
 Prerequisites:
@@ -1743,11 +1750,20 @@ Parameters:
 | `id`       | integer | yes      | ID of the group to transfer. |
 | `group_id` | integer | no       | ID of the new parent group. If unspecified, the group is transformed into a top-level group. |
 
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the group as it was before the transfer.
+
+Example request:
+
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
 ```
+
+To confirm the transfer was successful, [retrieve the group](#retrieve-a-group) until its `parent_id` matches the ID of the new parent group.
+The value is `null` for a top-level group.
+
+If the transfer fails, the user who requested it gets a to-do item with the `transfer_failed` action. To get to-do items, see [list all to-do items](todos.md#list-all-to-do-items).
 
 #### List all locations available for group transfer
 

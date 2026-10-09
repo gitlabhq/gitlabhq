@@ -60467,7 +60467,7 @@ definitions:
         example: 4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9
       fingerprint_sha256:
         type: string
-        example: SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
+        example: Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
       projects_with_write_access:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
       projects_with_readonly_access:
@@ -60548,7 +60548,7 @@ definitions:
         example: 4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9
       fingerprint_sha256:
         type: string
-        example: SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
+        example: Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
       projects_with_write_access:
         "$ref": "#/definitions/API_Entities_ProjectIdentity"
       projects_with_readonly_access:

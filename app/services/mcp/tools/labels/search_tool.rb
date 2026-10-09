@@ -5,8 +5,38 @@ module Mcp
     module Labels
       class SearchTool < Mcp::Tools::Base::GraphqlTool
         register_version VERSIONS[:v0_1_0], {
-          graphql_operation: load_graphql('labels/search.query.graphql')
+          graphql_operation: load_graphql('labels/search.v0_1_0.query.graphql')
         }
+
+        register_version '0.2.0', {
+          graphql_operation: load_graphql('labels/search.v0_2_0.query.graphql')
+        }
+
+        def execute
+          return super if version == VERSIONS[:v0_1_0] || !params[:search].is_a?(Array)
+
+          labels = []
+          result = nil
+
+          Array(params[:search]).uniq.each do |term|
+            result = self.class.new(
+              current_user: current_user,
+              params: params.merge(search: term),
+              version: version
+            ).execute
+
+            break if result[:isError]
+
+            labels.concat(result[:structuredContent][:items])
+          end
+
+          return result if result[:isError]
+
+          labels.uniq! { |label| label['id'] }
+
+          formatted_content = [{ type: 'text', text: Gitlab::Json.dump(labels) }]
+          ::Mcp::Tools::Base::Response.success(formatted_content, labels)
+        end
 
         def build_variables
           {

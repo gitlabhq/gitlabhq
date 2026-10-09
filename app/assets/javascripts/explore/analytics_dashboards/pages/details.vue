@@ -8,10 +8,16 @@ import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_das
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import {
+  EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
+  EXPLORE_DASHBOARD_MARK_SCOPE_SET,
+  EXPLORE_DASHBOARD_MEASURE_PANELS_IN_VIEW,
+} from '~/performance/constants';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
 import { DATE_RANGE_OPTION_LAST_30_DAYS, SCOPE_FILTER_QUERY_NAME } from '../components/constants';
 import { EVENT_VIEW_DASHBOARD, trackDashboardEvent } from '../tracking';
+import { LOAD_TIMED_DASHBOARD_SLUGS } from '../constants';
 import { isSystemDashboardSlug } from '../utils';
 import {
   dateRangeFilterFromQuery,
@@ -20,6 +26,9 @@ import {
   dateRangeOptionToFilter,
   getDateRangeOption,
 } from '../components/utils';
+import { markLoadStep, PanelsInViewTimer } from '../load_performance';
+
+const GLQL_VISUALIZATION_TYPE = 'Glql';
 
 export default {
   name: 'ExploreAnalyticsDashboardDetails',
@@ -59,6 +68,12 @@ export default {
       //  dataSourceClickhouse is not listed here on purpose: it is an
       //  instance-wide setting provided by the page entry point.
       overviewCountsAggregationEnabled: null,
+
+      isLoadTimed: computed(() => this.isLoadTimed),
+      glqlPanelLoad: {
+        register: (el) => this.panelsTimer?.register(el),
+        settle: (el) => this.panelsTimer?.settle(el),
+      },
     };
   },
   data() {
@@ -77,6 +92,9 @@ export default {
     };
   },
   computed: {
+    isLoadTimed() {
+      return LOAD_TIMED_DASHBOARD_SLUGS.includes(this.$route?.params.slug);
+    },
     hasNamespace() {
       return this.selectedNamespaces.length > 0;
     },
@@ -113,18 +131,21 @@ export default {
       this.$nextTick(() => {
         this.switchingViews = false;
       });
+      this.cancelPanelsTimer();
 
       if (this.hasNamespace) this.trackDashboardView();
     },
   },
   created() {
-    // Not reactive: only the tracking reads it.
+    // Not reactive: only the tracking and the load timing read them.
     this.dashboardConfig = null;
+    this.panelsTimer = null;
   },
   // createAlert renders into the global flash container, which outlives this page, so an alert
   // raised here would otherwise follow the user to the next dashboard.
   beforeDestroy() {
     this.alert?.dismiss();
+    this.cancelPanelsTimer();
   },
   methods: {
     // Set the active tab from the `view` query param on load. Default to the
@@ -187,6 +208,7 @@ export default {
         endDate,
       };
       this.syncDateRangeToUrl(this.filters);
+      this.cancelPanelsTimer();
     },
     // Written to history rather than through the router, for the same reason as the scope
     // filter below. Replaced, not pushed, so Back leaves the dashboard rather than walking
@@ -209,6 +231,7 @@ export default {
 
       this.scopePaths = namespaces.map(({ fullPath }) => fullPath);
       this.syncScopeToUrl(this.scopePaths);
+      this.startPanelsTimer();
 
       if (this.hasNamespace) this.trackDashboardView();
     },
@@ -223,6 +246,32 @@ export default {
         label: isCustom ? 'custom' : slug,
         property: isCustom ? '' : viewTitle,
       });
+    },
+    // Measures from the scope being set until the GLQL panels in view have loaded. A view switch
+    // or date range change before then re-queries other panels, so that measurement is dropped.
+    startPanelsTimer() {
+      this.cancelPanelsTimer();
+      if (!this.isLoadTimed || !this.hasNamespace || !this.dashboardConfig) return;
+
+      const expectedPanels = this.getPanels(this.dashboardConfig).filter(
+        ({ visualization }) => visualization?.type === GLQL_VISUALIZATION_TYPE,
+      ).length;
+      if (!expectedPanels) return;
+
+      markLoadStep({ mark: EXPLORE_DASHBOARD_MARK_SCOPE_SET });
+      this.panelsTimer = new PanelsInViewTimer({
+        expectedPanels,
+        onDone: () =>
+          markLoadStep({
+            mark: EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
+            measure: EXPLORE_DASHBOARD_MEASURE_PANELS_IN_VIEW,
+            start: EXPLORE_DASHBOARD_MARK_SCOPE_SET,
+          }),
+      });
+    },
+    cancelPanelsTimer() {
+      this.panelsTimer?.cancel();
+      this.panelsTimer = null;
     },
     pathsOfType(type) {
       return this.selectedNamespaces
@@ -283,6 +332,7 @@ export default {
     resetFilters() {
       this.filters = this.defaultDateRangeFilter();
       this.selectedNamespaces = [];
+      this.cancelPanelsTimer();
       this.scopePaths = [];
       this.syncScopeToUrl([]);
       // Cleared rather than set to the default, so the URL only names a range the user chose.

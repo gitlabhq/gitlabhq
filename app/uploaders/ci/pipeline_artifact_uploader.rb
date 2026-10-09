@@ -33,6 +33,15 @@ module Ci
       end
     end
 
+    # A HEAD request on some Fog providers returns no file for errors other than not found, such as a
+    # timeout on Google Cloud Storage. We confirm with a GET, which returns no file only for a 404.
+    def stored_file_missing?
+      return false if file.exists?
+      return true if file_storage?
+
+      storage.connection.directories.new(key: fog_directory).files.get(file.path).nil?
+    end
+
     def store_dir
       dynamic_segment
     end

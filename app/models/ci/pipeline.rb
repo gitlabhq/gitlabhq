@@ -42,6 +42,8 @@ module Ci
     COUNT_FAILED_JOBS_LIMIT = 101
     INPUTS_LIMIT = 20
 
+    VariablesFileMissingError = Class.new(StandardError)
+
     paginates_per 15
 
     sha_attribute :source_sha
@@ -1284,6 +1286,14 @@ module Ci
       # TODO: Replace super with [] when Ci::PipelineVariable is dropped
       # https://gitlab.com/gitlab-org/gitlab/-/issues/587237
       read_variables_from_pipeline_artifact || super
+    rescue VariablesFileMissingError => e
+      Gitlab::ErrorTracking.track_exception(e, pipeline_id: id, pipeline_artifact_id: pipeline_artifacts_pipeline_variables.id)
+
+      # Pipelines created before we stopped writing variables to the database still have them there
+      database_variables = super
+      return database_variables if database_variables.any?
+
+      raise
     end
     strong_memoize_attr :variables
 
@@ -2136,6 +2146,10 @@ module Ci
     def read_variables_from_pipeline_artifact
       artifact = pipeline_artifacts_pipeline_variables
       return unless artifact
+
+      if artifact.file.stored_file_missing?
+        raise VariablesFileMissingError, 'Pipeline variables artifact file is missing'
+      end
 
       variables_attributes = Gitlab::Json.safe_parse(artifact.file.read)
       variables_attributes.map { |var_attrs| Ci::PipelineVariableItem.new(pipeline: self, **var_attrs) }

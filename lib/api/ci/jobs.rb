@@ -222,7 +222,8 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' },
-            { code: 409, message: 'Conflict' }
+            { code: 409, message: 'Conflict' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['ci_jobs']
         end
@@ -237,7 +238,11 @@ module API
 
           reject_if_build_artifacts_size_refreshing!(build.project)
 
-          ::Ci::BuildEraseService.new(build, current_user).execute
+          response = ::Ci::BuildEraseService.new(build, current_user).execute
+
+          if response.error? && response.reason == :rate_limited
+            too_many_requests!(response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:job_erase))
+          end
 
           present build, with: Entities::Ci::Job
         end

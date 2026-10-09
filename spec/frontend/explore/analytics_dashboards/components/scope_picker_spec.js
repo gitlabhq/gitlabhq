@@ -9,6 +9,14 @@ import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import * as sentryBrowserWrapper from '~/sentry/sentry_browser_wrapper';
 import {
+  EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED,
+  EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+  EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED,
+  EXPLORE_DASHBOARD_MEASURE_SCOPE_GROUPS,
+  EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED,
+} from '~/performance/constants';
+import { markLoadStep } from '~/explore/analytics_dashboards/load_performance';
+import {
   SCOPE_PICKER_ITEM_TYPE_GROUP,
   SCOPE_PICKER_ITEM_TYPE_PROJECT,
   SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
@@ -25,6 +33,7 @@ import getOrganizationGroupQuery from '~/explore/analytics_dashboards/graphql/ge
 Vue.use(VueApollo);
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/explore/analytics_dashboards/load_performance');
 
 describe('ScopePicker', () => {
   let wrapper;
@@ -353,6 +362,7 @@ describe('ScopePicker', () => {
     organizationGroupHandler = respondWithOrganizationGroup(),
     props = {},
     listeners = {},
+    provide = {},
   } = {}) => {
     subgroupRequestHandler = subgroupHandler;
     topLevelGroupsRequestHandler = topLevelGroupsHandler;
@@ -372,6 +382,7 @@ describe('ScopePicker', () => {
       ]),
       propsData: { multiSelect: true, ...props },
       listeners,
+      provide,
       stubs: { GlCollapsibleListbox: listboxStub },
     });
   };
@@ -2232,6 +2243,79 @@ describe('ScopePicker', () => {
         expect(findSelectedNames()).toEqual([mockAcme.name]);
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockAcme)]]]);
       });
+    });
+  });
+
+  describe('load performance', () => {
+    const timed = { isLoadTimed: { value: true } };
+    const findMarks = (mark) =>
+      markLoadStep.mock.calls.filter(([step]) => step.mark === mark).map(([step]) => step);
+
+    it.each`
+      description                      | provide
+      ${'without the timing provided'} | ${{}}
+      ${'on a dashboard not timed'}    | ${{ isLoadTimed: { value: false } }}
+    `('records no marks $description', async ({ provide }) => {
+      createWrapper({ props: { initialPaths: [mockFrontend.fullPath] }, provide });
+      await waitForPromises();
+
+      expect(markLoadStep).not.toHaveBeenCalled();
+    });
+
+    it('marks the start when it is created', () => {
+      createWrapper({ provide: timed });
+
+      expect(findMarks(EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START)).toEqual([
+        { mark: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START },
+      ]);
+    });
+
+    it('measures the group list when its first page arrives, not later pages', async () => {
+      createWrapper({
+        provide: timed,
+        topLevelGroupsHandler: jest
+          .fn()
+          .mockResolvedValueOnce(topLevelGroupsPage(mockTopLevelGroups, 'groups-page-1'))
+          .mockResolvedValueOnce(topLevelGroupsPage([mockUmbrellaCorp])),
+      });
+      expect(findMarks(EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED)).toHaveLength(0);
+
+      await waitForPromises();
+      findListLoadMore().vm.$emit('load-more');
+      await waitForPromises();
+
+      expect(findMarks(EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED)).toEqual([
+        {
+          mark: EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED,
+          measure: EXPLORE_DASHBOARD_MEASURE_SCOPE_GROUPS,
+          start: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+        },
+      ]);
+    });
+
+    it('does not measure a group list that failed to load', async () => {
+      createWrapper({
+        provide: timed,
+        topLevelGroupsHandler: jest.fn().mockRejectedValue(new Error('oh no')),
+      });
+      await waitForPromises();
+
+      expect(findMarks(EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED)).toHaveLength(0);
+    });
+
+    it('measures the starting scope once, when it is resolved', async () => {
+      createWrapper({ props: { initialPaths: [mockFrontend.fullPath] }, provide: timed });
+      expect(findMarks(EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED)).toHaveLength(0);
+
+      await waitForPromises();
+
+      expect(findMarks(EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED)).toEqual([
+        {
+          mark: EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED,
+          measure: EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED,
+          start: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+        },
+      ]);
     });
   });
 });

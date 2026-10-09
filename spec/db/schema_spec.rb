@@ -111,7 +111,7 @@ RSpec.describe 'Database schema',
       dependency_list_export_parts: %w[start_id end_id],
       dep_ci_build_trace_sections: %w[build_id],
       deploy_keys_projects: %w[deploy_key_id],
-      deployments: %w[deployable_id user_id],
+      deployments: %w[deployable_id],
       draft_notes: %w[discussion_id commit_id],
       # No FK to preserve attribution when the trigger/schedule is deleted
       duo_workflows_workflows: %w[trigger_flow_trigger_id trigger_flow_schedule_id],

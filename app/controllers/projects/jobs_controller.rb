@@ -154,6 +154,8 @@ class Projects::JobsController < Projects::ApplicationController
 
     if service_response.success?
       redirect_to project_job_path(project, @build), notice: _("Job has been successfully erased!")
+    elsif service_response.reason == :rate_limited
+      respond_rate_limited(service_response, :job_erase)
     else
       head service_response.http_status
     end

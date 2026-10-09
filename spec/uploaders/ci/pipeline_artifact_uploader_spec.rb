@@ -25,6 +25,66 @@ RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integ
     it_behaves_like 'builds correct paths', store_dir: %r[\h{2}/\h{2}/\h{64}/pipelines/\d+/artifacts/\d+]
   end
 
+  describe '#stored_file_missing?' do
+    let(:pipeline_artifact) { create(:ci_pipeline_artifact, :with_pipeline_variables, file_store: file_store) }
+    let(:uploader) { Ci::PipelineArtifact.find(pipeline_artifact.id).file }
+
+    subject(:stored_file_missing) { uploader.stored_file_missing? }
+
+    context 'with local storage' do
+      let(:file_store) { described_class::Store::LOCAL }
+
+      it { is_expected.to be(false) }
+
+      context 'when the file is missing' do
+        before do
+          pipeline_artifact.file.remove!
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+
+    context 'with object storage' do
+      let(:file_store) { described_class::Store::REMOTE }
+
+      before do
+        stub_artifacts_object_storage(described_class)
+      end
+
+      it { is_expected.to be(false) }
+
+      context 'when the file is missing' do
+        before do
+          pipeline_artifact.file.remove!
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when a HEAD request returns no file but the file exists' do
+        before do
+          allow(uploader.file).to receive(:exists?).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the GET request fails' do
+        before do
+          allow(uploader.file).to receive(:exists?).and_return(false)
+          allow_next_instance_of(Fog::AWS::Storage::Files) do |files|
+            allow(files).to receive(:get).and_raise(Excon::Error::Timeout)
+          end
+        end
+
+        it 'raises the error' do
+          expect { stored_file_missing }.to raise_error(Excon::Error::Timeout)
+        end
+      end
+    end
+  end
+
   context 'when file is stored in valid local_path' do
     let(:file) do
       fixture_file_upload('spec/fixtures/pipeline_artifacts/code_coverage.json', 'application/json')

@@ -6,12 +6,20 @@ import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { MAX_SCOPES } from '~/glql/constants';
+import {
+  EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED,
+  EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+  EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED,
+  EXPLORE_DASHBOARD_MEASURE_SCOPE_GROUPS,
+  EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED,
+} from '~/performance/constants';
 import getFrecentGroupsQuery from '../graphql/get_frecent_groups.query.graphql';
 import getOrganizationGroupQuery from '../graphql/get_organization_group.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
 import getScopeNamespaceQuery from '../graphql/get_scope_namespace.query.graphql';
+import { markLoadStep } from '../load_performance';
 import {
   SCOPE_PICKER_ITEM_TYPE_GROUP,
   SCOPE_PICKER_ITEM_TYPE_PROJECT,
@@ -38,6 +46,9 @@ export default {
     GlButton,
     GlCollapsibleListbox,
     ScopePickerItem,
+  },
+  inject: {
+    isLoadTimed: { default: null },
   },
   props: {
     // Namespace paths to preselect, read by the page from the `scope` URL param on load.
@@ -289,10 +300,14 @@ export default {
     // handler has to be built per instance, so cancelling it cancels only this one's.
     this.onSearch = debounce(this.setSearchTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
+    this.markTimedLoadStep({ mark: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START });
     this.loadTopLevelGroups();
     this.loadInitialScope();
   },
   methods: {
+    markTimedLoadStep(step) {
+      if (this.isLoadTimed?.value) markLoadStep(step);
+    },
     // A namespace a query resolved rather than the user clicking it: the derived default.
     // Applied like a click, so the page treats it as an ordinary filter change. Anything the
     // user picked meanwhile outranks it.
@@ -308,6 +323,11 @@ export default {
       if (this.isReady) return;
 
       this.isReady = true;
+      this.markTimedLoadStep({
+        mark: EXPLORE_DASHBOARD_MARK_SCOPE_RESOLVED,
+        measure: EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED,
+        start: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+      });
       this.$emit('ready');
     },
     commitChange(namespaces) {
@@ -493,6 +513,14 @@ export default {
 
         this.topLevelGroups = [...this.topLevelGroups, ...(nodes ?? [])];
         this.topLevelGroupsPageInfo = pageInfo ?? null;
+
+        if (!after) {
+          this.markTimedLoadStep({
+            mark: EXPLORE_DASHBOARD_MARK_SCOPE_GROUPS_LOADED,
+            measure: EXPLORE_DASHBOARD_MEASURE_SCOPE_GROUPS,
+            start: EXPLORE_DASHBOARD_MARK_SCOPE_PICKER_START,
+          });
+        }
       } catch (error) {
         // The pages already listed still stand, so keep them and let the button retry.
         this.$emit('error', error);

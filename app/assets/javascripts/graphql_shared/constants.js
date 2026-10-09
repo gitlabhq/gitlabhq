@@ -1,5 +1,10 @@
 export const MINIMUM_SEARCH_LENGTH = 3;
 
+// The untranslated message the API returns for a resource the user may not see, from
+// Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR.
+export const RESOURCE_ACCESS_ERROR =
+  "The resource that you are attempting to access does not exist or you don't have permission to perform this action";
+
 export const TYPENAME_ACHIEVEMENT = 'Achievements::Achievement';
 export const TYPENAME_ADMIN_MEMBER_ROLE = 'AdminMemberRole';
 export const TYPENAME_AI_DUO_WORKFLOW = 'Ai::DuoWorkflows::Workflow';

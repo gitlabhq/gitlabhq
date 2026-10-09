@@ -1938,18 +1938,20 @@ Search issues for "flaky test" across GitLab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218121) in GitLab 18.9.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/621662) in GitLab 19.5 to accept multiple search terms.
 
 {{< /history >}}
 
 Searches for labels in a GitLab project or group.
 
-| Parameter    | Type    | Required | Description |
-|--------------|---------|----------|-------------|
-| `full_path`  | string  | Yes      | Full path of the project or group (for example, `group/project`). |
-| `is_project` | boolean | Yes      | Whether to search in a project (`true`) or group (`false`). |
-| `search`     | string  | No       | Search term to filter labels by title. |
+| Parameter    | Type                        | Required | Description |
+|--------------|-----------------------------|----------|-------------|
+| `full_path`  | string                      | Yes      | Full path of the project or group (for example, `group/project`). |
+| `is_project` | boolean                     | Yes      | Whether to search in a project (`true`) or group (`false`). |
+| `search`     | string or array of strings  | No       | One term or an array of up to 10 terms to filter labels by title. If omitted, lists labels instead. An empty array is invalid. |
 
 When you search group labels, the results include labels from ancestor and descendant groups.
+Results from multiple terms form one list without duplicate labels.
 
 Example:
 

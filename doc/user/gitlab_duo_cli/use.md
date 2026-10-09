@@ -161,7 +161,7 @@ In interactive mode, you can switch the GitLab Duo CLI between modes as you work
 |----------------------|-------------|-------------------------------------------------------------------------------|
 | Build mode (default) | Read-write  | GitLab Duo can execute tasks and make changes to your project.               |
 | Plan mode            | Read-only   | GitLab Duo can analyze your project and create plans without making changes. |
-| Auto mode (beta)     | Read-write  | GitLab Duo can use tools without asking for approval first. For more information, see [auto mode](#auto-mode). |
+| Auto mode            | Read-write  | GitLab Duo can use tools without asking for approval first. For more information, see [auto mode](#auto-mode). |
 
 For example, start by discussing a problem with GitLab Duo in plan mode. When you're ready, switch
 to build mode and instruct GitLab Duo to implement the plan.
@@ -270,16 +270,14 @@ Your options are:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com
-- Status: Beta
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618088) in GitLab 19.5 as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../../administration/feature_flags/_index.md) named `duo_auto_mode`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618088) in GitLab 19.5 with a [feature flag](../../administration/feature_flags/_index.md) named `duo_auto_mode`. Enabled by default.
   - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.22.0) 9.22.0.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/629172) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -314,10 +312,29 @@ Tools set to **Always Deny** stay blocked.
 #### Turn on auto mode
 
 The **Auto mode** setting is off by default.
-Auto mode must be turned on for your group or project before you can use it.
-Subgroups and projects inherit the setting from their parent group.
+Auto mode must be turned on for your instance, group, or project before you can use it.
+Groups inherit the setting from the instance, and subgroups and projects inherit the setting from their parent group.
 
 {{< tabs >}}
+
+{{< tab title="Instance" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+To turn on auto mode for an instance:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. From the **Auto mode** dropdown list, select one of the following options:
+   - **On by default**: Auto mode is available. Groups and subgroups can turn it off.
+   - **Off by default**: Auto mode is not available. Groups and subgroups can turn it on.
+   - **Always off**: Auto mode is not available. Groups and subgroups cannot turn it on.
+1. Select **Save changes**.
+
+{{< /tab >}}
 
 {{< tab title="Group" >}}
 

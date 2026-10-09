@@ -22583,6 +22583,12 @@
               "deprecationReason": null
             },
             {
+              "name": "RECOMMEND_REVIEWERS_ASSIGN",
+              "description": "Recommend reviewers assign feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DUO_CHAT_TROUBLESHOOT_JOB",
               "description": "Duo chat troubleshoot job feature setting",
               "isDeprecated": false,
@@ -22663,12 +22669,6 @@
             {
               "name": "BL_SECURITY",
               "description": "Bl security feature setting",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "RECOMMEND_REVIEWERS_ASSIGN",
-              "description": "Recommend reviewers assign feature setting",
               "isDeprecated": false,
               "deprecationReason": null
             },

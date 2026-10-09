@@ -2989,6 +2989,9 @@ Supported attributes:
 
 - `mr_default_title_template` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228442) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `mr_default_title_template`. Disabled by default.
 - Feature flag `mr_default_title_template` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235642) in GitLab 19.0.
+- Asynchronous transfers [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/586549) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `groups_and_projects_async_transfer`. Disabled by default.
+- Asynchronous transfers [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250913) in GitLab 19.4. Feature flag `groups_and_projects_async_transfer` removed.
+- Checking for a project with the same name or path before the transfer is scheduled [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/597297) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -3007,6 +3010,8 @@ Supported attributes:
 |:------------|:------------------|:---------|:------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer the project to. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the project as it was before the transfer.
 
 Example request:
 
@@ -3132,6 +3137,11 @@ Example response:
   "secret_push_protection_enabled": false
 }
 ```
+
+To confirm the transfer was successful, [retrieve the project](#retrieve-a-project) until its `namespace.id` matches the ID of the new namespace.
+
+If the transfer fails, the user who requested it gets a to-do item with the `transfer_failed` action.
+To get to-do items, see [list all to-do items](todos.md#list-all-to-do-items).
 
 #### List groups available for project transfer
 

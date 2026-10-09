@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:label) { create(:label, project: project, title: 'label') }
   let(:params) { { full_path: project.full_path, is_project: true, search: 'label' } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, version: '0.1.0') }
 
   before_all do
     project.add_developer(user)
@@ -275,6 +275,104 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
             "Group 'non_existing_group' not found or inaccessible"
           )
         end
+      end
+    end
+  end
+
+  describe 'version 0.2.0' do
+    let_it_be(:second_label) { create(:label, project: project, title: 'backend') }
+    let_it_be(:overlapping_label) { create(:label, project: project, title: 'backend-label') }
+    let(:params) { { full_path: project.full_path, is_project: true, search: %w[label backend] } }
+    let(:tool) { described_class.new(current_user: user, params: params, version: '0.2.0') }
+
+    it 'executes each term with the version 0.2.0 operation' do
+      allow(GitlabSchema).to receive(:execute).and_call_original
+
+      tool.execute
+
+      expect(GitlabSchema).to have_received(:execute).with(
+        a_string_including('query mcpSearchLabelsV020'),
+        any_args
+      ).twice
+    end
+
+    it 'returns matching labels once each in one flat response' do
+      result = tool.execute
+
+      expect(result[:isError]).to be(false)
+      expected_labels = [label, second_label, overlapping_label].map do |item|
+        a_hash_including('id' => item.to_global_id.to_s, 'title' => item.title)
+      end
+
+      expect(result[:structuredContent][:items]).to match_array(expected_labels)
+      expect(Gitlab::Json::SafeParser.parse(result[:content].first[:text])).to match_array(
+        result[:structuredContent][:items]
+      )
+    end
+
+    it 'runs a repeated term only once' do
+      allow(GitlabSchema).to receive(:execute).and_call_original
+      duplicate_params = params.merge(search: %w[label label])
+
+      result = described_class.new(current_user: user, params: duplicate_params, version: '0.2.0').execute
+
+      expect(result[:isError]).to be(false)
+      expect(GitlabSchema).to have_received(:execute).once
+    end
+
+    context 'with one search term' do
+      let(:params) { { full_path: project.full_path, is_project: true, search: ['label'] } }
+
+      it 'returns the same labels as the scalar version' do
+        old_result = described_class.new(
+          current_user: user, params: params.merge(search: 'label'), version: '0.1.0'
+        ).execute
+
+        expect(tool.execute).to eq(old_result)
+      end
+    end
+
+    context 'when the group is inaccessible' do
+      let(:params) { { full_path: 'non_existing_group', is_project: false, search: %w[label backend] } }
+
+      it 'returns an error instead of partial results' do
+        result = tool.execute
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Group 'non_existing_group' not found or inaccessible")
+      end
+    end
+
+    context 'when a project is private' do
+      let_it_be(:private_project) { create(:project, :private) }
+      let_it_be(:private_label) { create(:label, project: private_project, title: 'private-label') }
+      let(:params) { { full_path: private_project.full_path, is_project: true, search: %w[private label] } }
+
+      it 'does not expose labels to non-members' do
+        result = tool.execute
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).not_to include(private_label.title)
+      end
+    end
+
+    context 'when a later search fails' do
+      before do
+        allow(GitlabSchema).to receive(:execute).and_wrap_original do |original, *args, **kwargs|
+          if kwargs[:variables][:search] == 'backend'
+            { 'errors' => [{ 'message' => 'Search failed' }] }
+          else
+            original.call(*args, **kwargs)
+          end
+        end
+      end
+
+      it 'returns the error without earlier matches' do
+        result = tool.execute
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to eq('Search failed')
+        expect(result[:structuredContent]).to eq({})
       end
     end
   end

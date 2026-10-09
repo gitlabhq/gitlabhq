@@ -60245,6 +60245,8 @@ paths:
           description: Bad request
         '404':
           description: Not found
+        '429':
+          description: Too many requests
       parameters:
       - name: id
         required: true
@@ -76784,6 +76786,8 @@ paths:
           description: Not found
         '409':
           description: Conflict
+        '429':
+          description: Too Many Requests
         '400':
           description: Bad Request
       parameters:
@@ -91581,7 +91585,7 @@ components:
           example: 4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9
         fingerprint_sha256:
           type: string
-          example: SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
+          example: Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
         projects_with_write_access:
           "$ref": "#/components/schemas/APIEntitiesProjectIdentity"
         projects_with_readonly_access:
@@ -93103,6 +93107,8 @@ components:
         job_play_limit_per_user_project:
           type: string
         pipeline_delete_limit_per_user_project:
+          type: string
+        job_erase_limit_per_user_project:
           type: string
         asciidoc_max_includes:
           type: string
@@ -100277,7 +100283,7 @@ components:
           example: 4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9
         fingerprint_sha256:
           type: string
-          example: SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
+          example: Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU
         projects_with_write_access:
           "$ref": "#/components/schemas/APIEntitiesProjectIdentity"
         projects_with_readonly_access:
@@ -110629,6 +110635,11 @@ components:
           type: integer
           description: Maximum number of pipeline deletions allowed per minute for
             a given project.
+          nullable: true
+        job_erase_limit_per_user_project:
+          type: integer
+          description: Maximum number of job erasures allowed per minute for a given
+            project.
           nullable: true
         ai_action_api_rate_limit:
           type: integer

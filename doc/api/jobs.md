@@ -923,6 +923,9 @@ Erase a single job of a project (remove job artifacts and a job log)
 POST /projects/:id/jobs/:job_id/erase
 ```
 
+If you exceed the [job erasure rate limits](../administration/cicd/limits.md#job-erasure-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code with a `Retry-After` header.
+
 Parameters
 
 | Attribute | Type           | Required | Description |

@@ -1,0 +1,10 @@
+---
+name: rate_limit_job_erase
+description: Rate limits job erasures per user and job, and per user and project
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627274
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259439
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632455
+milestone: '19.5'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

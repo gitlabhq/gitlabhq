@@ -562,6 +562,22 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            job_erase: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_erases_by_user_job',
+              characteristics: %i[user ci_build],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
+            job_erase_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_erases_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.job_erase_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
             pipelines_create: ::Labkit::RateLimit::Rule.new(
               name: 'limit_pipelines_by_project_user_sha',
               characteristics: %i[project user sha],

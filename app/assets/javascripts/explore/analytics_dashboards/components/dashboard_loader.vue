@@ -2,6 +2,7 @@
 import { GlSkeletonLoader, GlAlert, GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
+import { RESOURCE_ACCESS_ERROR } from '~/graphql_shared/constants';
 import {
   FULL_DASHBOARD_WIDTH,
   GRID_HEIGHT_COMPACT,
@@ -19,12 +20,9 @@ import getSystemDashboardQuery from '../graphql/get_system_dashboard.query.graph
 
 // What the API answers for a dashboard the user may not see, such as one behind a disabled
 // feature flag or a missing licence. It is deliberately the same answer as for one that is missing.
-const RESOURCE_NOT_AVAILABLE_ERROR =
-  "The resource that you are attempting to access does not exist or you don't have permission to perform this action";
-
 const isResourceNotAvailable = ({ graphQLErrors = [] }) =>
   graphQLErrors.length > 0 &&
-  graphQLErrors.every(({ message }) => message === RESOURCE_NOT_AVAILABLE_ERROR);
+  graphQLErrors.every(({ message }) => message === RESOURCE_ACCESS_ERROR);
 
 export default {
   name: 'DashboardLoader',

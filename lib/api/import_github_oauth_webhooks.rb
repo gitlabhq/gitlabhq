@@ -23,7 +23,8 @@ module API
         success code: 200
         failure [
           { code: 400, message: 'Bad request' },
-          { code: 404, message: 'Not found' }
+          { code: 404, message: 'Not found' },
+          { code: 429, message: 'Too many requests' }
         ]
         tags ['project_import']
       end

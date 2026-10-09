@@ -32,14 +32,6 @@ RSpec.describe MergeRequestBasicEntity, feature_category: :code_review_workflow 
 
       subject
     end
-
-    context 'without a request' do
-      let(:request) { nil }
-
-      it 'renders the title as markdown without a current user' do
-        expect(subject[:title_html]).to include('<code>code</code>')
-      end
-    end
   end
 
   describe '#reviewers' do

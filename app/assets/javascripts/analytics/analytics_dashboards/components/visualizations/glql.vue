@@ -47,6 +47,10 @@ export default {
     PanelState,
     ViewSourceModal,
   },
+  // Pages that time their load provide this: a panel registers per query, settles on its result.
+  inject: {
+    glqlPanelLoad: { default: null },
+  },
   props: {
     data: {
       type: String,
@@ -90,6 +94,7 @@ export default {
       stateDescription: '',
       retryCount: 0,
       modalVisible: false,
+      settledResolverKey: null,
     };
   },
   computed: {
@@ -161,6 +166,12 @@ export default {
     bindings(newValue, oldValue) {
       if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) this.resetState();
     },
+    resolverKey() {
+      this.glqlPanelLoad?.register(this.$el);
+    },
+  },
+  mounted() {
+    this.glqlPanelLoad?.register(this.$el);
   },
   methods: {
     resetState() {
@@ -168,8 +179,13 @@ export default {
       this.stateVariant = null;
       this.stateDescription = '';
     },
-    handleResolverChange({ data, config, fields, error }) {
+    handleResolverChange({ data, config, fields, error, loading }) {
       this.resolverResult = { data, config, fields };
+
+      if (this.glqlPanelLoad && !loading && this.settledResolverKey !== this.resolverKey) {
+        this.settledResolverKey = this.resolverKey;
+        this.glqlPanelLoad.settle(this.$el);
+      }
 
       const actions = [];
       if (error) {

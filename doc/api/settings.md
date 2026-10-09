@@ -417,6 +417,7 @@ Example response:
   "job_retry_limit_per_user_project": 320,
   "job_play_limit_per_user_project": 200,
   "pipeline_delete_limit_per_user_project": 400,
+  "job_erase_limit_per_user_project": 400,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
@@ -502,6 +503,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `pipeline_retry_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627233) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_pipeline_retry`. Disabled by default.
 - `job_retry_limit_per_user_project` and `job_play_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627273) in GitLab 19.5 [with feature flags](../administration/feature_flags/_index.md) named `rate_limit_job_retry` and `rate_limit_job_play`. Disabled by default.
 - `pipeline_delete_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627268) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_pipeline_delete`. Disabled by default.
+- `job_erase_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627274) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_job_erase`. Disabled by default.
 
 {{< /history >}}
 
@@ -624,6 +626,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `job_retry_limit_per_user_project`       | integer          | no                                   | [Job retry rate limits](../administration/cicd/limits.md#job-retry-and-manual-job-run-rate-limits). Default: `320`. |
 | `job_play_limit_per_user_project`        | integer          | no                                   | [Manual job run rate limits](../administration/cicd/limits.md#job-retry-and-manual-job-run-rate-limits). Default: `200`. |
 | `pipeline_delete_limit_per_user_project` | integer | no | [Pipeline deletion rate limits](../administration/cicd/limits.md#pipeline-deletion-rate-limits). Default: `400`. |
+| `job_erase_limit_per_user_project`       | integer          | no                                   | [Job erasure rate limits](../administration/cicd/limits.md#job-erasure-rate-limits). Default: `400`. |
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ecdsa_sk_key_restriction`               | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA_SK key. Default is `0` (no restriction). `-1` disables ECDSA_SK keys. |

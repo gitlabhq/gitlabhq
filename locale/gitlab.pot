@@ -7000,6 +7000,9 @@ msgstr ""
 msgid "AdminSettings|Maximum includes"
 msgstr ""
 
+msgid "AdminSettings|Maximum job erasures per project"
+msgstr ""
+
 msgid "AdminSettings|Maximum job retries per project"
 msgstr ""
 
@@ -7259,6 +7262,9 @@ msgid "AdminSettings|The maximum number of downstream pipelines that can be trig
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of job erasures allowed per minute for a given project. Set to 0 to disable this limit."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of job retries allowed per minute for a given project. Set to 0 to disable this limit."
@@ -32234,6 +32240,9 @@ msgstr ""
 msgid "DuoAgentPlatform|%{text} by %{name}"
 msgstr ""
 
+msgid "DuoAgentPlatform|%{user} via %{source}"
+msgstr ""
+
 msgid "DuoAgentPlatform|.gitlab/duo/agent-config.yml is on the default branch."
 msgstr ""
 
@@ -32472,6 +32481,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Local setup"
 msgstr ""
 
+msgid "DuoAgentPlatform|MCP"
+msgstr ""
+
 msgid "DuoAgentPlatform|MCP servers"
 msgstr ""
 
@@ -32566,6 +32578,9 @@ msgid "DuoAgentPlatform|Sessions"
 msgstr ""
 
 msgid "DuoAgentPlatform|Showing most recent %{count}"
+msgstr ""
+
+msgid "DuoAgentPlatform|Slack"
 msgstr ""
 
 msgid "DuoAgentPlatform|Something went wrong saving Duo Agent Platform settings"
@@ -33311,6 +33326,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Delegated to subagent"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Delete automation"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Delete trigger"
 msgstr ""
 
@@ -33318,6 +33336,9 @@ msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Description is required."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Edit automation"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Edit event"
@@ -33732,6 +33753,9 @@ msgid "DuoAgentsPlatform|Triggers run a flow or external agent when defined even
 msgstr ""
 
 msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Turn automation on or off: %{description}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Turn trigger on or off: %{description}"
@@ -34377,7 +34401,7 @@ msgstr ""
 msgid "DuoCodeReview|Starts a new review when a merge request receives new commits."
 msgstr ""
 
-msgid "DuoCodeReview|Starts a new review when a merge request receives new commits. Applies across all groups and projects."
+msgid "DuoCodeReview|Starts a new review when a merge request receives new commits. Applies to GitLab Duo Agent Platform reviews in all groups and projects."
 msgstr ""
 
 msgid "DuoCodeReview|The session was stopped before it finished."

@@ -38,64 +38,9 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
     it 'logs the data without opening a transaction' do
       allow(WebHookLog.connection).to receive(:transaction).and_call_original
 
-      service.execute
+      expect { service.execute }.to change { ::WebHookLog.count }.by(1)
 
       expect(WebHookLog.connection).not_to have_received(:transaction)
-    end
-
-    context 'when the web_hook_log_insert_without_transaction feature flag is disabled' do
-      before do
-        stub_feature_flags(web_hook_log_insert_without_transaction: false)
-      end
-
-      it 'logs the data in a transaction' do
-        allow(WebHookLog.connection).to receive(:transaction).and_call_original
-
-        expect { service.execute }.to change { ::WebHookLog.count }.by(1)
-
-        expect(WebHookLog.connection).to have_received(:transaction)
-        expect(WebHookLog.recent.first).to have_attributes(
-          data.merge(project_id: project_hook.project_id, group_id: nil, organization_id: nil)
-        )
-      end
-    end
-
-    context 'when the web_hook_log_insert_without_transaction feature flag is enabled for one actor' do
-      let_it_be(:other_project) { create(:project) }
-
-      before do
-        allow(WebHookLog).to receive(:insert_log!).and_call_original
-      end
-
-      it 'checks the flag against the project of a project hook' do
-        stub_feature_flags(web_hook_log_insert_without_transaction: project_hook.project)
-
-        service.execute
-
-        expect(WebHookLog).to have_received(:insert_log!)
-      end
-
-      it 'does not apply to hooks of other projects' do
-        stub_feature_flags(web_hook_log_insert_without_transaction: other_project)
-
-        service.execute
-
-        expect(WebHookLog).not_to have_received(:insert_log!)
-      end
-    end
-
-    context 'with a system hook' do
-      let_it_be(:system_hook) { create(:system_hook) }
-
-      subject(:service) { described_class.new(hook: system_hook, log_data: data, response_category: response_category) }
-
-      it 'logs the data without opening a transaction' do
-        allow(WebHookLog.connection).to receive(:transaction).and_call_original
-
-        expect { service.execute }.to change { ::WebHookLog.count }.by(1)
-
-        expect(WebHookLog.connection).not_to have_received(:transaction)
-      end
     end
 
     context 'when data contains unsafe YAML properties' do

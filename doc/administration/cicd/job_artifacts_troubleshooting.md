@@ -424,7 +424,7 @@ builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
     print "Ci::Build ID #{build.id}... "
 
     if build.erasable?
-      Ci::BuildEraseService.new(build, admin_user).execute
+      Ci::BuildEraseService.new(build, admin_user, rate_limit: false).execute
       puts "Erased"
     else
       puts "Skipped (Nothing to erase or not erasable)"
@@ -443,7 +443,7 @@ builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
     print "Ci::Build ID #{build.id}... "
 
     if build.erasable?
-      Ci::BuildEraseService.new(build, admin_user).execute
+      Ci::BuildEraseService.new(build, admin_user, rate_limit: false).execute
       puts "Erased"
     else
       puts "Skipped (Nothing to erase or not erasable)"

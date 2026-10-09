@@ -116,6 +116,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
         domain_allowlist: Settings.gitlab['domain_allowlist'],
         downstream_pipeline_trigger_limit_per_project_user_sha: 0,
+        job_erase_limit_per_user_project: 400,
         job_play_limit_per_user_project: 200,
         job_retry_limit_per_user_project: 320,
         pipeline_delete_limit_per_user_project: 400,
@@ -701,6 +702,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           groups_api_limit
           inactive_projects_min_size_mb
           issues_create_limit
+          job_erase_limit_per_user_project
           job_play_limit_per_user_project
           job_retry_limit_per_user_project
           jobs_per_stage_page_size

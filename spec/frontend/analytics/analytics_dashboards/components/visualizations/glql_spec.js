@@ -21,9 +21,10 @@ jest.mock('~/lib/utils/copy_to_clipboard');
 describe('GlqlVisualization', () => {
   let wrapper;
 
-  const createWrapper = async (props = {}) => {
+  const createWrapper = async (props = {}, { glqlPanelLoad } = {}) => {
     wrapper = shallowMountExtended(GlqlVisualization, {
       propsData: props,
+      provide: { ...(glqlPanelLoad && { glqlPanelLoad }) },
     });
     await nextTick();
   };
@@ -139,6 +140,49 @@ describe('GlqlVisualization', () => {
       await nextTick();
 
       expect(findResolver().vm).toBe(original);
+    });
+  });
+
+  describe('dashboard load timing', () => {
+    const query = 'type = Issue AND state = opened';
+    let glqlPanelLoad;
+
+    beforeEach(async () => {
+      glqlPanelLoad = { register: jest.fn(), settle: jest.fn() };
+      await createWrapper({ data: query, namespace: 'gitlab-org' }, { glqlPanelLoad });
+    });
+
+    it('registers the panel when it mounts', () => {
+      expect(glqlPanelLoad.register).toHaveBeenCalledWith(wrapper.element);
+    });
+
+    it('does not settle while the query is loading', () => {
+      findResolver().vm.$emit('change', { loading: true });
+
+      expect(glqlPanelLoad.settle).not.toHaveBeenCalled();
+    });
+
+    it.each`
+      outcome      | change
+      ${'data'}    | ${{ loading: false, data: { nodes: [] } }}
+      ${'failure'} | ${{ loading: false, error: { networkError: { statusCode: 503 } } }}
+    `('settles once when the first result is $outcome', ({ change }) => {
+      findResolver().vm.$emit('change', change);
+      findResolver().vm.$emit('change', { loading: false, data: { nodes: [] } });
+
+      expect(glqlPanelLoad.settle).toHaveBeenCalledTimes(1);
+      expect(glqlPanelLoad.settle).toHaveBeenCalledWith(wrapper.element);
+    });
+
+    it('registers and settles again when the query starts over', async () => {
+      findResolver().vm.$emit('change', { loading: false, data: { nodes: [] } });
+
+      wrapper.setProps({ namespace: 'gitlab-com' });
+      await nextTick();
+      findResolver().vm.$emit('change', { loading: false, data: { nodes: [] } });
+
+      expect(glqlPanelLoad.register).toHaveBeenCalledTimes(2);
+      expect(glqlPanelLoad.settle).toHaveBeenCalledTimes(2);
     });
   });
 

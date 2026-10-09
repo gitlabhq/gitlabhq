@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Ci
-  # Per-user rate limiting for job actions (retry, play), checked before any other
-  # step of the service so a rejected call still costs a request.
+  # Per-user rate limiting for job actions (retry, play, erase), checked before
+  # any other step of the service so a rejected call still costs a request.
   #
   # Expects the including service to expose `current_user`, `project` and `rate_limit?`
   # (false for internal callers that must never be throttled). The feature flag check

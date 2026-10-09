@@ -13,6 +13,12 @@ import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard
 import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import { createAlert } from '~/alert';
+import {
+  EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
+  EXPLORE_DASHBOARD_MARK_SCOPE_SET,
+  EXPLORE_DASHBOARD_MEASURE_PANELS_IN_VIEW,
+} from '~/performance/constants';
+import { markLoadStep, PanelsInViewTimer } from '~/explore/analytics_dashboards/load_performance';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
 import { EVENT_VIEW_DASHBOARD, trackDashboardEvent } from '~/explore/analytics_dashboards/tracking';
 import {
@@ -29,6 +35,7 @@ jest.mock('~/explore/analytics_dashboards/tracking', () => ({
   ...jest.requireActual('~/explore/analytics_dashboards/tracking'),
   trackDashboardEvent: jest.fn(),
 }));
+jest.mock('~/explore/analytics_dashboards/load_performance');
 
 describe('ExploreAnalyticsDashboardDetails', () => {
   let wrapper;
@@ -1528,6 +1535,127 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       await switchView(1);
 
       expect(trackDashboardEvent).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('load performance', () => {
+    const glqlPanel = (title) => ({ title, visualization: { type: 'Glql', slug: title } });
+    const configFor = (overviewPanels) => ({
+      panels: [],
+      views: [
+        { title: 'Overview', panels: overviewPanels },
+        { title: 'Details', panels: [glqlPanel('details')] },
+      ],
+    });
+    const config = configFor([
+      glqlPanel('first'),
+      glqlPanel('second'),
+      { title: 'Chart', visualization: { type: 'LineChart', slug: 'chart' } },
+      { section: { title: 'Section' } },
+    ]);
+
+    const findTimer = (index = 0) => PanelsInViewTimer.mock.instances[index];
+    const findPanelLoad = () => wrapper.findComponent(AnalyticsDashboardPanel).vm.glqlPanelLoad;
+
+    const createWithConfig = (dashboardConfig = config, slug = 'dap_impact') =>
+      createWithFilters(filtersLoaderStubFor(dashboardConfig), {
+        routeParams: { slug },
+        stubs: {
+          GlDashboardLayout: panelLayoutStub,
+          AnalyticsDashboardPanel: stubComponent(AnalyticsDashboardPanel, {
+            inject: ['glqlPanelLoad'],
+          }),
+        },
+      });
+
+    it('does not time anything before a scope is set', async () => {
+      await createWithConfig();
+
+      expect(markLoadStep).not.toHaveBeenCalled();
+      expect(PanelsInViewTimer).not.toHaveBeenCalled();
+    });
+
+    it.each(['duo_and_sdlc_trends', '3'])(
+      'does not time the %s dashboard, which is not on the list',
+      async (slug) => {
+        await createWithConfig(config, slug);
+        await selectGroup();
+
+        expect(markLoadStep).not.toHaveBeenCalled();
+        expect(PanelsInViewTimer).not.toHaveBeenCalled();
+      },
+    );
+
+    it('does not time a view without GLQL panels', async () => {
+      await createWithConfig(configFor([{ title: 'Chart', visualization: { type: 'LineChart' } }]));
+      await selectGroup();
+
+      expect(markLoadStep).not.toHaveBeenCalled();
+      expect(PanelsInViewTimer).not.toHaveBeenCalled();
+    });
+
+    describe('when a scope is set', () => {
+      beforeEach(async () => {
+        await createWithConfig();
+        await selectGroup();
+      });
+
+      it('marks the scope being set', () => {
+        expect(markLoadStep).toHaveBeenCalledWith({ mark: EXPLORE_DASHBOARD_MARK_SCOPE_SET });
+      });
+
+      it("waits for the active view's GLQL panels", () => {
+        expect(PanelsInViewTimer).toHaveBeenCalledWith({
+          expectedPanels: 2,
+          onDone: expect.any(Function),
+        });
+      });
+
+      it('passes panel loads on to the timer', () => {
+        const el = document.createElement('div');
+
+        findPanelLoad().register(el);
+        findPanelLoad().settle(el);
+
+        expect(findTimer().register).toHaveBeenCalledWith(el);
+        expect(findTimer().settle).toHaveBeenCalledWith(el);
+      });
+
+      it('measures from the scope being set once the panels in view have loaded', () => {
+        PanelsInViewTimer.mock.calls[0][0].onDone();
+
+        expect(markLoadStep).toHaveBeenLastCalledWith({
+          mark: EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
+          measure: EXPLORE_DASHBOARD_MEASURE_PANELS_IN_VIEW,
+          start: EXPLORE_DASHBOARD_MARK_SCOPE_SET,
+        });
+      });
+
+      it('starts over when the scope changes', async () => {
+        await selectScope(mockOtherGroup);
+
+        expect(findTimer(0).cancel).toHaveBeenCalled();
+        expect(PanelsInViewTimer).toHaveBeenCalledTimes(2);
+      });
+
+      it.each`
+        change                 | act
+        ${'the view switches'} | ${() => findViewsTabs().vm.$emit('input', 1)}
+        ${'the scope clears'}  | ${() => clearScope()}
+        ${'the filters reset'} | ${() => findResetButton().vm.$emit('click')}
+        ${'the date range changes'} | ${() =>
+          selectDateRange({
+            dateRangeOption: '90d',
+            startDate: new Date('2020-04-07T00:00:00.000Z'),
+            endDate: new Date('2020-07-06T00:00:00.000Z'),
+          })}
+      `('stops timing when $change', async ({ act }) => {
+        await act();
+        await waitForPromises();
+
+        expect(findTimer().cancel).toHaveBeenCalled();
+        expect(PanelsInViewTimer).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

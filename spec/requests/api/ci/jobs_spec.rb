@@ -1538,6 +1538,24 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
     end
 
+    context 'when the job erase rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:other_job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
+
+      before do
+        stub_application_setting(job_erase_limit_per_user_project: 1)
+        post api("/projects/#{project.id}/jobs/#{other_job.id}/erase", user)
+      end
+
+      it 'returns 429 with Retry-After', :aggregate_failures do
+        post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers['Retry-After']).to be_present
+        expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+      end
+    end
+
     context 'when project is undergoing stats refresh' do
       let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
 

@@ -2605,6 +2605,65 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it_behaves_like 'when pipeline does not have pipeline variables'
     end
+
+    context 'when the pipeline variables artifact file is missing from storage' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      shared_examples 'raising a missing file error' do
+        it 'tracks and raises VariablesFileMissingError' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(
+              an_instance_of(described_class::VariablesFileMissingError),
+              { pipeline_id: pipeline.id, pipeline_artifact_id: artifact.id }
+            ).and_call_original
+
+          expect { pipeline.reset.variables }.to raise_error(described_class::VariablesFileMissingError)
+        end
+      end
+
+      context 'with local storage' do
+        let(:artifact) { create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline) }
+
+        before do
+          artifact.file.remove!
+        end
+
+        it_behaves_like 'raising a missing file error'
+      end
+
+      context 'with object storage' do
+        let(:artifact) { create(:ci_pipeline_artifact, :with_pipeline_variables, :remote_store, pipeline: pipeline) }
+
+        before do
+          stub_artifacts_object_storage(Ci::PipelineArtifactUploader)
+          artifact.file.remove!
+        end
+
+        it_behaves_like 'raising a missing file error'
+      end
+
+      context 'when the pipeline also has variables in the database' do
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          variables_attributes.each do |var_attrs|
+            create(:ci_pipeline_variable, pipeline: pipeline, **var_attrs)
+          end
+
+          create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline).file.remove!
+        end
+
+        it 'tracks the error and returns the database variables' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(an_instance_of(described_class::VariablesFileMissingError), a_hash_including(pipeline_id: pipeline.id))
+
+          expect(pipeline.reset.variables).to match_array([
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
+            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
+          ])
+        end
+      end
+    end
   end
 
   describe '#auto_canceled?' do

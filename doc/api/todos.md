@@ -29,12 +29,15 @@ Parameters:
 
 | Attribute | Type | Required | Description                                                                                                                                                                                        |
 | --------- | ---- | -------- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `action` | string | no | The action to be filtered. Can be `assigned`, `mentioned`, `build_failed`, `marked`, `approval_required`, `unmergeable`, `directly_addressed`, `merge_train_removed` or `member_access_requested`. |
+| `action` | string | no | The action to be filtered.[^action-values] |
 | `author_id` | integer | no | The ID of an author                                                                                                                                                                                |
 | `project_id` | integer | no | The ID of a project                                                                                                                                                                                |
 | `group_id` | integer | no | The ID of a group                                                                                                                                                                                  |
 | `state` | string | no | The state of the to-do item. Can be either `pending` or `done`                                                                                                                                     |
-| `type` | string | no | The type of to-do item. Can be either `Issue`, `MergeRequest`, `Commit`, `Epic`, `DesignManagement::Design`, `AlertManagement::Alert`, `Project`, `Namespace`, `Vulnerability` or `WikiPage::Meta`  |
+| `type` | string | no | The type of to-do item.[^to-do-item-type] |
+
+[^action-values]: Values can be one of `assigned`, `mentioned`, `build_failed`, `marked`, `approval_required`, `unmergeable`, `directly_addressed`, `merge_train_removed`, `review_requested`, `member_access_requested`, `review_submitted`, `okr_checkin_requested`, `added_approver`, `ssh_key_expired`, `ssh_key_expiring_soon`, `duo_pro_access_granted`, `duo_enterprise_access_granted`, `duo_core_access_granted`, `duo_workflow_input_required`, or `transfer_failed`.
+[^to-do-item-type]: Values can be one of `Issue`, `MergeRequest`, `Commit`, `Epic`, `DesignManagement::Design`, `AlertManagement::Alert`, `Project`, `Namespace`, `Vulnerability`, `WikiPage::Meta`, `WorkItem`, `Key`, `User`, `ComplianceManagement::Projects::ComplianceViolation`, or `Ai::DuoWorkflows::Workflow`.
 
 ```shell
 curl --request GET \
