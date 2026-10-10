@@ -59066,6 +59066,21 @@ msgstr ""
 msgid "Options must include an attribute to update"
 msgstr ""
 
+msgid "Orbit|%d entity"
+msgid_plural "Orbit|%d entities"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|%d property"
+msgid_plural "Orbit|%d properties"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|%d relationship"
+msgid_plural "Orbit|%d relationships"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|%{boldStart}The initial scan can take some time depending on the amount of content.%{boldEnd} After that, updated content is automatically re-indexed. You can turn off GitLab Orbit at any time."
 msgstr ""
 
@@ -59074,6 +59089,14 @@ msgstr ""
 
 msgid "Orbit|%{count} connection"
 msgid_plural "Orbit|%{count} connections"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|%{count} in your graph"
+msgstr ""
+
+msgid "Orbit|%{entity} connects to %{count} entity. Select it to move to it."
+msgid_plural "Orbit|%{entity} connects to %{count} entities. Select one to move to it."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -59091,6 +59114,11 @@ msgstr ""
 
 msgid "Orbit|%{indexed} project indexed"
 msgid_plural "Orbit|%{indexed} projects indexed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|%{name} +%{count} more"
+msgid_plural "Orbit|%{name} +%{count} more"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -59165,6 +59193,9 @@ msgstr ""
 msgid "Orbit|Calls"
 msgstr ""
 
+msgid "Orbit|Can be empty"
+msgstr ""
+
 msgid "Orbit|Cancel"
 msgstr ""
 
@@ -59190,6 +59221,12 @@ msgid "Orbit|Close"
 msgstr ""
 
 msgid "Orbit|Close code navigation panel"
+msgstr ""
+
+msgid "Orbit|Close details"
+msgstr ""
+
+msgid "Orbit|Code"
 msgstr ""
 
 msgid "Orbit|Code Review"
@@ -59231,10 +59268,10 @@ msgstr ""
 msgid "Orbit|Connect your AI assistant to Orbit via MCP. Choose your host application, then use the CLI command or manual configuration to finish setup."
 msgstr ""
 
-msgid "Orbit|Connected Entities"
+msgid "Orbit|Contact sales"
 msgstr ""
 
-msgid "Orbit|Contact sales"
+msgid "Orbit|Container registry"
 msgstr ""
 
 msgid "Orbit|Copied"
@@ -59298,6 +59335,12 @@ msgid "Orbit|Enable indexing for a top-level group to make its projects queryabl
 msgstr ""
 
 msgid "Orbit|Entities"
+msgstr ""
+
+msgid "Orbit|Entity details"
+msgstr ""
+
+msgid "Orbit|Everything in Orbit belongs to a project. Select an entity to see how it connects."
 msgstr ""
 
 msgid "Orbit|Exclude"
@@ -59393,6 +59436,9 @@ msgstr ""
 msgid "Orbit|Free trials are for selected Premium and Ultimate groups. Contact sales to get Orbit for this group. %{linkStart}Learn about Orbit pricing%{linkEnd}"
 msgstr ""
 
+msgid "Orbit|From %{entity}"
+msgstr ""
+
 msgid "Orbit|GitLab Duo"
 msgstr ""
 
@@ -59445,6 +59491,9 @@ msgid "Orbit|Hide schema"
 msgstr ""
 
 msgid "Orbit|Hide services"
+msgstr ""
+
+msgid "Orbit|How your data connects"
 msgstr ""
 
 msgid "Orbit|ImportedSymbol"
@@ -59519,6 +59568,9 @@ msgstr ""
 msgid "Orbit|Map"
 msgstr ""
 
+msgid "Orbit|Merge requests"
+msgstr ""
+
 msgid "Orbit|MergeRequest"
 msgstr ""
 
@@ -59535,6 +59587,9 @@ msgid "Orbit|Navigate to"
 msgstr ""
 
 msgid "Orbit|No eligible groups are available for GitLab Orbit."
+msgstr ""
+
+msgid "Orbit|No entities match your search."
 msgstr ""
 
 msgid "Orbit|No groups are excluded. Excluded top-level groups are skipped by automatic indexing."
@@ -59642,10 +59697,16 @@ msgstr ""
 msgid "Orbit|Owner instructions"
 msgstr ""
 
+msgid "Orbit|Packages"
+msgstr ""
+
 msgid "Orbit|Pending"
 msgstr ""
 
 msgid "Orbit|Pipeline"
+msgstr ""
+
+msgid "Orbit|Pipelines"
 msgstr ""
 
 msgid "Orbit|Planning"
@@ -59663,6 +59724,9 @@ msgstr ""
 msgid "Orbit|Properties"
 msgstr ""
 
+msgid "Orbit|Property"
+msgstr ""
+
 msgid "Orbit|Query"
 msgstr ""
 
@@ -59675,9 +59739,6 @@ msgstr ""
 msgid "Orbit|References"
 msgstr ""
 
-msgid "Orbit|Related Entities"
-msgstr ""
-
 msgid "Orbit|Relationships"
 msgstr ""
 
@@ -59685,9 +59746,6 @@ msgid "Orbit|Remove"
 msgstr ""
 
 msgid "Orbit|Required to use Orbit. Indexes this group, its subgroups, and projects. Can take up to a few hours."
-msgstr ""
-
-msgid "Orbit|Reset zoom"
 msgstr ""
 
 msgid "Orbit|Run a query to see results"
@@ -59708,7 +59766,7 @@ msgstr ""
 msgid "Orbit|Search"
 msgstr ""
 
-msgid "Orbit|Search entities and relationships"
+msgid "Orbit|Search entities"
 msgstr ""
 
 msgid "Orbit|Search groups"
@@ -59727,6 +59785,9 @@ msgid "Orbit|Select a billing namespace for Orbit to attribute usage."
 msgstr ""
 
 msgid "Orbit|Select a top-level group"
+msgstr ""
+
+msgid "Orbit|Select an entity"
 msgstr ""
 
 msgid "Orbit|Select entity"
@@ -59751,9 +59812,6 @@ msgid "Orbit|Setup guide"
 msgstr ""
 
 msgid "Orbit|Show error details"
-msgstr ""
-
-msgid "Orbit|Show in map"
 msgstr ""
 
 msgid "Orbit|Show labels"
@@ -59816,13 +59874,13 @@ msgstr ""
 msgid "Orbit|This top-level group is excluded from indexing"
 msgstr ""
 
+msgid "Orbit|To %{entity}"
+msgstr ""
+
 msgid "Orbit|Toggle indexed content"
 msgstr ""
 
 msgid "Orbit|Tools overview"
-msgstr ""
-
-msgid "Orbit|Total indexed:"
 msgstr ""
 
 msgid "Orbit|Try asking an agent"
@@ -59864,6 +59922,9 @@ msgstr ""
 msgid "Orbit|Turning off Orbit indexing will prevent users and agents from accessing Orbit data. Updates will not be scanned by Orbit."
 msgstr ""
 
+msgid "Orbit|Type"
+msgstr ""
+
 msgid "Orbit|Unable to load Orbit schema. Please try again."
 msgstr ""
 
@@ -59891,10 +59952,16 @@ msgstr ""
 msgid "Orbit|User"
 msgstr ""
 
+msgid "Orbit|Values"
+msgstr ""
+
 msgid "Orbit|Version"
 msgstr ""
 
 msgid "Orbit|View Owners"
+msgstr ""
+
+msgid "Orbit|Vulnerabilities"
 msgstr ""
 
 msgid "Orbit|Vulnerability"
@@ -59957,6 +60024,9 @@ msgstr ""
 msgid "Orbit|Who triggered this pipeline?"
 msgstr ""
 
+msgid "Orbit|Work items"
+msgstr ""
+
 msgid "Orbit|WorkItem"
 msgstr ""
 
@@ -59991,9 +60061,6 @@ msgid "Orbit|callers"
 msgstr ""
 
 msgid "Orbit|entities"
-msgstr ""
-
-msgid "Orbit|filterable"
 msgstr ""
 
 msgid "Orbit|must be a top-level group"
