@@ -119,6 +119,17 @@ export default {
     groupPinned() {
       return this.navMode === SIDEBAR_NAV_MODE_GROUPED_PINS;
     },
+    // Settings portals into the context header when it renders, else the footer.
+    showHeaderSettingsDisclosure() {
+      return (
+        this.glFeatures.hideUnpinnedSidebarItems &&
+        Boolean(this.sidebarData.current_context_header) &&
+        !this.isIconOnly
+      );
+    },
+    showFooterSettingsDisclosure() {
+      return this.glFeatures.hideUnpinnedSidebarItems && !this.showHeaderSettingsDisclosure;
+    },
   },
   watch: {
     'sidebarState.isCollapsed': {
@@ -260,6 +271,11 @@ export default {
           <span id="super-sidebar-context-header-title" class="gl-min-w-0 gl-grow">{{
             sidebarData.current_context_header
           }}</span>
+          <portal-target
+            v-if="showHeaderSettingsDisclosure"
+            :name="$options.settingsDisclosurePortalName"
+            class="gl-shrink-0"
+          />
           <sidebar-preferences v-if="canToggleOldCategories" :mode="navMode" @select="setNavMode" />
         </div>
         <scroll-scrim class="gl-grow" data-testid="nav-container">
@@ -273,10 +289,11 @@ export default {
             :show-feature-library-shimmer="sidebarData.show_feature_library_shimmer"
             :show-old-categories="showOldCategories"
             :group-pinned="groupPinned"
+            :settings-in-header="showHeaderSettingsDisclosure"
           />
         </scroll-scrim>
         <portal-target
-          v-if="glFeatures.hideUnpinnedSidebarItems"
+          v-if="showFooterSettingsDisclosure"
           :name="$options.settingsDisclosurePortalName"
           class="gl-px-3"
         />

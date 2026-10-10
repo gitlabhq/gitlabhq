@@ -140,7 +140,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/views/shared/issuable/_approver_suggestion.html.haml_spec.rb'
     - 'ee/spec/views/shared/issuable/_sidebar.html.haml_spec.rb'
     - 'ee/spec/views/shared/milestones/_milestone.html.haml_spec.rb'
-    - 'ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb'
     - 'spec/components/diffs/overflow_warning_component_spec.rb'
     - 'spec/components/diffs/stats_component_spec.rb'
     - 'spec/helpers/admin/broadcast_messages_helper_spec.rb'

@@ -57,6 +57,14 @@ export default {
       required: false,
       default: false,
     },
+    // Forces the disclosure toggle to render as an icon-only button (with a
+    // tooltip) even in the expanded sidebar, for use where header space is
+    // tight. Only affects the disclosure toggle.
+    iconOnlyToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     pinContext: {
       type: Object,
       required: false,
@@ -119,6 +127,22 @@ export default {
     },
     showExpanded() {
       return !this.isIconOnly && this.isExpanded;
+    },
+    toggleIsIconOnly() {
+      return this.iconOnlyToggle || this.isIconOnly;
+    },
+    // Only icon-only toggles need a tooltip (the label is hidden). Anchor it
+    // above the button in the header (forced icon-only via iconOnlyToggle) and
+    // to the right in the collapsed sidebar (injected isIconOnly).
+    toggleTooltip() {
+      if (!this.toggleIsIconOnly) return { title: '' };
+
+      if (this.iconOnlyToggle) {
+        // Keep the header tooltip from being clipped at the top of the viewport.
+        return { title: this.item.title, placement: 'top', boundary: 'viewport' };
+      }
+
+      return { title: this.item.title, placement: 'right' };
     },
     // A headerless section has no toggle to reveal its items, so keep the
     // collapse open regardless of the (stale) expanded state carried over from
@@ -210,9 +234,9 @@ export default {
     <gl-disclosure-dropdown v-if="disclosure" class="super-sidebar-settings-dropdown" block>
       <template #toggle="{ accessibilityAttributes }">
         <gl-nav-item
-          v-gl-tooltip.right="isIconOnly ? item.title : ''"
+          v-gl-tooltip="toggleTooltip"
           :icon="item.icon"
-          :is-icon-only="isIconOnly"
+          :is-icon-only="toggleIsIconOnly"
           :aria-label="item.title"
           :selected="item.is_active"
           data-testid="menu-section-button"

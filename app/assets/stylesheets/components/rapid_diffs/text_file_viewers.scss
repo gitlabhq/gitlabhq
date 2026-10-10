@@ -382,6 +382,7 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
 
 .rd-line-content {
   display: flex;
+  padding-left: calc(var(--rd-row-inline-padding) + var(--rd-line-gutter-width, 0px));
   white-space: break-spaces;
 
   &::before {
@@ -438,7 +439,7 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
   width: var(--rd-line-coverage-size);
   margin-right: calc((var(--rd-line-coverage-size) + var(--rd-line-coverage-inline-padding) * 2) * -1);
   vertical-align: top;
-  transform: translateX(calc((var(--rd-row-inline-padding) + var(--rd-line-coverage-inline-padding)) * -1 - 1px));
+  transform: translateX(calc((var(--rd-row-inline-padding) + var(--rd-line-gutter-width, 0px) + var(--rd-line-coverage-inline-padding)) * -1 - 1px));
   background-clip: content-box;
   box-sizing: content-box;
 }
@@ -464,18 +465,16 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
 [data-inline-findings-loaded] {
   --rd-inline-findings-slot-width: 20px;
   --rd-inline-findings-slot-gap: calc(var(--rd-inline-findings-slot-width) / 1.5);
-  --rd-line-sign-offset: calc(var(--rd-inline-findings-slot-gap) - 9px);
+  --rd-line-gutter-width: calc(var(--rd-inline-findings-slot-gap) + 4px);
 }
 
 [data-inline-findings-loaded] [data-line-inline-findings] {
   display: flex;
-  position: relative;
-  flex: none;
+  position: absolute;
   align-items: flex-start;
   justify-content: center;
   width: var(--rd-inline-findings-slot-width);
-  margin-left: calc(var(--rd-inline-findings-slot-width) * -1 + 4px);
-  margin-right: var(--rd-inline-findings-slot-gap);
+  margin-left: calc((var(--rd-inline-findings-slot-width) + var(--rd-inline-findings-slot-gap)) * -1);
 }
 
 .rd-inline-findings-toggle {

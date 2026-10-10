@@ -173,6 +173,28 @@ RSpec.describe 'getting merge request information nested in a project', feature_
       expect(graphql_data_at(:project, :merge_request, :reviewers, :nodes)).to match_array(expected)
       expect(graphql_data_at(:project, :merge_request, :participants, :nodes)).to include(*expected)
     end
+
+    context 'when the merge_request has more reviewers than the schema-wide page-size default' do
+      let(:mr_fields) do
+        <<~SELECT
+        reviewers { nodes { id } }
+        SELECT
+      end
+
+      before do
+        allow(GitlabSchema).to receive(:default_max_page_size).and_return(2)
+        merge_request.reviewers << create_list(:user, 3)
+      end
+
+      it 'returns reviewers beyond the default page size' do
+        post_graphql(query, current_user: current_user)
+
+        returned_count = graphql_data_at(:project, :merge_request, :reviewers, :nodes).size
+
+        expect(returned_count).to eq(merge_request.reviewers.count)
+        expect(returned_count).to be > GitlabSchema.default_max_page_size
+      end
+    end
   end
 
   shared_examples 'when the merge_request has committers' do

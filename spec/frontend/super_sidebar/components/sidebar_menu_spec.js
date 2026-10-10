@@ -1133,6 +1133,21 @@ describe('Sidebar Menu', () => {
         expect(findSettingsPortal().props('to')).toBe('super-sidebar-settings-disclosure');
       });
 
+      it('renders a labelled settings toggle when settingsInHeader is false', () => {
+        expect(findNonStaticSectionItems().at(0).props('iconOnlyToggle')).toBe(false);
+      });
+
+      it('renders an icon-only settings toggle when settingsInHeader is true', () => {
+        createWrapper({
+          items: menuItems,
+          panelType,
+          settingsInHeader: true,
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+
+        expect(findNonStaticSectionItems().at(0).props('iconOnlyToggle')).toBe(true);
+      });
+
       it('does not render non-settings sections', () => {
         const sectionTitles = findNonStaticSectionItems().wrappers.map(
           (w) => w.props('item').title,
@@ -1285,11 +1300,19 @@ describe('Sidebar Menu', () => {
           expect(sectionTitles).toContain('Also with subitems');
         });
 
-        it('renders the settings section in place, not as a disclosure', () => {
-          expect(findSettingsPortal().exists()).toBe(false);
-          expect(
-            findNonStaticSectionItems().wrappers.map((w) => w.props('disclosure')),
-          ).not.toContain(true);
+        it('portals the settings section to the top disclosure, not in place', () => {
+          expect(findSettingsPortal().exists()).toBe(true);
+          expect(findSettingsPortal().props('to')).toBe('super-sidebar-settings-disclosure');
+
+          const settingsSection = findNonStaticSectionItems().wrappers.find(
+            (w) => w.props('item').id === 'settings_menu',
+          );
+          expect(settingsSection.props('disclosure')).toBe(true);
+
+          const inlineNonSettingsSections = findNonStaticSectionItems().wrappers.filter(
+            (w) => w.props('item').id !== 'settings_menu',
+          );
+          expect(inlineNonSettingsSections.map((w) => w.props('disclosure'))).not.toContain(true);
         });
 
         it('renders the main menu separator', () => {

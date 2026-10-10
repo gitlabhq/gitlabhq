@@ -28,6 +28,122 @@ Related topics:
 - [Job artifacts API](../../api/job_artifacts.md)
 - [Job artifacts administration](../../administration/cicd/job_artifacts.md)
 
+## Choose job artifacts or a package registry
+
+Job artifacts and the package registry can both store files that your pipeline produces.
+They differ in how long the files last and who can use them.
+
+Use job artifacts for output that belongs to one pipeline.
+Use the package registry for output that people or other projects use after the pipeline ends.
+
+To choose, match your output to one of these cases:
+
+| When the output is                                         | Use                                                                 | Examples |
+|------------------------------------------------------------|---------------------------------------------------------------------|----------|
+| Passed between jobs or stages in the same pipeline         | Job artifacts                                                       | Build output that a later test job uses |
+| A short-lived result of a pipeline                         | Job artifacts                                                       | Test reports, logs, code coverage |
+| Meant to expire after a set time                           | Job artifacts                                                       | Temporary intermediate files |
+| Tied to a specific pipeline or commit                      | Job artifacts                                                       | The build from one pipeline that you want to download to inspect or debug |
+| Reused across pipelines to speed up jobs, and safe to lose | [Cache](../caching/_index.md#how-cache-is-different-from-artifacts) | Downloaded dependencies |
+| A versioned release                                        | Package registry (generic or a format like Maven or npm)            | Binaries, installers, release files |
+| Required to have a stable URL or to outlive the pipeline   | Package registry                                                    | Files that other projects, customers, or deploy tools download |
+| A library or module that other projects depend on          | Package registry                                                    | Packages installed with npm, Maven, PyPI, or NuGet |
+| Promoted through environments or release channels          | Package registry                                                    | A release that moves from staging to production |
+| A container image                                          | Container registry                                                  | Docker images |
+
+The package registry also gives you package versions, duplicate handling,
+and [cleanup policies](../../user/packages/package_registry/reduce_package_registry_storage.md)
+that work independently of any pipeline.
+
+> [!note]
+> Do not use job artifacts as a release store. Artifacts kept by the **Keep artifacts from most
+> recent successful jobs** setting ignore `expire_in`, and the URL for the latest artifacts on a
+> branch points to different files after each new pipeline.
+> To publish a release, use a [versioned package](../../user/packages/generic_packages/_index.md).
+> For more information, see
+> [keep artifacts from most recent successful jobs](#keep-artifacts-from-most-recent-successful-jobs).
+>
+> To download the latest build from a branch, see
+> [download job artifacts by job name and branch](#by-job-name-and-branch).
+
+### Handle large artifacts
+
+Outputs you pass between jobs in one pipeline usually belong in job artifacts,
+even when they are large.
+
+The size limit applies to each artifact archive, not each file:
+
+- On GitLab.com, the limit is 1 GB compressed. For more information, see
+  [GitLab.com settings](../../user/gitlab_com/_index.md).
+- On GitLab Self-Managed and GitLab Dedicated, an administrator can set the limit for the
+  instance, a group, or a project. For more information, see
+  [set the maximum artifacts size](#set-the-maximum-artifacts-size).
+
+Some report artifact types have lower limits.
+For more information, see
+[maximum file size per type of artifact](../../administration/cicd/limits.md#maximum-file-size-per-type-of-artifact).
+
+If your output is too large, use one of these options:
+
+- Reduce the archive. List only the paths later jobs need in `artifacts:paths`,
+  or skip files with [`artifacts:exclude`](../yaml/_index.md#artifactsexclude).
+- Split the output across jobs. Each job's archive has its own limit, so several jobs can each
+  upload part of the output. This approach increases storage use and pipeline complexity,
+  so use it only when you cannot reduce the archive.
+- Pass the file through the generic package registry.
+  Use this option only when you cannot reduce or split the output.
+  On GitLab.com, a generic package file can be up to 5 GB.
+  Packages do not expire automatically. They stay in the registry until a user with the
+  Maintainer or Owner role deletes them.
+  For an example, see
+  [pass a large file through the generic package registry](#pass-a-large-file-through-the-generic-package-registry).
+
+You cannot move report artifacts, such as those you create with `artifacts:reports`,
+to the package registry because GitLab reads them from the pipeline.
+To fit a report artifact within its limit, reduce the archive.
+
+#### Pass a large file through the generic package registry
+
+To pass a large file between jobs, upload it to the generic package registry in one job and
+download it in a later job. Delete the package when the pipeline finishes.
+Use the pipeline ID as the package version so each pipeline has its own package:
+
+```yaml
+variables:
+  PACKAGE_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/pipeline-handoff/${CI_PIPELINE_ID}"
+
+build:
+  stage: build
+  # The build and test jobs need an image that includes curl. They use the runner's default image.
+  script:
+    - make image  # Creates image.tar.gz
+    - 'curl --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file image.tar.gz "${PACKAGE_URL}/image.tar.gz"'
+
+test:
+  stage: test
+  script:
+    - 'curl --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --output image.tar.gz "${PACKAGE_URL}/image.tar.gz"'
+    - ./run-tests.sh image.tar.gz
+
+cleanup:
+  stage: .post
+  when: always
+  allow_failure: true
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl jq
+  script:
+    - 'PACKAGE_ID=$(curl --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages?package_type=generic&package_name=pipeline-handoff&package_version=${CI_PIPELINE_ID}" | jq ".[0].id")'
+    - 'curl --fail --request DELETE --header "JOB-TOKEN: ${CI_JOB_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/${PACKAGE_ID}"'
+```
+
+The `cleanup` job deletes the package by using `CI_JOB_TOKEN`.
+Deleting a package requires the Maintainer or Owner role.
+If a user with the Developer role runs the pipeline, the `cleanup` job fails and the package stays
+in the registry. `allow_failure: true` prevents that failure from failing the pipeline.
+
+Package storage counts toward your [namespace storage](../../user/storage_usage_quotas.md).
+
 ## Create job artifacts
 
 To create job artifacts, use the `artifacts` keyword in your `.gitlab-ci.yml` file:

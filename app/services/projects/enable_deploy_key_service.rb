@@ -18,11 +18,9 @@ module Projects
     private
 
     def find_accessible_key(key_id)
-      if current_user.admin?
-        DeployKey.find_by_id(key_id)
-      else
-        current_user.accessible_deploy_keys.find_by_id(key_id)
-      end
+      key = DeployKey.find_by_id(key_id)
+
+      key if key && can?(current_user, :enable_deploy_key, key)
     end
   end
 end

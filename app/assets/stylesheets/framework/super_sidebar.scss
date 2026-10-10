@@ -559,6 +559,13 @@ $scroll-scrim-height: 2.25rem;
   @apply gl-w-28 #{!important};
 }
 
+// Keep the selected background on the settings toggle but drop the edge
+// indicator bar, which reads as clutter on this always-present control.
+// Applies to both the header and footer placements of the disclosure.
+.super-sidebar-settings-dropdown .gl-nav-item.selected::before {
+  @apply gl-hidden;
+}
+
 // Tweaks to the styles for the ScrollScrim component above (line 418)
 // are leaking into the collapsible list box dropdowns
 // https://gitlab.com/gitlab-org/gitlab/-/issues/435538

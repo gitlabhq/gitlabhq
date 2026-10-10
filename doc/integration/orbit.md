@@ -13,6 +13,52 @@ description: Configure GitLab Orbit for GitLab Self-Managed and GitLab Dedicated
 
 {{< /details >}}
 
+## Start a free trial
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260183) in GitLab 19.5 behind a feature flag named `orbit_trial`, disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+If your top-level group is not yet licensed for Orbit, you can start a free trial.
+The trial gives the group free GitLab credits for Orbit.
+Groups that do not meet the trial criteria see a **Contact sales** option instead.
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+- The group must meet the trial criteria.
+
+To start a free trial:
+
+1. In the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Orbit**.
+1. Select **Start free trial**.
+1. On the confirmation dialog, select **Start free trial**.
+
+After you start the trial, Orbit turns on for the group and indexes the group, its subgroups,
+and its projects.
+Indexing can take up to a few hours.
+
+The trial applies to that one group only.
+Only Orbit can use the trial credits.
+When the trial ends or the credits run out, Orbit pauses.
+To keep using Orbit, add GitLab credits from the group usage quotas page.
+
 ## Orbit in GitLab Duo default
 
 {{< history >}}

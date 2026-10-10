@@ -219,6 +219,7 @@ module Types
       type: Types::MergeRequests::AssigneeType.connection_type,
       null: true,
       complexity: 5,
+      max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS,
       description: 'Assignees of the merge request.'
     field :author, Types::MergeRequests::AuthorType, null: true,
       description: 'User who created the merge request.'
@@ -278,6 +279,7 @@ module Types
       type: Types::MergeRequests::ReviewerType.connection_type,
       null: true,
       complexity: 5,
+      max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS,
       description: 'Users from whom a review has been requested.'
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
       description: 'Indicates if the currently logged in user is subscribed to the merge request.'

@@ -52,6 +52,18 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
     it { is_expected.to have_attributes(max_page_size: 500) }
   end
 
+  describe '#reviewers' do
+    subject { described_class.fields['reviewers'] }
+
+    it { is_expected.to have_attributes(max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS) }
+  end
+
+  describe '#assignees' do
+    subject { described_class.fields['assignees'] }
+
+    it { is_expected.to have_attributes(max_page_size: ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS) }
+  end
+
   describe '#diffs' do
     subject(:field) { described_class.fields['diffs'] }
 

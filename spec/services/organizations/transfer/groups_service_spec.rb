@@ -615,6 +615,30 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           end
         end
 
+        context 'when batching stage event repoints' do
+          include_context 'with transfer batch size of 1'
+
+          it 'repoints all events across multiple batches' do
+            old_hash = stage.stage_event_hash
+            issues = create_list(:issue, 3, project: project)
+            issues.each do |issue|
+              create(:cycle_analytics_issue_stage_event,
+                stage_event_hash_id: old_hash.id,
+                issue_id: issue.id,
+                group_id: group.id,
+                project_id: project.id
+              )
+            end
+
+            service.execute
+
+            new_hash = stage.reload.stage_event_hash
+            expect(Analytics::CycleAnalytics::IssueStageEvent.where(stage_event_hash_id: new_hash.id).pluck(:issue_id))
+              .to match_array(issues.map(&:id))
+            expect(Analytics::CycleAnalytics::IssueStageEvent.where(stage_event_hash_id: old_hash.id)).to be_empty
+          end
+        end
+
         context 'when batching stage event hash transfers' do
           include_context 'with transfer batch size of 1'
 

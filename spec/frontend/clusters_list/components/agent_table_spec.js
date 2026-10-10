@@ -235,10 +235,7 @@ describe('AgentTable', () => {
         const popover = () => wrapper.findComponentByTestId(`popover-${currentAgent.name}`);
 
         beforeEach(() => {
-          createWrapper({
-            provide: { projectPath: 'path/to/project' },
-            propsData: { agents: [currentAgent] },
-          });
+          createWrapper({ propsData: { agents: [currentAgent] } });
         });
 
         it('shows the correct agent version text', () => {

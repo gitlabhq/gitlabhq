@@ -134,9 +134,9 @@ Prerequisites:
 
 To request recommendations for a merge request where the flow has not run:
 
-- In the right sidebar, under **Reviewers** > **Recommended**, select **Fetch**.
+- In the right sidebar, under **Reviewers** > **Recommended**, select **Generate**.
 
-**Fetch** is unavailable while the flow runs.
+**Generate** is unavailable while the flow runs.
 
 ### Assign a recommended reviewer
 

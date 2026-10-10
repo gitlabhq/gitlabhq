@@ -192660,6 +192660,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "orbitAccess",
+              "description": "Orbit access state of the top-level group. Returns null when the user cannot read the Orbit setting of the group. This field can only be resolved for one group in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitAccess",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "orbitTrial",
               "description": "Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can only be resolved for one group in any single request. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
@@ -303911,6 +303923,187 @@
         },
         {
           "kind": "OBJECT",
+          "name": "OrbitAccess",
+          "description": "Orbit access state of a group.",
+          "fields": [
+            {
+              "name": "reason",
+              "description": "Cause of the access state when it has more than one cause. Null when the state has a single cause. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "OrbitAccessReason",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "state",
+              "description": "Access state of the group for Orbit. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "OrbitAccessState",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "trial",
+              "description": "Orbit trial of the group. Null when the group is not in the trial flow. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitTrial",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "turnOnDenialReason",
+              "description": "Reason the user cannot turn Orbit on. Null when turning on is allowed or Orbit is already on. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "OrbitTurnOnDenialReason",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "OrbitAccessReason",
+          "description": "Cause of an Orbit access state that has more than one cause.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "FREE_PLAN",
+              "description": "Group is on a Free plan on GitLab.com. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "NO_LICENSE",
+              "description": "Instance has no Orbit license. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "NO_ACCESS",
+              "description": "Group has no Orbit access under the promo gate. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_EXPIRED",
+              "description": "Trial reached its end date. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "CREDITS_EXHAUSTED",
+              "description": "Trial ran out of credits before its end date. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "PLAN",
+              "description": "Access comes from the plan license. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "PROMO_ADD_ON",
+              "description": "Access comes from the Orbit promo add-on. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "BETA",
+              "description": "Access comes from the free-beta program. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "OrbitAccessState",
+          "description": "Access state of a group for Orbit.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NOT_CONFIGURED",
+              "description": "Orbit service is not set up on this instance. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "UNLICENSED",
+              "description": "Group has no Orbit access; see reason for the cause. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_ELIGIBLE",
+              "description": "Group can start an Orbit trial. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_ACTIVE",
+              "description": "Orbit trial is running. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_ENDED",
+              "description": "Orbit trial has ended; see reason for the cause. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_NOT_ELIGIBLE",
+              "description": "Group is not eligible for an Orbit trial. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_STATUS_UNAVAILABLE",
+              "description": "Trial status could not be read from CustomersDot. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "LICENSED",
+              "description": "Group has Orbit access; see reason for the source. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "OrbitIndexingDomain",
           "description": "Indexing status of one Orbit domain.",
           "fields": [
@@ -304214,6 +304407,18 @@
           "description": "Orbit data of a group or project.",
           "fields": [
             {
+              "name": "enabledAt",
+              "description": "When Orbit was turned on for the top-level group. Null for subgroups, projects, and when Orbit is off. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "indexingStatus",
               "description": "Indexing status of the group or project.",
               "args": [],
@@ -304456,6 +304661,41 @@
             {
               "name": "ENDED",
               "description": "Trial expired or used all its credits. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "OrbitTurnOnDenialReason",
+          "description": "Reason the current user cannot turn Orbit on for a group.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "FORBIDDEN",
+              "description": "User lacks permission to turn Orbit on for the group. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_REQUIRED",
+              "description": "Group must start a trial before Orbit can be turned on. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "TRIAL_ENDED",
+              "description": "Trial has ended, so Orbit can no longer be turned on. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "UNAVAILABLE",
+              "description": "Trial status could not be read from CustomersDot. Introduced in GitLab 19.5: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }

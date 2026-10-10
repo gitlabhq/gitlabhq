@@ -102,6 +102,12 @@ export default {
       required: false,
       default: false,
     },
+    // Whether SuperSidebar portals the settings disclosure into the context header.
+    settingsInHeader: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -425,10 +431,10 @@ export default {
     },
     // Derive from showUnpinnedItems (not the raw flag) so the organization
     // panel, which is exempt from unpinned-hiding, keeps its in-place section.
-    // When the user opted back into the full categories, settings renders
-    // inline like the old design rather than in the disclosure portal.
+    // Settings moves to the top disclosure in every mode the flag applies to,
+    // including the full-category (Everything) fallback.
     settingsAsDisclosure(navItem) {
-      return !this.showUnpinnedItems && !this.showOldCategories && this.isSettingsSection(navItem);
+      return !this.showUnpinnedItems && this.isSettingsSection(navItem);
     },
     decideFlyoutState() {
       this.showFlyoutMenus = GlBreakpointInstance.windowWidth() >= breakpoints.md;
@@ -601,6 +607,7 @@ export default {
             :separated="item.separated"
             :async-count="asyncCount"
             :pin-context="settingsPinContext"
+            :icon-only-toggle="settingsInHeader"
             disclosure
             @pin-add="createPin"
             @pin-remove="destroyPin"

@@ -158,6 +158,7 @@ group:
   - read_ldap_group_link
   - read_member_access_request
   - read_model_selection_allowlist
+  - read_orbit_setting
   - read_orbit_trial
   - read_placeholder_reassignment
   - read_resource_access_tokens

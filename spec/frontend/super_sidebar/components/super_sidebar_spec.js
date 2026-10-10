@@ -126,14 +126,47 @@ describe('SuperSidebar component', () => {
     });
 
     describe('settings disclosure portal target', () => {
+      const findContextHeaderPortalTarget = () => findContextHeader().findComponent(PortalTarget);
+
       it('is not rendered when hideUnpinnedSidebarItems is disabled', () => {
         createWrapper();
         expect(findSettingsDisclosureTarget()).toBeUndefined();
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(false);
       });
 
       it('is rendered when hideUnpinnedSidebarItems is enabled', () => {
         createWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: true } } });
         expect(findSettingsDisclosureTarget()).not.toBeUndefined();
+      });
+
+      it('renders in the context header when the sidebar is expanded', () => {
+        createWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: true } } });
+
+        expect(findContextHeaderPortalTarget().exists()).toBe(true);
+        expect(wrapper.findAllComponents(PortalTarget)).toHaveLength(1);
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(true);
+      });
+
+      it('renders outside the context header when the sidebar is icon-only', () => {
+        createWrapper({
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          sidebarState: { isIconOnly: true },
+        });
+
+        expect(findContextHeader().exists()).toBe(false);
+        expect(findSettingsDisclosureTarget()).not.toBeUndefined();
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(false);
+      });
+
+      it('still renders a target when expanded but the panel has no context header', () => {
+        createWrapper({
+          sidebarData: { ...mockSidebarData, current_context_header: null },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+        });
+
+        expect(findContextHeader().exists()).toBe(false);
+        expect(findSettingsDisclosureTarget()).not.toBeUndefined();
+        expect(findSidebarMenu().props('settingsInHeader')).toBe(false);
       });
     });
 

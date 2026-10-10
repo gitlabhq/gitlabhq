@@ -267,11 +267,14 @@ module Organizations
         return if source_hash_id == target_hash_id
 
         stage_event_models.each do |model|
-          model
-            .where(stage_event_hash_id: source_hash_id, group_id: group_ids)
-            .each_batch(column: model.issuable_id_column, of: BATCH_SIZE) do |batch|
-              batch.update_all(stage_event_hash_id: target_hash_id)
-            end
+          source_events = model.where(stage_event_hash_id: source_hash_id, group_id: group_ids)
+
+          # Ordering by the issuable id has no supporting index and times out. Updated rows leave
+          # the scope, so an unordered limit loop terminates.
+          loop do
+            updated_count = source_events.limit(BATCH_SIZE).update_all(stage_event_hash_id: target_hash_id)
+            break if updated_count == 0
+          end
         end
       end
 

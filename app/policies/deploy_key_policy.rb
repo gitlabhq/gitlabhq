@@ -14,6 +14,7 @@ class DeployKeyPolicy < BasePolicy
   rule { anonymous }.prevent_all
   rule { public_deploy_key | admin | has_deploy_key }.policy do
     enable :read_deploy_key
+    enable :enable_deploy_key
   end
   rule { admin | (private_deploy_key & has_deploy_key) }.policy do
     enable :update_deploy_key

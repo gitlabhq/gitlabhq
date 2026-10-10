@@ -32592,6 +32592,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Something went wrong while turning on GitLab Orbit."
 msgstr ""
 
+msgid "DuoAgentPlatform|Start free trial"
+msgstr ""
+
 msgid "DuoAgentPlatform|Starting job"
 msgstr ""
 
@@ -38529,9 +38532,6 @@ msgstr ""
 msgid "Fetch cloud observability alerts"
 msgstr ""
 
-msgid "Fetch recommended reviewers"
-msgstr ""
-
 msgid "Fetching incoming email"
 msgstr ""
 
@@ -39523,6 +39523,9 @@ msgid "Generate new export"
 msgstr ""
 
 msgid "Generate project access tokens scoped to this project for your applications that need access to the GitLab API."
+msgstr ""
+
+msgid "Generate recommended reviewers"
 msgstr ""
 
 msgid "Generate site and private keys at"
@@ -59074,6 +59077,15 @@ msgid_plural "Orbit|%{count} connections"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Orbit|%{groupName} is not eligible for a free Orbit trial"
+msgstr ""
+
+msgid "Orbit|%{groupName} is on the Free plan. Contact sales to upgrade and get Orbit for this group. %{linkStart}Learn more about Orbit%{linkEnd}"
+msgstr ""
+
+msgid "Orbit|%{groupName} is out of GitLab credits"
+msgstr ""
+
 msgid "Orbit|%{indexed} of %{total} projects indexed"
 msgstr ""
 
@@ -59130,6 +59142,9 @@ msgid "Orbit|Beta"
 msgstr ""
 
 msgid "Orbit|Branch"
+msgstr ""
+
+msgid "Orbit|By turning on Orbit today, %{groupName} automatically gets 100 free GitLab credits for Orbit, valid for 30 days. When they run out or the 30 days end, contact sales to keep using Orbit."
 msgstr ""
 
 msgid "Orbit|By turning on this feature, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
@@ -59219,6 +59234,9 @@ msgstr ""
 msgid "Orbit|Connected Entities"
 msgstr ""
 
+msgid "Orbit|Contact sales"
+msgstr ""
+
 msgid "Orbit|Copied"
 msgstr ""
 
@@ -59247,6 +59265,15 @@ msgid "Orbit|Core"
 msgstr ""
 
 msgid "Orbit|Could not locate the selected node in the graph."
+msgstr ""
+
+msgid "Orbit|Could not start your free trial"
+msgstr ""
+
+msgid "Orbit|Could not turn off Orbit"
+msgstr ""
+
+msgid "Orbit|Could not turn on Orbit"
 msgstr ""
 
 msgid "Orbit|Cursor"
@@ -59360,7 +59387,16 @@ msgstr ""
 msgid "Orbit|Finding"
 msgstr ""
 
+msgid "Orbit|Free trial for Orbit"
+msgstr ""
+
+msgid "Orbit|Free trials are for selected Premium and Ultimate groups. Contact sales to get Orbit for this group. %{linkStart}Learn about Orbit pricing%{linkEnd}"
+msgstr ""
+
 msgid "Orbit|GitLab Duo"
+msgstr ""
+
+msgid "Orbit|GitLab Duo is not available for this group"
 msgstr ""
 
 msgid "Orbit|GitLab Duo will use GitLab Orbit to provide enhanced intelligence."
@@ -59384,13 +59420,16 @@ msgstr ""
 msgid "Orbit|GitLab Orbit is turned off in GitLab Duo."
 msgstr ""
 
-msgid "Orbit|GitLab Orbit needs an active trial for this group."
-msgstr ""
-
 msgid "Orbit|GitLab status"
 msgstr ""
 
 msgid "Orbit|Gitaly"
+msgstr ""
+
+msgid "Orbit|Go to GitLab Duo settings"
+msgstr ""
+
+msgid "Orbit|Go to Orbit"
 msgstr ""
 
 msgid "Orbit|Group"
@@ -59555,7 +59594,28 @@ msgstr ""
 msgid "Orbit|Orbit configuration"
 msgstr ""
 
+msgid "Orbit|Orbit connects work items, merge requests, pipelines, and code, so GitLab Duo and other AI tools can answer questions across projects."
+msgstr ""
+
 msgid "Orbit|Orbit is available"
+msgstr ""
+
+msgid "Orbit|Orbit is available on Premium and Ultimate"
+msgstr ""
+
+msgid "Orbit|Orbit is indexing %{groupName}"
+msgstr ""
+
+msgid "Orbit|Orbit is not available for this group"
+msgstr ""
+
+msgid "Orbit|Orbit is paused for %{groupName}. Contact sales to buy GitLab credits and keep using Orbit. %{linkStart}Learn about Orbit pricing%{linkEnd}"
+msgstr ""
+
+msgid "Orbit|Orbit is paused for this group. Contact sales to buy more GitLab credits and keep using Orbit. %{linkStart}View usage quotas%{linkEnd}"
+msgstr ""
+
+msgid "Orbit|Orbit is ready for %{groupName}"
 msgstr ""
 
 msgid "Orbit|Orbit is unavailable"
@@ -59568,6 +59628,15 @@ msgid "Orbit|Orbit not enabled"
 msgstr ""
 
 msgid "Orbit|Orbit settings"
+msgstr ""
+
+msgid "Orbit|Orbit status is not available. Try again later."
+msgstr ""
+
+msgid "Orbit|Orbit trials are unavailable right now"
+msgstr ""
+
+msgid "Orbit|Orbit turns on for %{groupName} and indexes the group, its subgroups, and projects. Indexing can take up to a few hours."
 msgstr ""
 
 msgid "Orbit|Owner instructions"
@@ -59613,6 +59682,9 @@ msgid "Orbit|Relationships"
 msgstr ""
 
 msgid "Orbit|Remove"
+msgstr ""
+
+msgid "Orbit|Required to use Orbit. Indexes this group, its subgroups, and projects. Can take up to a few hours."
 msgstr ""
 
 msgid "Orbit|Reset zoom"
@@ -59711,10 +59783,28 @@ msgstr ""
 msgid "Orbit|Stage"
 msgstr ""
 
+msgid "Orbit|Start a free Orbit trial?"
+msgstr ""
+
+msgid "Orbit|Start a free trial to turn on Orbit for this group."
+msgstr ""
+
+msgid "Orbit|Start free trial"
+msgstr ""
+
 msgid "Orbit|Table"
 msgstr ""
 
+msgid "Orbit|Talk to sales to get Orbit for %{groupName}. %{linkStart}Learn more about Orbit%{linkEnd}"
+msgstr ""
+
 msgid "Orbit|Templates"
+msgstr ""
+
+msgid "Orbit|The Orbit trial for this group has ended. Add GitLab credits to turn Orbit on again."
+msgstr ""
+
+msgid "Orbit|The free trial is for this group only. When the trial ends or the credits run out, Orbit pauses until you add GitLab credits."
 msgstr ""
 
 msgid "Orbit|This group cannot be indexed."
@@ -59750,6 +59840,9 @@ msgstr ""
 msgid "Orbit|Turn on"
 msgstr ""
 
+msgid "Orbit|Turn on GitLab Duo to let Duo Chat and agents use Orbit."
+msgstr ""
+
 msgid "Orbit|Turn on GitLab Orbit"
 msgstr ""
 
@@ -59757,6 +59850,9 @@ msgid "Orbit|Turn on GitLab Orbit for %{groupName}"
 msgstr ""
 
 msgid "Orbit|Turn on GitLab Orbit for %{groupName} to supercharge agents with deep contextual intelligence — they understand how code, pipelines, work items, and merge requests connect across GitLab. This means better recommendations, less manual context-gathering, and agents that get smarter as your graph grows."
+msgstr ""
+
+msgid "Orbit|Turn on Orbit"
 msgstr ""
 
 msgid "Orbit|Turn on Orbit indexing for %{groupName}"
@@ -59813,6 +59909,9 @@ msgstr ""
 msgid "Orbit|VulnerabilityScanner"
 msgstr ""
 
+msgid "Orbit|We could not check whether %{groupName} can start a free trial. Try again later, or contact sales if this keeps happening."
+msgstr ""
+
 msgid "Orbit|What MR fixes this?"
 msgstr ""
 
@@ -59861,6 +59960,9 @@ msgstr ""
 msgid "Orbit|WorkItem"
 msgstr ""
 
+msgid "Orbit|You can leave this page. A message appears here when Orbit is ready."
+msgstr ""
+
 msgid "Orbit|You don't have permission to start an Orbit trial for this group."
 msgstr ""
 
@@ -59871,6 +59973,9 @@ msgid "Orbit|You must have the Owner role in a top-level group to turn on GitLab
 msgstr ""
 
 msgid "Orbit|Your GitLab Orbit trial has ended."
+msgstr ""
+
+msgid "Orbit|Your free Orbit trial has ended"
 msgstr ""
 
 msgid "Orbit|Zoom"
@@ -67619,13 +67724,16 @@ msgstr ""
 msgid "Promotions|Start GitLab Ultimate trial"
 msgstr ""
 
+msgid "Promotions|Talk to sales"
+msgstr ""
+
 msgid "Promotions|This feature is locked."
 msgstr ""
 
-msgid "Promotions|Try it for free"
+msgid "Promotions|Upgrade plan"
 msgstr ""
 
-msgid "Promotions|Upgrade plan"
+msgid "Promotions|Upgrade to Premium"
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to activate Group Webhooks."
@@ -83584,7 +83692,7 @@ msgstr ""
 msgid "SuggestedColors|Titanium yellow"
 msgstr ""
 
-msgid "SuggestedReviewers|Fetch"
+msgid "SuggestedReviewers|Generate"
 msgstr ""
 
 msgid "SuggestedReviewers|Get suggestions for reviewers based on GitLab's machine learning tool."

@@ -16,6 +16,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
 
       it { is_expected.to be_disallowed(:read_deploy_key) }
 
+      it { is_expected.to be_disallowed(:enable_deploy_key) }
+
       it { is_expected.to be_disallowed(:update_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key_title) }
@@ -23,6 +25,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
 
     context 'and current_user is present' do
       it { is_expected.to be_allowed(:read_deploy_key) }
+
+      it { is_expected.to be_allowed(:enable_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key) }
 
@@ -35,6 +39,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
       context 'when admin mode enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:read_deploy_key) }
 
+        it { is_expected.to be_allowed(:enable_deploy_key) }
+
         it { is_expected.to be_allowed(:update_deploy_key) }
 
         it { is_expected.to be_allowed(:update_deploy_key_title) }
@@ -42,6 +48,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
 
       context 'when admin mode disabled' do
         it { is_expected.to be_allowed(:read_deploy_key) }
+
+        it { is_expected.to be_allowed(:enable_deploy_key) }
 
         it { is_expected.to be_disallowed(:update_deploy_key) }
 
@@ -58,6 +66,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
 
       it { is_expected.to be_disallowed(:read_deploy_key) }
 
+      it { is_expected.to be_disallowed(:enable_deploy_key) }
+
       it { is_expected.to be_disallowed(:update_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key_title) }
@@ -69,6 +79,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
       context 'when admin mode enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:read_deploy_key) }
 
+        it { is_expected.to be_allowed(:enable_deploy_key) }
+
         it { is_expected.to be_allowed(:update_deploy_key) }
 
         it { is_expected.to be_allowed(:update_deploy_key_title) }
@@ -76,6 +88,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
 
       context 'when admin mode disabled' do
         it { is_expected.to be_disallowed(:read_deploy_key) }
+
+        it { is_expected.to be_disallowed(:enable_deploy_key) }
 
         it { is_expected.to be_disallowed(:update_deploy_key) }
 
@@ -92,6 +106,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
 
       it { is_expected.to be_allowed(:read_deploy_key) }
 
+      it { is_expected.to be_allowed(:enable_deploy_key) }
+
       it { is_expected.to be_allowed(:update_deploy_key) }
 
       it { is_expected.to be_allowed(:update_deploy_key_title) }
@@ -99,6 +115,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
 
     context 'when assigned to another project' do
       it { is_expected.to be_disallowed(:read_deploy_key) }
+
+      it { is_expected.to be_disallowed(:enable_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key) }
 
@@ -117,6 +135,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
       end
 
       it { is_expected.to be_allowed(:read_deploy_key) }
+
+      it { is_expected.to be_allowed(:enable_deploy_key) }
 
       it { is_expected.to be_allowed(:update_deploy_key) }
 

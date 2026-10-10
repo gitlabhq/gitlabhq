@@ -156,14 +156,71 @@ Prerequisites:
 > The flow can commit and push changes, and post comments on issues and merge requests.
 > Unlike Chat, a flow does not ask you to approve these actions.
 > [Tool approvals](#tool-approvals) apply to the Chat session only, not to flows that the session starts.
-> Each flow run also uses [CI/CD minutes](../../ci/pipelines/compute_minutes.md), because flows started from the GitLab UI run as a CI/CD pipeline.
+> Each flow run also uses [compute minutes](../../ci/pipelines/compute_minutes.md), because flows started from the GitLab UI run as a CI/CD pipeline.
 
 To trigger a flow from Chat:
 
+1. In the top bar, select **Search or go to** and find your project.
+1. On the GitLab Duo sidebar, open a new or existing Chat conversation.
 1. In the Chat message box, enter `/` at the start of your message.
 1. In the **Flows** section, select a flow. The command is the flow name in slug format, with a `/flow:` prefix. For example, a flow named `Security scanner` becomes `/flow:security-scanner`. If two flows in a project have names that produce the same command, a numeric ID is appended to the second command.
 1. Optional. After the command, enter the goal for the flow. For example, `/flow:security-scanner check the auth module`.
 1. Press <kbd>Enter</kbd> or select **Send**.
+
+#### Start a long-running task with the `/goal` command
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23107) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_chat_goal_command`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/23107) in GitLab 19.5.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use `/goal` when you want GitLab Duo to keep working on a task until it's done,
+instead of answering one turn at a time and waiting for you to ask it to continue.
+
+When you send a goal, Chat starts a [Developer Flow](../project/merge_requests/developer.md)
+session that works toward it. Goals work best for a concrete change with a clear end state,
+for example, fixing a set of failing tests or making a change across several files.
+To ask a question, use a regular Chat message instead.
+
+Prerequisites:
+
+- [Open a chat window](#use-gitlab-duo-chat-in-the-gitlab-ui) in a project. `/goal` is not available outside a project.
+- Meet the [Developer Flow prerequisites](../project/merge_requests/developer.md#prerequisites),
+  including turning on the Developer Flow for the top-level group.
+
+> [!warning]
+> A goal runs the Developer Flow, which has write access to the GitLab API and to Git.
+> The flow can commit and push changes, create merge requests, and post comments on issues and merge requests.
+> Unlike Chat, the flow does not ask you to approve these actions.
+> [Tool approvals](#tool-approvals) apply to the Chat session only, not to flows that the session starts.
+> Each goal also uses [compute minutes](../../ci/pipelines/compute_minutes.md), because flows started from the GitLab UI run as a CI/CD pipeline.
+
+To start a long-running task:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. On the GitLab Duo sidebar, open a new or existing Chat conversation.
+1. In the Chat message box, do one of the following:
+   - At the start of your message, enter `/goal` and select it from the list.
+   - Select **More actions** ({{< icon name="plus" >}}) > **Goal**.
+
+   A **Goal** label appears in the message box.
+1. Describe what you want done. For example:
+
+   ```plaintext
+   Fix the failing tests in spec/models/user_spec.rb
+   ```
+
+1. Press <kbd>Enter</kbd> or select **Send**.
+
+In the conversation, your message shows a **Goal** label.
+
+To remove the goal before you send the message, on the **Goal** label, select **Remove goal** ({{< icon name="close" >}}).
 
 ### Use GitLab Duo Chat in VS Code
 
