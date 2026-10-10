@@ -35959,6 +35959,9 @@ msgstr ""
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
 msgstr ""
 
+msgid "Enter"
+msgstr ""
+
 msgid "Enter %{weights_link_start}weights%{weights_link_end} for storages for new repositories. Configured storages appear below."
 msgstr ""
 
@@ -59095,6 +59098,11 @@ msgstr[1] ""
 msgid "Orbit|%{count} in your graph"
 msgstr ""
 
+msgid "Orbit|%{count} row · %{ms} ms"
+msgid_plural "Orbit|%{count} rows · %{ms} ms"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|%{entity} connects to %{count} entity. Select it to move to it."
 msgid_plural "Orbit|%{entity} connects to %{count} entities. Select one to move to it."
 msgstr[0] ""
@@ -59121,6 +59129,9 @@ msgid "Orbit|%{name} +%{count} more"
 msgid_plural "Orbit|%{name} +%{count} more"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Orbit|%{referenceStart}Full GQL reference%{referenceEnd} · based on %{cypherStart}openCypher 9%{cypherEnd}"
+msgstr ""
 
 msgid "Orbit|+%{count} more"
 msgid_plural "Orbit|+%{count} more"
@@ -59151,13 +59162,25 @@ msgstr ""
 msgid "Orbit|Additional metadata if required"
 msgstr ""
 
+msgid "Orbit|Aggregation: count by a group"
+msgstr ""
+
 msgid "Orbit|All content from this group, its subgroups, and projects will be added to Orbit. Existing access controls still apply — users who cannot access content in this group won't see it through Orbit."
 msgstr ""
 
 msgid "Orbit|All content from this group, its subgroups, and projects will be indexed by GitLab Orbit. Your existing role-based access controls still apply. Users can access only the data they have permission to see in GitLab."
 msgstr ""
 
+msgid "Orbit|All entities"
+msgstr ""
+
 msgid "Orbit|All groups and projects"
+msgstr ""
+
+msgid "Orbit|Ask Duo to fix this query"
+msgstr ""
+
+msgid "Orbit|Ask Duo why"
 msgstr ""
 
 msgid "Orbit|Available groups"
@@ -59202,6 +59225,15 @@ msgstr ""
 msgid "Orbit|Check pipeline health"
 msgstr ""
 
+msgid "Orbit|Check the schema"
+msgstr ""
+
+msgid "Orbit|Choose some properties of a node, or all of them."
+msgstr ""
+
+msgid "Orbit|Choose the columns."
+msgstr ""
+
 msgid "Orbit|Claude Code"
 msgstr ""
 
@@ -59236,6 +59268,12 @@ msgid "Orbit|Code navigation"
 msgstr ""
 
 msgid "Orbit|Codex"
+msgstr ""
+
+msgid "Orbit|Columns"
+msgstr ""
+
+msgid "Orbit|Compare with a date, or a time with datetime()."
 msgstr ""
 
 msgid "Orbit|Configuration"
@@ -59280,10 +59318,16 @@ msgstr ""
 msgid "Orbit|Copy MCP endpoint"
 msgstr ""
 
+msgid "Orbit|Copy an example and change the entities and filters. Use the Schema tab for names. %{linkStart}Full JSON query reference%{linkEnd}"
+msgstr ""
+
 msgid "Orbit|Copy command"
 msgstr ""
 
 msgid "Orbit|Copy configuration"
+msgstr ""
+
+msgid "Orbit|Copy example"
 msgstr ""
 
 msgid "Orbit|Copy install command"
@@ -59313,10 +59357,16 @@ msgstr ""
 msgid "Orbit|Could not turn on Orbit"
 msgstr ""
 
+msgid "Orbit|Count, or use sum, avg, min, and max. The other columns become groups."
+msgstr ""
+
 msgid "Orbit|Cursor"
 msgstr ""
 
 msgid "Orbit|Definition"
+msgstr ""
+
+msgid "Orbit|Describe a query for GitLab Duo to write"
 msgstr ""
 
 msgid "Orbit|Directory"
@@ -59343,6 +59393,9 @@ msgstr ""
 msgid "Orbit|Everything in Orbit belongs to a project. Select an entity to see how it connects."
 msgstr ""
 
+msgid "Orbit|Examples"
+msgstr ""
+
 msgid "Orbit|Exclude"
 msgstr ""
 
@@ -59358,13 +59411,13 @@ msgstr ""
 msgid "Orbit|Excluded groups are not automatically indexed. If the group is already indexed, GitLab removes its enrollment and index within a few minutes."
 msgstr ""
 
-msgid "Orbit|Execute query"
-msgstr ""
-
 msgid "Orbit|Explore"
 msgstr ""
 
 msgid "Orbit|Explore data"
+msgstr ""
+
+msgid "Orbit|Export CSV"
 msgstr ""
 
 msgid "Orbit|Failed to enable GitLab Orbit in GitLab Duo. Please try again."
@@ -59403,9 +59456,6 @@ msgstr ""
 msgid "Orbit|Failed to load initial graph neighbors."
 msgstr ""
 
-msgid "Orbit|Failed to load query templates."
-msgstr ""
-
 msgid "Orbit|Failed to load references."
 msgstr ""
 
@@ -59424,10 +59474,31 @@ msgstr ""
 msgid "Orbit|Filter by type"
 msgstr ""
 
+msgid "Orbit|Filters"
+msgstr ""
+
 msgid "Orbit|Find definitions and references for functions and other symbols in this file. Click a symbol to see where it is defined and called."
 msgstr ""
 
+msgid "Orbit|Find entities and how they connect."
+msgstr ""
+
+msgid "Orbit|Find everything linked to one node."
+msgstr ""
+
+msgid "Orbit|Find present values, or missing values with IS NULL."
+msgstr ""
+
+msgid "Orbit|Find the shortest path between two nodes."
+msgstr ""
+
 msgid "Orbit|Finding"
+msgstr ""
+
+msgid "Orbit|Fix this Orbit GQL query. It fails with: %{error}"
+msgstr ""
+
+msgid "Orbit|Follow a relationship for one to three hops."
 msgstr ""
 
 msgid "Orbit|Free trial for Orbit"
@@ -59436,7 +59507,19 @@ msgstr ""
 msgid "Orbit|Free trials are for selected Premium and Ultimate groups. Contact sales to get Orbit for this group. %{linkStart}Learn about Orbit pricing%{linkEnd}"
 msgstr ""
 
+msgid "Orbit|From"
+msgstr ""
+
 msgid "Orbit|From %{entity}"
+msgstr ""
+
+msgid "Orbit|GQL syntax"
+msgstr ""
+
+msgid "Orbit|Generate"
+msgstr ""
+
+msgid "Orbit|Get exact, repeatable results, like exports. Results include only data you have permission to see."
 msgstr ""
 
 msgid "Orbit|GitLab Duo"
@@ -59478,13 +59561,16 @@ msgstr ""
 msgid "Orbit|Go to Orbit"
 msgstr ""
 
+msgid "Orbit|Go to preferences"
+msgstr ""
+
 msgid "Orbit|Group"
 msgstr ""
 
-msgid "Orbit|Groups"
+msgid "Orbit|Group by minute, hour, day, week, month, quarter, or year."
 msgstr ""
 
-msgid "Orbit|Hide error details"
+msgid "Orbit|Groups"
 msgstr ""
 
 msgid "Orbit|Hide schema"
@@ -59523,10 +59609,16 @@ msgstr ""
 msgid "Orbit|Invalid query. Check query parameters and try again."
 msgstr ""
 
+msgid "Orbit|JSON examples"
+msgstr ""
+
 msgid "Orbit|Job"
 msgstr ""
 
 msgid "Orbit|Jump to definition"
+msgstr ""
+
+msgid "Orbit|Keep the matches that meet a condition. Join conditions with AND."
 msgstr ""
 
 msgid "Orbit|L%{line}"
@@ -59568,6 +59660,15 @@ msgstr ""
 msgid "Orbit|Map"
 msgstr ""
 
+msgid "Orbit|Match one of several relationships."
+msgstr ""
+
+msgid "Orbit|Match one of several values."
+msgstr ""
+
+msgid "Orbit|Match part of a text. Also ENDS WITH and CONTAINS."
+msgstr ""
+
 msgid "Orbit|Merge requests"
 msgstr ""
 
@@ -59583,7 +59684,16 @@ msgstr ""
 msgid "Orbit|Milestone"
 msgstr ""
 
+msgid "Orbit|More rows match this query. Raise the LIMIT to see them."
+msgstr ""
+
+msgid "Orbit|More syntax"
+msgstr ""
+
 msgid "Orbit|Navigate to"
+msgstr ""
+
+msgid "Orbit|Neighbors: everything linked to one node"
 msgstr ""
 
 msgid "Orbit|No eligible groups are available for GitLab Orbit."
@@ -59616,6 +59726,9 @@ msgstr ""
 msgid "Orbit|No results yet"
 msgstr ""
 
+msgid "Orbit|No rows match this query"
+msgstr ""
+
 msgid "Orbit|No tools available."
 msgstr ""
 
@@ -59641,6 +59754,9 @@ msgid "Orbit|Open as query"
 msgstr ""
 
 msgid "Orbit|OpenCode"
+msgstr ""
+
+msgid "Orbit|Or describe what you want, and GitLab Duo writes the query"
 msgstr ""
 
 msgid "Orbit|Orbit"
@@ -59700,6 +59816,12 @@ msgstr ""
 msgid "Orbit|Packages"
 msgstr ""
 
+msgid "Orbit|Path finding: shortest path"
+msgstr ""
+
+msgid "Orbit|Patterns"
+msgstr ""
+
 msgid "Orbit|Pending"
 msgstr ""
 
@@ -59713,6 +59835,12 @@ msgid "Orbit|Planning"
 msgstr ""
 
 msgid "Orbit|Powered by Orbit"
+msgstr ""
+
+msgid "Orbit|Press %{keys} to run."
+msgstr ""
+
+msgid "Orbit|Press %{keys} to use this query."
 msgstr ""
 
 msgid "Orbit|Project"
@@ -59736,6 +59864,15 @@ msgstr ""
 msgid "Orbit|Query editor"
 msgstr ""
 
+msgid "Orbit|Query reference"
+msgstr ""
+
+msgid "Orbit|Query your graph with GQL"
+msgstr ""
+
+msgid "Orbit|Read-only. No OR, NOT, or OPTIONAL MATCH. Up to 3 hops and 1,000 rows."
+msgstr ""
+
 msgid "Orbit|References"
 msgstr ""
 
@@ -59748,10 +59885,19 @@ msgstr ""
 msgid "Orbit|Required to use Orbit. Indexes this group, its subgroups, and projects. Can take up to a few hours."
 msgstr ""
 
+msgid "Orbit|Results"
+msgstr ""
+
+msgid "Orbit|Return at most this many rows, up to 1,000."
+msgstr ""
+
 msgid "Orbit|Run a query to see results"
 msgstr ""
 
 msgid "Orbit|Run a query to see results here."
+msgstr ""
+
+msgid "Orbit|Run query"
 msgstr ""
 
 msgid "Orbit|Run this command in your terminal to configure %{host} automatically."
@@ -59775,6 +59921,9 @@ msgstr ""
 msgid "Orbit|Search this project for %{name}"
 msgstr ""
 
+msgid "Orbit|Search words in text. Also all_tokens and token_match."
+msgstr ""
+
 msgid "Orbit|Security"
 msgstr ""
 
@@ -59782,6 +59931,9 @@ msgid "Orbit|SecurityScan"
 msgstr ""
 
 msgid "Orbit|Select a billing namespace for Orbit to attribute usage."
+msgstr ""
+
+msgid "Orbit|Select a name to add it at the cursor."
 msgstr ""
 
 msgid "Orbit|Select a top-level group"
@@ -59811,9 +59963,6 @@ msgstr ""
 msgid "Orbit|Setup guide"
 msgstr ""
 
-msgid "Orbit|Show error details"
-msgstr ""
-
 msgid "Orbit|Show labels"
 msgstr ""
 
@@ -59833,6 +59982,9 @@ msgid "Orbit|Show services"
 msgstr ""
 
 msgid "Orbit|Showing %{returned} of %{total} indexed nodes."
+msgstr ""
+
+msgid "Orbit|Sort by one column."
 msgstr ""
 
 msgid "Orbit|Source Code"
@@ -59856,13 +60008,25 @@ msgstr ""
 msgid "Orbit|Talk to sales to get Orbit for %{groupName}. %{linkStart}Learn more about Orbit%{linkEnd}"
 msgstr ""
 
-msgid "Orbit|Templates"
+msgid "Orbit|The JSON query format is going away. GQL replaces it soon."
 msgstr ""
 
 msgid "Orbit|The Orbit trial for this group has ended. Add GitLab credits to turn Orbit on again."
 msgstr ""
 
+msgid "Orbit|The examples are not available. Try again later."
+msgstr ""
+
 msgid "Orbit|The free trial is for this group only. When the trial ends or the credits run out, Orbit pauses until you add GitLab credits."
+msgstr ""
+
+msgid "Orbit|The query has an error"
+msgstr ""
+
+msgid "Orbit|The query ran. Nothing in the data you can see matches it."
+msgstr ""
+
+msgid "Orbit|The schema is not available. Try again later."
 msgstr ""
 
 msgid "Orbit|This group cannot be indexed."
@@ -59874,6 +60038,9 @@ msgstr ""
 msgid "Orbit|This top-level group is excluded from indexing"
 msgstr ""
 
+msgid "Orbit|To"
+msgstr ""
+
 msgid "Orbit|To %{entity}"
 msgstr ""
 
@@ -59881,6 +60048,12 @@ msgid "Orbit|Toggle indexed content"
 msgstr ""
 
 msgid "Orbit|Tools overview"
+msgstr ""
+
+msgid "Orbit|Traversal: entities and their relationships"
+msgstr ""
+
+msgid "Orbit|Try an example:"
 msgstr ""
 
 msgid "Orbit|Try asking an agent"
@@ -59947,6 +60120,9 @@ msgid "Orbit|Use Orbit in your repositories"
 msgstr ""
 
 msgid "Orbit|Use Orbit."
+msgstr ""
+
+msgid "Orbit|Use the default query"
 msgstr ""
 
 msgid "Orbit|User"
@@ -60024,10 +60200,16 @@ msgstr ""
 msgid "Orbit|Who triggered this pipeline?"
 msgstr ""
 
+msgid "Orbit|Why does this Orbit GQL query return no rows?"
+msgstr ""
+
 msgid "Orbit|Work items"
 msgstr ""
 
 msgid "Orbit|WorkItem"
+msgstr ""
+
+msgid "Orbit|Write an Orbit GQL query that answers this question: %{question}"
 msgstr ""
 
 msgid "Orbit|You can leave this page. A message appears here when Orbit is ready."
@@ -68600,6 +68782,9 @@ msgid "Q got your message!"
 msgstr ""
 
 msgid "QualitySummary|Project quality"
+msgstr ""
+
+msgid "Query editor"
 msgstr ""
 
 msgid "Queued"
@@ -84099,6 +84284,9 @@ msgid "Systems Administrator"
 msgstr ""
 
 msgid "TXT"
+msgstr ""
+
+msgid "Tab"
 msgstr ""
 
 msgid "Table"

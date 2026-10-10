@@ -25,6 +25,7 @@ title: GitLab MCP server
 - `duo_agent_platform` toolset [included by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/630992) in GitLab 19.5.
 - Changed from [beta](../../policy/development_stages_support.md#beta) to [generally available](../../policy/development_stages_support.md#generally-available) in GitLab 19.5.
 - `duo_agent_platform` toolset [listed only](https://gitlab.com/gitlab-org/gitlab/-/work_items/631747) when GitLab Duo Agent Platform is available for the user in GitLab 19.5.
+- `code_security` tools [listed only](https://gitlab.com/gitlab-org/gitlab/-/work_items/629267) when the licensed feature behind each tool is available for the user in GitLab 19.5.
 
 {{< /history >}}
 
@@ -157,6 +158,16 @@ On GitLab Self-Managed and GitLab Dedicated, all of the following must be true:
 
 For more information, see the [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites)
 and [how to turn GitLab Duo Agent Platform on or off](../duo_agent_platform/turn_on_off.md).
+
+The `code_security` tools are listed only when the feature behind each tool is available for you.
+This applies even when you request the toolset in the header or set the header to `all`.
+
+- `list_vulnerabilities`, `get_vulnerability`, and `save_vulnerability` require the security dashboard.
+- `attach_scan_profile` requires security scan profiles.
+
+Both are Ultimate features. On GitLab.com, the tools are listed if you belong to at least one top-level group
+on the Ultimate plan, including Ultimate trials. Access to a project in that group also counts.
+On GitLab Self-Managed and GitLab Dedicated, the tools are listed if the instance license includes the feature.
 
 Listing a tool does not grant access. Each tool still checks your project and namespace permissions when called.
 
