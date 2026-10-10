@@ -62,7 +62,7 @@ To deprecate a page or topic:
 
    You can add any additional context-specific details that might help users.
 1. Add the following HTML comments above and below the content. For `remove_date`,
-   set a date three months after the [release where it will be removed](https://about.gitlab.com/releases/).
+   set a date three months after the [release where it will be removed](https://handbook.gitlab.com/handbook/engineering/releases/monthly-releases/#monthly-release-schedule).
 
    ```markdown
    title: Title (deprecated)

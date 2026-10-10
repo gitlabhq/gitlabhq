@@ -1409,7 +1409,7 @@ ALPN enforcement was enabled in some versions of GitLab. However, ALPN enforceme
 - GitLab 17.5.0 - 17.5.4
 - GitLab 17.4.x
 
-With [GitLab 17.5.5, 17.6.3, and 17.7.1](https://about.gitlab.com/releases/2025/01/08/patch-release-gitlab-17-7-1-released/),
+With [GitLab 17.5.5, 17.6.3, and 17.7.1](https://docs.gitlab.com/releases/patches/patch-release-gitlab-17-7-1-released/),
 ALPN enforcement is disabled again. GitLab 17.4 and earlier never had ALPN enforcement enabled.
 
 ### GitLab

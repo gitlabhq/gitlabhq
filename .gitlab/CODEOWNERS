@@ -1488,19 +1488,7 @@ lib/gitlab/checks/
 /ee/config/custom_abilities/
 /ee/lib/api/member_roles.rb
 /ee/lib/**/authz/
-/ee/spec/**/authz/
-/ee/spec/graphql/**/member_roles/
-/ee/spec/models/members/member_role_spec.rb
-/ee/spec/models/preloaders/user_member_roles_in_groups_preloader_spec.rb
-/ee/spec/models/preloaders/user_member_roles_in_projects_preloader_spec.rb
-/ee/spec/policies/
-/ee/spec/requests/api/member_roles_spec.rb
-/ee/spec/requests/custom_roles/
-/ee/spec/services/member_roles/
 /lib/**/authz/
-/spec/**/authz/
-/spec/models/ability.rb
-/spec/policies/
 
 [Container registry] @gitlab-org/ci-cd/package-stage/container-registry-group
 /app/assets/javascripts/packages_and_registries/container_registry/
