@@ -686,8 +686,6 @@ scopes:
   - slack_links
   - zoom_links
   - pagerduty_links
-  ee/app/models/iteration.rb:
-  - sort_by_due_date_and_title
   ee/app/models/members/member_role.rb:
   - elevating
   ee/app/models/merge_requests/compliance_violation.rb:

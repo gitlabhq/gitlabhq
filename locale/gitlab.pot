@@ -76095,6 +76095,9 @@ msgstr ""
 msgid "SecurityInventory|Business logic scanning"
 msgstr ""
 
+msgid "SecurityInventory|Business logic scanning (BL)"
+msgstr ""
+
 msgid "SecurityInventory|CS"
 msgstr ""
 
