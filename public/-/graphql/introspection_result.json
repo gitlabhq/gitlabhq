@@ -192673,7 +192673,7 @@
             },
             {
               "name": "orbitTrial",
-              "description": "Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can only be resolved for one group in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
