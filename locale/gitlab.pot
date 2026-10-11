@@ -36,9 +36,6 @@ msgstr ""
 msgid " This action will also delete:"
 msgstr ""
 
-msgid " UTC"
-msgstr ""
-
 msgid " and "
 msgstr ""
 
@@ -59069,6 +59066,21 @@ msgid_plural "Orbit|%d entities"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Orbit|%d group is excluded from automatic indexing"
+msgid_plural "Orbit|%d groups are excluded from automatic indexing"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|%d group is no longer excluded"
+msgid_plural "Orbit|%d groups are no longer excluded"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|%d group selected"
+msgid_plural "Orbit|%d groups selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|%d property"
 msgid_plural "Orbit|%d properties"
 msgstr[0] ""
@@ -59078,6 +59090,9 @@ msgid "Orbit|%d relationship"
 msgid_plural "Orbit|%d relationships"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Orbit|%{action}: %{done} of %{total} done"
+msgstr ""
 
 msgid "Orbit|%{boldStart}The initial scan can take some time depending on the amount of content.%{boldEnd} After that, updated content is automatically re-indexed. You can turn off GitLab Orbit at any time."
 msgstr ""
@@ -59105,6 +59120,11 @@ msgid_plural "Orbit|%{entity} connects to %{count} entities. Select one to move 
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Orbit|%{failed} of %{total} groups was not updated"
+msgid_plural "Orbit|%{failed} of %{total} groups were not updated"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|%{groupName} is not eligible for a free Orbit trial"
 msgstr ""
 
@@ -59113,14 +59133,6 @@ msgstr ""
 
 msgid "Orbit|%{groupName} is out of GitLab credits"
 msgstr ""
-
-msgid "Orbit|%{indexed} of %{total} projects indexed"
-msgstr ""
-
-msgid "Orbit|%{indexed} project indexed"
-msgid_plural "Orbit|%{indexed} projects indexed"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Orbit|%{name} +%{count} more"
 msgid_plural "Orbit|%{name} +%{count} more"
@@ -59142,10 +59154,19 @@ msgstr ""
 msgid "Orbit|3. Review and confirm"
 msgstr ""
 
+msgid "Orbit|A group is indexed when Core, Planning, Code review, CI/CD, Source code, and Security are all indexed."
+msgstr ""
+
+msgid "Orbit|Actions"
+msgstr ""
+
 msgid "Orbit|Additional metadata if required"
 msgstr ""
 
 msgid "Orbit|Aggregation: count by a group"
+msgstr ""
+
+msgid "Orbit|All"
 msgstr ""
 
 msgid "Orbit|All content from this group, its subgroups, and projects will be indexed by GitLab Orbit. Your existing role-based access controls still apply. Users can access only the data they have permission to see in GitLab."
@@ -59154,8 +59175,10 @@ msgstr ""
 msgid "Orbit|All entities"
 msgstr ""
 
-msgid "Orbit|All groups and projects"
-msgstr ""
+msgid "Orbit|And %d more group"
+msgid_plural "Orbit|And %d more groups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Orbit|Ask Duo to fix this query"
 msgstr ""
@@ -59172,6 +59195,11 @@ msgstr ""
 msgid "Orbit|Ask GitLab Duo a question that spans projects. GitLab Duo is not available for your groups."
 msgstr ""
 
+msgid "Orbit|Automatic indexing is on, so Orbit turns on again for this group within an hour. To keep Orbit off, exclude the group from automatic indexing."
+msgid_plural "Orbit|Automatic indexing is on, so Orbit turns on again for these groups within an hour. To keep Orbit off, exclude the groups from automatic indexing."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|Available groups"
 msgstr ""
 
@@ -59182,6 +59210,9 @@ msgid "Orbit|Beta"
 msgstr ""
 
 msgid "Orbit|Branch"
+msgstr ""
+
+msgid "Orbit|Bulk actions are not available until the excluded groups load."
 msgstr ""
 
 msgid "Orbit|By turning on Orbit today, %{groupName} automatically gets 100 free GitLab credits for Orbit, valid for 30 days. When they run out or the 30 days end, contact sales to keep using Orbit."
@@ -59208,13 +59239,19 @@ msgstr ""
 msgid "Orbit|Check the schema"
 msgstr ""
 
+msgid "Orbit|Check the spelling or clear the search."
+msgstr ""
+
+msgid "Orbit|Checking the Orbit status"
+msgstr ""
+
 msgid "Orbit|Choose some properties of a node, or all of them."
 msgstr ""
 
 msgid "Orbit|Choose the columns."
 msgstr ""
 
-msgid "Orbit|Clear"
+msgid "Orbit|Clear search"
 msgstr ""
 
 msgid "Orbit|ClickHouse"
@@ -59235,9 +59272,6 @@ msgstr ""
 msgid "Orbit|Code"
 msgstr ""
 
-msgid "Orbit|Code Review"
-msgstr ""
-
 msgid "Orbit|Code navigation"
 msgstr ""
 
@@ -59248,9 +59282,6 @@ msgid "Orbit|Columns"
 msgstr ""
 
 msgid "Orbit|Compare with a date, or a time with datetime()."
-msgstr ""
-
-msgid "Orbit|Configure instance-level settings for Orbit indexing."
 msgstr ""
 
 msgid "Orbit|Connect your AI coding agents to Orbit and query Orbit from your terminal, with one command."
@@ -59278,6 +59309,18 @@ msgid "Orbit|Copy to clipboard"
 msgstr ""
 
 msgid "Orbit|Core"
+msgstr ""
+
+msgid "Orbit|Could not check the Orbit status"
+msgstr ""
+
+msgid "Orbit|Could not load excluded groups"
+msgstr ""
+
+msgid "Orbit|Could not load groups"
+msgstr ""
+
+msgid "Orbit|Could not save the setting"
 msgstr ""
 
 msgid "Orbit|Could not start your free trial"
@@ -59319,9 +59362,6 @@ msgstr ""
 msgid "Orbit|Enable Orbit in GitLab Duo by default"
 msgstr ""
 
-msgid "Orbit|Enable indexing for a top-level group to make its projects queryable."
-msgstr ""
-
 msgid "Orbit|Entities"
 msgstr ""
 
@@ -59337,31 +59377,33 @@ msgstr ""
 msgid "Orbit|Exclude"
 msgstr ""
 
-msgid "Orbit|Exclude group"
+msgid "Orbit|Exclude %d group from automatic indexing?"
+msgid_plural "Orbit|Exclude %d groups from automatic indexing?"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|Exclude from automatic indexing"
 msgstr ""
 
-msgid "Orbit|Exclude group from automatic indexing"
+msgid "Orbit|Excluded"
 msgstr ""
 
-msgid "Orbit|Excluded groups"
+msgid "Orbit|Excluded groups are never turned on automatically. Within an hour, Orbit also turns off for the excluded groups that are on."
 msgstr ""
 
-msgid "Orbit|Excluded groups are not automatically indexed. If the group is already indexed, GitLab removes its enrollment and index within a few minutes."
+msgid "Orbit|Excluding groups"
 msgstr ""
 
 msgid "Orbit|Explore"
 msgstr ""
 
-msgid "Orbit|Explore data"
-msgstr ""
-
 msgid "Orbit|Export CSV"
 msgstr ""
 
-msgid "Orbit|Failed to enable GitLab Orbit. Please try again."
+msgid "Orbit|Failed"
 msgstr ""
 
-msgid "Orbit|Failed to exclude the group. Please try again."
+msgid "Orbit|Failed to enable GitLab Orbit. Please try again."
 msgstr ""
 
 msgid "Orbit|Failed to execute query. Please try again."
@@ -59373,28 +59415,16 @@ msgstr ""
 msgid "Orbit|Failed to load code navigation data."
 msgstr ""
 
-msgid "Orbit|Failed to load excluded groups. Please try again."
-msgstr ""
-
 msgid "Orbit|Failed to load group. Please try again."
 msgstr ""
 
 msgid "Orbit|Failed to load groups."
 msgstr ""
 
-msgid "Orbit|Failed to load groups. Please try again."
-msgstr ""
-
 msgid "Orbit|Failed to load initial graph neighbors."
 msgstr ""
 
 msgid "Orbit|Failed to load references."
-msgstr ""
-
-msgid "Orbit|Failed to remove the group exclusion. Please try again."
-msgstr ""
-
-msgid "Orbit|Failed to update group setting. Please try again."
 msgstr ""
 
 msgid "Orbit|File"
@@ -59448,6 +59478,9 @@ msgstr ""
 msgid "Orbit|Get exact, repeatable results, like exports. Results include only data you have permission to see."
 msgstr ""
 
+msgid "Orbit|GitLab Duo Chat and agents can use Orbit data for groups that have Orbit on. This is the default for users who did not set their own Orbit preference. It has no effect when GitLab Duo is off."
+msgstr ""
+
 msgid "Orbit|GitLab Duo Chat and agents use Orbit to answer questions across projects."
 msgstr ""
 
@@ -59469,9 +59502,6 @@ msgstr ""
 msgid "Orbit|GitLab Orbit is not available right now. Try again later."
 msgstr ""
 
-msgid "Orbit|GitLab status"
-msgstr ""
-
 msgid "Orbit|Gitaly"
 msgstr ""
 
@@ -59490,12 +59520,6 @@ msgstr ""
 msgid "Orbit|Group by minute, hour, day, week, month, quarter, or year."
 msgstr ""
 
-msgid "Orbit|Groups"
-msgstr ""
-
-msgid "Orbit|Hide services"
-msgstr ""
-
 msgid "Orbit|How your data connects"
 msgstr ""
 
@@ -59508,19 +59532,16 @@ msgstr ""
 msgid "Orbit|In your graph"
 msgstr ""
 
-msgid "Orbit|Index"
-msgstr ""
-
 msgid "Orbit|Index root namespaces automatically"
 msgstr ""
 
+msgid "Orbit|Index status"
+msgstr ""
+
+msgid "Orbit|Index status is not available right now"
+msgstr ""
+
 msgid "Orbit|Indexed"
-msgstr ""
-
-msgid "Orbit|Indexed content"
-msgstr ""
-
-msgid "Orbit|Indexed groups"
 msgstr ""
 
 msgid "Orbit|Indexing"
@@ -59532,7 +59553,13 @@ msgstr ""
 msgid "Orbit|Indexing %{name}"
 msgstr ""
 
+msgid "Orbit|Indexing failed"
+msgstr ""
+
 msgid "Orbit|Indexing in progress. The map fills in as data finishes indexing."
+msgstr ""
+
+msgid "Orbit|Indexing starts in a few minutes and can take minutes to hours. You can leave this page and check back later."
 msgstr ""
 
 msgid "Orbit|Invalid JSON query. Please check the syntax."
@@ -59559,16 +59586,10 @@ msgstr ""
 msgid "Orbit|Label"
 msgstr ""
 
-msgid "Orbit|Last indexed:"
-msgstr ""
-
 msgid "Orbit|Learn more"
 msgstr ""
 
 msgid "Orbit|Leave feedback"
-msgstr ""
-
-msgid "Orbit|Load more"
 msgstr ""
 
 msgid "Orbit|Loading groups"
@@ -59610,25 +59631,28 @@ msgstr ""
 msgid "Orbit|Neighbors: everything linked to one node"
 msgstr ""
 
+msgid "Orbit|New and existing top-level groups are indexed, except excluded groups. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "Orbit|New group"
+msgstr ""
+
 msgid "Orbit|No eligible groups are available for GitLab Orbit."
 msgstr ""
 
 msgid "Orbit|No entities match your search."
 msgstr ""
 
-msgid "Orbit|No groups are excluded. Excluded top-level groups are skipped by automatic indexing."
+msgid "Orbit|No groups are excluded"
 msgstr ""
 
-msgid "Orbit|No groups match your search."
+msgid "Orbit|No groups have Orbit on"
+msgstr ""
+
+msgid "Orbit|No groups match \"%{search}\""
 msgstr ""
 
 msgid "Orbit|No indexed symbols in this file. If this project was added to Orbit recently, indexing might still be in progress."
-msgstr ""
-
-msgid "Orbit|No indexing data available yet."
-msgstr ""
-
-msgid "Orbit|No namespaces have indexing enabled."
 msgstr ""
 
 msgid "Orbit|No outbound calls found."
@@ -59643,22 +59667,28 @@ msgstr ""
 msgid "Orbit|No rows match this query"
 msgstr ""
 
-msgid "Orbit|No top-level groups found"
+msgid "Orbit|No top-level groups yet"
+msgstr ""
+
+msgid "Orbit|Not indexed"
 msgstr ""
 
 msgid "Orbit|Note"
 msgstr ""
 
+msgid "Orbit|Off"
+msgstr ""
+
 msgid "Orbit|On"
+msgstr ""
+
+msgid "Orbit|On a large instance, the first index can take several hours."
 msgstr ""
 
 msgid "Orbit|Once indexed, team members can use GitLab Orbit data through GitLab Duo Agent Platform or via MCP and CLI connections."
 msgstr ""
 
 msgid "Orbit|One or more Orbit trials have ended"
-msgstr ""
-
-msgid "Orbit|Only owners of this top-level group can change Orbit indexing."
 msgstr ""
 
 msgid "Orbit|Only the first %{shown} of %{total} groups are shown."
@@ -59670,19 +59700,28 @@ msgstr ""
 msgid "Orbit|Only top-level groups can be indexed"
 msgstr ""
 
-msgid "Orbit|Open as query"
-msgstr ""
-
 msgid "Orbit|Or describe what you want, and GitLab Duo writes the query"
 msgstr ""
 
 msgid "Orbit|Orbit"
 msgstr ""
 
-msgid "Orbit|Orbit configuration"
+msgid "Orbit|Orbit connects work items, merge requests, pipelines, and code, so GitLab Duo and other AI tools can answer questions across projects."
 msgstr ""
 
-msgid "Orbit|Orbit connects work items, merge requests, pipelines, and code, so GitLab Duo and other AI tools can answer questions across projects."
+msgid "Orbit|Orbit could not index this group. Check the Orbit indexer logs."
+msgstr ""
+
+msgid "Orbit|Orbit did not report any services. Make sure the Orbit service is running and that GitLab can reach it."
+msgstr ""
+
+msgid "Orbit|Orbit did not return the index status of some groups."
+msgstr ""
+
+msgid "Orbit|Orbit has not reported a status for this group yet."
+msgstr ""
+
+msgid "Orbit|Orbit indexes top-level groups. Create a group to start."
 msgstr ""
 
 msgid "Orbit|Orbit is available"
@@ -59691,11 +59730,24 @@ msgstr ""
 msgid "Orbit|Orbit is available on Premium and Ultimate"
 msgstr ""
 
+msgid "Orbit|Orbit is degraded"
+msgstr ""
+
 msgid "Orbit|Orbit is indexing %{groupName}"
 msgstr ""
 
 msgid "Orbit|Orbit is not available for this group"
 msgstr ""
+
+msgid "Orbit|Orbit is off for %d group"
+msgid_plural "Orbit|Orbit is off for %d groups"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|Orbit is on for %d group"
+msgid_plural "Orbit|Orbit is on for %d groups"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Orbit|Orbit is paused for %{groupName}. Contact sales to buy GitLab credits and keep using Orbit. %{linkStart}Learn about Orbit pricing%{linkEnd}"
 msgstr ""
@@ -59709,19 +59761,30 @@ msgstr ""
 msgid "Orbit|Orbit is unavailable"
 msgstr ""
 
-msgid "Orbit|Orbit is unavailable."
+msgid "Orbit|Orbit settings"
 msgstr ""
 
-msgid "Orbit|Orbit settings"
+msgid "Orbit|Orbit state"
+msgstr ""
+
+msgid "Orbit|Orbit state: %{state}"
 msgstr ""
 
 msgid "Orbit|Orbit status is not available. Try again later."
 msgstr ""
 
+msgid "Orbit|Orbit stops indexing this group. GitLab Duo and Orbit queries no longer return its data."
+msgid_plural "Orbit|Orbit stops indexing these groups. GitLab Duo and Orbit queries no longer return their data."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|Orbit trials are unavailable right now"
 msgstr ""
 
 msgid "Orbit|Orbit turns on for %{groupName} and indexes the group, its subgroups, and projects. Indexing can take up to a few hours."
+msgstr ""
+
+msgid "Orbit|Orbit turns on for every top-level group now, and for each new top-level group later. Excluded groups are skipped."
 msgstr ""
 
 msgid "Orbit|Overview"
@@ -59737,9 +59800,6 @@ msgid "Orbit|Path finding: shortest path"
 msgstr ""
 
 msgid "Orbit|Patterns"
-msgstr ""
-
-msgid "Orbit|Pending"
 msgstr ""
 
 msgid "Orbit|Pipeline"
@@ -59790,6 +59850,9 @@ msgstr ""
 msgid "Orbit|Query your graph with GQL"
 msgstr ""
 
+msgid "Orbit|Queued to start"
+msgstr ""
+
 msgid "Orbit|Quickstart"
 msgstr ""
 
@@ -59802,7 +59865,10 @@ msgstr ""
 msgid "Orbit|Relationships"
 msgstr ""
 
-msgid "Orbit|Remove"
+msgid "Orbit|Remove exclusion"
+msgstr ""
+
+msgid "Orbit|Removing exclusions"
 msgstr ""
 
 msgid "Orbit|Required to use Orbit. Indexes this group, its subgroups, and projects. Can take up to a few hours."
@@ -59844,22 +59910,22 @@ msgstr ""
 msgid "Orbit|SecurityScan"
 msgstr ""
 
+msgid "Orbit|Select %{group}"
+msgstr ""
+
 msgid "Orbit|Select a billing namespace for Orbit to attribute usage."
 msgstr ""
 
 msgid "Orbit|Select a name to add it at the cursor."
 msgstr ""
 
-msgid "Orbit|Select a top-level group"
+msgid "Orbit|Select all groups on this page"
 msgstr ""
 
 msgid "Orbit|Select an entity"
 msgstr ""
 
-msgid "Orbit|Select group"
-msgstr ""
-
-msgid "Orbit|Select scope"
+msgid "Orbit|Select groups to turn Orbit on or off, or to exclude them from automatic indexing."
 msgstr ""
 
 msgid "Orbit|Set up the Orbit CLI"
@@ -59883,9 +59949,6 @@ msgstr ""
 msgid "Orbit|Show recent merge requests"
 msgstr ""
 
-msgid "Orbit|Show services"
-msgstr ""
-
 msgid "Orbit|Showing %{shown} %{entity} item. Drag to rotate the globe."
 msgid_plural "Orbit|Showing %{shown} %{entity} items. Drag to rotate the globe."
 msgstr[0] ""
@@ -59906,10 +59969,10 @@ msgid_plural "Orbit|Showing %{shown} of %{total} items. Drag to rotate the globe
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Orbit|Sort by one column."
+msgid "Orbit|Something went wrong on the server. Try again."
 msgstr ""
 
-msgid "Orbit|Source Code"
+msgid "Orbit|Sort by one column."
 msgstr ""
 
 msgid "Orbit|Source code"
@@ -59925,6 +59988,12 @@ msgid "Orbit|Start a free trial to turn on Orbit for this group."
 msgstr ""
 
 msgid "Orbit|Start free trial"
+msgstr ""
+
+msgid "Orbit|Status not available"
+msgstr ""
+
+msgid "Orbit|Status unknown"
 msgstr ""
 
 msgid "Orbit|Talk to sales to get Orbit for %{groupName}. %{linkStart}Learn more about Orbit%{linkEnd}"
@@ -59948,10 +60017,19 @@ msgstr ""
 msgid "Orbit|The query ran. Nothing in the data you can see matches it."
 msgstr ""
 
+msgid "Orbit|The request did not reach GitLab. Check your connection and try again."
+msgstr ""
+
 msgid "Orbit|The schema is not available. Try again later."
 msgstr ""
 
+msgid "Orbit|Their indexed data is deleted 30 or more days after you turn Orbit off."
+msgstr ""
+
 msgid "Orbit|This group cannot be indexed."
+msgstr ""
+
+msgid "Orbit|This group is excluded, so Orbit turns off for it within an hour."
 msgstr ""
 
 msgid "Orbit|This group is not eligible for a GitLab Orbit trial."
@@ -59966,7 +60044,7 @@ msgstr ""
 msgid "Orbit|To %{entity}"
 msgstr ""
 
-msgid "Orbit|Toggle indexed content"
+msgid "Orbit|Top-level groups"
 msgstr ""
 
 msgid "Orbit|Traversal: entities and their relationships"
@@ -59975,17 +60053,22 @@ msgstr ""
 msgid "Orbit|Try Orbit in GitLab Duo"
 msgstr ""
 
+msgid "Orbit|Try again"
+msgstr ""
+
 msgid "Orbit|Try an example:"
 msgstr ""
 
 msgid "Orbit|Try asking an agent"
 msgstr ""
 
-msgid "Orbit|Turn off Orbit indexing"
+msgid "Orbit|Turn off Orbit"
 msgstr ""
 
-msgid "Orbit|Turn off indexing"
-msgstr ""
+msgid "Orbit|Turn off Orbit for %d group?"
+msgid_plural "Orbit|Turn off Orbit for %d groups?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Orbit|Turn on"
 msgstr ""
@@ -60008,10 +60091,25 @@ msgstr ""
 msgid "Orbit|Turn on Orbit for GitLab Duo"
 msgstr ""
 
-msgid "Orbit|Turn on indexing"
+msgid "Orbit|Turn on Orbit for all top-level groups automatically"
 msgstr ""
 
-msgid "Orbit|Turning off Orbit indexing will prevent users and agents from accessing Orbit data. Updates will not be scanned by Orbit."
+msgid "Orbit|Turn on Orbit for all top-level groups?"
+msgstr ""
+
+msgid "Orbit|Turn on Orbit in GitLab Duo by default"
+msgstr ""
+
+msgid "Orbit|Turn on for all groups"
+msgstr ""
+
+msgid "Orbit|Turned on %{time}"
+msgstr ""
+
+msgid "Orbit|Turning off Orbit"
+msgstr ""
+
+msgid "Orbit|Turning on Orbit"
 msgstr ""
 
 msgid "Orbit|Type"
@@ -60020,10 +60118,7 @@ msgstr ""
 msgid "Orbit|Unable to load Orbit schema. Please try again."
 msgstr ""
 
-msgid "Orbit|Unable to load cluster status."
-msgstr ""
-
-msgid "Orbit|Unable to load index status. Please try again."
+msgid "Orbit|Updating…"
 msgstr ""
 
 msgid "Orbit|Use the default query"
@@ -60035,7 +60130,7 @@ msgstr ""
 msgid "Orbit|Values"
 msgstr ""
 
-msgid "Orbit|Version"
+msgid "Orbit|Version %{version}"
 msgstr ""
 
 msgid "Orbit|View Owners"
@@ -60125,7 +60220,13 @@ msgstr ""
 msgid "Orbit|You can leave this page. A message appears here when Orbit is ready."
 msgstr ""
 
+msgid "Orbit|You can still turn Orbit on or off."
+msgstr ""
+
 msgid "Orbit|You can use Orbit when indexing is done, which may take several minutes to hours. You can leave this page and check back later."
+msgstr ""
+
+msgid "Orbit|You do not have access to this. Check that admin mode is on."
 msgstr ""
 
 msgid "Orbit|You don't have permission to start an Orbit trial for this group."
@@ -60147,9 +60248,6 @@ msgid "Orbit|Your free Orbit trial has ended"
 msgstr ""
 
 msgid "Orbit|callers"
-msgstr ""
-
-msgid "Orbit|entities"
 msgstr ""
 
 msgid "Orbit|in %{groups} and %{projects}"

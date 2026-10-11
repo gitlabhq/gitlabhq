@@ -1692,6 +1692,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Group | Type | `IterationCadence` |
 | Read | Group | Type | `Milestone` |
 | Read | Group | Type | `Note` |
+| Read | Group | Type | `WorkItem` |
 | Read | Group | Type | `WorkItemMoveTarget` |
 | Read | Group | Mutation | `UpdateBoardEpicUserPreferences` |
 | Subscribe | Project | Mutation | `WorkItemSubscribe` |

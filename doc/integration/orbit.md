@@ -84,9 +84,9 @@ To turn off Orbit in GitLab Duo for users who haven't set an Orbit preference:
 
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Orbit**.
-1. Expand **Orbit settings**.
-1. Clear **Enable Orbit in GitLab Duo by default**.
-1. Select **Save changes**.
+1. Turn off the **Turn on Orbit in GitLab Duo by default** toggle.
+
+The setting is saved when you change the toggle.
 
 ## Index top-level group namespaces automatically
 
@@ -105,11 +105,10 @@ To index existing and new top-level group namespaces automatically:
 
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Orbit**.
-1. Expand **Orbit settings**.
-1. Select **Index root namespaces automatically**.
-1. Select **Save changes**.
+1. Turn on the **Turn on Orbit for all top-level groups automatically** toggle.
+1. Select **Turn on for all groups**.
 
-When you save the setting, GitLab enqueues a background job.
+When you turn on the setting, GitLab enqueues a background job.
 The job enrolls top-level group namespaces that are not already enrolled or excluded by an
 administrator.
 Enrollment happens shortly afterward rather than immediately.
@@ -119,8 +118,9 @@ The hourly job acts as a safety net after direct database changes.
 These changes can take up to one hour.
 Personal namespaces are not enrolled.
 
-When you clear **Index root namespaces automatically**, existing non-excluded enrollments remain.
-The background job does not enroll new top-level groups until you select the setting again.
+When you turn off **Turn on Orbit for all top-level groups automatically**, existing non-excluded
+enrollments remain.
+The background job does not enroll new top-level groups until you turn on the setting again.
 
 ### Exclude top-level groups from automatic indexing
 
@@ -128,12 +128,14 @@ Administrators can manage exclusions regardless of whether automatic indexing is
 
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Orbit**.
-1. In **Excluded groups**, select **Exclude group**.
-1. Select a top-level group, then select **Exclude**.
+1. In **Top-level groups**, select the groups to exclude.
+1. Select **Actions** > **Exclude from automatic indexing**.
+1. If Orbit is on for a selected group, select **Exclude** to confirm.
 
-Excluded groups are not automatically enrolled. If an excluded group is already indexed, GitLab
-removes its enrollment and index within a few minutes. To allow automatic enrollment again, select
-**Remove** next to the group.
+Excluded groups are not automatically enrolled.
+If an excluded group is already indexed, the hourly background job removes its enrollment and index.
+To allow automatic enrollment again, select the group, then select **Actions** > **Remove exclusion**.
+To turn on Orbit for an excluded group, remove the exclusion first.
 
 > [!note]
 > This setting has no effect on GitLab.com.
