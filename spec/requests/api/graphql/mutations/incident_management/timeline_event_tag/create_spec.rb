@@ -48,15 +48,29 @@ RSpec.describe 'Creating a timeline event tag', feature_category: :incident_mana
   end
 
   context 'when user does not have permissions to create timeline event tag' do
-    before do
-      project.add_developer(user)
-    end
+    where(:role) { %i[guest planner reporter developer] }
 
-    it 'raises error' do
+    with_them do
+      before do
+        project.add_member(user, role)
+      end
+
+      it 'raises error' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(mutation_response).to be_nil
+        expect_graphql_errors_to_include(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
+      end
+    end
+  end
+
+  context 'when user is an owner' do
+    let_it_be(:project) { create(:project, owners: user) }
+
+    it 'creates timeline event tag' do
       post_graphql_mutation(mutation, current_user: user)
 
-      expect(mutation_response).to be_nil
-      expect_graphql_errors_to_include(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
+      expect(mutation_response['timelineEventTag']).to include('name' => name)
     end
   end
 end

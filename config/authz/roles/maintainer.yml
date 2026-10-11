@@ -25,7 +25,6 @@ project:
   - admin_google_cloud_artifact_registry
   - admin_incident_management_escalation_policy
   - admin_incident_management_oncall_schedule
-  - admin_incident_management_timeline_event_tag
   - admin_integrations
   - admin_issue_board
   - admin_member_access_request
@@ -92,6 +91,7 @@ project:
   - create_security_scan_profiles
   - create_service_account
   - create_squash_option
+  - create_timeline_event_tag
   - create_web_ide_terminal
   - delete_approval_rule
   - delete_branch_rule

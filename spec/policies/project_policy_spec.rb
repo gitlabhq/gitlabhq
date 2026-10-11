@@ -803,8 +803,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'when user is a maintainer/owner' do
       it 'allows to create timeline event tags' do
-        expect(described_class.new(maintainer, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(owner, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(maintainer, project)).to be_allowed(:create_timeline_event_tag)
+        expect(described_class.new(owner, project)).to be_allowed(:create_timeline_event_tag)
       end
 
       it 'allows to read import error' do
@@ -815,10 +815,10 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'when user is a developer/guest/planner/reporter' do
       it 'disallows creation' do
-        expect(described_class.new(developer, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(guest, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(planner, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
-        expect(described_class.new(reporter, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(developer, project)).to be_disallowed(:create_timeline_event_tag)
+        expect(described_class.new(guest, project)).to be_disallowed(:create_timeline_event_tag)
+        expect(described_class.new(planner, project)).to be_disallowed(:create_timeline_event_tag)
+        expect(described_class.new(reporter, project)).to be_disallowed(:create_timeline_event_tag)
       end
 
       it 'disallows reading the import error' do
@@ -834,7 +834,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       it 'disallows access to the timeline event tags' do
         expect(described_class.new(non_member, project)).to be_disallowed(:read_incident_management_timeline_event_tag)
-        expect(described_class.new(non_member, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(non_member, project)).to be_disallowed(:create_timeline_event_tag)
       end
     end
   end

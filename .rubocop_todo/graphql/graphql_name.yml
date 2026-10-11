@@ -16,7 +16,6 @@ GraphQL/GraphqlName:
     - 'app/graphql/mutations/customer_relations/contacts/base.rb'
     - 'app/graphql/mutations/design_management/base.rb'
     - 'app/graphql/mutations/incident_management/timeline_event/base.rb'
-    - 'app/graphql/mutations/incident_management/timeline_event_tag/base.rb'
     - 'app/graphql/mutations/issues/base.rb'
     - 'app/graphql/mutations/members/bulk_update_base.rb'
     - 'app/graphql/mutations/merge_requests/base.rb'

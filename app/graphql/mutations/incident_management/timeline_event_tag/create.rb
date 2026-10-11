@@ -3,11 +3,12 @@
 module Mutations
   module IncidentManagement
     module TimelineEventTag
-      class Create < Base
+      class Create < BaseMutation
         graphql_name 'TimelineEventTagCreate'
 
         include FindsProject
 
+        authorize :create_timeline_event_tag
         authorize_granular_token permissions: :create_timeline_event_tag,
           boundary_argument: :project_path, boundary_type: :project
 
@@ -19,12 +20,22 @@ module Mutations
           required: true,
           description: 'Name of the tag.'
 
+        field :timeline_event_tag,
+          ::Types::IncidentManagement::TimelineEventTagType,
+          null: true,
+          description: 'Timeline event tag.'
+
         def resolve(project_path:, **args)
           project = authorized_find!(project_path)
 
-          response ::IncidentManagement::TimelineEventTags::CreateService.new(
+          result = ::IncidentManagement::TimelineEventTags::CreateService.new(
             project, current_user, args
           ).execute
+
+          {
+            timeline_event_tag: result.payload[:timeline_event_tag],
+            errors: result.errors
+          }
         end
       end
     end
