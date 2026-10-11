@@ -304576,6 +304576,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "offer",
+              "description": "Terms of a new trial. Null unless the group can start one and CustomersDot sends valid terms. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitTrialOffer",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "state",
               "description": "State of the trial. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
@@ -304625,6 +304637,41 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OrbitTrialOffer",
+          "description": "Terms of a new Orbit trial, as offered by CustomersDot.",
+          "fields": [
+            {
+              "name": "durationDays",
+              "description": "Number of days a new trial lasts. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
+              "name": "initialCredits",
+              "description": "Number of free credits a new trial starts with. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             }
           ],
           "inputFields": null,

@@ -20938,6 +20938,8 @@ CREATE TABLE duo_workflows_workflows (
     trigger_flow_schedule_id bigint,
     trigger_event_type smallint,
     parent_workflow_id bigint,
+    drop_reason text,
+    CONSTRAINT check_0579e43dc9 CHECK ((char_length(drop_reason) <= 64)),
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
@@ -48588,7 +48590,7 @@ CREATE UNIQUE INDEX index_dast_site_profiles_on_project_id_and_name ON dast_site
 
 CREATE UNIQUE INDEX index_dast_site_token_on_project_id_and_url ON dast_site_tokens USING btree (project_id, url);
 
-CREATE UNIQUE INDEX index_dast_site_token_on_token ON dast_site_tokens USING btree (token);
+CREATE UNIQUE INDEX index_dast_site_token_on_token_and_project_id ON dast_site_tokens USING btree (token, project_id);
 
 CREATE INDEX index_dast_site_tokens_on_project_id ON dast_site_tokens USING btree (project_id);
 

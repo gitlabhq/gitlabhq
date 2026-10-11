@@ -56538,6 +56538,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="orbittrial-credits"></a>`credits` {{< icon name="warning-solid" >}} | [`OrbitTrialCredits`](#orbittrialcredits) | Introduced in GitLab 19.5. Status: Experiment. Credits of the trial. |
 | <a id="orbittrial-expireson"></a>`expiresOn` {{< icon name="warning-solid" >}} | [`Date`](#date) | Introduced in GitLab 19.5. Status: Experiment. Last day of the trial, in UTC. Null before a trial starts. |
+| <a id="orbittrial-offer"></a>`offer` {{< icon name="warning-solid" >}} | [`OrbitTrialOffer`](#orbittrialoffer) | Introduced in GitLab 19.6. Status: Experiment. Terms of a new trial. Null unless the group can start one and CustomersDot sends valid terms. |
 | <a id="orbittrial-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrbitTrialState!`](#orbittrialstate) | Introduced in GitLab 19.5. Status: Experiment. State of the trial. |
 
 ### `OrbitTrialCredits`
@@ -56550,6 +56551,17 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="orbittrialcredits-remaining"></a>`remaining` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.5. Status: Experiment. Number of trial credits remaining. |
 | <a id="orbittrialcredits-total"></a>`total` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.5. Status: Experiment. Number of credits the trial started with. |
+
+### `OrbitTrialOffer`
+
+Terms of a new Orbit trial, as offered by CustomersDot.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbittrialoffer-durationdays"></a>`durationDays` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.6. Status: Experiment. Number of days a new trial lasts. |
+| <a id="orbittrialoffer-initialcredits"></a>`initialCredits` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.6. Status: Experiment. Number of free credits a new trial starts with. |
 
 ### `Organization`
 

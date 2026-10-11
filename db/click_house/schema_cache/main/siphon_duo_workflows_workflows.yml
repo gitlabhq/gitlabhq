@@ -131,5 +131,7 @@ columns:
   type: Nullable(Int64)
 - name: trigger_event_type
   type: Nullable(Int16)
+- name: drop_reason
+  type: Nullable(String)
 - name: parent_workflow_id
   type: Nullable(Int64)
