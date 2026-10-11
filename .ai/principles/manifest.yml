@@ -251,8 +251,6 @@ principles:
         url: https://docs.gitlab.com/development/secure_coding_guidelines/go/
       - path: doc/development/shell_commands.md
         url: https://docs.gitlab.com/development/shell_commands/
-      - path: doc/development/permissions/review_guidelines.md
-        url: https://docs.gitlab.com/development/permissions/review_guidelines/
       - path: doc/development/fe_guide/security.md
         url: https://docs.gitlab.com/development/fe_guide/security/
 
@@ -280,17 +278,24 @@ principles:
   # ── Permissions ───────────────────────────────────────────────────────────
 
   permissions-fundamentals:
-    description: Where to check permissions, naming conventions, role definitions
+    description: Where to check permissions, naming conventions, role definitions, and authorization review rules
     group: Permissions
     owner_team: '@gitlab-org/software-supply-chain-security/authorization/approvers'
     team_slug: authorization
     prerequisite: true
     file_filters:
-      - 'app/policies/**/*.rb'
-      - 'ee/app/policies/**/*.rb'
-      - 'app/models/concerns/**/*.rb'
-      - 'ee/app/models/concerns/**/*.rb'
+      - 'app/**/*.rb'
+      - 'ee/app/**/*.rb'
+      - 'lib/**/*.rb'
+      - 'ee/lib/**/*.rb'
+      - 'app/views/**/*.haml'
+      - 'ee/app/views/**/*.haml'
       - 'config/authz/**/*.yml'
+      - 'config/authz/**/*.txt'
+      - 'ee/config/custom_abilities/**/*.yml'
+      - '.rubocop_todo/gitlab/authz/*.yml'
+      - 'spec/**/*_spec.rb'
+      - 'ee/spec/**/*_spec.rb'
     sources:
       - path: doc/development/permissions/authorizations.md
         url: https://docs.gitlab.com/development/permissions/authorizations/
@@ -306,6 +311,8 @@ principles:
         url: https://docs.gitlab.com/development/permissions/internal_permission_groups/
       - path: doc/development/permissions/testing_guidelines.md
         url: https://docs.gitlab.com/development/permissions/testing_guidelines/
+      - path: doc/development/permissions/review_guidelines.md
+        url: https://docs.gitlab.com/development/permissions/review_guidelines/
 
   permissions-graphql-gpat:
     description: Granular PAT (GPAT) compliance for GraphQL types and mutations
