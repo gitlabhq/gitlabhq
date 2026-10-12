@@ -10,6 +10,12 @@ module API
     feature_category :importers
     urgency :low
 
+    helpers do
+      def bitbucket_import_boundary
+        import_target_boundary(Namespace.find_by_full_path(params[:target_namespace]))
+      end
+    end
+
     desc 'Import repository from Bitbucket Cloud' do
       detail 'Imports a repository from Bitbucket Cloud to GitLab. Prerequisites: - The prerequisites for ' \
         'Bitbucket Cloud importer. This feature was introduced in GitLab 17.0.'
@@ -33,7 +39,8 @@ module API
     end
 
     route_setting :authorization, permissions: :create_bitbucket_import,
-      boundaries: [{ boundary_type: :group, boundary_param: :target_namespace }, { boundary_type: :user }]
+      boundary: -> { bitbucket_import_boundary },
+      boundaries: [{ boundary_type: :group }, { boundary_type: :user }]
     post 'import/bitbucket' do
       result = Import::BitbucketService.new(
         current_user,

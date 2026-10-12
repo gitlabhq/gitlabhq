@@ -142,6 +142,32 @@ module API
         @params_id_or_title ||= params[:label_id] || params[:name]
       end
 
+      # Project label routes also resolve group labels, so authorize the granular token
+      # against the label's owner like the GraphQL label mutations do. This runs before
+      # parameter validation, so a missing or malformed identifier must not raise here.
+      def label_owner_boundary
+        label = label_for_authorization
+        label.is_a?(GroupLabel) ? label.group : user_project
+      end
+
+      # Priority is stored per project, so a priority-only update stays a project concern.
+      def label_update_boundary
+        label_fields_updated? ? label_owner_boundary : user_project
+      end
+
+      def label_for_authorization
+        id_or_title = params[:label_id] || params[:name]
+        return unless id_or_title
+
+        labels = available_labels_for(user_project, include_ancestor_groups: false)
+        labels.find_by_id(id_or_title) || labels.find_by_title(id_or_title)
+      end
+
+      def label_fields_updated?
+        label_fields = route.params.keys.map(&:to_s) - %w[id label_id name priority]
+        params.keys.map(&:to_s).intersect?(label_fields)
+      end
+
       def create_service_params(parent)
         case parent
         when Project

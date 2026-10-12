@@ -362,12 +362,17 @@ module Gitlab
         return if project.wiki.repository_exists?
 
         wiki = WikiFormatter.new(project)
-        project.wiki.repository.import_repository(wiki.import_url)
-      rescue ::Gitlab::Git::CommandError => e
-        # GitHub error message when the wiki repo has not been created,
-        # this means that repo has wiki enabled, but have no pages. So,
-        # we can skip the import.
-        errors << { type: :wiki, errors: e.message } if e.message.exclude?('repository not exported')
+        wiki_resolved_address = get_resolved_address(wiki.import_url)
+        project.wiki.repository.import_repository(wiki.import_url, resolved_address: wiki_resolved_address)
+      rescue ::Gitlab::Git::CommandError, ::Gitlab::Git::Repository::NoRepository => e
+        # GitHub/Gitea error messages when the wiki repo has not been created.
+        # The repo has wiki enabled but no pages, so we can skip the import.
+        return if e.message.include?('repository not exported') ||
+          e.message.include?('repository at given URL not found')
+
+        errors << { type: :wiki, errors: e.message }
+      rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
+        errors << { type: :wiki, errors: e.message }
       end
 
       def import_releases
@@ -473,6 +478,33 @@ module Gitlab
 
       def current_page(resource_type)
         Rails.cache.fetch("#{cache_key_prefix}:#{resource_type}:current-page", ex: 1.day) { 1 }
+      end
+
+      def get_resolved_address(url)
+        validated_url, resolved_host = Gitlab::HTTP_V2::UrlBlocker.validate!(
+          url,
+          schemes: Project::VALID_IMPORT_PROTOCOLS,
+          ports: Project::VALID_IMPORT_PORTS,
+          allow_localhost: allow_local_requests?,
+          allow_local_network: allow_local_requests?,
+          dns_rebind_protection: dns_rebind_protection?,
+          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+          outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+        )
+
+        return '' if resolved_host.blank? || !validated_url.scheme.in?(%w[http https])
+
+        validated_url.hostname.to_s
+      end
+
+      def allow_local_requests?
+        Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+      end
+
+      def dns_rebind_protection?
+        return false if Gitlab.http_proxy_env?
+
+        Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
       end
 
       def cache_key_prefix

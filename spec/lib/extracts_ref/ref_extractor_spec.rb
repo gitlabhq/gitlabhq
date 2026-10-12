@@ -132,4 +132,39 @@ RSpec.describe ExtractsRef::RefExtractor, feature_category: :source_code_managem
   end
 
   it_behaves_like 'extracts ref method'
+
+  describe '#extract_ref with an injected SHA on a later line' do
+    let(:sha40) { 'f4b14494ef6abf3d144c28e4af0c20143383e062' }
+    let(:sha64) { '34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c' }
+
+    it 'does not treat a newline-prefixed 40-hex SHA as the ref' do
+      ref, = ref_extractor.extract_ref("master/file.yml\n#{sha40}/CHANGELOG")
+
+      expect(ref).not_to eq(sha40)
+    end
+
+    it 'does not treat a newline-prefixed 64-hex SHA as the ref' do
+      ref, = ref_extractor.extract_ref("master/file.yml\n#{sha64}/CHANGELOG")
+
+      expect(ref).not_to eq(sha64)
+    end
+
+    it 'resolves the ref from the first line, ignoring the injected SHA' do
+      ref, = ref_extractor.extract_ref("master/file.yml\n#{sha40}/CHANGELOG")
+
+      expect(ref).to eq('master')
+    end
+  end
+
+  describe '#extract! with an injected SHA on a later line' do
+    let(:sha40) { 'f4b14494ef6abf3d144c28e4af0c20143383e062' }
+    let(:params) { { id: "master/file.yml\n#{sha40}" } }
+
+    it 'resolves the ref from the first line, never the injected SHA' do
+      ref_extractor.extract!
+
+      expect(ref_extractor.ref).to eq('master')
+      expect(ref_extractor.ref).not_to eq(sha40)
+    end
+  end
 end

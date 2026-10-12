@@ -168,6 +168,7 @@ module API
                 bad_request_missing_attribute!('Tag') if tag.blank?
 
                 authorize_destroy_package!(project)
+                protect_package!(package_name, :npm, project: project)
 
                 package_tag = ::Packages::TagsFinder
                   .new(project, package_name, ::Packages::Npm::Package)

@@ -318,6 +318,17 @@ module API
       end
     end
 
+    # Boundary for `namespaces/:id` routes, resolved by path exactly like the handlers so a numeric path
+    # can't be read as a project or group ID. Anything but a project or group has no boundary.
+    def namespace_path_boundary
+      namespace = find_namespace_by_path(params[:id].to_s, allow_project_namespaces: true)
+
+      case namespace
+      when ::Namespaces::ProjectNamespace then namespace.project
+      when ::Group then namespace
+      end
+    end
+
     def find_namespace_by_path(path, allow_project_namespaces: false)
       scope = allow_project_namespaces ? Namespace : Namespace.without_project_namespaces
       namespace = scope.find_by_full_path(path)
@@ -328,6 +339,15 @@ module API
       Project.find_by_full_path(path)&.project_namespace
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    # Import destinations are a group or a personal namespace. Anything else, including a
+    # path that resolves to nothing, has no boundary so a granular token gets a 404.
+    def import_target_boundary(namespace)
+      case namespace
+      when ::Group then namespace
+      when ::Namespaces::UserNamespace then :user
+      end
+    end
 
     # find_namespace! returns the namespace if the current user can read the given namespace
     # Otherwise, returns a not_found! error

@@ -1919,6 +1919,33 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
       end
     end
+
+    # #security The package registry setting is stored on project_features as
+    # package_registry_access_level and on the legacy projects.packages_enabled column. Disabling the
+    # registry through the REST API left the legacy column stale, and a stale column granted reads.
+    context 'when the two package registry settings disagree' do
+      let(:current_user) { anonymous }
+      let(:project) { public_project }
+
+      where(:access_level, :packages_enabled, :allowed) do
+        ProjectFeature::PUBLIC   | true  | true
+        ProjectFeature::DISABLED | true  | false
+        ProjectFeature::PUBLIC   | false | false
+        ProjectFeature::DISABLED | false | false
+      end
+
+      with_them do
+        before do
+          # update_column to force the exact divergent state a buggy write leaves behind, without
+          # the model callbacks reconciling it first.
+          project.project_feature.update_column(:package_registry_access_level, access_level)
+          project.update_column(:packages_enabled, packages_enabled)
+          project.reload
+        end
+
+        it { expect(subject.can?(:read_package)).to be(allowed) }
+      end
+    end
   end
 
   describe 'download_package' do

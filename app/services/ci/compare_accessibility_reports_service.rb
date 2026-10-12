@@ -11,7 +11,7 @@ module Ci
     end
 
     def get_report(pipeline)
-      pipeline&.accessibility_reports
+      pipeline&.accessible_accessibility_reports(current_user)
     end
   end
 end

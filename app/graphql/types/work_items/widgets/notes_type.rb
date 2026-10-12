@@ -27,7 +27,6 @@ module Types
         # a list of issues we raise the complexity
         field :discussions, ::Types::Notes::DiscussionType.connection_type,
           null: true,
-          skip_type_authorization: [:read_note, :read_emoji],
           description: "Discussions on this work item.",
           resolver: Resolvers::WorkItems::WorkItemDiscussionsResolver,
           connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension

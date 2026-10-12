@@ -101,6 +101,7 @@ export default {
       isLoadingDraft: false,
       isReportAbuseDrawerOpen: false,
       isDropdownVisible: false,
+      reportedFromUrl: '',
     };
   },
   computed: {
@@ -171,6 +172,7 @@ export default {
     reportAbuseAction(isOpen) {
       if (isOpen) {
         this.closeActionsDropdown();
+        this.reportedFromUrl = window.location.href;
       }
 
       this.isReportAbuseDrawerOpen = isOpen;
@@ -323,7 +325,7 @@ export default {
     <abuse-category-selector
       v-if="!isCurrentUser && isReportAbuseDrawerOpen"
       :reported-user-id="reportedUserId"
-      :reported-from-url="url"
+      :reported-from-url="reportedFromUrl"
       :show-drawer="isReportAbuseDrawerOpen"
       @close-drawer="reportAbuseAction(false)"
     />

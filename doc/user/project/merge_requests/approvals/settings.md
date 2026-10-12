@@ -94,9 +94,12 @@ this setting, unless you configure one of these options:
 
 {{< /history >}}
 
-By default, users who commit to a merge request (the committers) can still approve it. To prevent
-committers in your project (or your instance) from approving merge requests that are partially
-their own:
+By default, the Git author and Git committer of each commit can approve a merge request.
+With **Prevent approvals by users who add commits**, GitLab excludes both identities from approval.
+These identities usually match. When one person applies another person's work, GitLab excludes
+both people.
+
+To prevent these users in your project or instance from approving merge requests:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Merge requests**.
@@ -113,10 +116,8 @@ if the merge request affects files they own.
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
 
 > [!warning]
-> If a merge request is rebased by someone other than the user who originally committed the changes,
-> the commit history is rewritten with a new committer. This might enable users who
-> previously committed changes in a merge request to now approve changes in it, as they are
-> no longer a committer.
+> A rebase changes the Git committer but preserves the Git author.
+> GitLab excludes the original author and the user who rebases the merge request from approval.
 >
 > See also [approving after rebase](../../../../topics/git/git_rebase.md#approving-after-rebase)
 

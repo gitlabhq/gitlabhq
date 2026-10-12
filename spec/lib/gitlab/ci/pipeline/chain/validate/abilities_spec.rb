@@ -249,6 +249,43 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
       it { is_expected.to be_falsey }
     end
 
+    context 'when origin_ref is a workload ref' do
+      let(:origin_ref) { 'refs/workloads/abc123def/head' }
+
+      before do
+        project.add_developer(user)
+        project.repository.create_ref(project.commit.sha, origin_ref)
+      end
+
+      context 'when source is a non-workload source (e.g. push)' do
+        let(:command) do
+          Gitlab::Ci::Pipeline::Chain::Command.new(
+            project: project,
+            current_user: user,
+            origin_ref: origin_ref,
+            merge_request: merge_request,
+            source: :push
+          )
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when source is a workload source (e.g. duo_workflow)' do
+        let(:command) do
+          Gitlab::Ci::Pipeline::Chain::Command.new(
+            project: project,
+            current_user: user,
+            origin_ref: origin_ref,
+            merge_request: merge_request,
+            source: :duo_workflow
+          )
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
     context 'when origin_ref refers to a MR but its object is absent' do
       let(:origin_ref) { 'refs/merge-requests/1/head' }
       let(:merge_request) { nil }

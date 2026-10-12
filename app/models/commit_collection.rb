@@ -40,6 +40,10 @@ class CommitCollection
     )
   end
 
+  def author_and_committer_emails
+    commits.flat_map { |commit| [commit.author_email, commit.committer_email] }.compact.uniq
+  end
+
   def committers_lazy(with_merge_commits: false, include_author_when_signed: false)
     emails = committers_emails(
       with_merge_commits: with_merge_commits,

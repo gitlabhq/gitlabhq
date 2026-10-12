@@ -281,6 +281,24 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
       end
     end
 
+    context 'when a granular token is scoped to a project whose ID matches a group path' do
+      let_it_be(:numeric_group) { create(:group, :private, path: project.id.to_s, reporters: user) }
+      let(:pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(project),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_work_item).first.name])
+      end
+
+      it 'denies creating a work item in the group', :aggregate_failures do
+        post api("/namespaces/#{numeric_group.path}/-/work_items", personal_access_token: pat), params: {
+          title: 'New task',
+          work_item_type_name: 'task'
+        }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+      end
+    end
+
     context 'when namespace is a user namespace' do
       let_it_be(:user_namespace) { create(:namespace, owner: user) }
 
