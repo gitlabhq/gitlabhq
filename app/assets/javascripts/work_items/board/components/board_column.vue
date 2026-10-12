@@ -1,4 +1,5 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -35,12 +36,14 @@ export default {
   },
   i18n: {
     emptyText: s__('WorkItemBoard|No items'),
+    dropText: s__('WorkItemBoard|Drop here to move item.'),
     fetchError: s__('WorkItemBoard|An error occurred while fetching work items for this column.'),
     loadMoreError: s__('WorkItemBoard|An error occurred while fetching more work items.'),
   },
   components: {
     ColumnHeader,
     DraggableCompat,
+    GlIcon,
     WorkItemCard,
     WorkItemCardSkeleton,
     WorkItemChildrenLoadMore,
@@ -156,6 +159,7 @@ export default {
       loadMoreError: false,
       fetchNextPageInProgress: false,
       columnBodyId: uniqueId('board-column-body-'),
+      isDropTarget: false,
     };
   },
   computed: {
@@ -243,6 +247,18 @@ export default {
         },
       };
     },
+  },
+  mounted() {
+    // SortableJS inserts the drop indicator outside Vue's render, so watch the DOM for it.
+    this.dropTargetObserver = new MutationObserver(() => {
+      this.isDropTarget =
+        this.showEmptyState &&
+        Boolean(this.$refs.columnBody.querySelector(`.${BOARD_CARD_DROP_INDICATOR_CLASS}`));
+    });
+    this.dropTargetObserver.observe(this.$refs.columnBody, { childList: true, subtree: true });
+  },
+  beforeDestroy() {
+    this.dropTargetObserver.disconnect();
   },
   methods: {
     onDragStart(evt) {
@@ -348,6 +364,7 @@ export default {
     <div
       v-show="!collapsed"
       :id="columnBodyId"
+      ref="columnBody"
       class="gl-flex gl-min-h-0 gl-flex-1 gl-flex-col gl-overflow-y-auto gl-overflow-x-hidden gl-px-3 gl-pb-3"
     >
       <p
@@ -371,6 +388,7 @@ export default {
         :group="groupConfig"
         :disabled="dragDisabled"
         class="board-card-list gl-m-0 gl-flex gl-flex-1 gl-list-none gl-flex-col gl-gap-3 gl-p-0"
+        :class="{ 'is-drop-target': isDropTarget }"
         @start="onDragStart"
         @end="onDragEnd"
       >
@@ -402,9 +420,11 @@ export default {
           <li
             v-if="showEmptyState"
             data-testid="empty-state"
-            class="gl-list-none gl-py-3 gl-text-center gl-text-sm gl-text-subtle"
+            :data-drop-text="$options.i18n.dropText"
+            class="board-column-empty-state gl-flex gl-flex-1 gl-list-none gl-flex-col gl-items-center gl-justify-center gl-gap-3 gl-text-subtle"
           >
-            {{ $options.i18n.emptyText }}
+            <gl-icon name="work-items" :size="24" />
+            <span>{{ $options.i18n.emptyText }}</span>
           </li>
           <li v-if="hasNextPage && !fetchNextPageInProgress" class="gl-list-none">
             <work-item-children-load-more

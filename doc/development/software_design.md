@@ -240,6 +240,19 @@ Guidelines:
   This helps creating facets of the omniscient object that are much more relevant in the bounded context than
   having generic and overloaded objects which bring more coupling and complexity.
 
+### RuboCop enforcement
+
+The `Gitlab/OmniscientClassMethods` RuboCop cop prevents new instance and class methods in `Project`, `Group`, and `User`, and in their `EE::Project`, `EE::Group`, and `EE::User` counterparts.
+The cop source is in [`omniscient_class_methods.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/gitlab/omniscient_class_methods.rb).
+The [baseline](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/gitlab/config/omniscient_classes_baseline.yml) lists, for each class, the methods it can define. It has two lists:
+
+- `intrinsic`: methods that are fundamental to the identity of the record. These stay in the class.
+  A method enters this list only when it moves from `legacy` after agreement with the domain owners. Never add a new method to it.
+- `legacy`: methods that existed when the cop was added. These should move to the bounded context where they belong.
+
+Do not add methods to the baseline. Instead, define the behavior in a dedicated class in the bounded context, as described in the guidelines above.
+When you remove or move a method out of one of these classes, also remove it from `legacy`. The cop reports baseline entries for methods that the class no longer defines, so the list only gets shorter.
+
 ### Example: Define a thin domain object around a generic model
 
 Instead of adding multiple methods to `User` because it has an association to `abuse_trust_scores`,

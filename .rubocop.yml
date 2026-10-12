@@ -730,6 +730,17 @@ Gitlab/EeOnlyClass:
   Include:
     - 'ee/**/ee/**/*.rb'
 
+# https://docs.gitlab.com/development/software_design/#taming-omniscient-classes
+Gitlab/OmniscientClassMethods:
+  Enabled: true
+  Include:
+    - 'app/models/group.rb'
+    - 'app/models/project.rb'
+    - 'app/models/user.rb'
+    - 'ee/app/models/ee/group.rb'
+    - 'ee/app/models/ee/project.rb'
+    - 'ee/app/models/ee/user.rb'
+
 Gitlab/RSpec/AvoidCreateDefaultOrganization:
   Enabled: true
   Include:

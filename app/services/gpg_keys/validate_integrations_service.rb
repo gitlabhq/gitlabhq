@@ -19,7 +19,7 @@ module GpgKeys
     attr_reader :key
 
     def validate_beyond_identity!
-      integration = Integrations::BeyondIdentity.for_instance.first
+      integration = Integrations::BeyondIdentity.for_organization(key.user.organization_id).first
 
       return unless integration&.activated?
 

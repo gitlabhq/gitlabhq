@@ -35923,6 +35923,7 @@ Fields:
 | <a id="aifoundationalchatagent-description"></a>`description` | [`String!`](#string) | Description of the agent. |
 | <a id="aifoundationalchatagent-flowconfig"></a>`flowConfig` | [`AiFoundationalChatAgentFlowConfig`](#aifoundationalchatagentflowconfig) | Flow versioning parameters used when starting a workflow for this agent. Null for agents that resolve versioning elsewhere (e.g. AI Catalog-backed agents). |
 | <a id="aifoundationalchatagent-id"></a>`id` | [`AiFoundationalChatAgentID!`](#aifoundationalchatagentid) | Global ID of the foundational chat agent. |
+| <a id="aifoundationalchatagent-itemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the agent. |
 | <a id="aifoundationalchatagent-name"></a>`name` | [`String!`](#string) | Name of the agent. |
 | <a id="aifoundationalchatagent-reference"></a>`reference` | [`String!`](#string) | Reference ID of the agent. |
 | <a id="aifoundationalchatagent-referencewithversion"></a>`referenceWithVersion` | [`String`](#string) | Versioned reference of the agent. |
@@ -36099,8 +36100,10 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aigovernancetoolcall-actiontype"></a>`actionType` | [`AiToolActionType`](#aitoolactiontype) | Action type of the tool. Null when it is not known. |
 | <a id="aigovernancetoolcall-count"></a>`count` | [`Int!`](#int) | Number of tool invocations in the selected timeframe. |
-| <a id="aigovernancetoolcall-toolname"></a>`toolName` | [`String!`](#string) | Name of the tool. |
+| <a id="aigovernancetoolcall-title"></a>`title` | [`String!`](#string) | Display name of the tool, as shown on the Tool management tab. Same as `toolName` when no rule governs the tool. |
+| <a id="aigovernancetoolcall-toolname"></a>`toolName` | [`String!`](#string) | Name of the tool rule that governs the tool, or the name recorded in the audit event when no rule governs it. |
 
 ### `AiGovernanceToolCallsByRisk`
 

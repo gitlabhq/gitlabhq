@@ -70,8 +70,6 @@ module Gitlab
             return
           end
 
-          return unless Feature.enabled?(:redis_hll_tracking, type: :ops)
-
           Gitlab::Redis::HLL.add(key: redis_key(event_with_property_name(event_name, property_name), time, false), value: values, expiry: KEY_EXPIRY_LENGTH)
         rescue StandardError => e
           # Ignore any exceptions unless is dev or test env

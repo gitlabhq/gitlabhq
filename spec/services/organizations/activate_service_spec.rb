@@ -181,6 +181,10 @@ RSpec.describe Organizations::ActivateService, :freeze_time, feature_category: :
       let_it_be_with_refind(:nested_project) { create(:project, namespace: subgroup) }
 
       before do
+        # ConfirmService records the source on the top-level group; the descendants still point at it here.
+        details = Namespace::Detail.find_by!(namespace_id: top_level_group.id)
+        details.state_metadata['organization_transfer_source_id'] = old_organization.id
+        details.save!
         subgroup.update_column(:organization_id, old_organization.id)
         nested_project.update_column(:organization_id, old_organization.id)
         nested_project.project_namespace.update_column(:organization_id, old_organization.id)

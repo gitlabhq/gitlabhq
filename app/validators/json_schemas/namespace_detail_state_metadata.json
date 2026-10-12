@@ -75,6 +75,12 @@
         "null"
       ]
     },
+    "organization_transfer_source_id": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
     "preserved_states": {
       "type": "object",
       "properties": {

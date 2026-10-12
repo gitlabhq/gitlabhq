@@ -384,7 +384,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
-          AutoMergeProcessWorker.perform_async({ 'pipeline_id' => id })
+          AutoMergeProcessWorker.perform_async({ 'pipeline_id' => id }) if enqueue_auto_merge_process?
 
           if pipeline.auto_devops_source?
             self.class.auto_devops_pipelines_completed_total.increment(status: pipeline.status)
@@ -2004,6 +2004,23 @@ module Ci
       end
     end
     # rubocop: enable CodeReuse/ServiceClass
+
+    def enqueue_auto_merge_process?
+      return true if Feature.disabled?(:auto_merge_process_pipeline_guard, Project.actor_from_id(project_id))
+
+      # Wider than all_merge_requests (no sha filter) so it stays an index lookup; the worker narrows it.
+      merge_requests =
+        if merge_request_id.present?
+          MergeRequest.where(id: merge_request_id)
+        else
+          MergeRequest.where(source_project_id: project_id, source_branch: ref)
+        end
+
+      # Primary, so an auto-merge enabled just before the pipeline finished is not missed on a lagging replica.
+      ::Gitlab::Database::LoadBalancing::SessionMap.current(MergeRequest.load_balancer).use_primary do
+        merge_requests.with_auto_merge_enabled.exists?
+      end
+    end
 
     def add_message(severity, content)
       messages.build(severity: severity, content: content, project_id: project_id)

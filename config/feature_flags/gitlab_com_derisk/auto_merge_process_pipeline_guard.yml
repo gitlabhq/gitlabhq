@@ -1,0 +1,11 @@
+---
+name: auto_merge_process_pipeline_guard
+description: Enqueue AutoMergeProcessWorker for a completed pipeline only when one
+  of its merge requests has auto-merge enabled
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631600
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260718
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632864
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

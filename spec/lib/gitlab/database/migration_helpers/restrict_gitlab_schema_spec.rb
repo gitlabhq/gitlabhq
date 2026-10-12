@@ -438,7 +438,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_cl
         "does raise exception when accessing feature flags" => {
           migration: ->(klass) do
             def up
-              Feature.enabled?(:redis_hll_tracking, type: :ops)
+              Feature.enabled?(:automatic_lock_writes_on_table, type: :ops)
             end
 
             def down; end

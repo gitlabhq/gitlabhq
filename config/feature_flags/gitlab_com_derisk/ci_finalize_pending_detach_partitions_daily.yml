@@ -1,6 +1,6 @@
 ---
 name: ci_finalize_pending_detach_partitions_daily
-description: Finalize pending detach partitions daily, locking the referenced tables before FINALIZE
+description: Finalize pending detach partitions hourly from 00:17 to 03:17, locking the referenced tables before FINALIZE
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/617932
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258843
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631599

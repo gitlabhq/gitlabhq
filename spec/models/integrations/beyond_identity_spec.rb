@@ -72,8 +72,9 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :source_code_mana
 
     let_it_be(:group_for_integration) { create(:group) }
     let_it_be(:organization_for_integration) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
 
-    subject(:activated) { described_class.activated_for_instance? }
+    subject(:activated) { described_class.activated_for_instance?(organization_for_integration) }
 
     using RSpec::Parameterized::TableSyntax
 
@@ -82,6 +83,7 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :source_code_mana
       false | lazy { group_for_integration } | true | false | nil
       true  | nil | false | false | lazy { organization_for_integration }
       false | lazy { group_for_integration } | false | false | nil
+      true  | nil | true | false | lazy { other_organization }
     end
 
     with_them do

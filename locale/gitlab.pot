@@ -32974,6 +32974,9 @@ msgstr ""
 msgid "DuoAgenticChat|Retry"
 msgstr ""
 
+msgid "DuoAgenticChat|Retry isn't available for messages with attachments."
+msgstr ""
+
 msgid "DuoAgenticChat|Scroll to bottom"
 msgstr ""
 
@@ -95733,6 +95736,9 @@ msgid "WorkItemBoard|Choose which groups to show"
 msgstr ""
 
 msgid "WorkItemBoard|Column actions"
+msgstr ""
+
+msgid "WorkItemBoard|Drop here to move item."
 msgstr ""
 
 msgid "WorkItemBoard|Hide list"

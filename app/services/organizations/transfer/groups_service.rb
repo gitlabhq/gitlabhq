@@ -41,6 +41,7 @@ module Organizations
         capture_log_context
 
         Group.transaction do
+          persist_transfer_source_organization
           perform_transfer
         end
 
@@ -57,28 +58,24 @@ module Organizations
 
       attr_reader :group, :new_organization, :current_user
 
-      # The "old" organization is the source of the transfer. By default it is
-      # the group's current organization, but Organizations::ConfirmService
-      # moves the top-level group's organization_id ahead of the descendants;
-      # in that case the actual source is taken from the first descendant
-      # that has not yet been transferred so the runners transfer, the
-      # GroupTransferredEvent, and the EE subscription transfer all receive
-      # the real source organization.
+      # Before the root moves it is the group's own org; after (re-run) it is the value
+      # persisted earlier, so the source survives a partial transfer.
       def old_organization
-        return group.organization unless new_organization&.id == group.organization_id
+        source_id =
+          if group.organization_id == new_organization.id
+            group.state_metadata['organization_transfer_source_id']
+          else
+            group.organization_id
+          end
 
-        Organizations::Organization.find_by_id(untransferred_descendant_organization_id) ||
-          group.organization
+        Organizations::Organization.find_by_id(source_id)
       end
-      strong_memoize_attr :old_organization
 
-      def untransferred_descendant_organization_id
-        descendant_ids = group.self_and_descendant_ids(skope: Namespace)
+      def persist_transfer_source_organization
+        return if group.organization_id == new_organization.id
 
-        Namespace.id_in(descendant_ids)
-          .where.not(organization_id: new_organization.id) # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
-          .limit(1)
-          .pick(:organization_id)
+        group.state_metadata['organization_transfer_source_id'] = group.organization_id
+        group.namespace_details.save!
       end
 
       def perform_transfer
@@ -460,8 +457,14 @@ module Organizations
         !group.has_parent?
       end
 
+      # A recorded source means a transfer is still in progress, so proceed. Detecting
+      # true completion across every moved resource is deferred to the re-run guard in
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/630389.
       def already_transferred?
-        new_organization && new_organization.id == old_organization.id
+        return false unless new_organization
+
+        group.organization_id == new_organization.id &&
+          group.state_metadata['organization_transfer_source_id'].nil?
       end
 
       def has_permission?

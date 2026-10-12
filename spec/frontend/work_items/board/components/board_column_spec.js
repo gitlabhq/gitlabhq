@@ -311,6 +311,83 @@ describe.each([
     });
   });
 
+  describe('drop target', () => {
+    // SortableJS adds this element to the list while a card is dragged over it.
+    const addDropIndicator = () => {
+      const indicator = document.createElement('li');
+      indicator.classList.add('board-card-drop-indicator');
+      findDraggable().element.appendChild(indicator);
+      return indicator;
+    };
+
+    describe('when the column is empty', () => {
+      beforeEach(async () => {
+        queryHandler.mockResolvedValue(buildResponse([]));
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('does not mark the card list as the drop target', () => {
+        expect(findDraggable().classes()).not.toContain('is-drop-target');
+      });
+
+      describe('when a card is dragged over it', () => {
+        let indicator;
+
+        beforeEach(async () => {
+          indicator = addDropIndicator();
+          await waitForPromises();
+        });
+
+        it('marks the card list as the drop target', () => {
+          expect(findDraggable().classes()).toContain('is-drop-target');
+        });
+
+        describe('when the card leaves', () => {
+          beforeEach(async () => {
+            indicator.remove();
+            await waitForPromises();
+          });
+
+          it('removes the drop target mark', () => {
+            expect(findDraggable().classes()).not.toContain('is-drop-target');
+          });
+        });
+      });
+    });
+
+    describe('when the column has cards', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      describe('when a card is dragged over it', () => {
+        beforeEach(async () => {
+          addDropIndicator();
+          await waitForPromises();
+        });
+
+        it('does not mark the card list as the drop target', () => {
+          expect(findDraggable().classes()).not.toContain('is-drop-target');
+        });
+      });
+    });
+
+    describe('when the column is destroyed', () => {
+      beforeEach(async () => {
+        jest.spyOn(MutationObserver.prototype, 'disconnect');
+        createComponent();
+        await waitForPromises();
+        wrapper.destroy();
+      });
+
+      it('stops watching for the drop indicator', () => {
+        expect(MutationObserver.prototype.disconnect).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('card reordering', () => {
     const nodes = [buildWorkItemNode(1), buildWorkItemNode(2), buildWorkItemNode(3)];
 

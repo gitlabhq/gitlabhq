@@ -24,6 +24,43 @@ RSpec.shared_examples Integrations::Base::Phorge do
     end
   end
 
+  describe '#issues_url normalization' do
+    it 'strips the redundant task prefix in front of the :id placeholder' do
+      integration = build(:phorge_integration, issues_url: 'https://phorge.example.com/T:id')
+
+      integration.valid?
+
+      expect(integration.issues_url).to eq('https://phorge.example.com/:id')
+      expect(integration.issue_url('T123')).to eq('https://phorge.example.com/T123')
+    end
+
+    it 'leaves an issues URL with a plain :id placeholder untouched' do
+      integration = build(:phorge_integration, issues_url: 'https://phorge.example.com/:id')
+
+      integration.valid?
+
+      expect(integration.issues_url).to eq('https://phorge.example.com/:id')
+    end
+
+    it 'leaves an issues URL without a placeholder untouched' do
+      integration = build(:phorge_integration, issues_url: 'https://phorge.example.com/tasks')
+
+      integration.valid?
+
+      expect(integration.issues_url).to eq('https://phorge.example.com/tasks')
+    end
+
+    # A lowercase t is far more likely to end a path segment than to be a mistyped
+    # prefix, so stripping it would break URLs that are already correct.
+    it 'leaves a lowercase t in front of the :id placeholder untouched' do
+      integration = build(:phorge_integration, issues_url: 'https://phorge.example.com/t:id')
+
+      integration.valid?
+
+      expect(integration.issues_url).to eq('https://phorge.example.com/t:id')
+    end
+  end
+
   describe '#reference_pattern' do
     using RSpec::Parameterized::TableSyntax
 

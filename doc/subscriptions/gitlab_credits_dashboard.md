@@ -204,8 +204,8 @@ The following cap types are available:
 | Cap type | Applies to | Credit sources counted | Managed through |
 |---|---|---|---|
 | Subscription cap | All users on the subscription | On-demand only | Customers Portal |
-| Flat user cap | Individual users (default limit) | All | User interface, GraphQL API |
-| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | User interface, GraphQL API |
+| Flat user cap | Individual users (default limit) | All, for human subject usage | User interface, GraphQL API |
+| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All, for human subject usage | User interface, GraphQL API |
 
 When on-demand usage in the current billing period reaches or exceeds the configured cap,
 all credit-based features
@@ -230,12 +230,26 @@ enforcement takes effect.
 Caps do not stop users from consuming their included GitLab Credits. Enforcement begins per user, and only after that user's included allocation is exhausted. Until then, the user retains full GitLab Duo Agent Platform access regardless of the cap value, including a cap of `0`.
 
 To stop all GitLab Credits consumption immediately, regardless of included
-balances, disable GitLab Duo for the affected users or namespace.
+balances, [remove the GitLab Duo seat](subscription-add-ons.md#assign-and-remove-gitlab-duo-seats-in-bulk)
+from the affected users, or [turn off GitLab Duo](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off)
+for the namespace. To automate seat removal and reassignment, use the
+[`userAddOnAssignmentRemove`](../api/graphql/reference/_index.md#mutationuseraddonassignmentremove) and
+[`userAddOnAssignmentCreate`](../api/graphql/reference/_index.md#mutationuseraddonassignmentcreate)
+GraphQL mutations.
 
 How the cap value is applied then depends on the cap type:
 
 - A **subscription-level cap** applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
-- A **per-user cap** applies to a user's total usage, including their included credits. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
+- A **per-user cap** applies to a user's total usage, including their included credits, for usage the user triggers directly. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
+
+> [!note]
+> Usage from [GitLab Duo Agent Platform flows](../user/duo_agent_platform/_index.md)
+> that run under a service account is billed to the namespace, not to the user,
+> and does not count toward the user's flat cap or per-user override.
+> This usage can still appear in the user's **Total credits used**,
+> so their displayed usage can exceed their cap without the user being blocked.
+> To limit this usage, set a subscription-level cap
+> or remove the user's GitLab Duo seat.
 
 ### Examples
 
@@ -429,6 +443,10 @@ To determine the cap type, use the [GraphQL API](../api/graphql/reference/_index
 
 The **Usage control status** column displays only per-user caps.
 The subscription-level on-demand cap applies to the entire subscription, not to individual users, and is not listed in this column.
+
+The status reflects only the usage the user triggers directly.
+Rows with the **Automated flow** badge represent non-human subjects
+and never display **Blocked usage**, because per-user caps do not apply to them.
 
 ### Unblock a user who reached their credit cap
 

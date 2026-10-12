@@ -352,6 +352,26 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
+// An empty column has only one drop slot, so while a card is over it the whole
+// empty state becomes the drop layer and the insertion line is hidden.
+.board-card-list.is-drop-target > .board-column-empty-state {
+  border: 2px solid var(--gl-focus-ring-outer-color);
+  border-radius: var(--gl-border-radius-lg);
+  color: var(--gl-text-color-default);
+
+  > * {
+    display: none;
+  }
+
+  &::after {
+    content: attr(data-drop-text);
+  }
+}
+
+.board-card-list.is-drop-target > .board-card-drop-indicator::after {
+  display: none;
+}
+
 .design-scaler-wrapper {
   bottom: 0;
   left: 50%;

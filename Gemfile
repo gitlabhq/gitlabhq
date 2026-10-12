@@ -602,6 +602,8 @@ group :development, :test do
 
   # Gems required for Dangerfile
   gem 'gitlab-dangerfiles', '~> 4.12.0', require: false, feature_category: :tooling
+  gem 'danger', '~> 9.6', require: false, feature_category: :tooling
+  gem 'danger-gitlab', '~> 10.0', require: false, feature_category: :tooling
 
   # Gems required for code coverage
   gem 'simplecov', '~> 1.3', require: false, feature_category: :tooling

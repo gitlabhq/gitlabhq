@@ -2501,6 +2501,8 @@ DEPENDENCIES
   cssbundling-rails (= 1.4.3)
   csv_builder!
   cvss-suite (~> 4.1.1)
+  danger (~> 9.6)
+  danger-gitlab (~> 10.0)
   database_cleaner-active_record (~> 2.2.0)
   debug (~> 1.11.0)
   declarative_policy (~> 2.2.0)

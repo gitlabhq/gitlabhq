@@ -53,6 +53,18 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
         expect(group).to be_valid
       end
 
+      it 'records the source organization on the group before it moves' do
+        persisted_source = nil
+        allow(Group).to receive(:id_in).and_wrap_original do |original, *args|
+          persisted_source ||= group.reload.state_metadata['organization_transfer_source_id']
+          original.call(*args)
+        end
+
+        service.execute
+
+        expect(persisted_source).to eq(old_organization.id)
+      end
+
       it 'enqueues the namespace sync event worker' do
         expect(Namespaces::SyncEvent).to receive(:enqueue_worker)
 
@@ -520,7 +532,7 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
     end
 
     context 'with batching' do
-      let_it_be(:batched_groups) { create_list(:group, 4, :private, organization: old_organization) }
+      let_it_be_with_reload(:batched_groups) { create_list(:group, 4, :private, organization: old_organization) }
 
       let(:groups_param) { batched_groups }
 

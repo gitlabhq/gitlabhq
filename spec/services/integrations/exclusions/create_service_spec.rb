@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Exclusions::CreateService, feature_category: :source_code_management do
+RSpec.describe Integrations::Exclusions::CreateService, :with_current_organization,
+  feature_category: :source_code_management do
   let(:integration_name) { 'beyond_identity' }
   let_it_be(:admin_user) { create(:admin) }
   let(:current_user) { admin_user }
@@ -13,14 +14,44 @@ RSpec.describe Integrations::Exclusions::CreateService, feature_category: :sourc
   let(:projects) { [project] }
   let(:groups) { [group] }
   let(:service) do
-    described_class.new(current_user: current_user, integration_name: integration_name, projects: projects,
-      groups: groups)
+    described_class.new(current_user: current_user, organization: current_organization,
+      integration_name: integration_name, projects: projects, groups: groups)
   end
 
   describe '#execute', :enable_admin_mode do
     subject(:execute) { service.execute }
 
     it_behaves_like 'performs exclusions service validations'
+
+    context 'when the current organization differs from the requested organization' do
+      let_it_be(:other_organization) { create(:organization) }
+
+      before do
+        stub_current_organization(other_organization)
+      end
+
+      it 'creates exclusions for the requested organization' do
+        result = nil
+        expect { result = execute }.to change { Integration.count }.by(2)
+        expect(result.payload).to contain_exactly(
+          have_attributes(group_id: group.id, project_id: nil),
+          have_attributes(project_id: project.id, group_id: nil)
+        )
+      end
+    end
+
+    context 'when a project belongs to another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:foreign_group) { create(:group, organization: other_organization) }
+      let_it_be(:foreign_project) { create(:project, group: foreign_group, organization: other_organization) }
+      let(:projects) { [foreign_project] }
+      let(:groups) { [] }
+
+      it 'does not create an exclusion' do
+        expect { execute }.not_to change { Integration.count }
+        expect(execute.message).to eq('not authorized')
+      end
+    end
 
     context 'when called with too many projects' do
       before do

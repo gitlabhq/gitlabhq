@@ -47,6 +47,27 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
 
       it_behaves_like 'exclusion from the check'
 
+      context 'when only another organization has an active instance integration' do
+        let!(:beyond_identity_integration) do
+          create(:beyond_identity_integration, :instance, organization: create(:organization))
+        end
+
+        it 'does not raise an error' do
+          expect { check.validate! }.not_to raise_error
+        end
+
+        context 'and the project organization also has one' do
+          before do
+            create(:beyond_identity_integration, :instance, organization: project.organization)
+          end
+
+          it 'is rejected' do
+            expect { check.validate! }
+              .to raise_error(::Gitlab::GitAccess::ForbiddenError, 'Commit is not signed with a GPG signature')
+          end
+        end
+      end
+
       context 'when the push happens from web' do
         let(:protocol) { 'web' }
 
@@ -114,7 +135,8 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
         let(:verified_gpg_key) { build(:gpg_key, externally_verified: true, externally_verified_at: Time.current) }
 
         before do
-          allow(Integrations::BeyondIdentity).to receive(:for_instance).and_return([beyond_identity_integration])
+          allow(Integrations::BeyondIdentity).to receive(:for_organization)
+            .with(project.organization).and_return([beyond_identity_integration])
           allow_next_instances_of(CommitSignatures::GpgSignature, 2) do |signature|
             allow(signature).to receive_messages(verified?: true, gpg_key: verified_gpg_key)
           end

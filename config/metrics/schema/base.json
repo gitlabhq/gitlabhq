@@ -88,6 +88,7 @@
       "type": "string",
       "enum": [
         "database",
+        "clickhouse",
         "redis",
         "redis_hll",
         "prometheus",

@@ -3163,6 +3163,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe 'auto merge' do
+      shared_examples 'enqueues AutoMergeProcessWorker' do
+        it 'performs AutoMergeProcessWorker' do
+          expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'pipeline_id' => pipeline.id })
+
+          pipeline.succeed!
+        end
+      end
+
+      shared_examples 'does not enqueue AutoMergeProcessWorker' do
+        it 'does not perform AutoMergeProcessWorker' do
+          expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+          pipeline.succeed!
+        end
+      end
+
       context 'when auto merge is enabled' do
         let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
         let_it_be_with_reload(:pipeline) do
@@ -3183,19 +3199,73 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             end
           end
         end
-      end
 
-      context 'when auto merge is not enabled in the merge request' do
-        let(:merge_request) { create(:merge_request) }
-
-        # We enqueue the job here because the check for whether or not to
-        # automatically merge happens in the worker itself.
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167095
-        it 'performs AutoMergeProcessWorker' do
-          expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'pipeline_id' => pipeline.id })
+        it 'checks for the merge request on the primary' do
+          lb_session = ::Gitlab::Database::LoadBalancing::SessionMap.current(MergeRequest.load_balancer)
+          allow(::Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).and_call_original
+          allow(::Gitlab::Database::LoadBalancing::SessionMap)
+            .to receive(:current).with(MergeRequest.load_balancer).and_return(lb_session)
+          expect(lb_session).to receive(:use_primary).and_call_original
 
           pipeline.succeed!
         end
+
+        context 'when the pipeline ran for another commit of the source branch' do
+          before do
+            pipeline.update_column(:sha, merge_request.target_branch_sha)
+          end
+
+          it_behaves_like 'enqueues AutoMergeProcessWorker'
+        end
+
+        context 'when the merge request is closed' do
+          before do
+            merge_request.update_column(:state_id, MergeRequest.available_states[:closed])
+          end
+
+          it_behaves_like 'does not enqueue AutoMergeProcessWorker'
+        end
+      end
+
+      context 'when the pipeline is a merge request pipeline' do
+        let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
+        let_it_be_with_reload(:pipeline) do
+          create(:ci_pipeline, :running, :detached_merge_request_pipeline, merge_request: merge_request)
+        end
+
+        it_behaves_like 'enqueues AutoMergeProcessWorker'
+
+        context 'when auto merge is not enabled in the merge request' do
+          before do
+            merge_request.update_column(:auto_merge_enabled, false)
+          end
+
+          it_behaves_like 'does not enqueue AutoMergeProcessWorker'
+        end
+      end
+
+      context 'when auto merge is not enabled in the merge request' do
+        let_it_be(:merge_request) { create(:merge_request) }
+        let_it_be_with_reload(:pipeline) do
+          create(:ci_pipeline, :running,
+            project: merge_request.source_project, ref: merge_request.source_branch, sha: merge_request.diff_head_sha)
+        end
+
+        it_behaves_like 'does not enqueue AutoMergeProcessWorker'
+
+        context 'when auto_merge_process_pipeline_guard is disabled' do
+          before do
+            stub_feature_flags(auto_merge_process_pipeline_guard: false)
+          end
+
+          it_behaves_like 'enqueues AutoMergeProcessWorker'
+        end
+      end
+
+      context 'when the pipeline has no merge request' do
+        let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :running, ref: 'branch-without-merge-request') }
+
+        it_behaves_like 'does not enqueue AutoMergeProcessWorker'
       end
     end
 

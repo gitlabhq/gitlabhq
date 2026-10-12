@@ -233,11 +233,11 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
     let_it_be(:public_project) { create(:project, :public) }
     let_it_be(:duo_workflow_build) do
-      create(:ci_build, pipeline: create(:ci_empty_pipeline, project: public_project, source: :duo_workflow))
+      create(:ci_build, pipeline: create(:ci_pipeline, project: public_project, source: :duo_workflow))
     end
 
     let_it_be(:push_build) do
-      create(:ci_build, pipeline: create(:ci_empty_pipeline, project: public_project, source: :push))
+      create(:ci_build, pipeline: create(:ci_pipeline, project: public_project, source: :push))
     end
 
     let_it_be(:non_member) { create(:user) }
@@ -291,7 +291,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       let_it_be(:archived_project) { create(:project, :public, :archived) }
       let_it_be(:user) { create(:user, developer_of: archived_project) }
       let_it_be(:build) do
-        create(:ci_build, pipeline: create(:ci_empty_pipeline, project: archived_project, source: :duo_workflow))
+        create(:ci_build, pipeline: create(:ci_pipeline, project: archived_project, source: :duo_workflow))
       end
 
       it 'allows developers to read the log of a duo_workflow job' do

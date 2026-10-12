@@ -43,6 +43,7 @@ module Mutations
 
           result = ::Integrations::Exclusions::CreateService.new(
             current_user: current_user,
+            organization: Current.organization,
             projects: projects(project_ids),
             groups: groups(group_ids),
             integration_name: integration_name

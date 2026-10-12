@@ -17,7 +17,7 @@ module API
 
     helpers do
       def hook_scope
-        SystemHook
+        Current.organization.system_hooks
       end
 
       params :hook_parameters do
@@ -66,7 +66,7 @@ module API
       end
       route_setting :authorization, permissions: :read_webhook, boundary_type: :instance, assignable_when: [:admin]
       get do
-        present paginate(SystemHook.all), with: Entities::Hook
+        present paginate(hook_scope), with: Entities::Hook
       end
 
       desc 'Retrieve a system hook' do

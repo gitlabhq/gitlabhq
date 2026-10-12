@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :source_code_management do
+RSpec.describe Integrations::Exclusions::DestroyService, :with_current_organization,
+  feature_category: :source_code_management do
   let(:integration_name) { 'beyond_identity' }
   let_it_be(:admin_user) { create(:admin) }
   let(:current_user) { admin_user }
@@ -11,14 +12,27 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
   let(:projects) { [project] }
   let(:groups) { [] }
   let(:service) do
-    described_class.new(current_user: current_user, integration_name: integration_name, projects: projects,
-      groups: groups)
+    described_class.new(current_user: current_user, organization: current_organization,
+      integration_name: integration_name, projects: projects, groups: groups)
   end
 
   describe '#execute', :enable_admin_mode do
     subject(:execute) { service.execute }
 
     it_behaves_like 'performs exclusions service validations'
+
+    context 'when a project belongs to another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:foreign_group) { create(:group, organization: other_organization) }
+      let_it_be(:foreign_project) { create(:project, group: foreign_group, organization: other_organization) }
+      let!(:exclusion) { create(:beyond_identity_integration, active: false, project: foreign_project) }
+      let(:projects) { [foreign_project] }
+
+      it 'does not change the exclusion' do
+        expect { execute }.not_to change { exclusion.reload.active }
+        expect(execute.message).to eq('not authorized')
+      end
+    end
 
     context 'when there is an exclusion for the project exists' do
       let!(:exclusion) do
@@ -28,6 +42,21 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
       it 'deletes the exclusion' do
         expect { execute }.to change { Integration.count }.from(1).to(0)
         expect(execute.payload).to contain_exactly(exclusion)
+      end
+
+      context 'when only another organization has an instance integration' do
+        let_it_be(:other_integration) do
+          create(:beyond_identity_integration, :instance, organization: create(:organization))
+        end
+
+        before do
+          stub_current_organization(project.organization)
+        end
+
+        it 'deletes the exclusion without using the other integration' do
+          expect { execute }.to change { Integration.count }.from(2).to(1)
+          expect(other_integration.reload).to be_persisted
+        end
       end
 
       context 'and there is an exclusion for a group' do

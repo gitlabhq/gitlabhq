@@ -38,6 +38,7 @@ module Organizations
         Group.transaction do
           groups.each_slice(BATCH_SIZE) do |batch|
             batch_ids = batch.map(&:id)
+            persist_transfer_source_organization(batch)
             Group.id_in(batch_ids).update_all(
               organization_id: new_organization.id,
               visibility_level: clamped_visibility_sql
@@ -57,6 +58,18 @@ module Organizations
       private
 
       attr_reader :groups, :new_organization, :current_user, :skip_authorization
+
+      # Record the source so GroupsService can recover it when it transfers the
+      # descendants later, after this moves the root off its source. The batch is
+      # bounded and holds only top-level groups, so a save per group is acceptable.
+      def persist_transfer_source_organization(batch)
+        batch.each do |group|
+          next if group.organization_id == new_organization.id
+
+          group.state_metadata['organization_transfer_source_id'] = group.organization_id
+          group.namespace_details.save!
+        end
+      end
 
       # Only the root group row moves here. Descendants follow later via
       # Organizations::Transfer::GroupsService, which publishes its own event.

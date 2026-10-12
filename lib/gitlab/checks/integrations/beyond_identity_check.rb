@@ -86,7 +86,7 @@ module Gitlab
         end
 
         def integration
-          project.beyond_identity_integration || ::Integrations::BeyondIdentity.for_instance.first
+          project.beyond_identity_integration || ::Integrations::BeyondIdentity.for_organization(project.organization).first
         end
         strong_memoize_attr :integration
       end

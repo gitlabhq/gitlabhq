@@ -103,24 +103,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     describe '.track_event' do
-      context 'with redis_hll_tracking' do
-        it 'tracks the event when feature enabled' do
-          stub_feature_flags(redis_hll_tracking: true)
-
-          expect(Gitlab::Redis::HLL).to receive(:add)
-
-          described_class.track_event(weekly_event, values: 1)
-        end
-
-        it 'does not track the event with feature flag disabled' do
-          stub_feature_flags(redis_hll_tracking: false)
-
-          expect(Gitlab::Redis::HLL).not_to receive(:add)
-
-          described_class.track_event(weekly_event, values: 1)
-        end
-      end
-
       it 'tracks event when using symbol' do
         expect(Gitlab::Redis::HLL).to receive(:add)
 
@@ -154,8 +136,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         end
       end
 
-      it 'reports an error if Feature.enabled raise an error' do
-        expect(Feature).to receive(:enabled?).and_raise(StandardError.new)
+      it 'reports an error if tracking raises an error' do
+        expect(Gitlab::Redis::HLL).to receive(:add).and_raise(StandardError.new)
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
         described_class.track_event(:g_analytics_contribution, values: entity1, time: Date.current)

@@ -210,6 +210,36 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end.not_to publish_event(Organizations::GroupTransferredEvent)
       end
 
+      context 'for the persisted transfer source' do
+        it 'persists the source before the transfer and retains it after success' do
+          persisted_sources = []
+          allow(service).to receive(:perform_transfer).and_wrap_original do |original, *args|
+            persisted_sources << group.reload.state_metadata['organization_transfer_source_id']
+            original.call(*args)
+          end
+
+          expect(service.execute).to be_success
+
+          expect(persisted_sources).to eq([old_organization.id])
+          expect(group.reload.state_metadata['organization_transfer_source_id']).to eq(old_organization.id)
+        end
+
+        context 'when re-running after the root already moved' do
+          before do
+            group.update_column(:organization_id, new_organization.id)
+            group.state_metadata['organization_transfer_source_id'] = old_organization.id
+            group.namespace_details.save!
+          end
+
+          it 'transfers descendants from the stored source' do
+            expect(service.execute).to be_success
+
+            expect(subgroup.reload.organization_id).to eq(new_organization.id)
+            expect(nested_project.reload.organization_id).to eq(new_organization.id)
+          end
+        end
+      end
+
       context 'for runner transfers' do
         it 'enqueues TransferOrganizationWorker with correct arguments' do
           expect(Ci::Runners::TransferOrganizationWorker).to receive(:perform_async).with(
@@ -1229,7 +1259,10 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
       before do
         # Mimic Organizations::ConfirmService having moved only the top-level
-        # group's organization_id forward, without touching descendants.
+        # group's organization_id forward, recording the source so GroupsService
+        # can resolve the descendants' original organization.
+        top_level.state_metadata['organization_transfer_source_id'] = old_organization.id
+        top_level.namespace_details.save!
         top_level.update_column(:organization_id, new_organization.id)
       end
 

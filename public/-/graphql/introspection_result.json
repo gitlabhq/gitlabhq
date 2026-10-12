@@ -24574,6 +24574,22 @@
               "deprecationReason": null
             },
             {
+              "name": "itemType",
+              "description": "Type of the agent.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AiCatalogItemType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of the agent.",
               "args": [],
@@ -25995,6 +26011,18 @@
           "description": "AI agent tool usage aggregated for the AI governance dashboard.",
           "fields": [
             {
+              "name": "actionType",
+              "description": "Action type of the tool. Null when it is not known.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "AiToolActionType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "count",
               "description": "Number of tool invocations in the selected timeframe.",
               "args": [],
@@ -26011,8 +26039,24 @@
               "deprecationReason": null
             },
             {
+              "name": "title",
+              "description": "Display name of the tool, as shown on the Tool management tab. Same as `toolName` when no rule governs the tool.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "toolName",
-              "description": "Name of the tool.",
+              "description": "Name of the tool rule that governs the tool, or the name recorded in the audit event when no rule governs it.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",

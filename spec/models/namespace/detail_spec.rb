@@ -52,6 +52,14 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
         expect(namespace_detail).to be_valid
       end
 
+      it 'accepts organization_transfer_source_id in state_metadata' do
+        namespace_detail.state_metadata = {
+          organization_transfer_source_id: 7
+        }
+
+        expect(namespace_detail).to be_valid
+      end
+
       it 'accepts schedule_transfer in preserved_states' do
         namespace_detail.state_metadata = {
           preserved_states: { schedule_transfer: 'archived' }

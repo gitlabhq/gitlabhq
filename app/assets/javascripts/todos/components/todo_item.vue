@@ -76,6 +76,7 @@ export default {
 <template>
   <li
     class="gl-border-b gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-bg-subtle"
+    :class="{ '!gl-bg-strong': selected }"
     :data-testid="`todo-item-${todo.id}`"
   >
     <gl-form-checkbox
