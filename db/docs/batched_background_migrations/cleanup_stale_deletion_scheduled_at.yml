@@ -1,0 +1,9 @@
+---
+migration_job_name: CleanupStaleDeletionScheduledAt
+description: Clears namespace_details.deletion_scheduled_at on rows whose namespace
+  is not in a deletion state
+feature_category: groups_and_projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256646
+milestone: '19.5'
+queued_migration_version: 20261002141251
+finalized_by:

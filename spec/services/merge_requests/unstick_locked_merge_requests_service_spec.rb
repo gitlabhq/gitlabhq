@@ -54,7 +54,7 @@ RSpec.describe MergeRequests::UnstickLockedMergeRequestsService, :clean_gitlab_r
         )
 
         pipeline = create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: merge_request.project,
           ref: merge_request.source_branch,
           sha: merge_request.source_branch_sha

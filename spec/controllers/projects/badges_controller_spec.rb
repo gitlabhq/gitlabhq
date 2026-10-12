@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::BadgesController do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :small_repo, maintainers: user) }
-  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
   shared_context 'renders badge irrespective of project access levels' do |badge_type|
     context 'when project is public' do

@@ -167,7 +167,6 @@ const mountComponent = ({
       canReadCrmContact,
       autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
       canAdminIssue: true,
-      canBulkAdminEpic: true,
       canCreateProjects: true,
       hasBlockedIssuesFeature: false,
       hasEpicsFeature: false,

@@ -136,7 +136,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
     let_it_be(:user) { create(:user) }
 
     context 'when not triggered' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline, project: project, user: user) }
 
       it 'returns false' do
@@ -147,7 +147,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
 
     context 'when triggered' do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, trigger: trigger, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, trigger: trigger, project: project) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline, project: project, user: user) }
 
       it 'returns true' do

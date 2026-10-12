@@ -8,14 +8,14 @@ RSpec.describe Ci::CommitWithPipeline, feature_category: :continuous_integration
 
   describe '#last_pipeline' do
     let!(:first_pipeline) do
-      create(:ci_empty_pipeline,
+      create(:ci_pipeline,
         project: project,
         sha: commit.sha,
         status: 'success')
     end
 
     let!(:second_pipeline) do
-      create(:ci_empty_pipeline,
+      create(:ci_pipeline,
         project: project,
         sha: commit.sha,
         status: 'success')
@@ -46,7 +46,7 @@ RSpec.describe Ci::CommitWithPipeline, feature_category: :continuous_integration
 
     before_all do
       commits_with_pipelines.each do |commit|
-        create(:ci_empty_pipeline, project: commit.project, sha: commit.sha)
+        create(:ci_pipeline, project: commit.project, sha: commit.sha)
       end
     end
 

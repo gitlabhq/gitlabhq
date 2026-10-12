@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Doorkeeper::AccessGrant, feature_category: :system_access do
   describe 'associations' do
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').optional(false) }
-    it { is_expected.to have_one(:openid_request).class_name('Doorkeeper::OpenidConnect::Request') }
+    it { is_expected.to have_one(:openid_request).class_name('Doorkeeper::OpenidConnect::Request').dependent(:delete) }
   end
 
   it_behaves_like 'a Doorkeeper model stuck to the database load balancer' do

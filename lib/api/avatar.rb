@@ -7,6 +7,7 @@ module API
 
     resource :avatar do
       desc 'Return avatar url for a user' do
+        detail 'Returns the Gravatar URL for the user with the given public email address.'
         success Entities::Avatar
         tags %w[avatars]
       end

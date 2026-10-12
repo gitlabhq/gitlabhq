@@ -40,7 +40,7 @@ RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :
     end
 
     context 'when pipeline does not have test reports' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+      let_it_be(:pipeline) { create(:ci_pipeline) }
 
       it 'does not track the test event' do
         track_artifact_report

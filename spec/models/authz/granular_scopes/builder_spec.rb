@@ -7,7 +7,9 @@ RSpec.describe Authz::GranularScopes::Builder, feature_category: :permissions do
 
   let_it_be(:user) { create(:user, :with_namespace) }
   let_it_be(:group) { create(:group) }
+  let_it_be(:other_group) { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:other_project) { create(:project) }
 
   let(:allowed) { true }
   let(:boundary_rule) do
@@ -19,6 +21,14 @@ RSpec.describe Authz::GranularScopes::Builder, feature_category: :permissions do
 
   describe '#build' do
     subject(:scopes) { described_class.new(inputs, boundary_rule: boundary_rule).build }
+
+    shared_examples 'loads no groups or projects' do
+      specify do
+        recorder = ActiveRecord::QueryRecorder.new { scopes }
+
+        expect(recorder.log).not_to include(a_string_matching(/FROM "namespaces"|FROM "projects"/))
+      end
+    end
 
     context 'with a standalone access level' do
       where(:access) { [:user, :instance, :all_memberships] }
@@ -42,6 +52,8 @@ RSpec.describe Authz::GranularScopes::Builder, feature_category: :permissions do
 
           expect(boundary_rule).not_to have_received(:allowed_resource?)
         end
+
+        it_behaves_like 'loads no groups or projects'
       end
     end
 
@@ -52,12 +64,16 @@ RSpec.describe Authz::GranularScopes::Builder, feature_category: :permissions do
         expect(scopes.map(&:namespace)).to eq([user.namespace])
         expect(scopes.first.access).to eq('personal_projects')
       end
+
+      it_behaves_like 'loads no groups or projects'
     end
 
     context 'with selected_memberships access' do
-      let(:inputs) { [{ access: :selected_memberships, permissions: permissions, resources: [group, project] }] }
+      let(:inputs) do
+        [{ access: :selected_memberships, permissions: permissions, group_ids: [group.id], project_ids: [project.id] }]
+      end
 
-      it 'builds one scope per resource in input order', :aggregate_failures do
+      it 'builds one unsaved scope per group and project, groups first', :aggregate_failures do
         expect(scopes.map(&:namespace)).to eq([group, project.project_namespace])
         expect(scopes.map(&:access).uniq).to eq(['selected_memberships'])
         expect(scopes).to all(be_new_record)
@@ -70,8 +86,41 @@ RSpec.describe Authz::GranularScopes::Builder, feature_category: :permissions do
         expect(boundary_rule).to have_received(:allowed_resource?).with(project).ordered
       end
 
-      context 'when no resources are given' do
-        let(:inputs) { [{ access: :selected_memberships, permissions: permissions, resources: [] }] }
+      context 'with several groups and projects' do
+        let(:inputs) do
+          [{ access: :selected_memberships, permissions: permissions,
+             group_ids: [group.id, other_group.id], project_ids: [project.id, other_project.id] }]
+        end
+
+        it 'builds a scope for each of them', :aggregate_failures do
+          # id_in has no ORDER BY, so only the group-then-project split is deterministic
+          expect(scopes.first(2).map(&:namespace)).to match_array([group, other_group])
+          expect(scopes.last(2).map(&:namespace))
+            .to match_array([project.project_namespace, other_project.project_namespace])
+        end
+
+        it 'loads each model class in one query, plus one for the project namespaces', :aggregate_failures do
+          recorder = ActiveRecord::QueryRecorder.new { scopes }
+
+          expect(recorder.log.grep(/FROM "namespaces" WHERE "namespaces"\."type" = 'Group'/).size).to eq(1)
+          expect(recorder.log.grep(/FROM "projects"/).size).to eq(1)
+          expect(recorder.log.grep(/FROM "namespaces" WHERE "namespaces"\."type" = 'Project'/).size).to eq(1)
+        end
+      end
+
+      context 'when an ID matches no record' do
+        let(:inputs) do
+          [{ access: :selected_memberships, permissions: permissions,
+             group_ids: [group.id, non_existing_record_id], project_ids: [non_existing_record_id] }]
+        end
+
+        it 'drops it' do
+          expect(scopes.map(&:namespace)).to eq([group])
+        end
+      end
+
+      context 'when the input names no resources' do
+        let(:inputs) { [{ access: :selected_memberships, permissions: permissions }] }
 
         it { is_expected.to be_empty }
       end
@@ -95,7 +144,7 @@ RSpec.describe Authz::GranularScopes::Builder, feature_category: :permissions do
       end
 
       with_them do
-        let(:inputs) { [{ access: access, permissions: permissions, resources: [group] }] }
+        let(:inputs) { [{ access: access, permissions: permissions, group_ids: [group.id] }] }
 
         it 'builds the scope for the matching access level' do
           expect(scopes.map(&:namespace)).to eq([expected_namespace])
@@ -107,7 +156,7 @@ RSpec.describe Authz::GranularScopes::Builder, feature_category: :permissions do
       let(:inputs) do
         [
           { access: :instance, permissions: permissions },
-          { access: :selected_memberships, permissions: permissions, resources: [group] },
+          { access: :selected_memberships, permissions: permissions, group_ids: [group.id] },
           { access: :user, permissions: permissions }
         ]
       end

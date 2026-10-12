@@ -238080,6 +238080,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetRequester",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetRequirementLegacy",
               "ofType": null
             },
@@ -240913,6 +240918,47 @@
         },
         {
           "kind": "OBJECT",
+          "name": "WorkItemWidgetRequester",
+          "description": "Represents the requester widget",
+          "fields": [
+            {
+              "name": "email",
+              "description": "Email address of the non-GitLab user who requested the work item. For guests, the email address is obfuscated.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "WorkItemWidgetRequirementLegacy",
           "description": "Represents a legacy requirement widget",
           "fields": [
@@ -241599,6 +241645,12 @@
             {
               "name": "COLOR",
               "description": "Color widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUESTER",
+              "description": "Requester widget.",
               "isDeprecated": false,
               "deprecationReason": null
             }

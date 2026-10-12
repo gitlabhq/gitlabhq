@@ -104,7 +104,7 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
       it 'does not load granular scopes' do
         recorder = ActiveRecord::QueryRecorder.new { get api(path, personal_access_token: token) }
 
-        expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+        expect(recorder.log).not_to include(a_string_matching(/FROM "(personal_access_token_)?granular_scopes"/))
       end
     end
 

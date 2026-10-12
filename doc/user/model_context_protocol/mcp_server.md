@@ -61,6 +61,25 @@ For a click-through demo, see [GitLab Duo Agent Platform - GitLab MCP server](ht
   - On GitLab.com, [for the top-level group](../group/access_and_permissions.md#allow-access-to-the-mcp-server).
   - On GitLab Self-Managed and GitLab Dedicated, [for the instance](../../administration/settings/visibility_and_access_controls.md#allow-access-to-the-mcp-server).
 
+## Authentication
+
+The GitLab MCP server accepts the following tokens:
+
+- An OAuth access token with the `mcp` scope. MCP clients get this token through the OAuth flow
+  when they connect, either with dynamic client registration or with a
+  [pre-registered OAuth application](#reuse-a-single-oauth-application).
+- A [fine-grained personal access token](../../auth/tokens/fine_grained_access_tokens.md) with the
+  [MCP tool resource and the Execute permission](../../auth/tokens/fine_grained_access_tokens_rest.md#mcp-tool).
+
+These tokens cannot have the `mcp` scope, so the GitLab MCP server rejects them, even with scopes such as `api`:
+
+- Legacy personal access tokens
+- Project access tokens
+- Group access tokens
+
+If you use one of these tokens, the GitLab MCP server returns `403 Forbidden`.
+Support for these authentication methods is proposed in [issue 586184](https://gitlab.com/gitlab-org/gitlab/-/work_items/586184).
+
 ## Connect a client to the GitLab MCP server
 
 The GitLab MCP server supports two transport types:

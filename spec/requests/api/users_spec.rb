@@ -5892,23 +5892,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           end
         end
 
-        it 'batch loads project_namespace when scoping to multiple projects', :request_store do
-          multiple_projects_params = granular_params.merge(
-            granular_scopes: [
-              { access: access, permissions: ['read_job'], project_ids: [project.id, second_project.id] }
-            ]
-          )
-
-          query_recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-            post api(path, user), params: multiple_projects_params
-          end
-
-          expect(response).to have_gitlab_http_status(:created)
-          expect(query_recorder).not_to exceed_query_limit(1).allow_skip_cache_inconsistency.for_query(
-            /FROM "namespaces" WHERE "namespaces"\."type" = 'Project' AND "namespaces"\."id" IN/
-          )
-        end
-
         context 'when a project or group ID does not exist' do
           let(:granular_scopes) do
             [{ access: access, permissions: ['read_job'], project_ids: [non_existing_record_id] }]
@@ -6237,7 +6220,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to all(exclude('granular_scopes'))
-        expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+        expect(recorder.log).not_to include(a_string_matching(/FROM "(personal_access_token_)?granular_scopes"/))
       end
     end
 
@@ -6389,7 +6372,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response).not_to have_key('granular_scopes')
-      expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+      expect(recorder.log).not_to include(a_string_matching(/FROM "(personal_access_token_)?granular_scopes"/))
     end
 
     context 'when creating an impersonation token with granular scopes' do
@@ -6711,7 +6694,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).not_to have_key('granular_scopes')
-        expect(recorder.log).not_to include(a_string_matching(/granular_scopes/))
+        expect(recorder.log).not_to include(a_string_matching(/FROM "(personal_access_token_)?granular_scopes"/))
       end
     end
 

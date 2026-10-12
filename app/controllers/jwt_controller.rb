@@ -62,7 +62,7 @@ class JwtController < ApplicationController
     result = service.new(@authentication_result.project, auth_user, auth_params)
       .execute(**execute_params)
 
-    render json: result, status: result[:http_status]
+    render json: result.except(:http_status), status: result[:http_status]
   end
 
   private

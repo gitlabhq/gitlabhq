@@ -52,6 +52,7 @@ module API
       helpers Helpers::UsersHelpers
       helpers Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
       helpers ::API::Helpers::PersonalAccessTokensHelpers
+      helpers ::API::Helpers::Authz::GranularScopesHelpers
 
       helpers do
         def custom_order_by_or_sort?
@@ -1351,6 +1352,7 @@ module API
       end
 
       helpers ::API::Helpers::PersonalAccessTokensHelpers
+      helpers ::API::Helpers::Authz::GranularScopesHelpers
 
       # Enabling /user endpoint for the v3 version to allow oauth
       # authentication through this endpoint.

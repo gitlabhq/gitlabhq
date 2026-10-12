@@ -12,3 +12,14 @@ export const generateCatalogSettingsResponse = (
     },
   };
 };
+
+export const generateCatalogResourceUsageResponse = (last30DayUsageCount = 0) => {
+  return {
+    data: {
+      ciCatalogResource: {
+        id: 'gid://gitlab/Ci::Catalog::Resource/39',
+        last30DayUsageCount,
+      },
+    },
+  };
+};

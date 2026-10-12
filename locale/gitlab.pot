@@ -19197,6 +19197,9 @@ msgstr ""
 msgid "CiCatalog|How do I publish a component?"
 msgstr ""
 
+msgid "CiCatalog|If you re-add this component later, the project's previous releases are not restored. You must %{linkStart}create a new release%{linkEnd}."
+msgstr ""
+
 msgid "CiCatalog|Last released"
 msgstr ""
 
@@ -19326,7 +19329,7 @@ msgstr ""
 msgid "CiCatalog|The list of projects that included a component from this project in a pipeline in the last 30 days. Only displays projects you have permission to view."
 msgstr ""
 
-msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
+msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog."
 msgstr ""
 
 msgid "CiCatalog|The project will be findable in the CI/CD Catalog after the project has at least one release."
@@ -19361,6 +19364,11 @@ msgstr ""
 
 msgid "CiCatalog|This catalog contains third-party content. Use of this content is subject to the relevant content provider's terms of use. GitLab does not control and has no liability for third-party content."
 msgstr ""
+
+msgid "CiCatalog|This component is used in %{boldStart}%{count}%{boldEnd} project."
+msgid_plural "CiCatalog|This component is used in %{boldStart}%{count}%{boldEnd} projects."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "CiCatalog|This project is no longer a CI/CD Catalog project."
 msgstr ""
@@ -33213,6 +33221,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Are you sure you want to cancel this session? This action cannot be undone."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Are you sure you want to delete this automation? This action cannot be undone."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Are you sure you want to delete this trigger? This action cannot be undone."
 msgstr ""
 
@@ -33223,6 +33234,21 @@ msgid "DuoAgentsPlatform|Automate tasks with AI agents, from searching projects 
 msgstr ""
 
 msgid "DuoAgentsPlatform|Automate tasks with AI agents, from searching projects to creating commits. Two ways to start."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automation deleted successfully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automation turned off"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automation turned on"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automations"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automations connect flows or external agents to events or schedules in this project. Create an automation to determine when your flows or external agents run."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Available"
@@ -33369,7 +33395,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to cancel session. Please try again."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Failed to delete automation."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Failed to delete trigger."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Failed to fetch automations"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to fetch flow types"
@@ -33385,6 +33417,9 @@ msgid "DuoAgentsPlatform|Failed to submit approval. Please try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to submit modification. Please try again."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Failed to update automation."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to update trigger."
@@ -33486,6 +33521,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
 msgstr ""
 
+msgid "DuoAgentsPlatform|New automation"
+msgstr ""
+
 msgid "DuoAgentsPlatform|New event"
 msgstr ""
 
@@ -33496,6 +33534,9 @@ msgid "DuoAgentsPlatform|New trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|No agent sessions yet"
+msgstr ""
+
+msgid "DuoAgentsPlatform|No automations yet"
 msgstr ""
 
 msgid "DuoAgentsPlatform|No conditions yet. Add a schedule or an event."
@@ -94267,7 +94308,16 @@ msgstr ""
 msgid "Vulnerability|Indicates whether the component verifies the identity of a user or service before allowing access, and therefore whether the vulnerable code requires authentication."
 msgstr ""
 
+msgid "Vulnerability|Indicates which trust boundaries the component sits on, like network access or user input, and therefore how exposed the vulnerable code is to untrusted callers."
+msgstr ""
+
 msgid "Vulnerability|Information related to how the vulnerability was discovered and its impact on the system."
+msgstr ""
+
+msgid "Vulnerability|Internal only"
+msgstr ""
+
+msgid "Vulnerability|Isolated"
 msgstr ""
 
 msgid "Vulnerability|KEV listed"
@@ -94297,6 +94347,9 @@ msgstr ""
 msgid "Vulnerability|Namespace:"
 msgstr ""
 
+msgid "Vulnerability|Network access"
+msgstr ""
+
 msgid "Vulnerability|No available solution"
 msgstr ""
 
@@ -94310,6 +94363,9 @@ msgid "Vulnerability|None"
 msgstr ""
 
 msgid "Vulnerability|Not an FP"
+msgstr ""
+
+msgid "Vulnerability|Partner boundary"
 msgstr ""
 
 msgid "Vulnerability|Policy violation detected"
@@ -94376,6 +94432,9 @@ msgid "Vulnerability|Scanner"
 msgstr ""
 
 msgid "Vulnerability|Security Audit"
+msgstr ""
+
+msgid "Vulnerability|Security boundary"
 msgstr ""
 
 msgid "Vulnerability|Select a severity"
@@ -94468,6 +94527,9 @@ msgstr ""
 msgid "Vulnerability|Training not available for this vulnerability."
 msgstr ""
 
+msgid "Vulnerability|Trusted service"
+msgstr ""
+
 msgid "Vulnerability|Unknown"
 msgstr ""
 
@@ -94478,6 +94540,9 @@ msgid "Vulnerability|Unmodified response:"
 msgstr ""
 
 msgid "Vulnerability|Use AI to understand a vulnerability and suggest a fix"
+msgstr ""
+
+msgid "Vulnerability|User input"
 msgstr ""
 
 msgid "Vulnerability|Validity check"

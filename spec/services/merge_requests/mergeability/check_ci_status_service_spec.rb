@@ -38,7 +38,7 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
     end
 
     context 'when there is a diff head pipeline' do
-      let(:pipeline) { create(:ci_empty_pipeline, sha: '1982309812309812') }
+      let(:pipeline) { create(:ci_pipeline, sha: '1982309812309812') }
 
       before do
         merge_request.update_attribute(:head_pipeline_id, pipeline.id)

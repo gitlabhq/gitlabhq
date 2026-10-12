@@ -358,7 +358,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
     end
 
     context 'when pipeline exists for the source branch' do
-      let!(:pipeline) { create(:ci_empty_pipeline, ref: @merge_request.source_branch, project: @project, sha: @commits.first.sha) }
+      let!(:pipeline) { create(:ci_pipeline, ref: @merge_request.source_branch, project: @project, sha: @commits.first.sha) }
 
       subject { service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/master') }
 

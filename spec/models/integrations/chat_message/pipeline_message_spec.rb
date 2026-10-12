@@ -50,7 +50,7 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
     allow(test_project).to receive(:avatar_url).with(only_path: false).and_return(args[:project][:avatar_url])
     allow(Project).to receive(:find) { test_project }
 
-    test_pipeline = build(:ci_empty_pipeline, name: 'Build pipeline')
+    test_pipeline = build(:ci_pipeline, name: 'Build pipeline')
 
     allow(test_pipeline).to receive_messages(
       has_yaml_errors?: has_yaml_errors,

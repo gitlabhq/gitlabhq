@@ -1,0 +1,8 @@
+# @feature_category: pipeline_composition
+
+query getCiCatalogResourceUsage($fullPath: ID!) {
+  ciCatalogResource(fullPath: $fullPath) {
+    id
+    last30DayUsageCount
+  }
+}

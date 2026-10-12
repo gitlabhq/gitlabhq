@@ -235,7 +235,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     def create_pipeline(status, sha, merge_request: nil)
       user = create(:user)
       pipeline = create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         status: status,
         project: project,
         sha: sha.id,
@@ -362,7 +362,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
       let(:project) { create(:project, :repository) }
 
       let(:pipeline) do
-        create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
+        create(:ci_pipeline, project: project, user: user, sha: project.commit.id)
       end
 
       let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }
@@ -577,7 +577,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
       end
 
       def create_pipeline(project)
-        create(:ci_empty_pipeline, project: project).tap do |pipeline|
+        create(:ci_pipeline, project: project).tap do |pipeline|
           create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage, name: 'test', pipeline: pipeline), name: 'rspec')
         end
       end
@@ -1460,7 +1460,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
   describe 'GET downloadable_artifacts.json' do
     context 'when pipeline is empty' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it 'returns status not_found' do
         get_downloadable_artifacts_json

@@ -196,9 +196,6 @@ export default {
         query: this.newWorkItemPathQuery,
       });
     },
-    newWorkItemButtonText() {
-      return s__('WorkItem|New item');
-    },
     newWorkItemText() {
       return sprintf(s__('WorkItem|New %{workItemType}'), {
         workItemType: lowercaseWorkItemType(this.selectedWorkItemTypeName),
@@ -365,7 +362,7 @@ export default {
         data-testid="new-epic-button"
         :href="newWorkItemPath"
         @click="showCreateModal"
-        >{{ newWorkItemButtonText }}
+        >{{ s__('WorkItem|New item') }}
       </gl-button>
     </template>
     <gl-modal

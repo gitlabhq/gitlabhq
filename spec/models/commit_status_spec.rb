@@ -326,7 +326,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
       context 'when there is auto_canceled_by' do
         before do
-          commit_status.update!(auto_canceled_by: create(:ci_empty_pipeline))
+          commit_status.update!(auto_canceled_by: create(:ci_pipeline))
         end
 
         it 'is auto canceled' do

@@ -11,7 +11,7 @@ RSpec.describe PipelineMetricsWorker, feature_category: :continuous_integration 
 
   let(:pipeline) do
     create(
-      :ci_empty_pipeline,
+      :ci_pipeline,
       status: status,
       project: project,
       ref: 'master',

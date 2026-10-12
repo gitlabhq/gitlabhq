@@ -68,7 +68,7 @@ RSpec.describe Ci::PipelineCreationMetricsWorker, feature_category: :continuous_
       end
 
       context 'when pipeline has no builds' do
-        let_it_be(:empty_pipeline) { create(:ci_empty_pipeline, project: project, user: user) }
+        let_it_be(:empty_pipeline) { create(:ci_pipeline, project: project, user: user) }
 
         it 'does not track any build events' do
           expect(Gitlab::InternalEvents).not_to receive(:track_event).with('create_ci_build', anything)

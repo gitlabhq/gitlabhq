@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
   let_it_be(:partition_id) { Ci::Pipeline.current_partition_value }
 
   let_it_be(:pipeline) do
-    build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id)
+    build(:ci_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id)
   end
 
   let(:root_variables) { [] }
@@ -760,7 +760,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       let(:user) { create(:user) }
 
       let(:pipeline) do
-        build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, user: user, partition_id: partition_id)
+        build(:ci_pipeline, project: project, sha: head_sha, iid: 1, user: user, partition_id: partition_id)
       end
 
       let(:attributes) do
@@ -818,7 +818,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
     subject { seed_build.to_resource }
 
     # The shared pipeline is frozen and reused, so persisting it needs a throwaway instance.
-    let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id) }
+    let(:pipeline) { build(:ci_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id) }
 
     it 'memoizes a resource that is not persisted without explicit assignment', :aggregate_failures do
       pipeline.save!
@@ -993,7 +993,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       using RSpec::Parameterized
 
       let(:pipeline) do
-        build(:ci_empty_pipeline, ref: 'deploy', tag: false, source: source, project: project, iid: 1,
+        build(:ci_pipeline, ref: 'deploy', tag: false, source: source, project: project, iid: 1,
           partition_id: partition_id)
       end
 
@@ -1606,7 +1606,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
     subject { seed_build }
 
     # These examples replace the pipeline's variables, so they need their own instance instead of the shared one.
-    let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id) }
+    let(:pipeline) { build(:ci_pipeline, project: project, sha: head_sha, iid: 1, partition_id: partition_id) }
 
     let(:pipeline_variables_attributes) { [] }
 

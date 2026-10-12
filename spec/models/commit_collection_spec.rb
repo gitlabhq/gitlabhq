@@ -157,11 +157,11 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
     let(:another_commit) { project.commit("60ecb67744cb56576c30214ff52294f8ce2def98") }
 
     let!(:pipeline) do
-      create(:ci_empty_pipeline, ref: 'master', sha: commit.id, status: 'success', project: project)
+      create(:ci_pipeline, ref: 'master', sha: commit.id, status: 'success', project: project)
     end
 
     let!(:another_pipeline) do
-      create(:ci_empty_pipeline, ref: 'master', sha: another_commit.id, status: 'success', project: project)
+      create(:ci_pipeline, ref: 'master', sha: another_commit.id, status: 'success', project: project)
     end
 
     let(:collection) { described_class.new(project, [commit, another_commit]) }

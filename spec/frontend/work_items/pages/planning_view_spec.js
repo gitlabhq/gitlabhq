@@ -276,7 +276,6 @@ const boardViewStub = {
     'canManageColumns',
     'activeItem',
     'detailPanelEnabled',
-    'preselectedWorkItemType',
     'canCreateWorkItem',
     'hasWorkItems',
     'hasWorkItemsLoading',
@@ -3103,13 +3102,6 @@ describe('planning-view', () => {
           sort: RELATIVE_POSITION_ASC,
           state: STATUS_OPEN,
         });
-      });
-
-      it('passes the preselected work item type to the board view for in-column creation', async () => {
-        findViewModeToggle().vm.$emit('toggle-view-mode', 'board');
-        await waitForPromises();
-
-        expect(findBoardView().props('preselectedWorkItemType')).toBe('Issue');
       });
 
       describe('when the board view is shown', () => {

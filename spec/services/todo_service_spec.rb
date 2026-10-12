@@ -628,6 +628,45 @@ RSpec.describe TodoService, feature_category: :notifications do
           .not_to receive(:track_work_item_todo_marked_action)
         end
       end
+
+      context 'with a note' do
+        let(:note) { create(:note, project: project, noteable: unassigned_issue, author: author) }
+
+        it 'creates a todo targeting the noteable and referencing the note' do
+          service.mark_todo(unassigned_issue, author, note: note)
+
+          should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED, note: note)
+        end
+
+        it 'creates the todo even when a pending todo without a note exists' do
+          service.mark_todo(unassigned_issue, author)
+
+          expect { service.mark_todo(unassigned_issue, author, note: note) }
+            .to change { Todo.where(note: note).count }.by(1)
+        end
+
+        it 'creates todos for different notes on the same noteable' do
+          other_note = create(:note, project: project, noteable: unassigned_issue, author: author)
+          service.mark_todo(unassigned_issue, author, note: other_note)
+
+          expect { service.mark_todo(unassigned_issue, author, note: note) }
+            .to change { Todo.where(note: note).count }.by(1)
+        end
+
+        it 'does not create a duplicate todo for the same note' do
+          service.mark_todo(unassigned_issue, author, note: note)
+
+          expect { service.mark_todo(unassigned_issue, author, note: note) }
+            .not_to change { Todo.count }
+        end
+
+        it 'does not create a duplicate todo without a note when one exists' do
+          service.mark_todo(unassigned_issue, author)
+
+          expect { service.mark_todo(unassigned_issue, author) }
+            .not_to change { Todo.count }
+        end
+      end
     end
 
     describe '#todo_exists?' do

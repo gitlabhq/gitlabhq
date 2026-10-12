@@ -44,8 +44,8 @@ RSpec.describe Projects::MergeRequests::ContentController, feature_category: :co
 
       context 'with coverage data' do
         let(:merge_request) { create(:merge_request, target_project: project, source_project: project, head_pipeline: head_pipeline) }
-        let!(:base_pipeline) { create(:ci_empty_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.diff_base_sha) }
-        let!(:head_pipeline) { create(:ci_empty_pipeline, project: project) }
+        let!(:base_pipeline) { create(:ci_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.diff_base_sha) }
+        let!(:head_pipeline) { create(:ci_pipeline, project: project) }
         let!(:rspec_base) { create(:ci_build, name: 'rspec', coverage: 93.1, pipeline: base_pipeline) }
         let!(:rspec_head) { create(:ci_build, name: 'rspec', coverage: 97.1, pipeline: head_pipeline) }
 

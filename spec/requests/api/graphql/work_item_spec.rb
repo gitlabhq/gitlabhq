@@ -913,6 +913,69 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
       end
 
+      describe 'requester widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetRequester {
+                email
+              }
+            }
+            features {
+              requester {
+                email
+              }
+            }
+          GRAPHQL
+        end
+
+        context 'when work item is a ticket created through Service Desk' do
+          let_it_be(:ticket_type) { build(:work_item_system_defined_type, :ticket) }
+          let_it_be(:support_bot) { create(:support_bot) }
+          let_it_be(:work_item, freeze: false) do
+            create(:work_item, project: project, work_item_type: ticket_type,
+              author: support_bot, service_desk_reply_to: 'requester@example.com')
+          end
+
+          it 'returns the requester email' do
+            expected = { 'email' => 'requester@example.com' }
+
+            expect(work_item_data['widgets']).to include(hash_including(expected.merge('type' => 'REQUESTER')))
+            expect(work_item_data['features']).to include('requester' => expected)
+          end
+
+          context 'when the user cannot read external emails' do
+            let(:current_user) { guest }
+
+            it 'returns an obfuscated email' do
+              expect(work_item_data['features']['requester']['email']).to eq(
+                Gitlab::Utils::Email.obfuscated_email('requester@example.com', deform: true)
+              )
+            end
+          end
+
+          context 'when the requester email is blank' do
+            let_it_be(:work_item, freeze: false) do
+              create(:work_item, project: project, work_item_type: ticket_type,
+                author: support_bot, service_desk_reply_to: nil)
+            end
+
+            it 'returns no email' do
+              expect(work_item_data['features']).to include('requester' => { 'email' => nil })
+            end
+          end
+        end
+
+        context 'when work item is not a ticket' do
+          it 'does not return the widget' do
+            expect(work_item_data['widgets']).not_to include(hash_including('type' => 'REQUESTER'))
+            expect(work_item_data['features']).to include('requester' => nil)
+          end
+        end
+      end
+
       describe 'escalation status widget' do
         let(:work_item_fields) do
           <<~GRAPHQL

@@ -188,14 +188,14 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     it { is_expected.to be_nil }
 
     context 'when there is one pipeline', :freeze_time do
-      let_it_be(:pipeline1) { create(:ci_empty_pipeline, trigger: trigger, project: project, created_at: '2025-02-13') }
+      let_it_be(:pipeline1) { create(:ci_pipeline, trigger: trigger, project: project, created_at: '2025-02-13') }
       let_it_be(:build1) { create(:ci_build, pipeline: pipeline1) }
 
       it { is_expected.to eq(pipeline1.created_at) }
 
       context 'when there are two pipelines' do
         let_it_be(:pipeline2) do
-          create(:ci_empty_pipeline, trigger: trigger, project: project, created_at: '2025-02-11')
+          create(:ci_pipeline, trigger: trigger, project: project, created_at: '2025-02-11')
         end
 
         let_it_be(:build2) { create(:ci_build, pipeline: pipeline2) }

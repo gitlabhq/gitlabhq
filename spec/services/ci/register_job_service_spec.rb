@@ -1907,7 +1907,7 @@ module Ci
       # Use a dedicated project/pipeline so the outer pending_build (different project) does not
       # compete with our pending_job for the same project_runner.
       let_it_be(:resume_project) { create(:project, shared_runners_enabled: false) }
-      let_it_be(:resume_pipeline) { create(:ci_empty_pipeline, project: resume_project) }
+      let_it_be(:resume_pipeline) { create(:ci_pipeline, project: resume_project) }
       let_it_be(:project_runner) { create(:ci_runner, :project, projects: [resume_project]) }
       let_it_be(:runner_manager) { create(:ci_runner_machine, runner: project_runner) }
       let_it_be(:other_runner_manager) { create(:ci_runner_machine, runner: project_runner) }

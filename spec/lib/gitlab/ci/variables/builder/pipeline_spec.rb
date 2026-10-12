@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
   let_it_be(:project, freeze: false) { create_default(:project, :repository, create_tag: 'test').freeze }
   let_it_be(:user, freeze: false) { create(:user) }
 
-  let(:pipeline) { build(:ci_empty_pipeline, :created, project: project) }
+  let(:pipeline) { build(:ci_pipeline, :created, project: project) }
 
   describe '#predefined_variables' do
     subject { described_class.new(pipeline).predefined_variables }
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
 
         let(:pipeline) do
           build(
-            :ci_empty_pipeline,
+            :ci_pipeline,
             :created,
             project: project,
             ref: 'test-commit-message',
@@ -104,7 +104,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
 
         let(:pipeline) do
           build(
-            :ci_empty_pipeline,
+            :ci_pipeline,
             :created,
             project: project,
             ref: "test-long-message-#{branch_suffix}",
@@ -156,7 +156,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
     end
 
     context 'when the pipeline is running for a tag' do
-      let(:pipeline) { build(:ci_empty_pipeline, :created, project: project, ref: 'test', tag: true) }
+      let(:pipeline) { build(:ci_pipeline, :created, project: project, ref: 'test', tag: true) }
 
       it 'includes all predefined variables in a valid order' do
         keys = subject.pluck(:key)
@@ -202,7 +202,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
         MESSAGE
       end
 
-      let(:pipeline) { build(:ci_empty_pipeline, :created, project: project, ref: tag_name, tag: true) }
+      let(:pipeline) { build(:ci_pipeline, :created, project: project, ref: tag_name, tag: true) }
 
       before do
         allow(project.repository).to receive(:find_tag).with(tag_name).and_return(
@@ -647,7 +647,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
       end
 
       context 'when pipeline is for a tag' do
-        let(:pipeline) { build(:ci_empty_pipeline, :created, project: project, ref: 'v1.0', tag: true) }
+        let(:pipeline) { build(:ci_pipeline, :created, project: project, ref: 'v1.0', tag: true) }
 
         it 'does not include the variable' do
           expect(subject.to_hash).not_to have_key('CI_COMMIT_DEFAULT_BRANCH_BASE_SHA')
@@ -688,7 +688,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
       end
 
       context 'when the pipeline is for a tag' do
-        let(:pipeline) { build(:ci_empty_pipeline, :created, project: project, ref: 'test', tag: true) }
+        let(:pipeline) { build(:ci_pipeline, :created, project: project, ref: 'test', tag: true) }
 
         it 'uses the tag ref path' do
           expect(subject.to_hash['CI_CONFIG_REF_URI']).to end_with('@refs/tags/test')
@@ -889,7 +889,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
     end
 
     context 'without a commit' do
-      let(:pipeline) { build(:ci_empty_pipeline, :created, sha: nil) }
+      let(:pipeline) { build(:ci_pipeline, :created, sha: nil) }
 
       it 'does not expose commit variables' do
         expect(subject.to_hash.keys)

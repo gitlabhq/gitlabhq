@@ -264,7 +264,7 @@ RSpec.describe Ci::PipelineArtifact, feature_category: :job_artifacts do
   end
 
   describe '.create_or_replace_for_pipeline!' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
 
     let(:file_type) { :code_coverage }
     let(:file) { CarrierWaveStringFile.new_file(file_content: 'content', filename: 'file.json', content_type: 'json') }

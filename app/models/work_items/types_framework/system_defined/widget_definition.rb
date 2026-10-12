@@ -56,6 +56,7 @@ module WorkItems
               notes
               notifications
               participants
+              requester
               severity
               start_and_due_date
               time_tracking

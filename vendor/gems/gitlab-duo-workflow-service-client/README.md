@@ -42,6 +42,16 @@ How to do this:
    make gen-proto-ruby
    ```
 
+   > **Apple Silicon (arm64) note:** `grpc_tools_ruby_protoc` from the `grpc-tools`
+   > gem ships an **x86_64-only** `protoc`/`grpc_ruby_plugin`, so this step requires
+   > Rosetta 2. Without it, the command fails with `Bad CPU type in executable`.
+   > Install it once with `softwareupdate --install-rosetta --agree-to-license`.
+   >
+   > The Makefile runs the generator via `bundle exec` so it uses the **pinned**
+   > `grpc-tools` version (matching CI). Don't use Homebrew's `protoc` — the version
+   > differs and produces a diff (e.g. `::Google::Protobuf` vs `Google::Protobuf`)
+   > that breaks the `check-proto-ruby` CI job.
+
 1. Update the Gem version in `clients/ruby/lib/gitlab/duo_workflow_service/version.rb` to bump the version according to [semantic versioning](https://semver.org/) rules.
 1. Commit these changes and open a Merge Request.
 

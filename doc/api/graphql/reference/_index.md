@@ -18521,6 +18521,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-todocreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-todocreate-noteid"></a>`noteId` {{< icon name="warning-solid" >}} | [`NoteID`](#noteid) | Introduced in GitLab 19.5. Status: Experiment. Global ID of a comment on the target to associate with the to-do item. Ignored when the `todo_for_comment` feature flag is disabled. |
 | <a id="mutation-todocreate-targetid"></a>`targetId` | [`TodoableID!`](#todoableid) | Global ID of the to-do item's parent. Issues, merge requests, designs, and epics are supported. |
 
 Fields:
@@ -67988,6 +67989,7 @@ Fields:
 | <a id="workitemfeatures-notifications"></a>`notifications` | [`WorkItemWidgetNotifications`](#workitemwidgetnotifications) | Notifications widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-participants"></a>`participants` | [`WorkItemWidgetParticipants`](#workitemwidgetparticipants) | Participants widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-progress"></a>`progress` | [`WorkItemWidgetProgress`](#workitemwidgetprogress) | Progress widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatures-requester"></a>`requester` | [`WorkItemWidgetRequester`](#workitemwidgetrequester) | Requester widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-requirementlegacy"></a>`requirementLegacy` | [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy) | Requirement legacy widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-severity"></a>`severity` | [`WorkItemWidgetSeverity`](#workitemwidgetseverity) | Severity widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-startandduedate"></a>`startAndDueDate` | [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate) | Start and due date widget of the work item. Returns `null` if the widget is not available for the work item. |
@@ -68879,6 +68881,17 @@ Fields:
 | <a id="workitemwidgetprogress-startvalue"></a>`startValue` | [`Int`](#int) | Start value of the work item. |
 | <a id="workitemwidgetprogress-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 | <a id="workitemwidgetprogress-updatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last progress update. |
+
+### `WorkItemWidgetRequester`
+
+Represents the requester widget.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetrequester-email"></a>`email` | [`String`](#string) | Email address of the non-GitLab user who requested the work item. For guests, the email address is obfuscated. |
+| <a id="workitemwidgetrequester-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetRequirementLegacy`
 
@@ -76135,6 +76148,7 @@ Type of a work item widget.
 | <a id="workitemwidgettype-notifications"></a>`NOTIFICATIONS` | Notifications widget. |
 | <a id="workitemwidgettype-participants"></a>`PARTICIPANTS` | Participants widget. |
 | <a id="workitemwidgettype-progress"></a>`PROGRESS` | Progress widget. |
+| <a id="workitemwidgettype-requester"></a>`REQUESTER` | Requester widget. |
 | <a id="workitemwidgettype-requirement_legacy"></a>`REQUIREMENT_LEGACY` | Requirement Legacy widget. |
 | <a id="workitemwidgettype-severity"></a>`SEVERITY` | Severity widget. |
 | <a id="workitemwidgettype-start_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
@@ -80011,6 +80025,7 @@ Implementations:
 - [`WorkItemWidgetNotifications`](#workitemwidgetnotifications)
 - [`WorkItemWidgetParticipants`](#workitemwidgetparticipants)
 - [`WorkItemWidgetProgress`](#workitemwidgetprogress)
+- [`WorkItemWidgetRequester`](#workitemwidgetrequester)
 - [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy)
 - [`WorkItemWidgetSeverity`](#workitemwidgetseverity)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)

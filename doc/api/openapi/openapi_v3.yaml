@@ -28607,6 +28607,7 @@ paths:
     get:
       operationId: getApiV4FeatureFlagsUnleashProjectId
       summary: Get Unleash features
+      description: This endpoint is a no-op and always returns a 200 OK response.
       tags:
       - Unleash
       responses:
@@ -28677,6 +28678,8 @@ paths:
     get:
       operationId: getApiV4FeatureFlagsUnleashProjectIdClientFeatures
       summary: Get a list of features
+      description: Returns feature flags in the Unleash client features format used
+        by GitLab feature flag clients.
       tags:
       - Unleash
       responses:
@@ -28711,6 +28714,7 @@ paths:
     post:
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientRegister
       summary: Register Unleash client
+      description: This endpoint is a no-op and always returns a 200 OK response.
       tags:
       - Unleash
       responses:
@@ -28737,6 +28741,7 @@ paths:
     post:
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientMetrics
       summary: Report Unleash client metrics
+      description: This endpoint is a no-op and always returns a 200 OK response.
       tags:
       - Unleash
       responses:
@@ -82114,6 +82119,8 @@ paths:
     get:
       operationId: getApiV4Avatar
       summary: Return avatar url for a user
+      description: Returns the Gravatar URL for the user with the given public email
+        address.
       tags:
       - Avatars
       responses:
@@ -82261,6 +82268,8 @@ paths:
     get:
       operationId: getApiV4ApplicationAppearance
       summary: Get the current appearance
+      description: Retrieves the instance's branding and appearance configuration
+        including logos, colors, and custom headers.
       tags:
       - Instance
       responses:
@@ -82277,6 +82286,8 @@ paths:
     put:
       operationId: putApiV4ApplicationAppearance
       summary: Modify appearance
+      description: Updates instance appearance settings like branding, logos, headers,
+        and footer messages.
       tags:
       - Instance
       responses:
@@ -82302,6 +82313,8 @@ paths:
     post:
       operationId: postApiV4ProjectsIdAlertManagementAlertsAlertIidMetricImagesAuthorize
       summary: Workhorse authorize metric image file upload
+      description: Pre-upload authorization endpoint for metric images attached to
+        alerts. Called by GitLab Workhorse.
       tags:
       - Alert management
       responses:
@@ -82770,6 +82783,8 @@ paths:
     get:
       operationId: getApiV4AdminDatabasesDatabaseNameDictionaryTablesTableName
       summary: Retrieve dictionary details
+      description: Provides table schema and column information from the GitLab database
+        dictionary.
       tags:
       - Database dictionary
       responses:
@@ -83238,6 +83253,8 @@ paths:
     get:
       operationId: getApiV4AdminBatchedBackgroundMigrationsId
       summary: Retrieve a batched background migration
+      description: Fetches details of a specific batched migration, with optional
+        filtering by database target.
       tags:
       - Batched background migrations
       responses:
@@ -83279,6 +83296,8 @@ paths:
     get:
       operationId: getApiV4AdminBatchedBackgroundMigrations
       summary: Get the list of batched background migrations
+      description: Lists all batched background migrations with optional filters for
+        database and job class name.
       tags:
       - Batched background migrations
       responses:
@@ -83321,6 +83340,7 @@ paths:
     put:
       operationId: putApiV4AdminBatchedBackgroundMigrationsIdResume
       summary: Resume a batched background migration
+      description: Resumes execution of a previously paused batched background migration.
       tags:
       - Batched background migrations
       responses:
@@ -83357,6 +83377,7 @@ paths:
     put:
       operationId: putApiV4AdminBatchedBackgroundMigrationsIdPause
       summary: Pause a batched background migration
+      description: Pauses an active batched background migration temporarily.
       tags:
       - Batched background migrations
       responses:
@@ -109197,8 +109218,8 @@ components:
           nullable: true
         granular_scopes:
           type: array
-          description: List of granular scopes to assign to the token. Mutually exclusive
-            with `scopes`.
+          description: List of granular scopes to assign. Mutually exclusive with
+            `scopes`.
           items:
             type: object
             properties:
@@ -109504,8 +109525,8 @@ components:
           nullable: true
         granular_scopes:
           type: array
-          description: List of granular scopes to assign to the token. Exactly one
-            of `scopes`, `granular_scopes` must be provided.
+          description: List of granular scopes to assign. Exactly one of `scopes`,
+            `granular_scopes` must be provided.
           items:
             type: object
             properties:

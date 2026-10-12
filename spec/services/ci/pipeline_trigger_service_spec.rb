@@ -176,7 +176,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
     end
 
     context 'with a pipeline job token' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
       let(:job) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
       context 'when job user does not have a permission to read a project' do

@@ -147,7 +147,6 @@ const workItemTypesResponse = {
             isGroupWorkItemType: false,
             isIncidentManagement: true,
             isServiceDesk: false,
-            showProjectSelector: false,
             supportsMoveAction: true,
             supportsRoadmapView: false,
             useIssueView: true,

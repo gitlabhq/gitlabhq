@@ -23,8 +23,11 @@ module Auth
       @authentication_abilities = authentication_abilities
       @personal_access_token = personal_access_token
 
-      return error('dependency proxy not enabled', 404) unless ::Gitlab.config.dependency_proxy.enabled
-      return error('access forbidden', 403) unless valid_user_actor?
+      unless ::Gitlab.config.dependency_proxy.enabled
+        return error('UNAVAILABLE', status: 404, message: 'dependency proxy not enabled')
+      end
+
+      return error('DENIED', status: 403, message: 'access forbidden') unless valid_user_actor?
 
       { token: authorized_token.encoded }
     end
@@ -57,6 +60,10 @@ module Auth
     private
 
     attr_reader :authentication_abilities
+
+    def error(code, status:, message:)
+      { errors: [{ code: code, message: message }], http_status: status }
+    end
 
     def valid_user_actor?
       has_required_abilities? &&

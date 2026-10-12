@@ -19,6 +19,7 @@ module API
       end
       namespace ':id/alert_management_alerts/:alert_iid/metric_images' do
         desc 'Workhorse authorize metric image file upload' do
+          detail 'Pre-upload authorization endpoint for metric images attached to alerts. Called by GitLab Workhorse.'
           success code: 200
           failure [
             { code: 403, message: 'Forbidden' }

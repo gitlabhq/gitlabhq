@@ -73,6 +73,16 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
     end
   end
 
+  shared_examples 'a Docker v2 JSON error envelope' do |status:, code:, message:|
+    it 'responds with a Docker v2 JSON error envelope' do
+      subject
+
+      expect(response).to have_gitlab_http_status(status)
+      expect(response.media_type).to eq('application/json')
+      expect(json_response).to eq('errors' => [{ 'code' => code, 'message' => message }])
+    end
+  end
+
   shared_examples 'IAM JWT authentication' do
     include_context 'with IAM authentication setup'
 
@@ -237,6 +247,20 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
 
         it { expect(response).to have_gitlab_http_status(:http_version_not_supported) }
       end
+    end
+
+    context 'when the registry is not enabled' do
+      subject { get '/jwt/auth', params: parameters }
+
+      before do
+        allow(service_class).to receive(:new).and_call_original
+        stub_container_registry_config(enabled: false)
+      end
+
+      it_behaves_like 'a Docker v2 JSON error envelope',
+        status: :not_found,
+        code: 'UNAVAILABLE',
+        message: 'registry not enabled'
     end
 
     context 'when using authenticated request' do
@@ -620,16 +644,6 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
 
       subject(:request_jwt_auth) { get '/jwt/auth', params: parameters, headers: headers }
 
-      shared_examples 'a Docker v2 JSON error envelope' do |status:, code:, message:|
-        it 'responds with a Docker v2 JSON error envelope' do
-          request_jwt_auth
-
-          expect(response).to have_gitlab_http_status(status)
-          expect(response.media_type).to eq('application/json')
-          expect(json_response).to eq('errors' => [{ 'code' => code, 'message' => message }])
-        end
-      end
-
       context 'when the IP is blocklisted' do
         before do
           allow(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::IpBlocked)
@@ -749,6 +763,27 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
       end
     end
 
+    shared_examples 'a rejected dependency proxy login' do
+      it_behaves_like 'a Docker v2 JSON error envelope',
+        status: :forbidden,
+        code: 'DENIED',
+        message: 'access forbidden'
+    end
+
+    context 'when the dependency proxy is not enabled' do
+      let(:credential_user) { nil }
+      let(:credential_password) { personal_access_token.token }
+
+      before do
+        stub_config(dependency_proxy: { enabled: false })
+      end
+
+      it_behaves_like 'a Docker v2 JSON error envelope',
+        status: :not_found,
+        code: 'UNAVAILABLE',
+        message: 'dependency proxy not enabled'
+    end
+
     context 'with personal access token' do
       let(:credential_user) { nil }
       let(:credential_password) { personal_access_token.token }
@@ -759,7 +794,7 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
       context 'without the required scopes' do
         let(:credential_password) { personal_access_token_without_required_scopes.token }
 
-        it_behaves_like 'returning response status', :forbidden
+        it_behaves_like 'a rejected dependency proxy login'
       end
     end
 
@@ -812,7 +847,7 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
           group_access_token.update!(scopes: [::Gitlab::Auth::READ_REPOSITORY_SCOPE])
         end
 
-        it_behaves_like 'returning response status', :forbidden
+        it_behaves_like 'a rejected dependency proxy login'
       end
     end
 
@@ -836,7 +871,7 @@ RSpec.describe JwtController, :aggregate_failures, feature_category: :system_acc
       let(:credential_user) { project_deploy_token.username }
       let(:credential_password) { project_deploy_token.token }
 
-      it_behaves_like 'returning response status', :forbidden
+      it_behaves_like 'a rejected dependency proxy login'
     end
 
     context 'with revoked group deploy token' do

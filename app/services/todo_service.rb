@@ -211,9 +211,9 @@ class TodoService
   end
 
   # When user marks a target as todo
-  def mark_todo(target, current_user)
+  def mark_todo(target, current_user, note: nil)
     project = target.project
-    attributes = attributes_for_todo(project, target, current_user, Todo::MARKED)
+    attributes = attributes_for_todo(project, target, current_user, Todo::MARKED, note)
 
     todos = create_todos(current_user, attributes, target_namespace(target), project)
     work_item_activity_counter.track_work_item_mark_todo_action(author: current_user) if target.is_a?(WorkItem)
@@ -403,7 +403,7 @@ class TodoService
     pending_todos(
       users,
       attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)
-    ).distinct_user_ids
+    ).for_note(attributes[:note]).distinct_user_ids
   end
 
   def bulk_insert_todos(users, attributes, &attribute_merger)

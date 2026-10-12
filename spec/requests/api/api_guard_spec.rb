@@ -30,6 +30,65 @@ RSpec.describe API::APIGuard, feature_category: :system_access do
         expect(json_response['error']).to eq(error)
       end
     end
+
+    context 'with an insufficient scope' do
+      let(:challenge) do
+        'Bearer realm="Protected by OAuth 2.0", error="insufficient_scope", ' \
+          'error_description="The request requires higher privileges than provided by the access token."'
+      end
+
+      it 'responds with a WWW-Authenticate challenge naming the scopes the body names', :aggregate_failures do
+        app.get 'willfail' do
+          raise Gitlab::Auth::InsufficientScopeError, [:api, :read_api]
+        end
+
+        get api('/willfail')
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['scope']).to eq('api read_api')
+        expect(response.headers['WWW-Authenticate']).to eq(%(#{challenge}, scope="api read_api"))
+      end
+
+      it 'names no scope in the body or the challenge when no scope is listed', :aggregate_failures do
+        app.get 'willfail' do
+          raise Gitlab::Auth::InsufficientScopeError, []
+        end
+
+        get api('/willfail')
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response).not_to have_key('scope')
+        expect(response.headers['WWW-Authenticate']).to eq(challenge)
+      end
+
+      context 'when the endpoint refuses the token' do
+        let_it_be(:token) { create(:personal_access_token, scopes: [:read_user]) }
+
+        it 'names only the scopes whose condition holds for the request', :aggregate_failures do
+          app.allow_access_with_scope :read_user, if: ->(request) { request.post? }
+          app.get 'scoped' do
+            authenticate!
+          end
+
+          get api('/scoped', personal_access_token: token)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['scope']).to eq('api read_api')
+          expect(response.headers['WWW-Authenticate']).to eq(%(#{challenge}, scope="api read_api"))
+        end
+      end
+    end
+
+    it 'does not add a WWW-Authenticate challenge to an insufficient_granular_scope error', :aggregate_failures do
+      app.get 'willfail' do
+        raise Gitlab::Auth::GranularPermissionsError, ['message']
+      end
+
+      get api('/willfail')
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response.headers['WWW-Authenticate']).to be_nil
+    end
   end
 
   describe '#find_user_from_sources' do

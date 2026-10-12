@@ -6,7 +6,7 @@ require 'spec_helper'
 UNIMPLEMENTED_FEATURES = %w[
   agent_plan ai_session crm_contacts current_user_todos decision_log
   email_participants escalation_policy escalation_status linked_resources notes
-  participants severity test_reports vulnerabilities
+  participants requester severity test_reports vulnerabilities
 ].freeze
 
 # linked_items and custom_fields are only exposed via the EE prepend on Features::Entity. In

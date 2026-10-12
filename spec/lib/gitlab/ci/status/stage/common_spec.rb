@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Status::Stage::Common, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:stage) do
     build(:ci_stage, pipeline: pipeline, name: 'test')

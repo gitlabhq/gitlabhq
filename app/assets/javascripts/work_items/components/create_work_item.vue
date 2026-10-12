@@ -334,7 +334,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.inputNamespacePath,
+          fullPath: this.selectedNamespacePath,
         };
       },
       update(data) {
@@ -358,7 +358,7 @@ export default {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return {
-          fullPath: this.inputNamespacePath,
+          fullPath: this.selectedNamespacePath,
           // Scoped to the selected namespace, not the page's, so it must not overwrite the
           // page namespace's filterable flags.
           // See issue https://gitlab.com/gitlab-org/gitlab/-/work_items/606810
@@ -439,7 +439,7 @@ export default {
       });
     },
     newWorkItemPath() {
-      return newWorkItemFullPath(this.inputNamespacePath, this.selectedWorkItemTypeName);
+      return newWorkItemFullPath(this.selectedNamespacePath, this.selectedWorkItemTypeName);
     },
     canSetNewWorkItemMetadata() {
       return this.namespace?.userPermissions.setNewWorkItemMetadata;
@@ -709,9 +709,6 @@ export default {
     workItemCustomFields() {
       return findCustomFieldsWidget(this.workItem)?.customFieldValues ?? null;
     },
-    inputNamespacePath() {
-      return this.selectedNamespacePath;
-    },
     formButtonsClasses() {
       return this.isModal
         ? '-gl-mx-5 gl-px-5 gl-bg-overlap gl-py-3'
@@ -740,14 +737,14 @@ export default {
     },
     workItemWidgetsAutoSaveKey() {
       return getNewWorkItemWidgetsAutoSaveKey({
-        fullPath: this.inputNamespacePath,
+        fullPath: this.selectedNamespacePath,
         context: this.creationContext,
         relatedItemId: this.relatedItemId,
       });
     },
   },
   watch: {
-    inputNamespacePath() {
+    selectedNamespacePath() {
       // Reset configuration and types when namespace changes to prevent showing cached data from previous namespace
       this.workItemTypesConfiguration = {};
       this.initialLoadingWorkItemTypesConfiguration = true;
@@ -852,7 +849,7 @@ export default {
 
       for (const workItemType of this.workItemTypes) {
         setNewWorkItemCache({
-          fullPath: this.inputNamespacePath,
+          fullPath: this.selectedNamespacePath,
           context: this.creationContext,
           widgetDefinitions: workItemType?.widgetDefinitions,
           workItemType: workItemType.name,
@@ -866,14 +863,14 @@ export default {
         });
       }
 
-      const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
+      const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.selectedNamespacePath);
       const selectedWorkItemType =
         this.findCreatableWorkItemType(this.preselectedWorkItemType) ||
         this.findCreatableWorkItemTypeById(persistedTypeId);
 
       if (selectedWorkItemType) {
         updateDraftWorkItemType({
-          fullPath: this.inputNamespacePath,
+          fullPath: this.selectedNamespacePath,
           context: this.creationContext,
           relatedItemId: this.relatedItemId,
           workItemType: {
@@ -930,7 +927,7 @@ export default {
     },
     clearAutosaveDraft() {
       const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({
-        fullPath: this.inputNamespacePath,
+        fullPath: this.selectedNamespacePath,
         context: this.creationContext,
         workItemType: this.selectedWorkItemTypeName,
         relatedItemId: this.relatedItemId,
@@ -945,7 +942,7 @@ export default {
     },
     handleChangeType() {
       setNewWorkItemCache({
-        fullPath: this.inputNamespacePath,
+        fullPath: this.selectedNamespacePath,
         context: this.creationContext,
         widgetDefinitions: this.selectedWorkItemType?.widgetDefinitions || [],
         workItemType: this.selectedWorkItemTypeName,
@@ -956,7 +953,7 @@ export default {
       });
 
       updateDraftWorkItemType({
-        fullPath: this.inputNamespacePath,
+        fullPath: this.selectedNamespacePath,
         context: this.creationContext,
         relatedItemId: this.relatedItemId,
         workItemType: {
@@ -1002,7 +999,7 @@ export default {
       const workItemCreateInput = {
         title: this.workItemTitle,
         workItemTypeId: this.selectedWorkItemTypeId,
-        namespacePath: this.inputNamespacePath || this.fullPath,
+        namespacePath: this.selectedNamespacePath || this.fullPath,
         confidential: this.workItem.confidential,
         descriptionWidget: {
           description: this.workItemDescription || '',
@@ -1173,7 +1170,10 @@ export default {
           throw new Error(data.workItemCreate.errors);
         }
 
-        setLastUsedWorkItemTypeIdForNamespace(this.selectedWorkItemTypeId, this.inputNamespacePath);
+        setLastUsedWorkItemTypeIdForNamespace(
+          this.selectedWorkItemTypeId,
+          this.selectedNamespacePath,
+        );
 
         this.clearAutosaveDraft();
 
@@ -1197,7 +1197,7 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              fullPath: this.inputNamespacePath,
+              fullPath: this.selectedNamespacePath,
               context: this.creationContext,
               workItemType: this.selectedWorkItemTypeName,
               relatedItemId: this.relatedItemId,
@@ -1229,7 +1229,7 @@ export default {
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
 
       setNewWorkItemCache({
-        fullPath: this.inputNamespacePath,
+        fullPath: this.selectedNamespacePath,
         context: this.creationContext,
         widgetDefinitions: selectedWorkItemWidgets,
         workItemType: this.selectedWorkItemTypeName,
@@ -1324,7 +1324,7 @@ export default {
                 :is-group="isNamespaceTypeGroup"
                 :autofocus="false"
                 :description="workItemDescription"
-                :full-path="inputNamespacePath"
+                :full-path="selectedNamespacePath"
                 :show-buttons-below-field="false"
                 :hide-fullscreen-markdown-button="isModal"
                 :new-work-item-type="selectedWorkItemTypeName"
@@ -1388,7 +1388,7 @@ export default {
                   v-if="workItemStatus"
                   class="work-item-attributes-item"
                   :can-update="canUpdate"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :is-group="isNamespaceTypeGroup"
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
@@ -1400,7 +1400,7 @@ export default {
                   v-if="workItemAssignees"
                   class="js-assignee work-item-attributes-item"
                   :can-update="canUpdate"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :is-group="isNamespaceTypeGroup"
                   :work-item-id="workItemId"
                   :assignees="workItemAssignees.assignees.nodes"
@@ -1415,7 +1415,7 @@ export default {
                   v-if="workItemLabels"
                   class="js-labels work-item-attributes-item"
                   :can-update="canUpdate"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :is-group="isNamespaceTypeGroup"
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
@@ -1430,7 +1430,7 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-type="selectedWorkItemTypeName"
                   :group-path="selectedProjectGroupPath"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :parent="workItemParent"
                   :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
                   @update-widget-draft="handleUpdateWidgetDraft"
@@ -1452,7 +1452,7 @@ export default {
                   v-if="workItemMilestone"
                   class="js-milestone work-item-attributes-item"
                   :is-group="isNamespaceTypeGroup"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-milestone="workItemMilestone.milestone || selectedParentMilestone"
@@ -1465,7 +1465,7 @@ export default {
                 <work-item-iteration
                   v-if="workItemIteration"
                   class="work-item-attributes-item"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :is-group="isNamespaceTypeGroup"
                   :iteration="workItemIteration.iteration"
                   :can-update="canUpdate"
@@ -1494,7 +1494,7 @@ export default {
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-type="selectedWorkItemTypeName"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :is-work-item-closed="false"
                   @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
@@ -1519,7 +1519,7 @@ export default {
                 <work-item-crm-contacts
                   v-if="workItemCrmContacts"
                   class="work-item-attributes-item"
-                  :full-path="inputNamespacePath"
+                  :full-path="selectedNamespacePath"
                   :work-item-id="workItemId"
                   :work-item-iid="workItemIid"
                   :work-item-type="selectedWorkItemTypeName"

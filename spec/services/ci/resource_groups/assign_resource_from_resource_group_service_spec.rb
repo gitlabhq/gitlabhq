@@ -316,7 +316,7 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
   end
 
   def create_deploy_job_with_persisted_deployment(user, project, resource_group, environment_name, status)
-    pipeline = create(:ci_empty_pipeline, project: project, sha: OpenSSL::Digest::SHA256.hexdigest(SecureRandom.hex))
+    pipeline = create(:ci_pipeline, project: project, sha: OpenSSL::Digest::SHA256.hexdigest(SecureRandom.hex))
 
     deploy_job = create(
       :ci_build,

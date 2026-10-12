@@ -17,6 +17,7 @@ module API
         end
         resources 'databases/:database_name/dictionary/tables/:table_name' do
           desc 'Retrieve dictionary details' do
+            detail 'Provides table schema and column information from the GitLab database dictionary.'
             success ::API::Entities::Dictionary::Table
             failure [
               { code: 401, message: '401 Unauthorized' },

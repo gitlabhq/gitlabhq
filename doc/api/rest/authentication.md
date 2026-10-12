@@ -40,6 +40,18 @@ status code of `401`:
 }
 ```
 
+If the access token is valid but lacks the scope an endpoint requires, GitLab returns an
+`insufficient_scope` error with a status code of `403`.
+The response body and the `WWW-Authenticate` header both list the scopes that can authorize the request.
+The token needs one of these scopes, not all of them.
+A scope that an endpoint accepts only for some requests is listed only for those requests.
+For example, most endpoints accept the `read_api` scope only for `GET` and `HEAD` requests.
+A request to `GET /namespaces` with a token that has only the `read_user` scope returns this header:
+
+```plaintext
+WWW-Authenticate: Bearer realm="Protected by OAuth 2.0", error="insufficient_scope", error_description="The request requires higher privileges than provided by the access token.", scope="api read_api"
+```
+
 > [!note]
 > Deploy tokens can't be used with the GitLab public API. For details, see
 > [Deploy Tokens](../../user/project/deploy_tokens/_index.md).

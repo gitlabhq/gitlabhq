@@ -9,8 +9,6 @@ Gitlab/AvoidGitlabDedicatedInstanceChecks:
     - 'ee/app/models/ee/ci/runner.rb'
     - 'ee/app/policies/ee/global_policy.rb'
     - 'ee/app/services/ci/minutes/update_gitlab_hosted_runner_monthly_usage_service.rb'
-    - 'ee/app/services/security/v_a_c.rb'
-    - 'ee/app/views/admin/application_settings/security_and_compliance.html.haml'
     - 'ee/lib/cloud_connector.rb'
     - 'ee/lib/ee/sidebars/admin/menus/admin_settings_menu.rb'
     - 'ee/lib/elastic/migration.rb'

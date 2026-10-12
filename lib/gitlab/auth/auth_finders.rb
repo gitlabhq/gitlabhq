@@ -225,10 +225,15 @@ module Gitlab
         # We're using reload instead and disabling the rubocop rule to prevent similar incidents.
         access_token.reload if reset_token # rubocop:disable Cop/ActiveRecordAssociationReload
 
-        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
+        validation = AccessTokenValidationService.new(access_token, request: request)
+
+        case validation.validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
           save_auth_failure_in_application_context(access_token, :insufficient_scope, scopes) if save_auth_context
-          raise InsufficientScopeError, scopes
+          # Name only the scopes that can authorize this request: a scope whose `if`
+          # condition fails for it cannot. The error keeps the names alone, so the
+          # conditions are applied here, to the request the check judged.
+          raise InsufficientScopeError, validation.applicable_scopes(scopes)
         when AccessTokenValidationService::EXPIRED
           save_auth_failure_in_application_context(access_token, :token_expired, scopes) if save_auth_context
           raise ExpiredError

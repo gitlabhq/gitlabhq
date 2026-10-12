@@ -49,10 +49,10 @@ RSpec.describe 'Query.project.workItemTypes.unavailableWidgetsOnConversion', fea
 
     widgets_lost = source_type_node['unavailableWidgetsOnConversion']
     expect(widgets_lost).to be_an(Array)
-    expect(widgets_lost.size).to eq(2)
+    expect(widgets_lost.size).to eq(3)
 
     widget_types = widgets_lost.pluck('type')
-    expect(widget_types).to contain_exactly("DESIGNS", "START_AND_DUE_DATE")
+    expect(widget_types).to contain_exactly("DESIGNS", "REQUESTER", "START_AND_DUE_DATE")
 
     expect(widgets_lost).to all(have_key('type'))
   end

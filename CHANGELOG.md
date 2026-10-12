@@ -1184,6 +1184,16 @@ entry.
 - [Remove unused scope GpgKey.externally_invalid](https://gitlab.com/gitlab-org/gitlab/-/commit/17fc84dc1904b930720593560e1cd3330fee87b9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250217))
 - [Remove audit_event_pat_unseen_ip feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/32f250d13d781c98f0d6c870ddf6aaa6791e8394) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246486))
 
+## 19.3.5 (2026-10-12)
+
+### Fixed (1 change)
+
+- [Remove stale merge_request event from Developer flow triggers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/961f0dea6ed1967b30fb8360b9b372d133602ee2)
+
+### Security (1 change)
+
+- [Fix incorrect `merge_request` variable name](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b050ffb23dd446640ce4906fb52da84ffef1ca80) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6941))
+
 ## 19.3.4 (2026-10-07)
 
 ### Added (1 change)

@@ -14,16 +14,16 @@ module API
     # Are the `scopes` passed in sufficient to adequately authorize the passed
     # request for the scope represented by the current instance of this class?
     def sufficient?(scopes, request)
-      scopes.include?(self.name) && verify_if_condition(request)
+      scopes.include?(self.name) && applies_to?(request)
     end
 
     def to_s
       name.to_s
     end
 
-    private
-
-    def verify_if_condition(request)
+    # Does the `if` condition this scope was registered with hold for the passed
+    # request? A scope registered without a condition applies to every request.
+    def applies_to?(request)
       self.if.nil? || self.if.call(request)
     end
   end

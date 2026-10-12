@@ -96,10 +96,10 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
   end
 
   context 'when resource_ids do not match a group or project' do
-    let(:non_existing_resource_id) { Gitlab::GlobalId.build(model_name: 'Group', id: non_existing_record_id).to_s }
+    let(:non_existing_group_id) { Gitlab::GlobalId.build(model_name: 'Group', id: non_existing_record_id).to_s }
     let(:granular_scope_input) do
       [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
-         'resource_ids' => [non_existing_resource_id] }]
+         'resource_ids' => [non_existing_group_id, current_user.to_global_id.to_s] }]
     end
 
     it 'does not create a personal access token' do
@@ -107,47 +107,14 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
     end
   end
 
-  # ensures projects and groups are batch loaded when building granular scopes
-  # that get passed to ::Authn::PersonalAccessTokens::CreateGranularService
-  describe 'resources batch loading', :request_store, :use_sql_query_cache do
-    context 'with multiple projects' do
-      let_it_be(:another_project) { create(:project, developers: [current_user]) }
+  context 'when resource_ids are omitted for selected memberships' do
+    let(:granular_scope_input) { [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'] }] }
 
-      let(:granular_scope_input) do
-        [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
-           'resource_ids' => [project_global_id, another_project.to_global_id.to_s] }]
-      end
+    it 'does not create a personal access token', :aggregate_failures do
+      expect { mutation_request }.not_to change { current_user.personal_access_tokens.count }
 
-      it 'batch loads the projects' do
-        query_recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          mutation_request
-        end
-
-        project_queries = query_recorder.occurrences.filter do |q|
-          q.match(Regexp.new('SELECT.*FROM \"projects"'))
-        end
-        expect(project_queries.count).to eq(1)
-      end
-    end
-
-    context 'with multiple groups' do
-      let_it_be(:another_group) { create(:group, developers: [current_user]) }
-
-      let(:granular_scope_input) do
-        [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
-           'resource_ids' => [group_global_id, another_group.to_global_id.to_s] }]
-      end
-
-      it 'batch loads the groups' do
-        query_recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          mutation_request
-        end
-
-        group_queries = query_recorder.occurrences.filter do |q|
-          q.match(Regexp.new('SELECT.*FROM \"namespaces".*WHERE.*type\" = \'Group'))
-        end
-        expect(group_queries.count).to eq(1)
-      end
+      expect(graphql_data_at(:personalAccessTokenCreate, :errors))
+        .to contain_exactly('At least one granular scope must be provided')
     end
   end
 

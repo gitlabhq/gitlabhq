@@ -27,6 +27,7 @@ module WorkItems
                 notes
                 notifications
                 participants
+                requester
                 start_and_due_date
                 time_tracking
                 weight

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder, feature_categ
 
   let_it_be(:project) { create(:project) }
 
-  let(:pipeline) { build(:ci_empty_pipeline, project: project, partition_id: ci_testing_partition_id) }
+  let(:pipeline) { build(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
   let(:builds) { [] }
 
   subject(:builder) { described_class.new(pipeline, builds) }

@@ -70,6 +70,7 @@ RSpec.shared_examples 'work item API field parity' do
         linked_resources
         notes
         participants
+        requester
         severity
       ]).merge(extra_graphql_feature_exceptions)
     end

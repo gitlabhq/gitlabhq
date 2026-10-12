@@ -76,7 +76,7 @@ export default {
 <template>
   <section
     v-if="widgets.length"
-    v-show="!isGrouped || hasReportRows"
+    v-show="hasReportRows"
     role="region"
     :aria-label="__('Merge request reports')"
     data-testid="mr-widget-app"
@@ -105,6 +105,7 @@ export default {
         :mr="mr"
         class="mr-widget-section"
         :class="{ 'gl-border-t gl-border-t-section': index > 0 }"
+        @empty="(isEmpty) => onEmpty(widget, isEmpty)"
       />
     </div>
   </section>

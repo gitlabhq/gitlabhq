@@ -161,11 +161,6 @@ export default {
       required: false,
       default: null,
     },
-    preselectedWorkItemType: {
-      type: String,
-      required: false,
-      default: null,
-    },
     canCreateWorkItem: {
       type: Boolean,
       required: false,
@@ -534,8 +529,7 @@ export default {
       }
     },
     showWorkItemCreatedToast(workItem, shownOnBoard) {
-      const workItemType =
-        workItem?.workItemType?.name || this.preselectedWorkItemType || s__('WorkItem|Work item');
+      const workItemType = workItem?.workItemType?.name || s__('WorkItem|Work item');
       const message = shownOnBoard
         ? sprintf(s__('WorkItem|%{workItemType} created.'), { workItemType })
         : sprintf(
@@ -1174,7 +1168,6 @@ export default {
       :full-path="rootPageFullPath"
       :hide-namespace-selector="!queryVariables.isGroup"
       :is-group="queryVariables.isGroup"
-      :preselected-work-item-type="preselectedWorkItemType"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
       suppress-created-toast
       @work-item-created="handleWorkItemCreated"

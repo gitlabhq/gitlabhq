@@ -39,7 +39,8 @@ module Types
         ::WorkItems::Widgets::LinkedResources => ::Types::WorkItems::Widgets::LinkedResourcesType,
         ::WorkItems::Widgets::ErrorTracking => ::Types::WorkItems::Widgets::ErrorTrackingType,
         ::WorkItems::Widgets::EscalationStatus => ::Types::WorkItems::Widgets::EscalationStatusType,
-        ::WorkItems::Widgets::Severity => ::Types::WorkItems::Widgets::SeverityType
+        ::WorkItems::Widgets::Severity => ::Types::WorkItems::Widgets::SeverityType,
+        ::WorkItems::Widgets::Requester => ::Types::WorkItems::Widgets::RequesterType
       }.freeze
 
       def self.type_mappings

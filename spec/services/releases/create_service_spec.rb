@@ -438,8 +438,8 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       end
 
       it 'uses the last pipeline for evidence', :sidekiq_inline do
-        create(:ci_empty_pipeline, sha: sha, project: project) # old pipeline
-        pipeline = create(:ci_empty_pipeline, sha: sha, project: project)
+        create(:ci_pipeline, sha: sha, project: project) # old pipeline
+        pipeline = create(:ci_pipeline, sha: sha, project: project)
 
         expect_next_instance_of(Releases::CreateEvidenceService, anything, pipeline: pipeline) do |service|
           expect(service).to receive(:execute).and_call_original
@@ -449,8 +449,8 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       end
 
       context 'when old evidence_pipeline is passed to service' do
-        let!(:old_pipeline) { create(:ci_empty_pipeline, sha: sha, project: project) }
-        let!(:new_pipeline) { create(:ci_empty_pipeline, sha: sha, project: project) }
+        let!(:old_pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+        let!(:new_pipeline) { create(:ci_pipeline, sha: sha, project: project) }
         let(:params) do
           super().merge(
             evidence_pipeline: old_pipeline
@@ -467,10 +467,10 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       end
 
       it 'pipeline is still being used for evidence if new pipeline is being created for tag', :sidekiq_inline do
-        pipeline = create(:ci_empty_pipeline, sha: sha, project: project)
+        pipeline = create(:ci_pipeline, sha: sha, project: project)
 
         expect(project.repository).to receive(:add_tag).and_wrap_original do |m, *args|
-          create(:ci_empty_pipeline, sha: sha, project: project)
+          create(:ci_pipeline, sha: sha, project: project)
           m.call(*args)
         end
 
@@ -486,8 +486,8 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
 
         expect(project.repository.find_tag('v0.1')).to be_present
 
-        create(:ci_empty_pipeline, sha: sha, project: project) # old pipeline
-        pipeline = create(:ci_empty_pipeline, sha: sha, project: project)
+        create(:ci_pipeline, sha: sha, project: project) # old pipeline
+        pipeline = create(:ci_pipeline, sha: sha, project: project)
 
         expect_next_instance_of(Releases::CreateEvidenceService, anything, pipeline: pipeline) do |service|
           expect(service).to receive(:execute).and_call_original

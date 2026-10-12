@@ -151,7 +151,7 @@ RSpec.describe ::MergeRequests::AddTodoWhenBuildFailsService, feature_category: 
     end
 
     context 'when pipeline is not related to merge request' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       it 'does not resolve any todos about failed builds' do
         service.close_all(pipeline)

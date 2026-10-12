@@ -754,7 +754,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
       context 'when the merge when checks strategy is passed' do
         let!(:head_pipeline) do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
+          create(:ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
         def set_auto_merge
@@ -775,7 +775,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
       context 'when merge when pipeline succeeds option is passed' do
         let!(:head_pipeline) do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
+          create(:ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
         def set_auto_merge

@@ -417645,6 +417645,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "noteId",
+              "description": "Global ID of a comment on the target to associate with the to-do item. Ignored when the `todo_for_comment` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "NoteID",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "interfaces": null,
@@ -464936,6 +464948,18 @@
               "deprecationReason": null
             },
             {
+              "name": "requester",
+              "description": "Requester widget of the work item. Returns `null` if the widget is not available for the work item.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemWidgetRequester",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "requirementLegacy",
               "description": "Requirement legacy widget of the work item. Returns `null` if the widget is not available for the work item.",
               "args": [],
@@ -471728,6 +471752,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetRequester",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetRequirementLegacy",
               "ofType": null
             },
@@ -476301,6 +476330,47 @@
         },
         {
           "kind": "OBJECT",
+          "name": "WorkItemWidgetRequester",
+          "description": "Represents the requester widget",
+          "fields": [
+            {
+              "name": "email",
+              "description": "Email address of the non-GitLab user who requested the work item. For guests, the email address is obfuscated.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "WorkItemWidgetRequirementLegacy",
           "description": "Represents a legacy requirement widget",
           "fields": [
@@ -477230,6 +477300,12 @@
             {
               "name": "COLOR",
               "description": "Color widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUESTER",
+              "description": "Requester widget.",
               "isDeprecated": false,
               "deprecationReason": null
             }

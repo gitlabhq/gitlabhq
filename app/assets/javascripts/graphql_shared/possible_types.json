@@ -490,6 +490,7 @@
     "WorkItemWidgetNotifications",
     "WorkItemWidgetParticipants",
     "WorkItemWidgetProgress",
+    "WorkItemWidgetRequester",
     "WorkItemWidgetRequirementLegacy",
     "WorkItemWidgetSeverity",
     "WorkItemWidgetStartAndDueDate",

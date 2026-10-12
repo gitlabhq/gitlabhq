@@ -14,20 +14,17 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
   end
 
   shared_examples 'a denied dependency proxy pull' do
-    it 'does not mint a token', :aggregate_failures do
-      expect(result[:token]).to be_nil
-      expect(result[:http_status]).to eq(403)
-      expect(result[:message]).to eq('access forbidden')
+    it 'returns a Docker v2 error instead of a token' do
+      expect(result).to eq(errors: [{ code: 'DENIED', message: 'access forbidden' }], http_status: 403)
     end
   end
 
   describe '#execute' do
     subject(:result) { service.execute(authentication_abilities: authentication_abilities) }
 
-    shared_examples 'returning' do |status:, message:|
-      it "returns #{message}", :aggregate_failures do
-        expect(result[:http_status]).to eq(status)
-        expect(result[:message]).to eq(message)
+    shared_examples 'returning' do |status:, code:, message:|
+      it "returns #{message} as a Docker v2 error" do
+        expect(result).to eq(errors: [{ code: code, message: message }], http_status: status)
       end
     end
 
@@ -58,13 +55,13 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
         stub_config(dependency_proxy: { enabled: false })
       end
 
-      it_behaves_like 'returning', status: 404, message: 'dependency proxy not enabled'
+      it_behaves_like 'returning', status: 404, code: 'UNAVAILABLE', message: 'dependency proxy not enabled'
     end
 
     context 'without a user' do
       let(:user) { nil }
 
-      it_behaves_like 'returning', status: 403, message: 'access forbidden'
+      it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
     end
 
     context 'with a project deploy token' do
@@ -73,7 +70,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
       let(:params) { { deploy_token: project_deploy_token } }
       let(:user) { nil }
 
-      it_behaves_like 'returning', status: 403, message: 'access forbidden'
+      it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
 
       [described_class::REQUIRED_CI_ABILITIES,
         described_class::REQUIRED_USER_ABILITIES,
@@ -81,7 +78,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
         context "with #{abilities}" do
           let(:authentication_abilities) { abilities }
 
-          it_behaves_like 'returning', status: 403, message: 'access forbidden'
+          it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
         end
       end
     end
@@ -92,7 +89,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
       let(:params) { { deploy_token: group_deploy_token } }
       let(:user) { nil }
 
-      it_behaves_like 'returning', status: 403, message: 'access forbidden'
+      it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
 
       it_behaves_like 'a token with sufficient authentication abilities', token_type: 'deploy_token'
 
@@ -101,13 +98,13 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
           allow(Gitlab::ExternalAuthorization).to receive(:allow_deploy_tokens_and_deploy_keys?).and_return(false)
         end
 
-        it_behaves_like 'returning', status: 403, message: 'access forbidden'
+        it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
       end
     end
 
     context 'with a human user' do
       context 'without the required abilities' do
-        it_behaves_like 'returning', status: 403, message: 'access forbidden'
+        it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
       end
 
       context 'with the required abilities' do
@@ -130,7 +127,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
       let(:params) { { raw_token: token.token } }
 
       context 'with insufficient authentication abilities' do
-        it_behaves_like 'returning', status: 403, message: 'access forbidden'
+        it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
       end
 
       it_behaves_like 'a token with sufficient authentication abilities', token_type: 'personal_access_token'
@@ -148,7 +145,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
       end
 
       context 'with insufficient authentication abilities' do
-        it_behaves_like 'returning', status: 403, message: 'access forbidden'
+        it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
       end
 
       it_behaves_like 'a token with sufficient authentication abilities', token_type: 'group_access_token'
@@ -163,7 +160,7 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
             user.update!(user_type: user_type)
           end
 
-          it_behaves_like 'returning', status: 403, message: 'access forbidden'
+          it_behaves_like 'returning', status: 403, code: 'DENIED', message: 'access forbidden'
 
           it_behaves_like 'a token with sufficient authentication abilities', token_type: 'user_id'
         end

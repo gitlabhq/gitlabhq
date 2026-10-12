@@ -42,7 +42,7 @@ RSpec.describe Resolvers::Ci::TestSuiteResolver do
     end
 
     context 'when pipeline has no builds that matches the given build_ids' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+      let_it_be(:pipeline) { create(:ci_pipeline) }
 
       let(:suite_name) { 'test' }
       let(:build_ids) { [non_existing_record_id] }

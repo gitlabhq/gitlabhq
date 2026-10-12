@@ -272,12 +272,12 @@ RSpec.describe Projects::TagsController, feature_category: :source_code_manageme
 
       it 'passes the last pipeline for evidence creation', :sidekiq_inline do
         sha = project.repository.commit('master').sha
-        create(:ci_empty_pipeline, sha: sha, project: project) # old pipeline
-        pipeline = create(:ci_empty_pipeline, sha: sha, project: project)
+        create(:ci_pipeline, sha: sha, project: project) # old pipeline
+        pipeline = create(:ci_pipeline, sha: sha, project: project)
 
         # simulating pipeline creation by new tag
         expect_any_instance_of(Repository).to receive(:add_tag).and_wrap_original do |m, *args|
-          create(:ci_empty_pipeline, sha: sha, project: project)
+          create(:ci_pipeline, sha: sha, project: project)
           m.call(*args)
         end
 

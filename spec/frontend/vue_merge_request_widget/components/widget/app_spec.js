@@ -89,10 +89,14 @@ describe('MR Widget App', () => {
       );
     });
 
-    it('hides the section while every widget is empty', async () => {
+    it.each`
+      scenario           | glFeatures
+      ${'grouped'}       | ${{ mergeRequestReportsWidgetGroup: true }}
+      ${'flag disabled'} | ${{}}
+    `('hides the section while every widget is empty when $scenario', async ({ glFeatures }) => {
       createComponent({
         mr: { reportsTabPath: '/path/to/reports' },
-        glFeatures: { mergeRequestReportsWidgetGroup: true },
+        glFeatures,
         stubs: { MergeReportsWidget, MrWidget, MrSecurityWidget: ReportStub },
       });
       await waitForPromises();
@@ -105,6 +109,19 @@ describe('MR Widget App', () => {
       expect(wrapper.findByTestId('mr-widget-app').isVisible()).toBe(false);
 
       row.vm.$emit('empty', false);
+      await nextTick();
+
+      expect(wrapper.findByTestId('mr-widget-app').isVisible()).toBe(true);
+    });
+
+    it('shows the ungrouped section when another widget has a report', async () => {
+      createComponent({
+        mr: { codequalityReportsPath: '/path/to/cq' },
+        stubs: { MrSecurityWidget: ReportStub, MrCodeQualityWidget: true },
+      });
+      await waitForPromises();
+
+      wrapper.findComponent(ReportStub).vm.$emit('empty', true);
       await nextTick();
 
       expect(wrapper.findByTestId('mr-widget-app').isVisible()).toBe(true);

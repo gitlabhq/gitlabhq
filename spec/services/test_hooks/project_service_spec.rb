@@ -149,7 +149,7 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
     context 'pipeline_events' do
       let(:trigger) { 'pipeline_events' }
       let(:trigger_key) { :pipeline_hooks }
-      let(:pipeline) { build(:ci_empty_pipeline) }
+      let(:pipeline) { build(:ci_pipeline) }
 
       it 'returns error message if not enough data' do
         expect(hook).not_to receive(:execute)

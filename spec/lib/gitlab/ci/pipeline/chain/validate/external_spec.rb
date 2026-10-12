@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, :with_sign_ins) }
 
-  let(:pipeline) { build(:ci_empty_pipeline, user: user, project: project) }
+  let(:pipeline) { build(:ci_pipeline, user: user, project: project) }
   let!(:step) { described_class.new(pipeline, command) }
 
   let(:ci_yaml) do

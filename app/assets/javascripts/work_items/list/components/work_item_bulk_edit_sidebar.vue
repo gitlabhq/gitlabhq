@@ -130,9 +130,6 @@ export default {
         this.parentId !== undefined,
       ].includes(true);
     },
-    showStatusDropdown() {
-      return this.hasStatusFeature;
-    },
     workItemTypeIds() {
       return [...new Set(this.checkedItems.map((item) => item.workItemType.id))];
     },
@@ -296,7 +293,7 @@ export default {
       data-testid="bulk-edit-state"
     />
     <work-item-bulk-edit-status
-      v-if="showStatusDropdown"
+      v-if="hasStatusFeature"
       v-model="statusId"
       :full-path="fullPath"
       :checked-items="checkedItems"

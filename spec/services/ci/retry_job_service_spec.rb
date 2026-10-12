@@ -48,7 +48,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, :clean_git
       create(:ci_build, :success, pipeline: pipeline, ci_stage: stage)
     end
 
-    let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:another_pipeline) { create(:ci_pipeline, project: project) }
 
     let_it_be_with_refind(:job_to_clone) do
       create(

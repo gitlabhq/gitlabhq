@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Stage, feature_category: :pipeline_composition do
   let(:project) { create(:project, :small_repo) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:previous_stages) { [] }
   let(:seed_context) { Gitlab::Ci::Pipeline::Seed::Context.new(pipeline, root_variables: []) }
 

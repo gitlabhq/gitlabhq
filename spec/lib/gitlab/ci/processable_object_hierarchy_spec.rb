@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::ProcessableObjectHierarchy do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.owner }
 
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master') }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
 
   let_it_be(:job1) { create(:ci_build, :created, pipeline: pipeline, name: 'job1') }
   let_it_be(:job2) { create(:ci_build, :created, :dependent, pipeline: pipeline, name: 'job2', needed: job1) }

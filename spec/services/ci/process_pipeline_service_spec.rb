@@ -6,7 +6,7 @@ RSpec.describe Ci::ProcessPipelineService, feature_category: :continuous_integra
   let_it_be(:project) { create(:project) }
 
   let(:pipeline) do
-    create(:ci_empty_pipeline, ref: 'master', project: project)
+    create(:ci_pipeline, ref: 'master', project: project)
   end
 
   let(:pipeline_processing_events_counter) { double(increment: true) }

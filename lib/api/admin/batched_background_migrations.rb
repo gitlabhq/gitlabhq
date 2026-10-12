@@ -16,6 +16,7 @@ module API
         end
         resources 'batched_background_migrations/:id' do
           desc 'Retrieve a batched background migration' do
+            detail 'Fetches details of a specific batched migration, with optional filtering by database target.'
             success ::API::Entities::BatchedBackgroundMigration
             failure [
               { code: 401, message: '401 Unauthorized' },
@@ -45,6 +46,7 @@ module API
 
         resources 'batched_background_migrations' do
           desc 'Get the list of batched background migrations' do
+            detail 'Lists all batched background migrations with optional filters for database and job class name.'
             success ::API::Entities::BatchedBackgroundMigration
             failure [
               { code: 401, message: '401 Unauthorized' },
@@ -78,6 +80,7 @@ module API
         end
         resources 'batched_background_migrations/:id/resume' do
           desc 'Resume a batched background migration' do
+            detail 'Resumes execution of a previously paused batched background migration.'
             success ::API::Entities::BatchedBackgroundMigration
             failure [
               { code: 401, message: '401 Unauthorized' },
@@ -117,6 +120,7 @@ module API
         end
         resources 'batched_background_migrations/:id/pause' do
           desc 'Pause a batched background migration' do
+            detail 'Pauses an active batched background migration temporarily.'
             success ::API::Entities::BatchedBackgroundMigration
             failure [
               { code: 401, message: '401 Unauthorized' },

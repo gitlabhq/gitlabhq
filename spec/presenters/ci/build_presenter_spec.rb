@@ -108,7 +108,7 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
 
   describe '#trigger_variables' do
     let_it_be(:project) { create(:project) }
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:trigger) { create(:ci_trigger, project: project) }
 
     let(:build) { build_stubbed(:ci_build, pipeline: pipeline) }

@@ -21,6 +21,7 @@ module API
 
           route_setting :authorization, skip_granular_token_authorization: :unleash_token_auth
           desc 'Get Unleash features' do
+            detail 'This endpoint is a no-op and always returns a 200 OK response.'
             tags unleash_tags
           end
           get do
@@ -40,6 +41,7 @@ module API
           end
 
           desc 'Get a list of features' do
+            detail 'Returns feature flags in the Unleash client features format used by GitLab feature flag clients.'
             is_array true
             tags unleash_tags
           end
@@ -49,6 +51,7 @@ module API
           end
 
           desc 'Register Unleash client' do
+            detail 'This endpoint is a no-op and always returns a 200 OK response.'
             tags unleash_tags
           end
           route_setting :authorization, skip_granular_token_authorization: :unleash_token_auth
@@ -58,6 +61,7 @@ module API
           end
 
           desc 'Report Unleash client metrics' do
+            detail 'This endpoint is a no-op and always returns a 200 OK response.'
             tags unleash_tags
           end
           route_setting :authorization, skip_granular_token_authorization: :unleash_token_auth

@@ -1108,9 +1108,6 @@ export default {
         hasStartDate: true,
       });
     },
-    preselectedWorkItemType() {
-      return WORK_ITEM_TYPE_NAME_ISSUE;
-    },
     canExport() {
       return !this.isGroup && this.isLoggedIn && this.currentWorkItemsCount > 0;
     },
@@ -2308,7 +2305,6 @@ export default {
               :full-path="rootPageFullPath"
               :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
-              :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2538,7 +2534,6 @@ export default {
               :full-path="rootPageFullPath"
               :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
-              :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2563,7 +2558,6 @@ export default {
               :full-path="rootPageFullPath"
               :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
-              :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2595,7 +2589,6 @@ export default {
       :updated-work-item="boardUpdatedItem"
       :realtime-matches="boardRealtimeMatches"
       :has-active-filters="hasActiveFilters"
-      :preselected-work-item-type="preselectedWorkItemType"
       :can-create-work-item="showProjectNewWorkItem"
       :has-work-items="hasWorkItems || hasWorkItemsFailed"
       :has-work-items-loading="hasWorkItemsLoading"
@@ -2616,7 +2609,6 @@ export default {
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"
-              :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2641,7 +2633,6 @@ export default {
               :full-path="rootPageFullPath"
               :hide-namespace-selector="!isGroup"
               :is-group="isGroup"
-              :preselected-work-item-type="preselectedWorkItemType"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
               @work-item-created="handleWorkItemCreated"
             />

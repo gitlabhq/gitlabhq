@@ -4355,14 +4355,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     describe '#diff_head_pipeline' do
       it 'returns nil for MR with old pipeline' do
-        pipeline = create(:ci_empty_pipeline, sha: 'notlatestsha')
+        pipeline = create(:ci_pipeline, sha: 'notlatestsha')
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
         expect(subject.diff_head_pipeline).to be_nil
       end
 
       it 'returns the pipeline for MR with recent pipeline' do
-        pipeline = create(:ci_empty_pipeline, sha: diff_head_sha)
+        pipeline = create(:ci_pipeline, sha: diff_head_sha)
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
         expect(subject.diff_head_pipeline).to eq(subject.head_pipeline)
@@ -4370,7 +4370,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'returns the pipeline for MR with recent merge request pipeline' do
-        pipeline = create(:ci_empty_pipeline, sha: 'merge-sha', source_sha: diff_head_sha)
+        pipeline = create(:ci_pipeline, sha: 'merge-sha', source_sha: diff_head_sha)
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
         expect(subject.diff_head_pipeline).to eq(subject.head_pipeline)
@@ -4392,7 +4392,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'when the MR is merged' do
       let(:sha)      { subject.target_project.commit.id }
-      let(:pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
+      let(:pipeline) { create(:ci_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
 
       before do
         subject.mark_as_merged!
@@ -4441,8 +4441,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'when the MR is merged and there is a pipeline schedule source' do
       let(:sha)               { subject.target_project.commit.id }
-      let(:pipeline)          { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
-      let!(:schedule_pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project, source: :schedule) }
+      let(:pipeline)          { create(:ci_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
+      let!(:schedule_pipeline) { create(:ci_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project, source: :schedule) }
 
       before do
         subject.mark_as_merged!
@@ -4570,7 +4570,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let!(:branch_pipeline) do
       create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         project: merge_request.project,
         sha: merge_request.diff_head_sha,
         ref: merge_request.source_branch
@@ -4616,7 +4616,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when there is a pipeline with the diff head sha' do
       let_it_be(:pipeline) do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: merge_request.project,
           sha: merge_request.diff_head_sha,
           ref: merge_request.source_branch
@@ -4707,7 +4707,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       context 'when only a branch pipeline exists' do
         let!(:branch_pipeline) do
           create(
-            :ci_empty_pipeline,
+            :ci_pipeline,
             project: merge_request.project,
             sha: merge_request.diff_head_sha,
             ref: merge_request.source_branch
@@ -4722,7 +4722,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       context 'when both a branch pipeline and an MR pipeline exist' do
         let!(:branch_pipeline) do
           create(
-            :ci_empty_pipeline,
+            :ci_pipeline,
             project: merge_request.project,
             sha: merge_request.diff_head_sha,
             ref: merge_request.source_branch
@@ -6484,7 +6484,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when project has a diff_head_pipeline relation' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:pipeline) { create(:ci_pipeline) }
 
       before do
         allow(subject).to receive(:diff_head_pipeline) { pipeline }
@@ -7886,7 +7886,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject { create(:merge_request, state: 'locked', source_project: project, merge_jid: 123) }
 
       it 'updates merge request head pipeline and sets merge_jid to nil', :sidekiq_inline do
-        pipeline = create(:ci_empty_pipeline, project: subject.project, ref: subject.source_branch, sha: subject.source_branch_sha)
+        pipeline = create(:ci_pipeline, project: subject.project, ref: subject.source_branch, sha: subject.source_branch_sha)
 
         subject.unlock_mr
 

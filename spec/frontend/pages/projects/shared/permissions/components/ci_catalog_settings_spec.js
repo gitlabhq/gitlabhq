@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlIcon, GlLoadingIcon, GlModal, GlSprintf, GlToggle } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlSprintf, GlToggle } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,6 +11,7 @@ import catalogResourcesCreate from '~/ci/catalog/graphql/mutations/catalog_resou
 import catalogResourcesDestroy from '~/ci/catalog/graphql/mutations/catalog_resources_destroy.mutation.graphql';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import CiCatalogSettings from '~/pages/projects/shared/permissions/components/ci_catalog_settings.vue';
+import CiCatalogSettingsRemovalModal from '~/pages/projects/shared/permissions/components/ci_catalog_settings_removal_modal.vue';
 
 import { generateCatalogSettingsResponse } from './mock_data';
 
@@ -54,15 +55,15 @@ describe('CiCatalogSettings', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findModal = () => wrapper.findComponent(GlModal);
+  const findRemovalModal = () => wrapper.findComponent(CiCatalogSettingsRemovalModal);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findSettingsLink = () => wrapper.findByTestId('settings-link');
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findCiCatalogSettings = () => wrapper.findByTestId('ci-catalog-settings');
 
-  const removeCatalogResource = () => {
-    findToggle().vm.$emit('change');
-    findModal().vm.$emit('primary');
+  const removeCatalogResource = async () => {
+    await findToggle().vm.$emit('change');
+    findRemovalModal().vm.$emit('primary');
     return waitForPromises();
   };
 
@@ -121,11 +122,11 @@ describe('CiCatalogSettings', () => {
 
     describe('and the toggle is clicked', () => {
       it('does not show a confirmation modal', async () => {
-        expect(findModal().props('visible')).toBe(false);
+        expect(findRemovalModal().exists()).toBe(false);
 
         await findToggle().vm.$emit('change', true);
 
-        expect(findModal().props('visible')).toBe(false);
+        expect(findRemovalModal().exists()).toBe(false);
       });
 
       it('calls the mutation with the correct input', async () => {
@@ -161,19 +162,19 @@ describe('CiCatalogSettings', () => {
 
     describe('and the toggle is clicked', () => {
       it('shows a confirmation modal', async () => {
-        expect(findModal().props('visible')).toBe(false);
+        expect(findRemovalModal().exists()).toBe(false);
 
         await findToggle().vm.$emit('change', false);
 
-        expect(findModal().props('visible')).toBe(true);
-        expect(findModal().props('actionPrimary').text).toBe('Remove from the CI/CD catalog');
+        expect(findRemovalModal().exists()).toBe(true);
+        expect(findRemovalModal().props('fullPath')).toBe(fullPath);
       });
 
-      it('hides the modal when cancel is clicked', () => {
-        findToggle().vm.$emit('change', true);
-        findModal().vm.$emit('canceled');
+      it('hides the modal when it closes', async () => {
+        await findToggle().vm.$emit('change', true);
+        await findRemovalModal().vm.$emit('close');
 
-        expect(findModal().props('visible')).toBe(false);
+        expect(findRemovalModal().exists()).toBe(false);
         expect(catalogResourcesCreateResponse).not.toHaveBeenCalled();
       });
 

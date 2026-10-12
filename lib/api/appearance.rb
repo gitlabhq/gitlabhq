@@ -14,6 +14,7 @@ module API
     end
 
     desc 'Get the current appearance' do
+      detail "Retrieves the instance's branding and appearance configuration including logos, colors, and custom headers."
       tags ['instance']
       success Entities::Appearance
       failure [
@@ -28,6 +29,7 @@ module API
     end
 
     desc 'Modify appearance' do
+      detail 'Updates instance appearance settings like branding, logos, headers, and footer messages.'
       tags ['instance']
       success Entities::Appearance
       failure [

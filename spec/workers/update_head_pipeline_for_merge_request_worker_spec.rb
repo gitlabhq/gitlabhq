@@ -10,7 +10,7 @@ RSpec.describe UpdateHeadPipelineForMergeRequestWorker, feature_category: :conti
     let_it_be(:latest_sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
 
     context 'when pipeline exists for the source project and branch' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: merge_request.source_branch, sha: latest_sha) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: merge_request.source_branch, sha: latest_sha) }
 
       it 'updates the head_pipeline_id of the merge_request' do
         expect { subject.perform(merge_request.id) }

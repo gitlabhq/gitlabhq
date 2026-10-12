@@ -10,7 +10,6 @@ fragment WorkItemTypesConfigurationBase on WorkItemType {
   isGroupWorkItemType
   isIncidentManagement
   isServiceDesk
-  showProjectSelector
   supportsMoveAction
   supportsRoadmapView
   useIssueView
