@@ -74,9 +74,15 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
               visit invite_path(group_invite.raw_invite_token)
             end
 
-            it 'shows message user already a member' do
-              expect(page).to have_current_path(invite_path(group_invite.raw_invite_token), ignore_query: true)
-              expect(page).to have_content('You are already a member of this group.')
+            it 'redirects with a generic invite-no-longer-valid message' do
+              # The pending invite gets destroyed once the user has a real membership
+              # (see StandardMemberBuilder#after_commit), so the token no longer
+              # resolves and the controller can't tell this apart from a bogus one.
+              expect(page).to have_current_path(root_path, ignore_query: true)
+              expect(page).to have_content(
+                "This invitation link is no longer valid. " \
+                "If you already have access, you'll find the group or project under Your work."
+              )
             end
           end
 

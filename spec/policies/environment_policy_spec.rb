@@ -11,7 +11,7 @@ RSpec.describe EnvironmentPolicy do
     described_class.new(user, environment)
   end
 
-  describe '#rules' do
+  describe '#rules', :clean_gitlab_redis_cache do
     shared_examples 'project permissions' do
       context 'with stop action' do
         let(:environment) do
@@ -156,13 +156,13 @@ RSpec.describe EnvironmentPolicy do
     end
 
     context 'when project is public' do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :public, :repository) }
 
       include_examples 'project permissions'
     end
 
     context 'when project is private' do
-      let(:project) { create(:project, :private, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :private, :repository) }
 
       include_examples 'project permissions'
     end

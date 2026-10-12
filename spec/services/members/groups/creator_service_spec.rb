@@ -27,6 +27,36 @@ RSpec.describe Members::Groups::CreatorService, feature_category: :groups_and_pr
       let_it_be(:member_type) { GroupMember }
     end
 
+    context 'when there is a pending invite for the same email' do
+      let_it_be_with_reload(:pending_invite) do
+        create(:group_member, :invited, source: source, invite_email: user.email)
+      end
+
+      it 'removes the orphaned pending invite end-to-end through run_after_commit_or_now' do
+        described_class.add_member(source, user, :developer)
+
+        expect { pending_invite.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      context 'when the member save fails validation' do
+        let_it_be(:subgroup) { create(:group, parent: source) }
+        let_it_be(:subgroup_pending_invite) do
+          create(:group_member, :invited, source: subgroup, invite_email: user.email)
+        end
+
+        before_all do
+          source.add_maintainer(user) # subgroup :developer is below this, failing the real access_level validation
+        end
+
+        it 'does not destroy the pending invite' do
+          member = described_class.add_member(subgroup, user, :developer)
+
+          expect(member).not_to be_persisted
+          expect(subgroup.members_and_requesters.invite.count).to eq(1)
+        end
+      end
+    end
+
     it_behaves_like 'member creation with organization isolation' do
       let_it_be(:source_type) { Group }
     end

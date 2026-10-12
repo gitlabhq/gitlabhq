@@ -35,12 +35,12 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
 
   context 'with project level work items' do
     context 'with private project' do
-      let(:project_work_item) { create(:work_item, project: private_project, user_agent_detail: create(:user_agent_detail)) }
-      let(:project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, user_agent_detail: create(:user_agent_detail)) }
-      let(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
-      let(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
+      let_it_be(:project_work_item) { create(:work_item, project: private_project, user_agent_detail: create(:user_agent_detail)) }
+      let_it_be(:project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, user_agent_detail: create(:user_agent_detail)) }
+      let_it_be(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
+      let_it_be(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
       let(:not_persisted_project_work_item) { build(:work_item, project: private_project) }
-      let(:incident) { create(:work_item, :incident, project: private_project) }
+      let_it_be(:incident) { create(:work_item, :incident, project: private_project) }
 
       let_it_be(:incident_work_item) { create(:work_item, :incident, project: private_project) }
 
@@ -82,10 +82,10 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
     end
 
     context 'with public project' do
-      let(:project_work_item) { create(:work_item, project: public_project, user_agent_detail: create(:user_agent_detail)) }
-      let(:project_confidential_work_item) { create(:work_item, confidential: true, project: public_project, user_agent_detail: create(:user_agent_detail)) }
-      let(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
-      let(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
+      let_it_be(:project_work_item) { create(:work_item, project: public_project, user_agent_detail: create(:user_agent_detail)) }
+      let_it_be(:project_confidential_work_item) { create(:work_item, confidential: true, project: public_project, user_agent_detail: create(:user_agent_detail)) }
+      let_it_be(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
+      let_it_be(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
       let(:not_persisted_project_work_item) { build(:work_item, project: public_project) }
 
       let_it_be(:incident_work_item) { create(:work_item, :incident, project: public_project) }
@@ -130,10 +130,10 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
 
   context 'with group level work items' do
     context 'with private group' do
-      let(:work_item) { create(:work_item, :group_level, namespace: private_group) }
-      let(:confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: private_group) }
-      let(:authored_work_item) { create(:work_item, :group_level, namespace: private_group, author: group_guest_author) }
-      let(:authored_confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: private_group, author: group_guest_author) }
+      let_it_be(:work_item) { create(:work_item, :group_level, namespace: private_group) }
+      let_it_be(:confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: private_group) }
+      let_it_be(:authored_work_item) { create(:work_item, :group_level, namespace: private_group, author: group_guest_author) }
+      let_it_be(:authored_confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: private_group, author: group_guest_author) }
       let(:not_persisted_work_item) { build(:work_item, :group_level, namespace: private_group) }
 
       it_behaves_like 'abilities without group level work items license'
@@ -163,10 +163,10 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
     end
 
     context 'with public group' do
-      let(:work_item) { create(:work_item, :group_level, namespace: public_group) }
-      let(:confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: public_group) }
-      let(:authored_work_item) { create(:work_item, :group_level, namespace: public_group, author: group_guest_author) }
-      let(:authored_confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: public_group, author: group_guest_author) }
+      let_it_be(:work_item) { create(:work_item, :group_level, namespace: public_group) }
+      let_it_be(:confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: public_group) }
+      let_it_be(:authored_work_item) { create(:work_item, :group_level, namespace: public_group, author: group_guest_author) }
+      let_it_be(:authored_confidential_work_item) { create(:work_item, :group_level, confidential: true, namespace: public_group, author: group_guest_author) }
       let(:not_persisted_work_item) { build(:work_item, :group_level, namespace: public_group) }
 
       it_behaves_like 'abilities without group level work items license'

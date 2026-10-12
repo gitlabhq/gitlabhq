@@ -335886,6 +335886,26 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 16.9."
             },
             {
+              "name": "duoMcpServerNames",
+              "description": "Names of the distinct MCP servers used by the project's configured agents, sorted alphabetically. Resolved on request only, because it reads the configured agents and their versions. Shares its lookup with duoMcpServersCount when both are requested. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "duoMcpServersCount",
               "description": "Number of distinct MCP servers used by the project's configured agents. Resolved on request only, because it reads the configured agents and their versions. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],

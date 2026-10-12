@@ -203,6 +203,13 @@ module Members
       return add_not_valid_org_error if source.organization&.isolated? && !same_org?
 
       commit_changes
+
+      # run_after_commit_or_now evaluates its block via instance_eval on the
+      # receiver, so builder/member must be captured as locals rather than
+      # referenced via attr_reader inside the block.
+      member_builder = builder_instance
+      committed_member = member
+      committed_member.run_after_commit_or_now { member_builder.after_commit(committed_member) }
     end
 
     def can_commit_member?
@@ -305,7 +312,11 @@ module Members
     end
 
     def find_or_build_member
-      @member = builder.new(source, invitee, existing_members).execute
+      @member = builder_instance.execute
+    end
+
+    def builder_instance
+      @builder_instance ||= builder.new(source, invitee, existing_members)
     end
 
     def ldap

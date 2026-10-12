@@ -85562,9 +85562,6 @@ msgstr ""
 msgid "The interval must be one of %{intervals}."
 msgstr ""
 
-msgid "The invitation can not be found with the provided invite token."
-msgstr ""
-
 msgid "The invitation could not be accepted."
 msgstr ""
 
@@ -86684,6 +86681,9 @@ msgid "This incident is already escalated with '%{escalation_policy_name}'."
 msgstr ""
 
 msgid "This instance is now read-only. Don't worry, your data is safe. To change to GitLab Free and restore write access to this instance, delete your expired license."
+msgstr ""
+
+msgid "This invitation link is no longer valid. If you already have access, you'll find the group or project under Your work."
 msgstr ""
 
 msgid "This invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."

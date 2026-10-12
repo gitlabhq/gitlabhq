@@ -9,7 +9,6 @@ export default {
     'app/assets/javascripts/crm/contacts/components/contacts_root.vue',
     'app/assets/javascripts/crm/organizations/components/organizations_root.vue',
     'app/assets/javascripts/incidents/components/incidents_list.vue',
-    'app/assets/javascripts/pipeline_wizard/components/wrapper.vue',
     'ee/app/assets/javascripts/analytics/contribution_analytics/components/group_members_table.vue',
     'ee/app/assets/javascripts/analytics/dashboards/dora_projects_comparison/components/comparison_table.vue',
     'ee/app/assets/javascripts/analytics/devops_reports/devops_adoption/components/devops_adoption_overview_table.vue',

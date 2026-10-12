@@ -62,14 +62,14 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
       let(:note) { create(:note_on_commit, commit_id: commit.id, author: user, project: project) }
 
       context 'when the project is private' do
-        let(:project) { create(:project, :private, :repository) }
+        let_it_be(:project) { create(:project, :private, :repository) }
 
         it_behaves_like 'a discussion with a private noteable'
       end
 
       context 'when the project is public' do
         context 'when repository access level is private' do
-          let(:project) { create(:project, :public, :repository, :repository_private) }
+          let_it_be(:project) { create(:project, :public, :repository, :repository_private) }
 
           it_behaves_like 'a discussion with a private noteable'
         end
@@ -376,12 +376,8 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
         let_it_be(:author, freeze: false) { create(:user) }
         let_it_be(:assignee, freeze: false) { create(:user) }
         let_it_be(:admin, freeze: false) { create(:admin) }
-
-        before do
-          project.add_reporter(reporter)
-          project.add_developer(developer)
-          project.add_maintainer(maintainer)
-          project.add_guest(guest)
+        let_it_be(:project) do
+          create(:project, :public, reporters: reporter, developers: developer, maintainers: maintainer, guests: guest)
         end
 
         shared_examples_for 'internal notes permissions' do
@@ -446,8 +442,8 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
         end
 
         context 'for issues' do
-          let(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
-          let(:internal_note) { create(:note, :confidential, project: project, noteable: issue) }
+          let_it_be(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
+          let_it_be_with_reload(:internal_note) { create(:note, :confidential, project: project, noteable: issue) }
 
           it_behaves_like 'internal notes permissions'
 

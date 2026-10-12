@@ -108,7 +108,8 @@ export default {
     resetHighlight() {
       this.highlightPath = null;
     },
-    onUpdate() {
+    onUpdate(compiled) {
+      this.compiled = compiled;
       this.showPlaceholder = false;
     },
     onEditorUpdate(blob) {
@@ -194,15 +195,15 @@ export default {
           v-show="i === currentStepIndex"
           :key="step.id"
           data-testid="step"
-          :compiled.sync="compiled"
+          :compiled="compiled"
           :has-next-step="i < steps.items.length"
           :has-previous-step="i > 0"
-          :highlight.sync="highlightPath"
           :inputs="step.inputs"
           :template="step.template"
           @back="onBack"
           @next="onNext"
           @update:compiled="onUpdate"
+          @update:highlight="highlightPath = $event"
         />
       </section>
     </main>

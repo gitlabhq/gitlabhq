@@ -112,6 +112,7 @@ Validity checks support the following secret types:
 - GitHub fine-grained personal access tokens
 - GitHub OAuth access tokens
 - GitHub personal access tokens (classic)
+- GoCardless API tokens
 - Google Cloud API keys
 - HashiCorp Terraform user and organization API tokens
 - Heroku API keys
@@ -153,6 +154,7 @@ The supported URLs are:
 - `https://api.getpostman.com/me`
 - `https://api.github.com/installation/repositories`
 - `https://api.github.com/user`
+- `https://api.gocardless.com/creditors`
 - `https://api.heroku.com/account`
 - `https://api.openai.com/v1/models`
 - `https://api.openai.com/v1/organization/admin_api_keys`

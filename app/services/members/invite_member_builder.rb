@@ -14,6 +14,10 @@ module Members
       end
     end
 
+    # This builder creates the invite itself when `invitee` has no matching user yet, so it must
+    # never destroy a pending invite for the same email the way StandardMemberBuilder does.
+    def after_commit(_member); end
+
     private
 
     def user_by_email

@@ -20,7 +20,10 @@ RSpec.describe InvitesController do
         request
 
         expect(response).to redirect_to(root_path)
-        expect(controller).to set_flash[:alert].to('The invitation can not be found with the provided invite token.')
+        expect(controller).to set_flash[:alert].to(
+          "This invitation link is no longer valid. " \
+            "If you already have access, you'll find the group or project under Your work."
+        )
       end
     end
   end

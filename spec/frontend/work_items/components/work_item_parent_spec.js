@@ -543,6 +543,7 @@ describe('WorkItemParent component', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([['Error!']]);
+      expect(findSidebarDropdownWidget().props('itemValue')).toBeNull();
     });
 
     it('emits error and captures exception in sentry when network request fails', async () => {

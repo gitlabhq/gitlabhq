@@ -47,7 +47,8 @@ Service accounts have the following characteristics:
 - They are always marked as [external users](../../administration/external_users.md).
 - They cannot sign in to GitLab through the UI.
 - They cannot be managed through services such as LDAP.
-- They cannot create top-level groups or other service accounts when provisioned by a subgroup or project.
+- They cannot create top-level groups.
+- They cannot create other service accounts when provisioned by a subgroup or project.
 - They are listed in group and project membership lists as service accounts, not as regular users.
 - They do not receive notification emails unless you add a [custom email address](../../api/service_accounts.md#create-an-instance-service-account).
 - They are available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html)
@@ -85,9 +86,10 @@ Prerequisites:
 
 {{< tab title="Group service accounts" >}}
 
-Group service accounts are created by a specific group and can be invited to the group where they
-were created or to any descendant subgroups or projects. They cannot create top-level groups or
-service accounts.
+Group service accounts are created by a specific group. A service account created in a top-level
+group can be invited to any group or project on the instance. A service account created in a
+subgroup can be invited only to that subgroup and its descendant subgroups or projects, and it
+cannot create other service accounts.
 
 Prerequisites:
 
@@ -222,9 +224,17 @@ different role in each group, subgroup, or project.
 Service account access depends on the type of service account:
 
 - Instance service accounts: Can be invited to any group or project on the instance.
-- Group service accounts: Can be invited to the group where they were created or to any
+- Group service accounts: If created in a top-level group, can be invited to any group or project
+  on the instance. If created in a subgroup, can be invited only to that subgroup and its
   descendant subgroups or projects.
 - Project service accounts: Can be invited only to the project where they were created.
+
+If the top-level group [enforces SSO](../group/saml_sso/_index.md#sso-enforcement), only service
+accounts created in that top-level group or its subgroups and projects can be invited.
+
+On GitLab.com, service accounts with a [composite identity](../duo_agent_platform/composite_identity.md),
+which GitLab creates for GitLab Duo Agent Platform flows, can be invited only to the group where
+they were created and its subgroups and projects.
 
 When you [share a group with another group](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group),
 all members of the shared group, including service accounts, gain access to the group it's shared with.

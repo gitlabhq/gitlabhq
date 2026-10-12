@@ -22,11 +22,7 @@ import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '../graphql/work_items_by_references.query.graphql';
 import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
-import {
-  I18N_WORK_ITEM_ERROR_UPDATING,
-  NO_WORK_ITEM_IID,
-  WIDGET_TYPE_HIERARCHY,
-} from '../constants';
+import { I18N_WORK_ITEM_ERROR_UPDATING, WIDGET_TYPE_HIERARCHY } from '../constants';
 
 export default {
   linkId: uniqueId('work-item-parent-link-'),
@@ -303,8 +299,7 @@ export default {
             input: {
               id: this.workItemId,
               hierarchyWidget: {
-                parentId:
-                  this.localSelectedItem === NO_WORK_ITEM_IID ? null : this.localSelectedItem,
+                parentId: this.localSelectedItem,
               },
             },
             useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
@@ -320,7 +315,7 @@ export default {
 
         if (errors.length) {
           this.$emit('error', errors.join('\n'));
-          this.localSelectedItem = this.parent?.id || NO_WORK_ITEM_IID;
+          this.localSelectedItem = this.parent?.id;
         }
       } catch (error) {
         this.$emit(

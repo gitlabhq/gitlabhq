@@ -89,21 +89,20 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   end
 
   context 'when user is a direct project member' do
-    let(:project) { create(:project, :public) }
+    let_it_be_with_reload(:project) do
+      create(:project, :public, guests: [guest, author], planners: planner, developers: [developer, bot])
+    end
 
-    before do
-      project.add_guest(guest)
-      project.add_guest(author)
-      project.add_planner(planner)
-      project.add_developer(developer)
-      project.add_developer(bot)
+    let_it_be_with_reload(:merge_request) do
+      create(:merge_request, source_project: project, target_project: project, author: author)
     end
 
     context 'when merge request is public' do
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
-
       context 'and user is author' do
-        let(:author) { user }
+        let(:merge_request) do
+          create(:merge_request, source_project: project, target_project: project, author: user,
+            source_branch: 'authored-feature')
+        end
 
         context 'and the user is a guest' do
           let(:user) { guest }
@@ -150,7 +149,13 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       end
 
       context 'with private project' do
-        let_it_be(:project) { create(:project, :private) }
+        let_it_be(:project) do
+          create(:project, :private, guests: [guest, author], planners: planner, developers: [developer, bot])
+        end
+
+        let_it_be_with_reload(:merge_request) do
+          create(:merge_request, source_project: project, target_project: project, author: author)
+        end
 
         context 'when the user is a guest' do
           let(:user) { guest }
@@ -168,8 +173,6 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when merge requests have been disabled' do
-      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
-
       before do
         project.project_feature.update!(merge_requests_access_level: ProjectFeature::DISABLED)
       end
@@ -208,8 +211,6 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when merge requests are private' do
-      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
-
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
@@ -243,7 +244,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when merge request is unlocked' do
-      let(:merge_request) do
+      let_it_be_with_reload(:merge_request) do
         create(:merge_request, :closed, source_project: project, target_project: project, author: author)
       end
 
@@ -273,7 +274,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when merge request is locked' do
-      let(:merge_request) do
+      let_it_be_with_reload(:merge_request) do
         create(:merge_request, :closed, discussion_locked: true, source_project: project, target_project: project,
           author: author)
       end
@@ -332,10 +333,11 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         developers: [developer, bot])
     end
 
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
-
     context 'when the project is public' do
-      let(:project) { create(:project, :public, group: group) }
+      let_it_be_with_reload(:project) { create(:project, :public, group: group) }
+      let_it_be_with_reload(:merge_request) do
+        create(:merge_request, source_project: project, target_project: project, author: author)
+      end
 
       context 'when the user is the merge request author' do
         let(:user) { author }
@@ -417,7 +419,10 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when project is private' do
-      let(:project) { create(:project, :private, group: group) }
+      let_it_be(:project) { create(:project, :private, group: group) }
+      let_it_be_with_reload(:merge_request) do
+        create(:merge_request, source_project: project, target_project: project, author: author)
+      end
 
       describe 'a guest' do
         let(:user) { guest }
@@ -456,18 +461,14 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   end
 
   context 'when user is an inherited member from a shared group' do
-    let(:project) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public, guests: author) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
     let(:user) { author }
-
-    before do
-      project.add_guest(author)
-    end
 
     context 'and group is given developer access' do
       let(:user) { non_team_member }
 
-      before do
+      before_all do
         group = create(:group)
         project.project_group_links.create!(
           group: group,
@@ -500,10 +501,10 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   end
 
   context 'when user is not a project member' do
-    let(:project) { create(:project, :public) }
+    let_it_be_with_reload(:project) { create(:project, :public) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
     context 'when merge request is public' do
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
       let(:user) { non_team_member }
 
       it 'disallows approving the merge request' do
@@ -528,7 +529,6 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when merge requests are disabled' do
-      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
       let(:user) { non_team_member }
 
       before do
@@ -539,7 +539,6 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when merge requests are private' do
-      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
       let(:user) { non_team_member }
 
       before do
@@ -551,7 +550,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     end
 
     context 'when merge request is locked' do
-      let(:merge_request) do
+      let_it_be_with_reload(:merge_request) do
         create(:merge_request, :closed, discussion_locked: true, source_project: project, target_project: project)
       end
 
@@ -564,12 +563,11 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   end
 
   context 'when user is anonymous' do
-    let(:project) { create(:project, :public) }
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let(:user) { nil }
 
     context 'when merge request is public' do
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-
       it 'disallows creating todos and updating subscriptions' do
         expect_disallowed(:create_todo, :update_subscription)
       end

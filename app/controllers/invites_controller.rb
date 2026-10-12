@@ -85,7 +85,9 @@ class InvitesController < ApplicationController
   def ensure_member_exists
     return if member
 
-    redirect_back_or_default(options: { alert: _("The invitation can not be found with the provided invite token.") })
+    alert = _("This invitation link is no longer valid. " \
+      "If you already have access, you'll find the group or project under Your work.")
+    redirect_back_or_default(options: { alert: alert })
   end
 
   def track_invite_join_click
