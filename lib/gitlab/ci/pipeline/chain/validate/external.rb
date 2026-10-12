@@ -9,6 +9,7 @@ module Gitlab
             include Chain::Helpers
 
             InvalidResponseCode = Class.new(StandardError)
+            RequestFailed = Class.new(StandardError)
 
             DEFAULT_VALIDATION_REQUEST_TIMEOUT = 5
             ACCEPTED_STATUS = 200
@@ -70,6 +71,9 @@ module Gitlab
                   body: request_body
                 )
               end
+            rescue *Gitlab::HTTP::HTTP_ERRORS => e
+              # Stable message so Sentry groups by error class, see Gitlab::ErrorTracking::CUSTOM_FINGERPRINTING
+              raise RequestFailed, "Validation Service request failed: #{e.class}"
             end
 
             def validation_service_timeout

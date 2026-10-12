@@ -258,7 +258,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
     let(:expected_issue_keys) { ['add a', 'add d', 'added'] }
 
     it 'extracts issue keys from the commits' do
-      expect(subject.issue_keys).to contain_exactly(*expected_issue_keys)
+      expect(subject.issue_keys).to match_array(expected_issue_keys)
     end
 
     it 'limits the number of commits scanned' do
@@ -294,9 +294,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
       end
 
       it 'includes issue keys extracted from the merge request' do
-        expect(subject.issue_keys).to contain_exactly(
-          *(expected_issue_keys + %w[addxa addya addza])
-        )
+        expect(subject.issue_keys).to match_array(expected_issue_keys + %w[addxa addya addza])
       end
     end
 
@@ -315,7 +313,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
 
       shared_examples 'ignores that deployment' do
         specify do
-          expect(subject.issue_keys).to contain_exactly(*expected_issue_keys)
+          expect(subject.issue_keys).to match_array(expected_issue_keys)
         end
       end
 

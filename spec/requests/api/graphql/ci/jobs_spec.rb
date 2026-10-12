@@ -591,21 +591,12 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).size).to eq(pipeline.statuses.count)
       end
 
-      # Frozen because running jobs report a duration that grows between requests.
-      it 'returns the same data with batch_preload_pipeline_job_associations disabled', :freeze_time do
+      it 'returns the preloaded job data' do
         create_page_jobs
 
         post_graphql(query, current_user: maintainer)
-        preloaded = graphql_data
 
-        stub_feature_flags(batch_preload_pipeline_job_associations: false)
-        # Without the preloads this page exceeds the test query limit, which is what the flag fixes.
-        headers = { ::GraphqlController::DISABLE_SQL_QUERY_LIMIT_HEADER => 'https://gitlab.com/gitlab-org/gitlab/-/work_items/629310' }
-        post_graphql(query, current_user: maintainer, headers: headers)
-
-        expect(graphql_data).to eq(preloaded)
-
-        nodes = graphql_dig_at(preloaded, :project, :pipeline, :jobs, :nodes)
+        nodes = graphql_data_at(:project, :pipeline, :jobs, :nodes)
         expect(nodes.size).to eq(pipeline.statuses.count)
         expect(nodes.pluck('tags')).to include(%w[tag1 tag2])
         expect(nodes.filter_map { |node| node.dig('artifacts', 'nodes') }.flatten).to be_present

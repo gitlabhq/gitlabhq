@@ -211,6 +211,18 @@ RSpec.describe WikiHelper, feature_category: :wiki do
     end
   end
 
+  context 'for a version of a page at a previous slug' do
+    let(:old_page) { create(:wiki_page, project: project, title: 'previous/slug') }
+    let(:current_page) { create(:wiki_page, project: project, title: 'current/slug') }
+
+    it 'returns the endpoint for the previous slug' do
+      page = old_page.as_version_of(current_page)
+
+      expect(helper.wiki_page_render_api_endpoint(page))
+        .to end_with("/api/v4/projects/#{project.id}/wikis/previous/slug?version=#{old_page.version.id}")
+    end
+  end
+
   describe '#wiki_sidebar_toggle_button' do
     let(:wiki) { build_stubbed(:project_wiki) }
 

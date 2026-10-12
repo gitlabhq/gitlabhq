@@ -37,7 +37,7 @@ RSpec.describe Gitlab::BackgroundMigration::Redis::BackfillProjectPipelineStatus
       end
 
       expect(scanned).to match_array(keys + invalid_keys)
-      expect(subject.redis.scan_each(match: subject.scan_match_pattern).to_a).to contain_exactly(*keys)
+      expect(subject.redis.scan_each(match: subject.scan_match_pattern).to_a).to match_array(keys)
     end
   end
 

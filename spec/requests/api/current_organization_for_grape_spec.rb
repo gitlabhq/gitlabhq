@@ -474,7 +474,7 @@ RSpec.describe 'Current.organization resolution in Grape API', feature_category:
       end
     end
 
-    it 'leaves Current.organization unassigned for KAS JWT-only endpoints (no agent token)' do
+    it 'leaves Current.organization unassigned for the usage_metrics endpoint, which spans many agents' do
       expect_no_logged_organization_id
 
       post api('/internal/kubernetes/usage_metrics'),

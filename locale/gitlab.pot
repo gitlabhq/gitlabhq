@@ -13596,13 +13596,7 @@ msgstr ""
 msgid "ArtifactRegistry|No connection information available."
 msgstr ""
 
-msgid "ArtifactRegistry|No images have been cached yet."
-msgstr ""
-
 msgid "ArtifactRegistry|No manifests found for %{name}."
-msgstr ""
-
-msgid "ArtifactRegistry|No packages have been cached yet."
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories added to this virtual repository yet"
@@ -27577,9 +27571,6 @@ msgid "Custom headers validation failed: %{errors}"
 msgstr ""
 
 msgid "Custom hostname (for private commit emails)"
-msgstr ""
-
-msgid "Custom hostname of the Telegram API. The default value is `https://api.telegram.org`."
 msgstr ""
 
 msgid "Custom notification events"
@@ -89183,6 +89174,9 @@ msgid "URL of the Packagist server. The default value is `https://packagist.org`
 msgstr ""
 
 msgid "URL of the Squash TM webhook."
+msgstr ""
+
+msgid "URL of the Telegram API server, including `http://` or `https://`. The default value is `https://api.telegram.org`."
 msgstr ""
 
 msgid "URL of the external Spam Check endpoint"

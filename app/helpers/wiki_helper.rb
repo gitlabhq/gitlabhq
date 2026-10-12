@@ -178,7 +178,7 @@ module WikiHelper
   def wiki_page_render_api_endpoint_params(page)
     {
       id: page.container.id,
-      slug: ERB::Util.url_encode(page.slug).gsub(/%2f/i, '/'),
+      slug: ERB::Util.url_encode(page.page.url_path).gsub(/%2f/i, '/'),
       params: { version: page.version.id }
     }
   end

@@ -4,11 +4,9 @@ module API
   # Kubernetes Internal API
   module Internal
     class Kubernetes < ::API::Base
-      # KAS endpoints authenticate via JWT / cluster agent tokens with no
-      # associated user, so the global Current.organization fallback is
-      # disabled. Endpoints authenticated with a cluster agent token resolve
-      # the organization from the agent project in check_agent_token; for
-      # KAS JWT-only endpoints Current.organization remains unassigned.
+      # KAS authenticates with a shared JWT rather than a user, so the global
+      # Current.organization fallback is skipped. Endpoints that identify one agent
+      # set it from the agent project; endpoints spanning many agents leave it unassigned.
       skip_global_organization_setup!
 
       before do
@@ -76,6 +74,7 @@ module API
           route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
           post '/', feature_category: :deployment_management, urgency: :low do
             agent = ::Clusters::Agent.find(params[:agent_id])
+            set_current_organization_from_agent(agent)
             update_configuration(agent: agent, config: params[:agent_config])
 
             no_content!
@@ -105,6 +104,7 @@ module API
 
             # Load agent
             agent = ::Clusters::Agent.find(params[:agent_id])
+            set_current_organization_from_agent(agent)
             unauthorized!('Feature disabled for agent') unless ::Gitlab::Kas::UserAccess.enabled?
 
             service_response = ::Clusters::Agents::AuthorizeProxyUserService.new(user, agent).execute

@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
       it 'includes all predefined variables in a valid order including CI_COMMIT_MESSAGE_IS_TRUNCATED' do
         keys = subject.pluck(:key)
 
-        expect(keys).to contain_exactly(*%w[
+        expect(keys).to match_array(%w[
           CI_PIPELINE_IID
           CI_PIPELINE_SOURCE
           CI_PIPELINE_CREATED_AT
@@ -161,7 +161,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
       it 'includes all predefined variables in a valid order' do
         keys = subject.pluck(:key)
 
-        expect(keys).to contain_exactly(*%w[
+        expect(keys).to match_array(%w[
           CI_PIPELINE_IID
           CI_PIPELINE_SOURCE
           CI_PIPELINE_CREATED_AT

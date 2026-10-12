@@ -4,14 +4,25 @@ This deploys a CNG build of the GitLab commit under test onto a job-local
 [k3d](https://k3d.io) cluster inside `docker:dind`, using
 [Caproni](https://gitlab-org.gitlab.io/caproni/) and runs the E2E suite against it.
 
-This adds four non-blocking jobs to the existing `test-on-cng` child pipeline, each with
-`allow_failure: true`, all running whenever the orchestrator-deployed jobs run:
+Five jobs in the existing `test-on-cng` child pipeline run against a Caproni-deployed
+GitLab instance:
 
-- `cng-instance-caproni` runs `Test::Instance::All` over 10 parallel shards
-- `cng-relative-url-caproni` runs `Test::Instance::Smoke` against an instance served under
-  a `/relative` subpath
-- `cng-registry-caproni` runs `Test::Integration::Registry`
-- `cng-oauth-caproni` runs `Test::Integration::OAuth` (see [GitHub OAuth](#github-oauth-opt-in) for why it executes nothing yet)
+- `cng-instance-caproni` (non-blocking) runs `Test::Instance::All` over 10 parallel shards
+- `cng-relative-url-caproni` (non-blocking) runs `Test::Instance::Smoke` against an instance
+  served under a `/relative` subpath
+- `cng-registry-caproni` (non-blocking) runs `Test::Integration::Registry`
+- `cng-oauth-caproni` (non-blocking) runs `Test::Integration::OAuth` (see [GitHub OAuth](#github-oauth-opt-in) for why it executes nothing yet)
+- `cng-instance-ff-inverse` (blocking) runs `Test::Instance::All` with `QA_FEATURE_FLAGS`
+  inverted, and only when a feature flag definition file changes
+
+The four non-blocking jobs shadow an orchestrator-deployed counterpart and run whenever
+those run.
+
+The `-caproni` suffix is transitional. It marks a job that shadows an orchestrator-deployed
+one so the two can run side by side and be compared. A job that replaces its counterpart
+outright has nothing left to disambiguate from and takes the plain name, as
+`cng-instance-ff-inverse` does. The suffix goes away entirely once every `cng-` job uses
+Caproni.
 
 The registry job needs nothing beyond the chart's Gateway route for `registry.<domain>`.
 The registry spec takes its address from `CI_REGISTRY`, so unlike the orchestrator this rig

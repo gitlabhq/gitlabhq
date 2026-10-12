@@ -21,13 +21,9 @@ in a GraphQL document. For more information, see the
 [GraphQL directive documentation](https://graphql.org/learn/queries/#directives).
 
 > [!warning]
-> Deprecated items are marked with {{< icon name="warning" >}} and are planned to be removed in a
+> Deprecated items are planned to be removed in a
 > future release. For more information, see the GitLab
 > [deprecation process](../../_index.md#deprecation-and-removal-process).
->
-> Items that are [experiments](../../../../policy/development_stages_support.md#experiment) are
-> marked with {{< icon name="work-item-test-case" >}}. Experimental items can change at any time and
-> are not recommended for use in production.
 
 ## `deprecated`
 

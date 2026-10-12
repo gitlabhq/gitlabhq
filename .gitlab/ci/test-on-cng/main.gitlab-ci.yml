@@ -173,8 +173,11 @@ cng-instance:
     - .with-coverband-arg
 
 cng-instance-ff-inverse:
-  extends: cng-instance
+  extends: .caproni-test
+  allow_failure: false
   variables:
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
     QA_FEATURE_FLAGS: $FEATURE_FLAGS
   rules:
     - !reference [.rules:test:feature-flags-set, rules]

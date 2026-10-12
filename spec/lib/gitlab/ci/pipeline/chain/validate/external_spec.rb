@@ -302,9 +302,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
 
       it_behaves_like 'successful external authorization'
 
-      it 'logs exceptions' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
-          .with(instance_of(Net::OpenTimeout), { project_id: project.id })
+      it 'tracks a wrapped exception with a stable message' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception) do |exception, extra|
+          expect(exception).to be_a(described_class::RequestFailed)
+          expect(exception.message).to eq('Validation Service request failed: Net::OpenTimeout')
+          expect(exception.cause).to be_a(Net::OpenTimeout)
+          expect(extra).to eq(project_id: project.id)
+        end
 
         perform!
       end

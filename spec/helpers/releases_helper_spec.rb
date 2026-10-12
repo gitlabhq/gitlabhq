@@ -30,7 +30,7 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
 
     describe '#data_for_releases_page' do
       it 'includes the required data for displaying release blocks' do
-        expect(helper.data_for_releases_page.keys).to contain_exactly(*common_keys)
+        expect(helper.data_for_releases_page.keys).to match_array(common_keys)
       end
 
       context 'when the user is allowed to create a new release' do

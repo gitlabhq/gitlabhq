@@ -125044,7 +125044,8 @@ components:
       properties:
         hostname:
           type: string
-          description: Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.
+          description: URL of the Telegram API server, including `http://` or `https://`.
+            The default value is `https://api.telegram.org`.
           nullable: true
         token:
           type: string
@@ -127433,7 +127434,8 @@ components:
       properties:
         hostname:
           type: string
-          description: Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.
+          description: URL of the Telegram API server, including `http://` or `https://`.
+            The default value is `https://api.telegram.org`.
           nullable: true
         token:
           type: string
@@ -129822,7 +129824,8 @@ components:
       properties:
         hostname:
           type: string
-          description: Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.
+          description: URL of the Telegram API server, including `http://` or `https://`.
+            The default value is `https://api.telegram.org`.
           nullable: true
         token:
           type: string

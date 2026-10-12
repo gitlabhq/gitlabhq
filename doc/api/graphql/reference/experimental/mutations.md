@@ -21,13 +21,9 @@ Mutations are the top-level entry points for creating, updating, and deleting da
 [Mutations](../../getting_started.md#mutations).
 
 > [!warning]
-> Deprecated items are marked with {{< icon name="warning" >}} and are planned to be removed in a
+> Deprecated items are planned to be removed in a
 > future release. For more information, see the GitLab
 > [deprecation process](../../_index.md#deprecation-and-removal-process).
->
-> Items that are [experiments](../../../../policy/development_stages_support.md#experiment) are
-> marked with {{< icon name="work-item-test-case" >}}. Experimental items can change at any time and
-> are not recommended for use in production.
 
 ## Calling a mutation
 
@@ -282,6 +278,7 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `clientId` | [`String`](scalars.md#string) | Delete jobs matching client_id in the context metadata. |
 | `clientName` | [`String`](scalars.md#string) | Delete jobs matching client_name in the context metadata. |
 | `clientType` | [`String`](scalars.md#string) | Delete jobs matching client_type in the context metadata. |
+| `clientVersion` | [`String`](scalars.md#string) | Delete jobs matching client_version in the context metadata. |
 | `featureCategory` | [`String`](scalars.md#string) | Delete jobs matching feature_category in the context metadata. |
 | `glRootNamespaceId` | [`String`](scalars.md#string) | Delete jobs matching gl_root_namespace_id in the context metadata. |
 | `glUserId` | [`String`](scalars.md#string) | Delete jobs matching gl_user_id in the context metadata. |
@@ -377,8 +374,8 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `description` | [`String!`](scalars.md#string) | Description for the agent. |
-| `mcpServers` | [`[AiCatalogMcpServerID!]`](scalars.md#aicatalogmcpserverid) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>MCP servers to associate with the agent. |
-| `mcpTools` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>List of MCP tools enabled for the agent. |
+| `mcpServers` | [`[AiCatalogMcpServerID!]`](scalars.md#aicatalogmcpserverid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>MCP servers to associate with the agent. |
+| `mcpTools` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>List of MCP tools enabled for the agent. |
 | `name` | [`String!`](scalars.md#string) | Name for the agent. |
 | `projectId` | [`ProjectID!`](scalars.md#projectid) | Project for the agent. |
 | `public` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 19.2. Use `visibility`. |
@@ -386,7 +383,7 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `systemPrompt` | [`String!`](scalars.md#string) | System prompt for the agent. |
 | `tools` | [`[AiCatalogBuiltInToolID!]`](scalars.md#aicatalogbuiltintoolid) | List of GitLab built-in tools enabled for the agent. |
 | `userPrompt` | [`String`](scalars.md#string) | User prompt for the agent. |
-| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Visibility of the agent in the catalog. |
+| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Visibility of the agent in the catalog. |
 
 ### Fields {.no_toc}
 
@@ -447,8 +444,8 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | ---- | ---- | ----------- |
 | `description` | [`String`](scalars.md#string) | Description for the agent. |
 | `id` | [`AiCatalogItemID!`](scalars.md#aicatalogitemid) | Global ID of the catalog Agent to update. |
-| `mcpServers` | [`[AiCatalogMcpServerID!]`](scalars.md#aicatalogmcpserverid) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>MCP servers to associate with the agent. |
-| `mcpTools` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>List of MCP tools enabled for the agent. |
+| `mcpServers` | [`[AiCatalogMcpServerID!]`](scalars.md#aicatalogmcpserverid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>MCP servers to associate with the agent. |
+| `mcpTools` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>List of MCP tools enabled for the agent. |
 | `name` | [`String`](scalars.md#string) | Name for the agent. |
 | `public` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 19.2. Use `visibility`. |
 | `release` | [`Boolean`](scalars.md#boolean) | Whether to release the latest version of the agent. |
@@ -456,7 +453,7 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `tools` | [`[AiCatalogBuiltInToolID!]`](scalars.md#aicatalogbuiltintoolid) | List of GitLab built-in tools enabled for the agent. |
 | `userPrompt` | [`String`](scalars.md#string) | User prompt for the agent. |
 | `versionBump` | [`AiCatalogVersionBump`](enums.md#aicatalogversionbump) | Bump version, calculated from the last released version name. |
-| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Visibility of the agent in the catalog. |
+| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Visibility of the agent in the catalog. |
 
 ### Fields {.no_toc}
 
@@ -491,7 +488,7 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `projectId` | [`ProjectID!`](scalars.md#projectid) | Project for the flow. |
 | `public` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 19.2. Use `visibility`. |
 | `release` | [`Boolean`](scalars.md#boolean) | Whether to release the latest version of the flow. |
-| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Visibility of the flow in the catalog. |
+| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Visibility of the flow in the catalog. |
 
 ### Fields {.no_toc}
 
@@ -557,7 +554,7 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `public` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 19.2. Use `visibility`. |
 | `release` | [`Boolean`](scalars.md#boolean) | Whether to release the latest version of the flow. |
 | `versionBump` | [`AiCatalogVersionBump`](enums.md#aicatalogversionbump) | Bump version, calculated from the last released version name. |
-| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Visibility of the flow in the catalog. |
+| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Visibility of the flow in the catalog. |
 
 ### Fields {.no_toc}
 
@@ -589,8 +586,9 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `itemId` | [`AiCatalogItemID!`](scalars.md#aicatalogitemid) | Global ID of the catalog item to enable. |
 | `pinnedVersion` | [`AiCatalogPinnedVersion`](scalars.md#aicatalogpinnedversion) | Version to pin the item to, in the format `n.n.n`. Must be a released version. Defaults to the latest released version. Ignored when enabling within the item's managing project, which always tracks the latest released version. |
 | `projectIds` | [`[ProjectID!]!`](scalars.md#projectid) | Global IDs of the projects to enable the catalog item in (maximum 100). |
-| `triggerConditions` | [`AiCatalogTriggerConditionsInput`](input_objects.md#aicatalogtriggerconditionsinput) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |
+| `triggerConditions` | [`AiCatalogTriggerConditionsInput`](input_objects.md#aicatalogtriggerconditionsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |
 | `triggerFilter` | [`JSON`](scalars.md#json) | Deprecated in GitLab 19.3. Use `triggerConditions`. |
+| `triggerGoals` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Goals for the auto-created AI Catalog triggers, keyed by event type. |
 | `triggerTypes` | [`[String!]`](scalars.md#string) | List of event types to create AI Catalog triggers for. |
 
 ### Fields {.no_toc}
@@ -625,8 +623,9 @@ Sets an admin-locked GitLab Duo availability override on a group.
 | `pinnedVersion` | [`AiCatalogPinnedVersion`](scalars.md#aicatalogpinnedversion) | Version to pin the item to, in the format `n.n.n`. Must be a released version. Defaults to the latest released version. Ignored when enabling within the item's managing project, which always tracks the latest released version. |  |
 | `replaceExistingDirectConfigurations` | [`Boolean`](scalars.md#boolean) | Confirm replacement of a group configuration, and any project configurations, for this item when inheritance is turned on. Required when the item is already configured for the group. |  |
 | `target` | [`ItemConsumerTargetInput!`](input_objects.md#itemconsumertargetinput) | Target project or top-level group in which the catalog item is configured. |  |
-| `triggerConditions` | [`AiCatalogTriggerConditionsInput`](input_objects.md#aicatalogtriggerconditionsinput) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |  |
+| `triggerConditions` | [`AiCatalogTriggerConditionsInput`](input_objects.md#aicatalogtriggerconditionsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |  |
 | `triggerFilter` | [`JSON`](scalars.md#json) | Deprecated in GitLab 19.3. Use `triggerConditions`. |  |
+| `triggerGoals` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Goals for the auto-created AI Catalog triggers, keyed by event type. |  |
 | `triggerTypes` | [`[String!]`](scalars.md#string) | List of event types to create AI Catalog triggers for (values can be mention, assign or assign_reviewer). |  |
 
 ### Fields {.no_toc}
@@ -922,7 +921,7 @@ Blocks or allows an external MCP server for a group or project (kill-switch).
 | `projectId` | [`ProjectID!`](scalars.md#projectid) | Project for the Flow. |
 | `public` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 19.2. Use `visibility`. |
 | `release` | [`Boolean`](scalars.md#boolean) | Whether to release the latest version of the Flow. |
-| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Visibility of the Flow in the catalog. |
+| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Visibility of the Flow in the catalog. |
 
 ### Fields {.no_toc}
 
@@ -988,7 +987,7 @@ Blocks or allows an external MCP server for a group or project (kill-switch).
 | `public` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 19.2. Use `visibility`. |
 | `release` | [`Boolean`](scalars.md#boolean) | Whether to release the latest version of the Flow. |
 | `versionBump` | [`AiCatalogVersionBump`](enums.md#aicatalogversionbump) | Bump version, calculated from the last released version name. |
-| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Visibility of the Flow in the catalog. |
+| `visibility` | [`AiCatalogItemVisibility`](enums.md#aicatalogitemvisibility) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Visibility of the Flow in the catalog. |
 
 ### Fields {.no_toc}
 
@@ -1288,13 +1287,13 @@ Updates or creates settings for AI features.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `active` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Indicates whether the AI flow trigger is active. Defaults to true. |
+| `active` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Indicates whether the AI flow trigger is active. Defaults to true. |
 | `aiCatalogItemConsumerId` | [`AiCatalogItemConsumerID`](scalars.md#aicatalogitemconsumerid) | AI catalog item consumer to use instead of config_path. |
 | `configPath` | [`String`](scalars.md#string) | Path to the configuration file for the AI flow trigger. |
 | `description` | [`String!`](scalars.md#string) | Description of the AI flow trigger. |
 | `eventTypes` | [`[Int!]`](scalars.md#int) | Event types that triggers the AI flow. |
-| `filter` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter conditions for the AI flow trigger. |
-| `goals` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Goals for the AI flow trigger, keyed by event type. |
+| `filter` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Filter conditions for the AI flow trigger. |
+| `goals` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Goals for the AI flow trigger, keyed by event type. |
 | `projectPath` | [`ID!`](scalars.md#id) | Full path of the project the AI flow trigger is associated with. |
 | `userId` | [`UserID`](scalars.md#userid) | Service account for the AI flow trigger. |
 
@@ -1353,13 +1352,13 @@ Updates or creates settings for AI features.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `active` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Indicates whether the AI flow trigger is active. Inactive triggers do not run automatically. |
+| `active` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Indicates whether the AI flow trigger is active. Inactive triggers do not run automatically. |
 | `aiCatalogItemConsumerId` | [`AiCatalogItemConsumerID`](scalars.md#aicatalogitemconsumerid) | AI catalog item consumer to use instead of config_path. |
 | `configPath` | [`String`](scalars.md#string) | Path to the configuration file for the AI flow trigger. |
 | `description` | [`String`](scalars.md#string) | Description of the AI flow trigger. |
 | `eventTypes` | [`[Int!]`](scalars.md#int) | Event types that triggers the AI flow. |
-| `filter` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Filter conditions for the AI flow trigger. |
-| `goals` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Goals for the AI flow trigger, keyed by event type. |
+| `filter` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Filter conditions for the AI flow trigger. |
+| `goals` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Goals for the AI flow trigger, keyed by event type. |
 | `id` | [`AiFlowTriggerID!`](scalars.md#aiflowtriggerid) | ID of the flow trigger to update. |
 | `userId` | [`UserID`](scalars.md#userid) | Service account for the AI flow trigger. |
 
@@ -1434,7 +1433,7 @@ Updates or creates settings for AI features for a namespace.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `aiFeatureSettings` | [`[AiModelSelectionNamespaceFeatureSetting!]!`](objects.md#aimodelselectionnamespacefeaturesetting) | Status: Experiment. Introduced in GitLab 18.1.<br/><br/>List of AI feature settings after mutation. |
+| `aiFeatureSettings` | [`[AiModelSelectionNamespaceFeatureSetting!]!`](objects.md#aimodelselectionnamespacefeaturesetting) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>List of AI feature settings after mutation. |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 
 ## `aiSelfHostedModelConnectionCheck`
@@ -1748,7 +1747,7 @@ Activates an Artifact Registry for an organization by claiming a slug.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `registry` | [`ArtifactRegistry`](objects.md#artifactregistry) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>The organization's registry: the one just provisioned, or the existing one when the organization is already activated. Null on every other refusal. |
+| `registry` | [`ArtifactRegistry`](objects.md#artifactregistry) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>The organization's registry: the one just provisioned, or the existing one when the organization is already activated. Null on every other refusal. |
 
 ## `artifactRegistryArtifactDelete`
 
@@ -1987,8 +1986,8 @@ Creates a repository in Artifact Registry.
 | `format` | [`ArtifactRegistryRepositoryFormat!`](enums.md#artifactregistryrepositoryformat) | Package format the repository holds. Cannot be changed after creation. |
 | `kind` | [`ArtifactRegistryRepositoryKind`](enums.md#artifactregistryrepositorykind) | How the repository sources its artifacts. Defaults to hosted in Artifact Registry. |
 | `name` | [`String!`](scalars.md#string) | Name of the repository, unique within the organization. |
-| `settings` | [`ArtifactRegistryRemoteSettingsInput`](input_objects.md#artifactregistryremotesettingsinput) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Upstream configuration. Required on a remote repository create, rejected on any other kind. |
-| `upstreamRepositoryIds` | [`[ID!]`](scalars.md#id) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Upstream repositories of a virtual repository, as Artifact Registry repository IDs in resolution order. On update, replaces the whole upstream list, and an empty list removes every upstream. Rejected on any other kind. Maximum is 1000 IDs per request. Artifact Registry sets a lower limit on how many upstreams a repository can have. |
+| `settings` | [`ArtifactRegistryRemoteSettingsInput`](input_objects.md#artifactregistryremotesettingsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Upstream configuration. Required on a remote repository create, rejected on any other kind. |
+| `upstreamRepositoryIds` | [`[ID!]`](scalars.md#id) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Upstream repositories of a virtual repository, as Artifact Registry repository IDs in resolution order. On update, replaces the whole upstream list, and an empty list removes every upstream. Rejected on any other kind. Maximum is 1000 IDs per request. Artifact Registry sets a lower limit on how many upstreams a repository can have. |
 | `visibility` | [`ArtifactRegistryRepositoryVisibility`](enums.md#artifactregistryrepositoryvisibility) | Who can read the repository. |
 
 ### Fields {.no_toc}
@@ -1996,7 +1995,7 @@ Creates a repository in Artifact Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `refusedUpstreamRepositoryId` | [`ID`](scalars.md#id) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Artifact Registry ID of the first upstream list entry that Artifact Registry refused. Null unless an entry was refused. |
+| `refusedUpstreamRepositoryId` | [`ID`](scalars.md#id) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Artifact Registry ID of the first upstream list entry that Artifact Registry refused. Null unless an entry was refused. |
 | `repository` | [`ArtifactRegistryRepository`](objects.md#artifactregistryrepository) | Repository created. Null when the creation was not applied. |
 
 ## `artifactRegistryRepositoryDelete`
@@ -2087,8 +2086,8 @@ Updates a repository in Artifact Registry. Artifact Registry writes the metadata
 | ---- | ---- | ----------- |
 | `description` | [`String`](scalars.md#string) | Human-readable description of the repository. |
 | `name` | [`String!`](scalars.md#string) | Name of the repository to update, unique within the organization. Cannot be changed. |
-| `settings` | [`ArtifactRegistryRemoteSettingsInput`](input_objects.md#artifactregistryremotesettingsinput) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Upstream configuration. Required on a remote repository create, rejected on any other kind. |
-| `upstreamRepositoryIds` | [`[ID!]`](scalars.md#id) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Upstream repositories of a virtual repository, as Artifact Registry repository IDs in resolution order. On update, replaces the whole upstream list, and an empty list removes every upstream. Rejected on any other kind. Maximum is 1000 IDs per request. Artifact Registry sets a lower limit on how many upstreams a repository can have. |
+| `settings` | [`ArtifactRegistryRemoteSettingsInput`](input_objects.md#artifactregistryremotesettingsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Upstream configuration. Required on a remote repository create, rejected on any other kind. |
+| `upstreamRepositoryIds` | [`[ID!]`](scalars.md#id) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Upstream repositories of a virtual repository, as Artifact Registry repository IDs in resolution order. On update, replaces the whole upstream list, and an empty list removes every upstream. Rejected on any other kind. Maximum is 1000 IDs per request. Artifact Registry sets a lower limit on how many upstreams a repository can have. |
 | `visibility` | [`ArtifactRegistryRepositoryVisibility`](enums.md#artifactregistryrepositoryvisibility) | Who can read the repository. |
 
 ### Fields {.no_toc}
@@ -2096,7 +2095,7 @@ Updates a repository in Artifact Registry. Artifact Registry writes the metadata
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `refusedUpstreamRepositoryId` | [`ID`](scalars.md#id) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Artifact Registry ID of the first upstream list entry that Artifact Registry refused. Null unless an entry was refused. |
+| `refusedUpstreamRepositoryId` | [`ID`](scalars.md#id) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Artifact Registry ID of the first upstream list entry that Artifact Registry refused. Null unless an entry was refused. |
 | `repository` | [`ArtifactRegistryRepository`](objects.md#artifactregistryrepository) | Repository updated. Null when the update was not applied. |
 
 ## `artifactRegistryRoleBulkGrant`
@@ -2113,7 +2112,7 @@ Updates a repository in Artifact Registry. Artifact Registry writes the metadata
 
 {{< /history >}}
 
-Grants Artifact Registry roles to users on resources in a single all-or-nothing operation.
+Grants Artifact Registry roles to users on resources in a single all-or-nothing operation. Replaces any role a user already holds on that resource.
 
 **Input type:** `ArtifactRegistryRoleBulkGrantInput`
 
@@ -2144,7 +2143,7 @@ Grants Artifact Registry roles to users on resources in a single all-or-nothing 
 
 {{< /history >}}
 
-Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation.
+Revokes Artifact Registry roles from users on resources in a single all-or-nothing operation. Users can revoke their own role.
 
 **Input type:** `ArtifactRegistryRoleBulkRevokeInput`
 
@@ -2175,7 +2174,7 @@ Revokes Artifact Registry roles from users on resources in a single all-or-nothi
 
 {{< /history >}}
 
-Grants an Artifact Registry role to a user on a resource.
+Grants an Artifact Registry role to a user on a resource. Replaces any role the user already holds on that resource.
 
 **Input type:** `ArtifactRegistryRoleGrantInput`
 
@@ -2207,7 +2206,7 @@ Grants an Artifact Registry role to a user on a resource.
 
 {{< /history >}}
 
-Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it.
+Revokes a user's Artifact Registry role on a resource. Names no role: a user holds one role per resource, and revoking removes it. Users can revoke their own role.
 
 **Input type:** `ArtifactRegistryRoleRevokeInput`
 
@@ -2353,7 +2352,7 @@ Deletes one version of a package in an Artifact Registry repository. Permanently
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `component` | [`AscpComponent`](objects.md#ascpcomponent) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Created component. |
+| `component` | [`AscpComponent`](objects.md#ascpcomponent) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Created component. |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 
 ## `ascpScanCreate`
@@ -2387,7 +2386,7 @@ Deletes one version of a package in an Artifact Registry repository. Permanently
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `scan` | [`AscpScan`](objects.md#ascpscan) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Created scan. |
+| `scan` | [`AscpScan`](objects.md#ascpscan) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>Created scan. |
 
 ## `ascpSecurityContextCreate`
 
@@ -2424,7 +2423,7 @@ Deletes one version of a package in an Artifact Registry repository. Permanently
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `securityContext` | [`AscpSecurityContext`](objects.md#ascpsecuritycontext) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Created security context. |
+| `securityContext` | [`AscpSecurityContext`](objects.md#ascpsecuritycontext) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Created security context. |
 
 ## `auditEventsAmazonS3ConfigurationCreate`
 
@@ -3185,7 +3184,7 @@ Deprecated in GitLab 17.5. Replaced by WorkItem type.
 | `labelId` | [`LabelID`](scalars.md#labelid) | Global ID of an existing label. |
 | `milestoneId` | [`MilestoneID`](scalars.md#milestoneid) | Global ID of an existing milestone. |
 | `position` | [`Int`](scalars.md#int) | Position of the list. |
-| `statusId` | [`WorkItemsStatusesStatusID`](scalars.md#workitemsstatusesstatusid) | Status: Experiment. Introduced in GitLab 18.0.<br/><br/>Global ID of an existing status. |
+| `statusId` | [`WorkItemsStatusesStatusID`](scalars.md#workitemsstatusesstatusid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Global ID of an existing status. |
 
 ### Fields {.no_toc}
 
@@ -4331,8 +4330,8 @@ Creates a continuous deployment version set in an application.
 
 | Name | Type | Description | Default |
 | ---- | ---- | ----------- | ------- |
-| `defaultPermissions` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 17.8.<br/><br/>Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). | `true` |
-| `jobTokenPolicies` | [`[CiJobTokenScopePolicies!]`](enums.md#cijobtokenscopepolicies) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>List of policies added to the CI job token scope. Is ignored if job token policies are disabled. | `[]` |
+| `defaultPermissions` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.8.<br/><br/>Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). | `true` |
+| `jobTokenPolicies` | [`[CiJobTokenScopePolicies!]`](enums.md#cijobtokenscopepolicies) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.5.<br/><br/>List of policies added to the CI job token scope. Is ignored if job token policies are disabled. | `[]` |
 | `projectPath` | [`ID!`](scalars.md#id) | Project that the CI job token scope belongs to. |  |
 | `targetPath` | [`ID!`](scalars.md#id) | Group or project to be added to the CI job token scope. |  |
 
@@ -4341,7 +4340,7 @@ Creates a continuous deployment version set in an application.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `ciJobTokenScope` | [`CiJobTokenScopeType`](objects.md#cijobtokenscopetype) | CI job token's access scope. |
-| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
+| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 
 ## `ciJobTokenScopeAddProject`
@@ -4361,7 +4360,7 @@ Creates a continuous deployment version set in an application.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `ciJobTokenScope` | [`CiJobTokenScopeType`](objects.md#cijobtokenscopetype) | CI job token's access scope. |
-| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
+| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 
 ## `ciJobTokenScopeRemoveGroup`
@@ -4380,7 +4379,7 @@ Creates a continuous deployment version set in an application.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `ciJobTokenScope` | [`CiJobTokenScopeType`](objects.md#cijobtokenscopetype) | CI job token's access scope. |
-| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
+| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 
 ## `ciJobTokenScopeRemoveProject`
@@ -4400,7 +4399,7 @@ Creates a continuous deployment version set in an application.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `ciJobTokenScope` | [`CiJobTokenScopeType`](objects.md#cijobtokenscopetype) | CI job token's access scope. |
-| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
+| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 
 ## `ciJobTokenScopeUpdatePolicies`
@@ -4432,7 +4431,7 @@ Creates a continuous deployment version set in an application.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
+| `ciJobTokenScopeAllowlistEntry` | [`CiJobTokenScopeAllowlistEntry`](objects.md#cijobtokenscopeallowlistentry) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.6.<br/><br/>Allowlist entry for the CI job token's access scope. |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 
 ## `ciLint`
@@ -5335,7 +5334,7 @@ Creates a repository protection rule to restrict access to a project's container
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](enums.md#containerprotectionrepositoryruleaccesslevel) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Valid only when feature flag `container_registry_protected_containers_delete` is enabled. |
+| `minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](enums.md#containerprotectionrepositoryruleaccesslevel) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Valid only when feature flag `container_registry_protected_containers_delete` is enabled. |
 | `minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](enums.md#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | `projectPath` | [`ID!`](scalars.md#id) | Full path of the project where a protection rule is located. |
 | `repositoryPathPattern` | [`String!`](scalars.md#string) | Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path. |
@@ -5699,7 +5698,7 @@ Creates a protection rule to restrict access to project packages.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `minimumAccessLevelForDelete` | [`PackagesProtectionRuleAccessLevelForDelete`](enums.md#packagesprotectionruleaccesslevelfordelete) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Minimum GitLab access required to delete packages from the package registry. Valid values include `OWNER` or `ADMIN`. If the value is `nil`, the default minimum access level is `MAINTAINER`. Available only when feature flag `packages_protected_packages_delete` is enabled. |
+| `minimumAccessLevelForDelete` | [`PackagesProtectionRuleAccessLevelForDelete`](enums.md#packagesprotectionruleaccesslevelfordelete) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Minimum GitLab access required to delete packages from the package registry. Valid values include `OWNER` or `ADMIN`. If the value is `nil`, the default minimum access level is `MAINTAINER`. Available only when feature flag `packages_protected_packages_delete` is enabled. |
 | `minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](enums.md#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | `packageNamePattern` | [`String!`](scalars.md#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `packageType` | [`PackagesProtectionRulePackageType!`](enums.md#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
@@ -5775,7 +5774,7 @@ Creates a protection rule for a Terraform state backend.
 
 | Name | Type | Description | Default |
 | ---- | ---- | ----------- | ------- |
-| `allowedFrom` | [`TerraformStateProtectionRuleAllowedFrom`](enums.md#terraformstateprotectionruleallowedfrom) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Restriction on the source of write requests. `ANYWHERE` allows all sources, `CI_ONLY` requires a CI job token, `CI_ON_PROTECTED_BRANCH_ONLY` requires a CI job on a protected branch. | `ANYWHERE` |
+| `allowedFrom` | [`TerraformStateProtectionRuleAllowedFrom`](enums.md#terraformstateprotectionruleallowedfrom) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.<br/><br/>Restriction on the source of write requests. `ANYWHERE` allows all sources, `CI_ONLY` requires a CI job token, `CI_ON_PROTECTED_BRANCH_ONLY` requires a CI job on a protected branch. | `ANYWHERE` |
 | `minimumAccessLevelForWrite` | [`TerraformStateProtectionRuleAccessLevel!`](enums.md#terraformstateprotectionruleaccesslevel) | Minimum GitLab access level required to perform write operations on the Terraform state. Valid values include `DEVELOPER`, `MAINTAINER`, `OWNER`, or `ADMIN`. |  |
 | `projectPath` | [`ID!`](scalars.md#id) | Full path of the project where the protection rule is located. |  |
 | `stateName` | [`String!`](scalars.md#string) | Terraform state name protected by the rule. |  |
@@ -5785,7 +5784,7 @@ Creates a protection rule for a Terraform state backend.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `terraformStateProtectionRule` | [`TerraformStateProtectionRule`](objects.md#terraformstateprotectionrule) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Terraform state protection rule after mutation. |
+| `terraformStateProtectionRule` | [`TerraformStateProtectionRule`](objects.md#terraformstateprotectionrule) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.<br/><br/>Terraform state protection rule after mutation. |
 
 ## `createTestCase`
 
@@ -6623,7 +6622,7 @@ Deletes a protection rule for a Terraform state backend.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `terraformStateProtectionRule` | [`TerraformStateProtectionRule`](objects.md#terraformstateprotectionrule) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Terraform state protection rule that was deleted. |
+| `terraformStateProtectionRule` | [`TerraformStateProtectionRule`](objects.md#terraformstateprotectionrule) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.<br/><br/>Terraform state protection rule that was deleted. |
 
 ## `deleteUserCustomAttribute`
 
@@ -7136,16 +7135,16 @@ Updates GitLab Duo settings.
 | ---- | ---- | ----------- |
 | `aiGatewayTimeoutSeconds` | [`Int`](scalars.md#int) | Timeout for the AI Gateway request. |
 | `aiGatewayUrl` | [`String`](scalars.md#string) | URL for the local AI Gateway server. |
-| `allowAllUnixSockets` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Whether to allow all Unix sockets for network access. |
-| `allowProjectExtension` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Whether to allow projects to extend the network access domain allowlist. |
+| `allowAllUnixSockets` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Whether to allow all Unix sockets for network access. |
+| `allowProjectExtension` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Whether to allow projects to extend the network access domain allowlist. |
 | `duoAgentPlatformServiceUrl` | [`String`](scalars.md#string) | URL for the local Duo Agent Platform service. |
-| `duoCliEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Indicates whether GitLab Duo CLI access is enabled. |
+| `duoCliEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Indicates whether GitLab Duo CLI access is enabled. |
 | `duoCoreFeaturesEnabled` | [`Boolean`](scalars.md#boolean) | Indicates whether GitLab Duo Core features are enabled. |
-| `includeRecommendedAllowed` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Whether to include recommended domains in the network access allowlist. |
-| `minimumAccessLevelEnableOnProjects` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Minimum access level for enable on Duo Agent Platform. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
-| `minimumAccessLevelExecute` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Minimum access level for execute on Duo Agent Platform. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
-| `minimumAccessLevelExecuteAsync` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Minimum access level to execute Duo Agent Platform features in CI/CD. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
-| `minimumAccessLevelManage` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Minimum access level for manage on Duo Agent Platform. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
+| `includeRecommendedAllowed` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Whether to include recommended domains in the network access allowlist. |
+| `minimumAccessLevelEnableOnProjects` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.<br/><br/>Minimum access level for enable on Duo Agent Platform. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
+| `minimumAccessLevelExecute` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.<br/><br/>Minimum access level for execute on Duo Agent Platform. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
+| `minimumAccessLevelExecuteAsync` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.<br/><br/>Minimum access level to execute Duo Agent Platform features in CI/CD. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
+| `minimumAccessLevelManage` | [`AccessLevelEnum`](enums.md#accesslevelenum) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.<br/><br/>Minimum access level for manage on Duo Agent Platform. Ignored if dap_instance_customizable_permissions feature flag is disabled. |
 | `selfHostedDuoAgentPlatformServiceSecure` | [`Boolean`](scalars.md#boolean) | Whether to use secure transport (TLS) for the local Duo Agent Platform service. |
 
 ### Fields {.no_toc}
@@ -8180,7 +8179,7 @@ Updates a policy in the policy store for an organization or group. Only the supp
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `groupSecret` | [`GroupSecret`](objects.md#groupsecret) | Group secret. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `groupSecretDelete`
 
@@ -8223,7 +8222,7 @@ Updates a policy in the policy store for an organization or group. Only the supp
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `groupSecret` | [`GroupSecret`](objects.md#groupsecret) | Updated group secret. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `groupSecretsManagerDeprovision`
 
@@ -8241,7 +8240,7 @@ Updates a policy in the policy store for an organization or group. Only the supp
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `groupSecretsManager` | [`GroupSecretsManager`](objects.md#groupsecretsmanager) | Group secrets manager. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `groupSecretsManagerInitialize`
 
@@ -8259,7 +8258,7 @@ Updates a policy in the policy store for an organization or group. Only the supp
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `groupSecretsManager` | [`GroupSecretsManager`](objects.md#groupsecretsmanager) | Group secrets manager. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `groupSecretsPermissionDelete`
 
@@ -8277,7 +8276,7 @@ Updates a policy in the policy store for an organization or group. Only the supp
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 | `secretsPermission` | [`GroupSecretsPermission`](objects.md#groupsecretspermission) | Deleted Secrets Permission. |
 
 ## `groupSecretsPermissionUpdate`
@@ -8298,7 +8297,7 @@ Updates a policy in the policy store for an organization or group. Only the supp
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 | `secretsPermission` | [`GroupSecretsPermission`](objects.md#groupsecretspermission) | Secrets Permission that was created. |
 
 ## `groupTransfer`
@@ -8339,25 +8338,25 @@ Updates a policy in the policy store for an organization or group. Only the supp
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `aiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Indicates whether AI audit events are stored for the group. |
-| `builtInProjectTemplatesEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Indicates whether built-in project templates are available for new projects in the group. |
-| `duoAutoModeEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Indicates whether Duo Agent Platform auto mode is enabled for the group. |
-| `duoFeaturesEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 16.10.<br/><br/>Indicates whether GitLab Duo features are enabled for the group. |
+| `aiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Indicates whether AI audit events are stored for the group. |
+| `builtInProjectTemplatesEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Indicates whether built-in project templates are available for new projects in the group. |
+| `duoAutoModeEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Indicates whether Duo Agent Platform auto mode is enabled for the group. |
+| `duoFeaturesEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.<br/><br/>Indicates whether GitLab Duo features are enabled for the group. |
 | `fullPath` | [`ID!`](scalars.md#id) | Full path of the group that will be updated. |
-| `lockAiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Indicates whether AI audit events storage is enforced for all subgroups and projects. |
-| `lockBuiltInProjectTemplatesEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Indicates if the built-in project templates enabled setting is enforced for all subgroups. |
-| `lockDuoAutoModeEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Indicates if the Duo Agent Platform auto mode setting is enforced for all subgroups. |
-| `lockDuoFeaturesEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 16.10.<br/><br/>Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
+| `lockAiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Indicates whether AI audit events storage is enforced for all subgroups and projects. |
+| `lockBuiltInProjectTemplatesEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Indicates if the built-in project templates enabled setting is enforced for all subgroups. |
+| `lockDuoAutoModeEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Indicates if the Duo Agent Platform auto mode setting is enforced for all subgroups. |
+| `lockDuoFeaturesEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.10.<br/><br/>Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
 | `lockMathRenderingLimitsEnabled` | [`Boolean`](scalars.md#boolean) | Indicates if math rendering limits are locked for all descendant groups. |
-| `lockToolApprovalForSessionEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Indicates if the tool approval for session setting is enforced for all subgroups. |
+| `lockToolApprovalForSessionEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Indicates if the tool approval for session setting is enforced for all subgroups. |
 | `mathRenderingLimitsEnabled` | [`Boolean`](scalars.md#boolean) | Indicates if math rendering limits are used for the group. |
 | `name` | [`String`](scalars.md#string) | Name of the group. |
 | `path` | [`String`](scalars.md#string) | Path of the namespace. |
 | `sharedRunnersSetting` | [`SharedRunnersSetting`](enums.md#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | `stepUpAuthRequiredOauthProvider` | [`String`](scalars.md#string) | OAuth provider required for step-up authentication. |
-| `toolApprovalForSessionEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Indicates whether tool approval for session is enabled for the group. |
+| `toolApprovalForSessionEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Indicates whether tool approval for session is enabled for the group. |
 | `visibility` | [`VisibilityLevelsEnum`](enums.md#visibilitylevelsenum) | Visibility of the namespace. |
-| `webBasedCommitSigningEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Indicates whether web-based commit signing is enabled for the group. |
+| `webBasedCommitSigningEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Indicates whether web-based commit signing is enabled for the group. |
 
 ### Fields {.no_toc}
 
@@ -8604,6 +8603,35 @@ Updates a policy in the policy store for an organization or group. Only the supp
 {{< /history >}}
 
 **Input type:** `ImportSourceUserRetryFailedReassignmentInput`
+
+### Arguments {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `id` | [`ImportSourceUserID!`](scalars.md#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
+| `importSourceUser` | [`ImportSourceUser`](objects.md#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
+## `importSourceUserRevoke`
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.
+
+{{< /history >}}
+
+**Input type:** `ImportSourceUserRevokeInput`
 
 ### Arguments {.no_toc}
 
@@ -11242,7 +11270,7 @@ Update attributes of a merge request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `namespaceClusterAgentMapping` | [`NamespaceClusterAgentMapping`](objects.md#namespaceclusteragentmapping) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Created namespace cluster agent mapping. |
+| `namespaceClusterAgentMapping` | [`NamespaceClusterAgentMapping`](objects.md#namespaceclusteragentmapping) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Created namespace cluster agent mapping. |
 
 ## `namespaceDeleteRemoteDevelopmentClusterAgentMapping`
 
@@ -11260,7 +11288,7 @@ Update attributes of a merge request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `namespaceClusterAgentMapping` | [`NamespaceClusterAgentMapping`](objects.md#namespaceclusteragentmapping) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Created namespace cluster agent mapping. |
+| `namespaceClusterAgentMapping` | [`NamespaceClusterAgentMapping`](objects.md#namespaceclusteragentmapping) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Created namespace cluster agent mapping. |
 
 ## `namespaceSecretsManagerEnroll`
 
@@ -11765,7 +11793,7 @@ Convert a standard comment to a resolvable thread.
 | `id` | [`OrganizationsOrganizationID!`](scalars.md#organizationsorganizationid) | ID of the organization to mutate. |
 | `name` | [`String`](scalars.md#string) | Name for the organization. |
 | `path` | [`String`](scalars.md#string) | Path for the organization. |
-| `policyStoreExperimentEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Opt the organization in to or out of the Policy Store experiment. Opting in returns an error when the experiment is not available to the organization; opting out is always accepted. |
+| `policyStoreExperimentEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Opt the organization in to or out of the Policy Store experiment. Opting in returns an error when the experiment is not available to the organization; opting out is always accepted. |
 | `visibility` | [`OrganizationVisibility`](enums.md#organizationvisibility) | Visibility for the organization. |
 
 ### Fields {.no_toc}
@@ -11804,7 +11832,7 @@ Convert a standard comment to a resolvable thread.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `organizationUser` | [`OrganizationUser`](objects.md#organizationuser) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Organization user added by the mutation. |
+| `organizationUser` | [`OrganizationUser`](objects.md#organizationuser) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Organization user added by the mutation. |
 
 ## `organizationUserDelete`
 
@@ -11833,7 +11861,7 @@ Convert a standard comment to a resolvable thread.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `organizationUser` | [`OrganizationUser`](objects.md#organizationuser) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Organization user that was deleted. |
+| `organizationUser` | [`OrganizationUser`](objects.md#organizationuser) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Organization user that was deleted. |
 
 ## `organizationUserUpdate`
 
@@ -11863,7 +11891,7 @@ Convert a standard comment to a resolvable thread.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `organizationUser` | [`OrganizationUser`](objects.md#organizationuser) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>Organization user after mutation. |
+| `organizationUser` | [`OrganizationUser`](objects.md#organizationuser) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.5.<br/><br/>Organization user after mutation. |
 
 ## `pagesMarkOnboardingComplete`
 
@@ -12004,8 +12032,8 @@ Rotate a specified personal access token.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `async` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 17.8.<br/><br/>When `true`, the request does not wait for the pipeline to be created, and returns a unique identifier that can be used to check the creation status. |
-| `inputs` | [`[CiInputsInput!]`](input_objects.md#ciinputsinput) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Inputs for the pipeline. |
+| `async` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.8.<br/><br/>When `true`, the request does not wait for the pipeline to be created, and returns a unique identifier that can be used to check the creation status. |
+| `inputs` | [`[CiInputsInput!]`](input_objects.md#ciinputsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Inputs for the pipeline. |
 | `mergeRequestIid` | [`String`](scalars.md#string) | IID of the merge request to create pipeline for. |
 | `projectPath` | [`ID!`](scalars.md#id) | Full path of the project that is triggering the pipeline. |
 | `ref` | [`String!`](scalars.md#string) | Ref on which to run the pipeline. Ignored when `mergeRequestIid` is provided; the merge request ref path is used instead. |
@@ -12017,7 +12045,7 @@ Rotate a specified personal access token.
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `pipeline` | [`Pipeline`](objects.md#pipeline) | Pipeline created after mutation. Null if `async: true`. |
-| `requestId` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 17.8.<br/><br/>ID for checking the pipeline creation status. Null if `async: false`. |
+| `requestId` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.8.<br/><br/>ID for checking the pipeline creation status. Null if `async: false`. |
 
 ## `pipelineDestroy`
 
@@ -12096,7 +12124,7 @@ Triggers a test-run for a Scheduled Pipeline Execution Policy on a specific proj
 | `cron` | [`String!`](scalars.md#string) | Cron expression of the pipeline schedule. |
 | `cronTimezone` | [`String`](scalars.md#string) | Cron time zone supported by `ActiveSupport::TimeZone`. For example: `Pacific Time (US & Canada)` (default: `UTC`). |
 | `description` | [`String!`](scalars.md#string) | Description of the pipeline schedule. |
-| `inputs` | [`[CiInputsInput!]`](input_objects.md#ciinputsinput) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Inputs for the pipeline schedule. |
+| `inputs` | [`[CiInputsInput!]`](input_objects.md#ciinputsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Inputs for the pipeline schedule. |
 | `projectPath` | [`ID!`](scalars.md#id) | Full path of the project the pipeline schedule is associated with. |
 | `ref` | [`String!`](scalars.md#string) | Ref of the pipeline schedule. |
 | `variables` | [`[PipelineScheduleVariableInput!]`](input_objects.md#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
@@ -12171,7 +12199,7 @@ Triggers a test-run for a Scheduled Pipeline Execution Policy on a specific proj
 | `cronTimezone` | [`String`](scalars.md#string) | Cron time zone supported by `ActiveSupport::TimeZone`. For example: `Pacific Time (US & Canada)` (default: `UTC`). |
 | `description` | [`String`](scalars.md#string) | Description of the pipeline schedule. |
 | `id` | [`CiPipelineScheduleID!`](scalars.md#cipipelinescheduleid) | ID of the pipeline schedule to mutate. |
-| `inputs` | [`[CiInputsInput!]`](input_objects.md#ciinputsinput) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Inputs for the pipeline schedule. |
+| `inputs` | [`[CiInputsInput!]`](input_objects.md#ciinputsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Inputs for the pipeline schedule. |
 | `ref` | [`String`](scalars.md#string) | Ref of the pipeline schedule. |
 | `variables` | [`[PipelineScheduleVariableInput!]`](input_objects.md#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
 
@@ -12531,7 +12559,7 @@ Updates multiple members of a project. To use this mutation, you must have at le
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `projectSecret` | [`ProjectSecret`](objects.md#projectsecret) | Project secret. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `projectSecretDelete`
 
@@ -12574,7 +12602,7 @@ Updates multiple members of a project. To use this mutation, you must have at le
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `projectSecret` | [`ProjectSecret`](objects.md#projectsecret) | Updated project secret. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `projectSecretsManagerDeprovision`
 
@@ -12592,7 +12620,7 @@ Updates multiple members of a project. To use this mutation, you must have at le
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `projectSecretsManager` | [`ProjectSecretsManager`](objects.md#projectsecretsmanager) | Project secrets manager. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `projectSecretsManagerInitialize`
 
@@ -12610,7 +12638,7 @@ Updates multiple members of a project. To use this mutation, you must have at le
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
 | `projectSecretsManager` | [`ProjectSecretsManager`](objects.md#projectsecretsmanager) | Project secrets manager. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 
 ## `projectSecretsPermissionDelete`
 
@@ -12628,7 +12656,7 @@ Updates multiple members of a project. To use this mutation, you must have at le
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 | `secretsPermission` | [`ProjectSecretsPermission`](objects.md#projectsecretspermission) | Secrets Permission that was deleted. |
 
 ## `projectSecretsPermissionUpdate`
@@ -12649,7 +12677,7 @@ Updates multiple members of a project. To use this mutation, you must have at le
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
+| `reason` | [`SecretsManagerWriteDenialReason`](enums.md#secretsmanagerwritedenialreason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Reason the write was denied due to entitlement; null when not denied for that reason. |
 | `secretsPermission` | [`ProjectSecretsPermission`](objects.md#projectsecretspermission) | Secrets Permission that was created. |
 
 ## `projectSecurityExclusionCreate`
@@ -12791,7 +12819,7 @@ Deprecated in GitLab 17.3. CVS has been enabled permanently. See [this epic](htt
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `aiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Indicates whether AI audit events are stored for the project. |
+| `aiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Indicates whether AI audit events are stored for the project. |
 | `duoAutoModeEnabled` | [`Boolean`](scalars.md#boolean) | Indicates whether Duo Agent Platform auto mode is enabled for the project. |
 | `duoContextExclusionSettings` | [`DuoContextExclusionSettingsInput`](input_objects.md#duocontextexclusionsettingsinput) | Settings for excluding files from Duo context. |
 | `duoFeaturesEnabled` | [`Boolean`](scalars.md#boolean) | Indicates whether GitLab Duo features are enabled for the project. |
@@ -12800,7 +12828,7 @@ Deprecated in GitLab 17.3. CVS has been enabled permanently. See [this epic](htt
 | `duoSecretDetectionFpEnabled` | [`Boolean`](scalars.md#boolean) | Indicates whether Secret Detection False Positive Detection is enabled for the project. |
 | `fullPath` | [`ID!`](scalars.md#id) | Full Path of the project the settings belong to. |
 | `toolApprovalForSessionEnabled` | [`Boolean`](scalars.md#boolean) | Indicates whether tool approval for Duo Workflow sessions is enabled for the project. |
-| `webBasedCommitSigningEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Indicates whether web-based commit signing is enabled for the project. |
+| `webBasedCommitSigningEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Indicates whether web-based commit signing is enabled for the project. |
 
 ### Fields {.no_toc}
 
@@ -13473,14 +13501,14 @@ Triggers a resynchronization of security policies linked to the given project or
 | `maintenanceNote` | [`String`](scalars.md#string) | Runner's maintenance notes. |
 | `maximumTimeout` | [`Int`](scalars.md#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | `paused` | [`Boolean`](scalars.md#boolean) | Indicates the runner is not allowed to receive jobs. |
-| `privateProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
+| `privateProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.<br/><br/>Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | `projectId` | [`ProjectID`](scalars.md#projectid) | Global ID of the project that the runner is created in (valid only for project runner). |
-| `publicProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
+| `publicProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.<br/><br/>Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | `runUntagged` | [`Boolean`](scalars.md#boolean) | Indicates the runner is able to run untagged jobs. |
 | `runnerType` | [`CiRunnerType!`](enums.md#cirunnertype) | Type of the runner to create. |
 | `tagList` | [`[String!]`](scalars.md#string) | Tags associated with the runner. |
 | `tokenExpiresAt` | [`Time`](scalars.md#time) | Token expiration time (ISO 8601 format). Must be between 5 minutes and 21 days in the future, and cannot exceed instance/group/project limits. |
-| `tokenRotationDeadline` | [`Time`](scalars.md#time) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Deadline for token rotation (ISO 8601 format). Requires tokenExpiresAt. Must be <= tokenExpiresAt. Setting both to the same value disables token rotation. |
+| `tokenRotationDeadline` | [`Time`](scalars.md#time) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>Deadline for token rotation (ISO 8601 format). Requires tokenExpiresAt. Must be <= tokenExpiresAt. Setting both to the same value disables token rotation. |
 
 ### Fields {.no_toc}
 
@@ -13551,8 +13579,8 @@ Triggers a resynchronization of security policies linked to the given project or
 | `maintenanceNote` | [`String`](scalars.md#string) | Runner's maintenance notes. |
 | `maximumTimeout` | [`Int`](scalars.md#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | `paused` | [`Boolean`](scalars.md#boolean) | Indicates the runner is not allowed to receive jobs. |
-| `privateProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
-| `publicProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
+| `privateProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.<br/><br/>Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
+| `publicProjectsMinutesCostFactor` | [`Float`](scalars.md#float) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.<br/><br/>Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | `runUntagged` | [`Boolean`](scalars.md#boolean) | Indicates the runner is able to run untagged jobs. |
 | `tagList` | [`[String!]`](scalars.md#string) | Tags associated with the runner. |
 
@@ -15420,12 +15448,12 @@ Updates the permission settings for an AI tool rule.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `backgroundAccess` | [`AiBackgroundToolPermission`](enums.md#aibackgroundtoolpermission) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Permission mode for the background-flow surface. |
+| `backgroundAccess` | [`AiBackgroundToolPermission`](enums.md#aibackgroundtoolpermission) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Permission mode for the background-flow surface. |
 | `fullPath` | [`ID!`](scalars.md#id) | Full path of the root namespace to update the tool rule for. |
 | `localAccess` | [`AiToolPermission`](enums.md#aitoolpermission) | Permission mode for local or IDE surface. |
 | `projectPath` | [`ID`](scalars.md#id) | Full path of the project to update the tool rule for. When provided, creates a project-level rule that can only be stricter than the namespace rule. |
 | `toolId` | [`String!`](scalars.md#string) | Tool name string identifying the tool to update. For example, "create_issue". |
-| `unsetAccessTypes` | [`[AiToolAccessType!]`](enums.md#aitoolaccesstype) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Access types to clear so they fall back to their defaults. The rule is deleted when every access type is unset. |
+| `unsetAccessTypes` | [`[AiToolAccessType!]`](enums.md#aitoolaccesstype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Access types to clear so they fall back to their defaults. The rule is deleted when every access type is unset. |
 | `webAccess` | [`AiToolPermission`](enums.md#aitoolpermission) | Permission mode for web surface. |
 
 ### Fields {.no_toc}
@@ -15637,7 +15665,7 @@ Updates a container repository protection rule that controls who can modify cont
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `id` | [`ContainerRegistryProtectionRuleID!`](scalars.md#containerregistryprotectionruleid) | Global ID of the container repository protection rule to be updated. |
-| `minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](enums.md#containerprotectionrepositoryruleaccesslevel) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Valid only when feature flag `container_registry_protected_containers_delete` is enabled. |
+| `minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](enums.md#containerprotectionrepositoryruleaccesslevel) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Valid only when feature flag `container_registry_protected_containers_delete` is enabled. |
 | `minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](enums.md#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | `repositoryPathPattern` | [`String`](scalars.md#string) | Container repository path pattern protected by the protection rule. Must start with the project's full path. For example: `my-project/*-prod-*`. Wildcard character `*` is allowed anywhere after the project's full path. |
 
@@ -15835,7 +15863,7 @@ These settings can be adjusted only by the group Owner.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `approvalSource` | [`DuoWorkflowToolCallApprovalSource`](enums.md#duoworkflowtoolcallapprovalsource) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Source of the approval decision, for audit purposes. |
+| `approvalSource` | [`DuoWorkflowToolCallApprovalSource`](enums.md#duoworkflowtoolcallapprovalsource) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Source of the approval decision, for audit purposes. |
 | `pattern` | [`String`](scalars.md#string) | Glob pattern to approve for matching tool call arguments. |
 | `toolCallArgs` | [`JSON`](scalars.md#json) | Arguments for the tool call. |
 | `toolName` | [`String!`](scalars.md#string) | Name of the tool to approve. |
@@ -16102,7 +16130,7 @@ Updates a package protection rule to restrict access to project packages. You ca
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `id` | [`PackagesProtectionRuleID!`](scalars.md#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
-| `minimumAccessLevelForDelete` | [`PackagesProtectionRuleAccessLevelForDelete`](enums.md#packagesprotectionruleaccesslevelfordelete) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Minimum GitLab access required to delete packages from the package registry. Valid values include `OWNER` or `ADMIN`. If the value is `nil`, the default minimum access level is `MAINTAINER`. Available only when feature flag `packages_protected_packages_delete` is enabled. |
+| `minimumAccessLevelForDelete` | [`PackagesProtectionRuleAccessLevelForDelete`](enums.md#packagesprotectionruleaccesslevelfordelete) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Minimum GitLab access required to delete packages from the package registry. Valid values include `OWNER` or `ADMIN`. If the value is `nil`, the default minimum access level is `MAINTAINER`. Available only when feature flag `packages_protected_packages_delete` is enabled. |
 | `minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](enums.md#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | `packageNamePattern` | [`String`](scalars.md#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `packageType` | [`PackagesProtectionRulePackageType`](enums.md#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
@@ -16210,17 +16238,17 @@ Updates a protection rule for a Terraform state backend.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `allowedFrom` | [`TerraformStateProtectionRuleAllowedFrom`](enums.md#terraformstateprotectionruleallowedfrom) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Restriction on the source of write requests. `ANYWHERE` allows all sources, `CI_ONLY` requires a CI job token, `CI_ON_PROTECTED_BRANCH_ONLY` requires a CI job on a protected branch. |
+| `allowedFrom` | [`TerraformStateProtectionRuleAllowedFrom`](enums.md#terraformstateprotectionruleallowedfrom) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Restriction on the source of write requests. `ANYWHERE` allows all sources, `CI_ONLY` requires a CI job token, `CI_ON_PROTECTED_BRANCH_ONLY` requires a CI job on a protected branch. |
 | `id` | [`TerraformStateProtectionRuleID!`](scalars.md#terraformstateprotectionruleid) | Global ID of the Terraform state protection rule to update. |
-| `minimumAccessLevelForWrite` | [`TerraformStateProtectionRuleAccessLevel`](enums.md#terraformstateprotectionruleaccesslevel) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Minimum GitLab access level required to perform write operations on the Terraform state. Valid values include `DEVELOPER`, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| `stateName` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Terraform state name protected by the rule. |
+| `minimumAccessLevelForWrite` | [`TerraformStateProtectionRuleAccessLevel`](enums.md#terraformstateprotectionruleaccesslevel) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Minimum GitLab access level required to perform write operations on the Terraform state. Valid values include `DEVELOPER`, `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| `stateName` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Terraform state name protected by the rule. |
 
 ### Fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `errors` | [`[String!]!`](scalars.md#string) | Errors encountered during the mutation. |
-| `terraformStateProtectionRule` | [`TerraformStateProtectionRule`](objects.md#terraformstateprotectionrule) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Terraform state protection rule after mutation. |
+| `terraformStateProtectionRule` | [`TerraformStateProtectionRule`](objects.md#terraformstateprotectionrule) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Terraform state protection rule after mutation. |
 
 ## `updateVirtualRegistriesSetting`
 
@@ -16567,14 +16595,14 @@ Creates or updates a custom attribute on a user. Only available to admins.
 | `mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](enums.md#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
 | `mergeRequestDashboardShowDrafts` | [`Boolean`](scalars.md#boolean) | Show draft merge requests on the merge request dashboard. |
 | `mergeRequestsSort` | [`MergeRequestSort`](enums.md#mergerequestsort) | Sort order for issue lists. |
-| `orbitSettings` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Orbit agent settings, e.g.: "{ enabled: false }". |
-| `organizationGroupsProjectsDisplay` | [`OrganizationGroupProjectDisplay`](enums.md#organizationgroupprojectdisplay) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Default list view for organization groups and projects. |
-| `organizationGroupsProjectsSort` | [`OrganizationGroupProjectSort`](enums.md#organizationgroupprojectsort) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Sort order for organization groups and projects. |
+| `orbitSettings` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Orbit agent settings, e.g.: "{ enabled: false }". |
+| `organizationGroupsProjectsDisplay` | [`OrganizationGroupProjectDisplay`](enums.md#organizationgroupprojectdisplay) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Default list view for organization groups and projects. |
+| `organizationGroupsProjectsSort` | [`OrganizationGroupProjectSort`](enums.md#organizationgroupprojectsort) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Sort order for organization groups and projects. |
 | `projectsSort` | [`ProjectSort`](enums.md#projectsort) | Sort order for projects. |
 | `useWorkItemsView` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 19.5. Work item view is always used. |
 | `visibilityPipelineIdType` | [`VisibilityPipelineIdType`](enums.md#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
-| `wikiUseAutoCommitMessage` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Whether to skip the commit message modal and use the auto-generated commit message when saving changes to a wiki document. |
-| `workItemsDisplaySettings` | [`JSON`](scalars.md#json) | Status: Experiment. Introduced in GitLab 18.1.<br/><br/>Display settings for the work item lists, e.g.: "{ shouldOpenItemsInSidePanel: false }". |
+| `wikiUseAutoCommitMessage` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>Whether to skip the commit message modal and use the auto-generated commit message when saving changes to a wiki document. |
+| `workItemsDisplaySettings` | [`JSON`](scalars.md#json) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>Display settings for the work item lists, e.g.: "{ shouldOpenItemsInSidePanel: false }". |
 
 ### Fields {.no_toc}
 
@@ -17342,18 +17370,18 @@ Allows updating several properties for a set of work items.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `assigneesWidget` | [`WorkItemWidgetAssigneesInput`](input_objects.md#workitemwidgetassigneesinput) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Input for assignees widget. |
-| `confidential` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Sets the work item confidentiality. |
+| `assigneesWidget` | [`WorkItemWidgetAssigneesInput`](input_objects.md#workitemwidgetassigneesinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Input for assignees widget. |
+| `confidential` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Sets the work item confidentiality. |
 | `fullPath` | [`ID!`](scalars.md#id) | Full path of the project or group containing the work items that will be updated. User paths are not supported. |
-| `healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](input_objects.md#workitemwidgethealthstatusinput) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Input for health status widget. |
-| `hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](input_objects.md#workitemwidgethierarchycreateinput) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Input for hierarchy widget. |
+| `healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](input_objects.md#workitemwidgethealthstatusinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Input for health status widget. |
+| `hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](input_objects.md#workitemwidgethierarchycreateinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Input for hierarchy widget. |
 | `ids` | [`[WorkItemID!]!`](scalars.md#workitemid) | Global ID array of the work items that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
-| `iterationWidget` | [`WorkItemWidgetIterationInput`](input_objects.md#workitemwidgetiterationinput) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Input for iteration widget. |
+| `iterationWidget` | [`WorkItemWidgetIterationInput`](input_objects.md#workitemwidgetiterationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Input for iteration widget. |
 | `labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](input_objects.md#workitemwidgetlabelsupdateinput) | Input for labels widget. |
-| `milestoneWidget` | [`WorkItemWidgetMilestoneInput`](input_objects.md#workitemwidgetmilestoneinput) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Input for milestone widget. |
-| `stateEvent` | [`WorkItemStateEvent`](enums.md#workitemstateevent) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Close or reopen multiple work items at once. |
-| `statusWidget` | [`WorkItemWidgetStatusInput`](input_objects.md#workitemwidgetstatusinput) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>Input for status widget. |
-| `subscriptionEvent` | [`WorkItemSubscriptionEvent`](enums.md#workitemsubscriptionevent) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Subscribe or unsubscribe from the work items. |
+| `milestoneWidget` | [`WorkItemWidgetMilestoneInput`](input_objects.md#workitemwidgetmilestoneinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Input for milestone widget. |
+| `stateEvent` | [`WorkItemStateEvent`](enums.md#workitemstateevent) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Close or reopen multiple work items at once. |
+| `statusWidget` | [`WorkItemWidgetStatusInput`](input_objects.md#workitemwidgetstatusinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Input for status widget. |
+| `subscriptionEvent` | [`WorkItemSubscriptionEvent`](enums.md#workitemsubscriptionevent) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Subscribe or unsubscribe from the work items. |
 
 ### Fields {.no_toc}
 
@@ -17416,14 +17444,14 @@ Creates a work item.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `agentPlanWidget` | [`WorkItemWidgetAgentPlanInput`](input_objects.md#workitemwidgetagentplaninput) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Input for agent plan widget. |
+| `agentPlanWidget` | [`WorkItemWidgetAgentPlanInput`](input_objects.md#workitemwidgetagentplaninput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Input for agent plan widget. |
 | `assigneesWidget` | [`WorkItemWidgetAssigneesInput`](input_objects.md#workitemwidgetassigneesinput) | Input for assignees widget. |
 | `colorWidget` | [`WorkItemWidgetColorInput`](input_objects.md#workitemwidgetcolorinput) | Input for color widget. |
 | `confidential` | [`Boolean`](scalars.md#boolean) | Sets the work item confidentiality. |
 | `createSource` | [`String`](scalars.md#string) | Source which triggered the creation of the work item. Used only for tracking purposes. |
 | `createdAt` | [`Time`](scalars.md#time) | Timestamp when the work item was created. Available only for admins and project owners. |
 | `crmContactsWidget` | [`WorkItemWidgetCrmContactsCreateInput`](input_objects.md#workitemwidgetcrmcontactscreateinput) | Input for CRM contacts widget. |
-| `customFieldsWidget` | [`[WorkItemWidgetCustomFieldValueInputType!]`](input_objects.md#workitemwidgetcustomfieldvalueinputtype) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Input for custom fields widget. |
+| `customFieldsWidget` | [`[WorkItemWidgetCustomFieldValueInputType!]`](input_objects.md#workitemwidgetcustomfieldvalueinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Input for custom fields widget. |
 | `description` | [`String`](scalars.md#string) | Deprecated in GitLab 16.9. use description widget instead. |
 | `descriptionWidget` | [`WorkItemWidgetDescriptionInput`](input_objects.md#workitemwidgetdescriptioninput) | Input for description widget. |
 | `developmentWidget` | [`WorkItemWidgetDevelopmentCreateInput`](input_objects.md#workitemwidgetdevelopmentcreateinput) | Input for development widget. |
@@ -17437,9 +17465,9 @@ Creates a work item.
 | `namespacePath` | [`ID`](scalars.md#id) | Full path of the namespace(project or group) the work item is created in. |
 | `projectPath` | [`ID`](scalars.md#id) | Deprecated in GitLab 15.10. Please use namespacePath instead. That will cover for both projects and groups. |
 | `startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](input_objects.md#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
-| `statusWidget` | [`WorkItemWidgetStatusInput`](input_objects.md#workitemwidgetstatusinput) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Input for status widget. |
+| `statusWidget` | [`WorkItemWidgetStatusInput`](input_objects.md#workitemwidgetstatusinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Input for status widget. |
 | `title` | [`String!`](scalars.md#string) | Title of the work item. |
-| `vulnerabilityId` | [`VulnerabilityID`](scalars.md#vulnerabilityid) | Status: Experiment. Introduced in GitLab 17.9.<br/><br/>Input for linking an existing vulnerability to created work item. |
+| `vulnerabilityId` | [`VulnerabilityID`](scalars.md#vulnerabilityid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Input for linking an existing vulnerability to created work item. |
 | `weightWidget` | [`WorkItemWidgetWeightInput`](input_objects.md#workitemwidgetweightinput) | Input for weight widget. |
 | `workItemTypeId` | [`WorkItemsTypeID!`](scalars.md#workitemstypeid) | Global ID of a work item type. |
 
@@ -17742,15 +17770,15 @@ Deprecated in GitLab 18.0. Use WorkItemsCsvExport.
 | `crmOrganizationId` | [`String`](scalars.md#string) | Filter by ID of CRM contact organization. |
 | `dueAfter` | [`Time`](scalars.md#time) | Work items due after the timestamp. |
 | `dueBefore` | [`Time`](scalars.md#time) | Work items due before the timestamp. |
-| `healthStatusFilter` | [`HealthStatusFilter`](enums.md#healthstatusfilter) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Health status of the work items, "none" and "any" values are supported. |
-| `hierarchyFilters` | [`HierarchyFilterInput`](input_objects.md#hierarchyfilterinput) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>Filtering options related to the work item hierarchy. |
+| `healthStatusFilter` | [`HealthStatusFilter`](enums.md#healthstatusfilter) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Health status of the work items, "none" and "any" values are supported. |
+| `hierarchyFilters` | [`HierarchyFilterInput`](input_objects.md#hierarchyfilterinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Filtering options related to the work item hierarchy. |
 | `ids` | [`[WorkItemID!]`](scalars.md#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | `iids` | [`[String!]`](scalars.md#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | `in` | [`[IssuableSearchableField!]`](enums.md#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| `includeDescendantWorkItems` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>Whether to include work items of descendant parents when filtering by parent_ids. |
-| `iterationCadenceId` | [`[IterationsCadenceID!]`](scalars.md#iterationscadenceid) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Filter by a list of iteration cadence IDs. |
-| `iterationId` | [`[ID]`](scalars.md#id) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>List of iteration Global IDs applied to the work items. |
-| `iterationWildcardId` | [`IterationWildcardId`](enums.md#iterationwildcardid) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Filter by iteration ID wildcard. |
+| `includeDescendantWorkItems` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Whether to include work items of descendant parents when filtering by parent_ids. |
+| `iterationCadenceId` | [`[IterationsCadenceID!]`](scalars.md#iterationscadenceid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Filter by a list of iteration cadence IDs. |
+| `iterationId` | [`[ID]`](scalars.md#id) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>List of iteration Global IDs applied to the work items. |
+| `iterationWildcardId` | [`IterationWildcardId`](enums.md#iterationwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Filter by iteration ID wildcard. |
 | `labelName` | [`[String!]`](scalars.md#string) | Labels applied to the work item (maximum is 100 labels). |
 | `milestoneTitle` | [`[String!]`](scalars.md#string) | Milestone applied to the work item (maximum is 100 milestones). |
 | `milestoneWildcardId` | [`MilestoneWildcardId`](enums.md#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -17758,20 +17786,20 @@ Deprecated in GitLab 18.0. Use WorkItemsCsvExport.
 | `not` | [`NegatedWorkItemFilterInput`](input_objects.md#negatedworkitemfilterinput) | Negated work item arguments. |
 | `or` | [`UnionedWorkItemFilterInput`](input_objects.md#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | `parentIds` | [`[WorkItemID!]`](scalars.md#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
-| `parentWildcardId` | [`WorkItemParentWildcardId`](enums.md#workitemparentwildcardid) | Status: Experiment. Introduced in GitLab 18.5.<br/><br/>Filter by parent ID wildcard. Incompatible with parentIds. |
+| `parentWildcardId` | [`WorkItemParentWildcardId`](enums.md#workitemparentwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.<br/><br/>Filter by parent ID wildcard. Incompatible with parentIds. |
 | `projectPath` | [`ID!`](scalars.md#id) | Full project path. |
 | `releaseTag` | [`[String!]`](scalars.md#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | `releaseTagWildcardId` | [`ReleaseTagWildcardId`](enums.md#releasetagwildcardid) | Filter by release tag wildcard. |
 | `search` | [`String`](scalars.md#string) | Search query for title or description. |
 | `selectedFields` | [`[AvailableExportFields!]`](enums.md#availableexportfields) | List of selected fields to be exported. Omit to export all available fields. |
 | `state` | [`IssuableState`](enums.md#issuablestate) | Current state of the work item. |
-| `status` | [`WorkItemWidgetStatusFilterInput`](input_objects.md#workitemwidgetstatusfilterinput) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Filter by status. |
+| `status` | [`WorkItemWidgetStatusFilterInput`](input_objects.md#workitemwidgetstatusfilterinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.<br/><br/>Filter by status. |
 | `subscribed` | [`SubscriptionStatus`](enums.md#subscriptionstatus) | Work items the current user is subscribed to. |
 | `types` | [`[IssueType!]`](enums.md#issuetype) | Filter work items by the given work item types. |
 | `updatedAfter` | [`Time`](scalars.md#time) | Work items updated after the timestamp. |
 | `updatedBefore` | [`Time`](scalars.md#time) | Work items updated before the timestamp. |
-| `weight` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Weight applied to the work item, "none" and "any" values are supported. |
-| `weightWildcardId` | [`WeightWildcardId`](enums.md#weightwildcardid) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Filter by weight ID wildcard. Incompatible with weight. |
+| `weight` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Weight applied to the work item, "none" and "any" values are supported. |
+| `weightWildcardId` | [`WeightWildcardId`](enums.md#weightwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Filter by weight ID wildcard. Incompatible with weight. |
 | `workItemTypeIds` | [`[WorkItemsTypeID!]`](scalars.md#workitemstypeid) | Filter work items by work item type global IDs. |
 
 ### Fields {.no_toc}
@@ -18291,14 +18319,14 @@ Updates a work item by Global ID.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `agentPlanWidget` | [`WorkItemWidgetAgentPlanInput`](input_objects.md#workitemwidgetagentplaninput) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Input for agent plan widget. |
+| `agentPlanWidget` | [`WorkItemWidgetAgentPlanInput`](input_objects.md#workitemwidgetagentplaninput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Input for agent plan widget. |
 | `assigneesWidget` | [`WorkItemWidgetAssigneesInput`](input_objects.md#workitemwidgetassigneesinput) | Input for assignees widget. |
 | `awardEmojiWidget` | [`WorkItemWidgetAwardEmojiUpdateInput`](input_objects.md#workitemwidgetawardemojiupdateinput) | Input for emoji reactions widget. |
 | `colorWidget` | [`WorkItemWidgetColorInput`](input_objects.md#workitemwidgetcolorinput) | Input for color widget. |
 | `confidential` | [`Boolean`](scalars.md#boolean) | Sets the work item confidentiality. |
 | `crmContactsWidget` | [`WorkItemWidgetCrmContactsUpdateInput`](input_objects.md#workitemwidgetcrmcontactsupdateinput) | Input for CRM contacts widget. |
 | `currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](input_objects.md#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
-| `customFieldsWidget` | [`[WorkItemWidgetCustomFieldValueInputType!]`](input_objects.md#workitemwidgetcustomfieldvalueinputtype) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Input for custom fields widget. |
+| `customFieldsWidget` | [`[WorkItemWidgetCustomFieldValueInputType!]`](input_objects.md#workitemwidgetcustomfieldvalueinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Input for custom fields widget. |
 | `descriptionWidget` | [`WorkItemWidgetDescriptionInput`](input_objects.md#workitemwidgetdescriptioninput) | Input for description widget. |
 | `healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](input_objects.md#workitemwidgethealthstatusinput) | Input for health status widget. |
 | `hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](input_objects.md#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
@@ -18306,14 +18334,14 @@ Updates a work item by Global ID.
 | `iterationWidget` | [`WorkItemWidgetIterationInput`](input_objects.md#workitemwidgetiterationinput) | Input for iteration widget. |
 | `labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](input_objects.md#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | `milestoneWidget` | [`WorkItemWidgetMilestoneInput`](input_objects.md#workitemwidgetmilestoneinput) | Input for milestone widget. |
-| `moveAfterId` | [`WorkItemID`](scalars.md#workitemid) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Global ID of a work item that should be placed after the work item. |
-| `moveBeforeId` | [`WorkItemID`](scalars.md#workitemid) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Global ID of a work item that should be placed before the work item. |
+| `moveAfterId` | [`WorkItemID`](scalars.md#workitemid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Global ID of a work item that should be placed after the work item. |
+| `moveBeforeId` | [`WorkItemID`](scalars.md#workitemid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Global ID of a work item that should be placed before the work item. |
 | `notesWidget` | [`WorkItemWidgetNotesInput`](input_objects.md#workitemwidgetnotesinput) | Input for notes widget. |
 | `notificationsWidget` | [`WorkItemWidgetNotificationsUpdateInput`](input_objects.md#workitemwidgetnotificationsupdateinput) | Input for notifications widget. |
 | `progressWidget` | [`WorkItemWidgetProgressInput`](input_objects.md#workitemwidgetprogressinput) | Input for progress widget. |
 | `startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](input_objects.md#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | `stateEvent` | [`WorkItemStateEvent`](enums.md#workitemstateevent) | Close or reopen a work item. |
-| `statusWidget` | [`WorkItemWidgetStatusInput`](input_objects.md#workitemwidgetstatusinput) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Input for status widget. |
+| `statusWidget` | [`WorkItemWidgetStatusInput`](input_objects.md#workitemwidgetstatusinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Input for status widget. |
 | `timeTrackingWidget` | [`WorkItemWidgetTimeTrackingInput`](input_objects.md#workitemwidgettimetrackinginput) | Input for time tracking widget. |
 | `title` | [`String`](scalars.md#string) | Title of the work item. |
 | `verificationStatusWidget` | [`VerificationStatusInput`](input_objects.md#verificationstatusinput) | Input for verification status widget. |
@@ -18392,15 +18420,15 @@ Create or Update user preferences for a work item type and namespace.
 | `crmOrganizationId` | [`String`](scalars.md#string) | Filter by ID of CRM contact organization. |
 | `dueAfter` | [`Time`](scalars.md#time) | Work items due after the timestamp. |
 | `dueBefore` | [`Time`](scalars.md#time) | Work items due before the timestamp. |
-| `healthStatusFilter` | [`HealthStatusFilter`](enums.md#healthstatusfilter) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Health status of the work items, "none" and "any" values are supported. |
-| `hierarchyFilters` | [`HierarchyFilterInput`](input_objects.md#hierarchyfilterinput) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>Filtering options related to the work item hierarchy. |
+| `healthStatusFilter` | [`HealthStatusFilter`](enums.md#healthstatusfilter) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Health status of the work items, "none" and "any" values are supported. |
+| `hierarchyFilters` | [`HierarchyFilterInput`](input_objects.md#hierarchyfilterinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Filtering options related to the work item hierarchy. |
 | `ids` | [`[WorkItemID!]`](scalars.md#workitemid) | Filter by global IDs of work items (maximum is 100 IDs). |
 | `iids` | [`[String!]`](scalars.md#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | `in` | [`[IssuableSearchableField!]`](enums.md#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| `includeDescendantWorkItems` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>Whether to include work items of descendant parents when filtering by parent_ids. |
-| `iterationCadenceId` | [`[IterationsCadenceID!]`](scalars.md#iterationscadenceid) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Filter by a list of iteration cadence IDs. |
-| `iterationId` | [`[ID]`](scalars.md#id) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>List of iteration Global IDs applied to the work items. |
-| `iterationWildcardId` | [`IterationWildcardId`](enums.md#iterationwildcardid) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Filter by iteration ID wildcard. |
+| `includeDescendantWorkItems` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Whether to include work items of descendant parents when filtering by parent_ids. |
+| `iterationCadenceId` | [`[IterationsCadenceID!]`](scalars.md#iterationscadenceid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Filter by a list of iteration cadence IDs. |
+| `iterationId` | [`[ID]`](scalars.md#id) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>List of iteration Global IDs applied to the work items. |
+| `iterationWildcardId` | [`IterationWildcardId`](enums.md#iterationwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Filter by iteration ID wildcard. |
 | `labelName` | [`[String!]`](scalars.md#string) | Labels applied to the work item (maximum is 100 labels). |
 | `milestoneTitle` | [`[String!]`](scalars.md#string) | Milestone applied to the work item (maximum is 100 milestones). |
 | `milestoneWildcardId` | [`MilestoneWildcardId`](enums.md#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -18408,20 +18436,20 @@ Create or Update user preferences for a work item type and namespace.
 | `not` | [`NegatedWorkItemFilterInput`](input_objects.md#negatedworkitemfilterinput) | Negated work item arguments. |
 | `or` | [`UnionedWorkItemFilterInput`](input_objects.md#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | `parentIds` | [`[WorkItemID!]`](scalars.md#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
-| `parentWildcardId` | [`WorkItemParentWildcardId`](enums.md#workitemparentwildcardid) | Status: Experiment. Introduced in GitLab 18.5.<br/><br/>Filter by parent ID wildcard. Incompatible with parentIds. |
+| `parentWildcardId` | [`WorkItemParentWildcardId`](enums.md#workitemparentwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.<br/><br/>Filter by parent ID wildcard. Incompatible with parentIds. |
 | `projectPath` | [`ID!`](scalars.md#id) | Full project path. |
 | `releaseTag` | [`[String!]`](scalars.md#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | `releaseTagWildcardId` | [`ReleaseTagWildcardId`](enums.md#releasetagwildcardid) | Filter by release tag wildcard. |
 | `search` | [`String`](scalars.md#string) | Search query for title or description. |
 | `selectedFields` | [`[AvailableExportFields!]`](enums.md#availableexportfields) | List of selected fields to be exported. Omit to export all available fields. |
 | `state` | [`IssuableState`](enums.md#issuablestate) | Current state of the work item. |
-| `status` | [`WorkItemWidgetStatusFilterInput`](input_objects.md#workitemwidgetstatusfilterinput) | Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Filter by status. |
+| `status` | [`WorkItemWidgetStatusFilterInput`](input_objects.md#workitemwidgetstatusfilterinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.7.<br/><br/>Filter by status. |
 | `subscribed` | [`SubscriptionStatus`](enums.md#subscriptionstatus) | Work items the current user is subscribed to. |
 | `types` | [`[IssueType!]`](enums.md#issuetype) | Filter work items by the given work item types. |
 | `updatedAfter` | [`Time`](scalars.md#time) | Work items updated after the timestamp. |
 | `updatedBefore` | [`Time`](scalars.md#time) | Work items updated before the timestamp. |
-| `weight` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Weight applied to the work item, "none" and "any" values are supported. |
-| `weightWildcardId` | [`WeightWildcardId`](enums.md#weightwildcardid) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Filter by weight ID wildcard. Incompatible with weight. |
+| `weight` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Weight applied to the work item, "none" and "any" values are supported. |
+| `weightWildcardId` | [`WeightWildcardId`](enums.md#weightwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Filter by weight ID wildcard. Incompatible with weight. |
 | `workItemTypeIds` | [`[WorkItemsTypeID!]`](scalars.md#workitemstypeid) | Filter work items by work item type global IDs. |
 
 ### Fields {.no_toc}
@@ -18547,7 +18575,7 @@ Reorders a work item.
 | `projectId` | [`ProjectID!`](scalars.md#projectid) | ID of the project that will provide the Devfile for the created workspace. |  |
 | `projectRef` | [`String`](scalars.md#string) | Project repo git ref. |  |
 | `variables` | [`[WorkspaceVariableInput!]`](input_objects.md#workspacevariableinput) | Deprecated in GitLab 18.0. Argument is renamed to workspace_variables. | `[]` |
-| `workspaceVariables` | [`[WorkspaceVariableInput!]`](input_objects.md#workspacevariableinput) | Status: Experiment. Introduced in GitLab 18.0.<br/><br/>Variables to inject into the workspace. | `[]` |
+| `workspaceVariables` | [`[WorkspaceVariableInput!]`](input_objects.md#workspacevariableinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Variables to inject into the workspace. | `[]` |
 
 ### Fields {.no_toc}
 

@@ -841,7 +841,9 @@ Leader instance:
 
 1. Optional. If primary does not have PgBouncer, but secondary does:
 
-   Configure the `pgbouncer` user on the primary site and add the necessary `pg_shadow_lookup` function for PgBouncer included with the Linux package. PgBouncer on the secondary server should still be able to connect to PostgreSQL nodes on the secondary site.
+   Configure the `pgbouncer` user on the primary site and add the necessary
+   [`pg_shadow_lookup` function](../../postgresql/pgbouncer.md#authentication) for PgBouncer included with the Linux package.
+   PgBouncer on the secondary server should still be able to connect to PostgreSQL nodes on the secondary site.
 
    ```sql
    --- Create a new user 'pgbouncer'
@@ -849,17 +851,6 @@ Leader instance:
 
    --- Set/change a password and grants replication privilege
    ALTER USER pgbouncer WITH REPLICATION ENCRYPTED PASSWORD '<pgbouncer_password_from_secondary>';
-
-   CREATE OR REPLACE FUNCTION public.pg_shadow_lookup(in i_username text, out username text, out password text) RETURNS record AS $$
-   BEGIN
-       SELECT usename, passwd FROM pg_catalog.pg_shadow
-       WHERE usename = i_username INTO username, password;
-       RETURN;
-   END;
-   $$ LANGUAGE plpgsql SECURITY DEFINER;
-
-   REVOKE ALL ON FUNCTION public.pg_shadow_lookup(text) FROM public, pgbouncer;
-   GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
    ```
 
 {{< /tab >}}

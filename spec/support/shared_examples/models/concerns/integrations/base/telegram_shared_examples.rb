@@ -53,13 +53,19 @@ RSpec.shared_examples Integrations::Base::Telegram do
       end
 
       context 'with custom hostname' do
-        before do
-          integration.hostname = 'https://gitlab.example.com'
+        where(:hostname) do
+          ['https://gitlab.example.com', 'https://gitlab.example.com/']
         end
 
-        it 'sets webhook value with custom hostname' do
-          expect(integration).to be_valid
-          expect(integration.webhook).to eq("https://gitlab.example.com/bot123456:ABC-DEF1234/sendMessage")
+        with_them do
+          before do
+            integration.hostname = hostname
+          end
+
+          it 'sets webhook value with custom hostname' do
+            expect(integration).to be_valid
+            expect(integration.webhook).to eq("https://gitlab.example.com/bot123456:ABC-DEF1234/sendMessage")
+          end
         end
       end
     end

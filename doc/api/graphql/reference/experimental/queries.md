@@ -21,13 +21,9 @@ Queries are the top-level entry points for reading data from the
 using the [GraphiQL explorer](../../getting_started.md#graphiql).
 
 > [!warning]
-> Deprecated items are marked with {{< icon name="warning" >}} and are planned to be removed in a
+> Deprecated items are planned to be removed in a
 > future release. For more information, see the GitLab
 > [deprecation process](../../_index.md#deprecation-and-removal-process).
->
-> Items that are [experiments](../../../../policy/development_stages_support.md#experiment) are
-> marked with {{< icon name="work-item-test-case" >}}. Experimental items can change at any time and
-> are not recommended for use in production.
 
 ## `abuseReport`
 
@@ -246,7 +242,7 @@ Find projects visible to the current admin. This field is a [connection](objects
 | `active` | [`Boolean`](scalars.md#boolean) | Filters by projects that are not archived and not marked for deletion. |  |
 | `aimedForDeletion` | [`Boolean`](scalars.md#boolean) | Return only projects marked for deletion. |  |
 | `archived` | [`ProjectArchived`](enums.md#projectarchived) | Filter projects by archived status. |  |
-| `duoLicensedFeature` | [`DuoLicensedFeature`](enums.md#duolicensedfeature) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Include only projects eligible for the specified GitLab Duo licensed feature. Results are automatically filtered to projects where the user has the Maintainer or Owner role. |  |
+| `duoLicensedFeature` | [`DuoLicensedFeature`](enums.md#duolicensedfeature) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Include only projects eligible for the specified GitLab Duo licensed feature. Results are automatically filtered to projects where the user has the Maintainer or Owner role. |  |
 | `fullPaths` | [`[String!]`](scalars.md#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |  |
 | `ids` | [`[ID!]`](scalars.md#id) | Filter projects by IDs. |  |
 | `includeHidden` | [`Boolean`](scalars.md#boolean) | Include hidden projects. |  |
@@ -335,8 +331,8 @@ AI Catalog items configured for use. This field is a [connection](objects.md#con
 | `configurableForProjectId` | [`ProjectID`](scalars.md#projectid) | Project ID to filter AI Catalog item consumers. When provided with group_id, returns only consumers whose associated items are configurable within the project (i.e., group-enabled items that are public or owned by the project). Excludes consumers for items that are private to other projects. |  |
 | `foundationalFlowReference` | [`String`](scalars.md#string) | Filter by foundational flow reference. |  |
 | `groupId` | [`GroupID`](scalars.md#groupid) | Group ID to retrieve configured AI Catalog items for. |  |
-| `includeFoundationalConsumers` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Include configured foundational AI Catalog items. | `false` |
-| `includeInherited` | [`Boolean`](scalars.md#boolean) | Include configured AI Catalog items inherited from parent groups. | `false` |
+| `includeFoundationalConsumers` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>Include configured foundational AI Catalog items. | `false` |
+| `includeInherited` | [`Boolean`](scalars.md#boolean) | Include configured AI Catalog items inherited from the project's top-level group. Can only be used with `projectId`. |  |
 | `itemId` | [`AiCatalogItemID`](scalars.md#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |  |
 | `itemType` | [`AiCatalogItemType`](enums.md#aicatalogitemtype) | Type of items to retrieve. |  |
 | `itemTypes` | [`[AiCatalogItemType!]`](enums.md#aicatalogitemtype) | Types of items to retrieve. |  |
@@ -955,16 +951,16 @@ Find code visible to the current user.
 
 | Name | Type | Description | Default |
 | ---- | ---- | ----------- | ------- |
-| `chunkCount` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Maximum chunks per file. | `3` |
-| `excludeForks` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 17.11.<br/><br/>Excludes forked projects in the search. Always false for project search. Default is true. | `true` |
-| `groupId` | [`GroupID`](scalars.md#groupid) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Group to search in. |  |
-| `includeArchived` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Includes archived projects in the search. Always true for project search. Default is false. | `false` |
-| `language` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Filter results to the given detected languages (for example, `["Ruby", "Go"]`). |  |
-| `page` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Page number to fetch the results. | `1` |
-| `perPage` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Number of results per page. | `20` |
-| `projectId` | [`ProjectID`](scalars.md#projectid) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Project to search in. |  |
-| `regex` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 17.3.<br/><br/>Uses the regular expression search mode. Default is false. | `false` |
-| `repositoryRef` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 17.2.<br/><br/>Repository reference to search in. |  |
+| `chunkCount` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Maximum chunks per file. | `3` |
+| `excludeForks` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Excludes forked projects in the search. Always false for project search. Default is true. | `true` |
+| `groupId` | [`GroupID`](scalars.md#groupid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Group to search in. |  |
+| `includeArchived` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.<br/><br/>Includes archived projects in the search. Always true for project search. Default is false. | `false` |
+| `language` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Filter results to the given detected languages (for example, `["Ruby", "Go"]`). |  |
+| `page` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Page number to fetch the results. | `1` |
+| `perPage` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Number of results per page. | `20` |
+| `projectId` | [`ProjectID`](scalars.md#projectid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Project to search in. |  |
+| `regex` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.3.<br/><br/>Uses the regular expression search mode. Default is false. | `false` |
+| `repositoryRef` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Repository reference to search in. |  |
 | `search` | [`String!`](scalars.md#string) | Searched term. |  |
 
 ## `boardList`
@@ -1073,7 +1069,7 @@ Deprecated in GitLab 18.1. Use CiLint mutation: <https://docs.gitlab.com/api/gra
 | `dryRun` | [`Boolean`](scalars.md#boolean) | Run pipeline creation simulation, or only do static check. |
 | `projectPath` | [`ID!`](scalars.md#id) | Project of the CI config. |
 | `sha` | [`String`](scalars.md#string) | Sha for the pipeline. |
-| `skipVerifyProjectSha` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 16.5.<br/><br/>If the provided `sha` is found in the project's repository but is not associated with a Git reference (a detached commit), the verification fails and a validation error is returned. Otherwise, verification passes, even if the `sha` is invalid. Set to `true` to skip this verification process. |
+| `skipVerifyProjectSha` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.5.<br/><br/>If the provided `sha` is found in the project's repository but is not associated with a Git reference (a detached commit), the verification fails and a validation error is returned. Otherwise, verification passes, even if the `sha` is invalid. Set to `true` to skip this verification process. |
 
 ## `ciDedicatedHostedRunnerFilters`
 
@@ -1428,6 +1424,7 @@ List the workflows owned by the current user. This field is a [connection](objec
 | Name | Type | Description | Default |
 | ---- | ---- | ----------- | ------- |
 | `environment` | [`WorkflowEnvironment`](enums.md#workflowenvironment) | Environment, for example, IDE or web. |  |
+| `excludeSourceTypes` | [`[DuoWorkflowSourceType!]`](enums.md#duoworkflowsourcetype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Source types to exclude. Sessions with no recorded source type are never excluded. |  |
 | `excludeTypes` | [`[String!]`](scalars.md#string) | Types of flows to exclude (for example, ["software_development", "chat"]). |  |
 | `ids` | [`[AiDuoWorkflowsWorkflowID!]`](scalars.md#aiduoworkflowsworkflowid) | Filter flows by a list of IDs. |  |
 | `projectId` | [`ProjectID`](scalars.md#projectid) | Global ID of the project that contains the flows. |  |
@@ -1785,7 +1782,7 @@ Find groups. This field is a [connection](objects.md#connections-and-pagination)
 | `sort` | [`String`](scalars.md#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Use `similarity` to rank results by closeness to `search`. `similarity` applies only when `search` is given and results are already scoped to the current user's memberships, such as with `ownedOnly: true` or `allAvailable: false`. Filtering by `visibilityLevel` to public or internal groups only disables `similarity`, because the results are then no longer scoped by membership. Results fall back to `id_desc` when `similarity` does not apply. | `"name_asc"` |
 | `topLevelOnly` | [`Boolean`](scalars.md#boolean) | Only include top-level groups. | `false` |
 | `visibilityLevel` | [`VisibilityLevelsEnum`](enums.md#visibilitylevelsenum) | Filter groups by visibility level. |  |
-| `withKnowledgeGraphEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Return only groups with Knowledge Graph enabled. | `false` |
+| `withKnowledgeGraphEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>Return only groups with Knowledge Graph enabled. | `false` |
 
 ## `instanceExternalAuditEventDestinations`
 
@@ -1893,7 +1890,7 @@ Find issues visible to the current user. At least one filter must be provided. T
 | `createdBefore` | [`Time`](scalars.md#time) | Issues created before the date. |  |
 | `crmContactId` | [`String`](scalars.md#string) | ID of a contact assigned to the issues. |  |
 | `crmOrganizationId` | [`String`](scalars.md#string) | ID of an organization assigned to the issues. |  |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](input_objects.md#workitemwidgetcustomfieldfilterinputtype) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Filter by custom fields. |  |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](input_objects.md#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Filter by custom fields. |  |
 | `dueAfter` | [`Time`](scalars.md#time) | Return issues due on or after the given time. |  |
 | `dueBefore` | [`Time`](scalars.md#time) | Return issues due on or before the given time. |  |
 | `epicId` | [`String`](scalars.md#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |  |
@@ -1917,7 +1914,7 @@ Find issues visible to the current user. At least one filter must be provided. T
 | `search` | [`String`](scalars.md#string) | Search query for title or description. |  |
 | `sort` | [`IssueSort`](enums.md#issuesort) | Sort issues by the criteria. | `created_desc` |
 | `state` | [`IssuableState`](enums.md#issuablestate) | Current state of the issue. |  |
-| `status` | [`WorkItemWidgetStatusFilterInput`](input_objects.md#workitemwidgetstatusfilterinput) | Status: Experiment. Introduced in GitLab 18.0.<br/><br/>Filter by status. |  |
+| `status` | [`WorkItemWidgetStatusFilterInput`](input_objects.md#workitemwidgetstatusfilterinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Filter by status. |  |
 | `subscribed` | [`SubscriptionStatus`](enums.md#subscriptionstatus) | Issues the current user is subscribed to. |  |
 | `types` | [`[IssueType!]`](enums.md#issuetype) | Filter issues by the given issue types. |  |
 | `updatedAfter` | [`Time`](scalars.md#time) | Issues updated after the date. |  |
@@ -1948,9 +1945,9 @@ All jobs on this GitLab instance. Returns an empty result for users without admi
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `compatibleRunnerId` | [`CiRunnerID`](scalars.md#cirunnerid) | Status: Experiment. Introduced in GitLab 18.1.<br/><br/>ID of a runner that matches the requirements of the jobs returned (normally used when filtering pending jobs). |
-| `failureReason` | [`CiJobFailureReason`](enums.md#cijobfailurereason) | Status: Experiment. Introduced in GitLab 16.4.<br/><br/>Filter jobs by failure reason. Currently only `RUNNER_SYSTEM_FAILURE` together with `runnerTypes: INSTANCE_TYPE` is supported. |
-| `runnerTypes` | [`[CiRunnerType!]`](enums.md#cirunnertype) | Status: Experiment. Introduced in GitLab 16.4.<br/><br/>Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
+| `compatibleRunnerId` | [`CiRunnerID`](scalars.md#cirunnerid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>ID of a runner that matches the requirements of the jobs returned (normally used when filtering pending jobs). |
+| `failureReason` | [`CiJobFailureReason`](enums.md#cijobfailurereason) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.4.<br/><br/>Filter jobs by failure reason. Currently only `RUNNER_SYSTEM_FAILURE` together with `runnerTypes: INSTANCE_TYPE` is supported. |
+| `runnerTypes` | [`[CiRunnerType!]`](enums.md#cirunnertype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.4.<br/><br/>Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
 | `statuses` | [`[CiJobStatus!]`](enums.md#cijobstatus) | Filter jobs by status. |
 
 ## `knowledgeGraphExcludedNamespaces`
@@ -2109,7 +2106,7 @@ Find merge requests visible to the current user. At least one filter must be pro
 | `assigneeUsernames` | [`[String!]`](scalars.md#string) | Usernames of users assigned to the merge request. |  |
 | `assigneeWildcardId` | [`AssigneeWildcardId`](enums.md#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |  |
 | `authorUsername` | [`String`](scalars.md#string) | Username of the author. |  |
-| `blobPath` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |  |
+| `blobPath` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.<br/><br/>Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |  |
 | `closedAfter` | [`Time`](scalars.md#time) | Merge requests closed after the date. |  |
 | `closedBefore` | [`Time`](scalars.md#time) | Merge requests closed before the date. |  |
 | `createdAfter` | [`Time`](scalars.md#time) | Merge requests created after the timestamp. |  |
@@ -2119,7 +2116,7 @@ Find merge requests visible to the current user. At least one filter must be pro
 | `deploymentId` | [`String`](scalars.md#string) | ID of the deployment. |  |
 | `draft` | [`Boolean`](scalars.md#boolean) | Limit result to draft merge requests. |  |
 | `environmentName` | [`String`](scalars.md#string) | Environment merge requests have been deployed to. |  |
-| `ignoredReviewerUsername` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 18.0.<br/><br/>Username of the reviewer to ignore when searching by reviewer state. |  |
+| `ignoredReviewerUsername` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Username of the reviewer to ignore when searching by reviewer state. |  |
 | `iids` | [`[String!]`](scalars.md#string) | Array of IIDs of merge requests, for example `[1, 2]`. |  |
 | `includeArchived` | [`Boolean`](scalars.md#boolean) | Whether to include merge requests from archived projects. Defaults to `false`. | `false` |
 | `labelName` | [`[String]`](scalars.md#string) | Labels applied to the merge request. |  |
@@ -2246,15 +2243,15 @@ Security-filtered projects for a namespace. This field is a [connection](objects
 | Name | Type | Description | Default |
 | ---- | ---- | ----------- | ------- |
 | `attributeFilters` | [`[AttributeFilterInput!]`](input_objects.md#attributefilterinput) | Filter projects by security attributes. Up to 20 items. |  |
-| `hasFailedOrWarning` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter projects by whether they have any failed security scans. Warnings have no effect on this filter. |  |
-| `hasScanners` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter projects by whether they have any configured security scans. |  |
-| `hasStale` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter projects by whether they have any failed security scans. |  |
+| `hasFailedOrWarning` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Filter projects by whether they have any failed security scans. Warnings have no effect on this filter. |  |
+| `hasScanners` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Filter projects by whether they have any configured security scans. |  |
+| `hasStale` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Filter projects by whether they have any failed security scans. |  |
 | `includeSubgroups` | [`Boolean`](scalars.md#boolean) | Include also subgroup projects. | `false` |
 | `namespaceId` | [`NamespaceID!`](scalars.md#namespaceid) | Global ID of the namespace. |  |
 | `search` | [`String`](scalars.md#string) | Search projects by name. |  |
 | `securityAnalyzerFilters` | [`[AnalyzerFilterInput!]`](input_objects.md#analyzerfilterinput) | Filter projects by analyzer type and status. |  |
-| `sortBy` | [`SortableAnalyzerType`](enums.md#sortableanalyzertype) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Sort projects by analyzer status. |  |
-| `triggerType` | [`ScanProfileTriggerType`](enums.md#scanprofiletriggertype) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Filter projects by attached triage and remediation trigger type. |  |
+| `sortBy` | [`SortableAnalyzerType`](enums.md#sortableanalyzertype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Sort projects by analyzer status. |  |
+| `triggerType` | [`ScanProfileTriggerType`](enums.md#scanprofiletriggertype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Filter projects by attached triage and remediation trigger type. |  |
 | `vulnerabilityCountFilters` | [`[VulnerabilityCountFilterInput!]`](input_objects.md#vulnerabilitycountfilterinput) | Filter projects by vulnerability counts using comparison operators. |  |
 
 ## `note`
@@ -2345,9 +2342,9 @@ List organizations. This field is a [connection](objects.md#connections-and-pagi
 
 | Name | Type | Description | Default |
 | ---- | ---- | ----------- | ------- |
-| `excludeDefault` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Excludes the Default organization from results. | `false` |
+| `excludeDefault` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.<br/><br/>Excludes the Default organization from results. | `false` |
 | `search` | [`String`](scalars.md#string) | Search query, which can be for the organization name or a path. |  |
-| `state` | [`OrganizationState`](enums.md#organizationstate) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Filter organizations by state. |  |
+| `state` | [`OrganizationState`](enums.md#organizationstate) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.1.<br/><br/>Filter organizations by state. |  |
 
 ## `package`
 
@@ -2618,7 +2615,7 @@ Find projects visible to the current user. This field is a [connection](objects.
 | `active` | [`Boolean`](scalars.md#boolean) | Filters by projects that are not archived and not marked for deletion. |  |
 | `aimedForDeletion` | [`Boolean`](scalars.md#boolean) | Return only projects marked for deletion. |  |
 | `archived` | [`ProjectArchived`](enums.md#projectarchived) | Filter projects by archived status. |  |
-| `duoLicensedFeature` | [`DuoLicensedFeature`](enums.md#duolicensedfeature) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>Include only projects eligible for the specified GitLab Duo licensed feature. Results are automatically filtered to projects where the user has the Maintainer or Owner role. |  |
+| `duoLicensedFeature` | [`DuoLicensedFeature`](enums.md#duolicensedfeature) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Include only projects eligible for the specified GitLab Duo licensed feature. Results are automatically filtered to projects where the user has the Maintainer or Owner role. |  |
 | `fullPaths` | [`[String!]`](scalars.md#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |  |
 | `ids` | [`[ID!]`](scalars.md#id) | Filter projects by IDs. |  |
 | `includeHidden` | [`Boolean`](scalars.md#boolean) | Include hidden projects. |  |
@@ -2729,7 +2726,7 @@ Get all runners in the GitLab instance (project and shared). Access is restricte
 | `active` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 14.8. Renamed. Use `paused` instead. |
 | `creatorId` | [`UserID`](scalars.md#userid) | Filter runners by creator ID. |
 | `creatorUsername` | [`String`](scalars.md#string) | Filter runners by creator username. |
-| `ownerFullPath` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 17.8.<br/><br/>Filter runners by owning project or group. |
+| `ownerFullPath` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.8.<br/><br/>Filter runners by owning project or group. |
 | `paused` | [`Boolean`](scalars.md#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | `search` | [`String`](scalars.md#string) | Filter by full token or partial text in description field. |
 | `sort` | [`CiRunnerSort`](enums.md#cirunnersort) | Sort order of results. |
@@ -3057,7 +3054,7 @@ Find project topics. This field is a [connection](objects.md#connections-and-pag
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `organizationId` | [`OrganizationsOrganizationID`](scalars.md#organizationsorganizationid) | Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Global ID of the organization. |
+| `organizationId` | [`OrganizationsOrganizationID`](scalars.md#organizationsorganizationid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.7.<br/><br/>Global ID of the organization. |
 | `search` | [`String`](scalars.md#string) | Search query for topic name. |
 
 ## `trialUsage`
@@ -3128,7 +3125,7 @@ Find users. This field is a [connection](objects.md#connections-and-pagination) 
 | `ids` | [`[ID!]`](scalars.md#id) | List of user Global IDs. |  |
 | `search` | [`String`](scalars.md#string) | Query to search users by name, username, or primary email. |  |
 | `sort` | [`Sort`](enums.md#sort) | Sort users by the criteria. | `created_desc` |
-| `userTypes` | [`[UserType!]`](enums.md#usertype) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>Filter by user type. |  |
+| `userTypes` | [`[UserType!]`](enums.md#usertype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Filter by user type. |  |
 | `usernames` | [`[String!]`](scalars.md#string) | List of usernames. |  |
 
 ## `virtualRegistriesContainerRegistry`
@@ -3240,7 +3237,7 @@ Vulnerabilities reported on projects on the current user's instance security das
 | `clusterAgentId` | [`[ClustersAgentID!]`](scalars.md#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |  |
 | `clusterId` | [`[ClustersClusterID!]`](scalars.md#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |  |
 | `dismissalReason` | [`[VulnerabilityDismissalReason!]`](enums.md#vulnerabilitydismissalreason) | Filter by dismissal reason. Only dismissed Vulnerabilities will be included with the filter. |  |
-| `falsePositive` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.8.<br/><br/>Returns only the vulnerabilities with false positive flag. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
+| `falsePositive` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.8.<br/><br/>Returns only the vulnerabilities with false positive flag. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
 | `hasAiResolution` | [`Boolean`](scalars.md#boolean) | Returns only the vulnerabilities which can likely be resolved by GitLab Duo Vulnerability Resolution. |  |
 | `hasIssues` | [`Boolean`](scalars.md#boolean) | Returns only the vulnerabilities which have linked issues. |  |
 | `hasMergeRequest` | [`Boolean`](scalars.md#boolean) | Returns only the vulnerabilities which have linked merge requests. |  |
@@ -3248,24 +3245,24 @@ Vulnerabilities reported on projects on the current user's instance security das
 | `hasResolution` | [`Boolean`](scalars.md#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |  |
 | `identifierName` | [`String`](scalars.md#string) | Filter vulnerabilities by identifier name. Ignored when applied on instance security dashboard queries. |  |
 | `image` | [`[String!]`](scalars.md#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |  |
-| `malware` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |  |
+| `malware` | [`Boolean`](scalars.md#boolean) | Filter vulnerabilities by malware status. When true, returns only malware vulnerabilities (identified by GLAM-* identifiers). When false, returns only non-malware vulnerabilities. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref. |  |
 | `owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](enums.md#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 2017 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 values. |  |
-| `owaspTopTen2021` | [`[VulnerabilityOwasp2021Top10!]`](enums.md#vulnerabilityowasp2021top10) | Status: Experiment. Introduced in GitLab 18.1.<br/><br/>Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
-| `owaspTopTen2025` | [`[VulnerabilityOwasp2025Top10!]`](enums.md#vulnerabilityowasp2025top10) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter vulnerabilities by OWASP Top 10 2025 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2025 values. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
-| `policyAutoDismissed` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.8.<br/><br/>Returns only the vulnerabilities which have been auto dismissed by security policies. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
-| `policyViolations` | [`[PolicyViolations!]`](enums.md#policyviolations) | Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Filter by security policy violations. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
+| `owaspTopTen2021` | [`[VulnerabilityOwasp2021Top10!]`](enums.md#vulnerabilityowasp2021top10) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
+| `owaspTopTen2025` | [`[VulnerabilityOwasp2025Top10!]`](enums.md#vulnerabilityowasp2025top10) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Filter vulnerabilities by OWASP Top 10 2025 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2025 values. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
+| `policyAutoDismissed` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.8.<br/><br/>Returns only the vulnerabilities which have been auto dismissed by security policies. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
+| `policyViolations` | [`[PolicyViolations!]`](enums.md#policyviolations) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.6.<br/><br/>Filter by security policy violations. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Not supported on Instance Security Dashboard queries. |  |
 | `projectId` | [`[ID!]`](scalars.md#id) | Filter vulnerabilities by project. |  |
-| `reachability` | [`ReachabilityType`](enums.md#reachabilitytype) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Filter vulnerabilities by reachability. |  |
+| `reachability` | [`ReachabilityType`](enums.md#reachabilitytype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Filter vulnerabilities by reachability. |  |
 | `reportType` | [`[VulnerabilityReportType!]`](enums.md#vulnerabilityreporttype) | Filter vulnerabilities by report type. |  |
 | `scanner` | [`[String!]`](scalars.md#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |  |
 | `scannerId` | [`[VulnerabilitiesScannerID!]`](scalars.md#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |  |
-| `securityAttributesFilters` | [`[AttributeFilterInput!]`](input_objects.md#attributefilterinput) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. |  |
+| `securityAttributesFilters` | [`[AttributeFilterInput!]`](input_objects.md#attributefilterinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Filter vulnerabilities by the security attributes of their projects. Up to 20 filters. To use this argument, you must have advanced search configured and advanced vulnerability management set up. Available on group queries only, when the `vulnerability_report_security_attributes_filter` feature flag is enabled. |  |
 | `severity` | [`[VulnerabilitySeverity!]`](enums.md#vulnerabilityseverity) | Filter vulnerabilities by severity. |  |
 | `sort` | [`VulnerabilitySort`](enums.md#vulnerabilitysort) | List vulnerabilities by sort order. | `severity_desc` |
 | `state` | [`[VulnerabilityState!]`](enums.md#vulnerabilitystate) | Filter vulnerabilities by state. |  |
-| `trackedRefIds` | [`[SecurityProjectTrackedContextID!]`](scalars.md#securityprojecttrackedcontextid) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Filter vulnerabilities by tracked ref IDs. To use this argument, you must have advanced search configured and advanced vulnerability management set up. |  |
-| `trackedRefsScope` | [`SecurityTrackedRefScope`](enums.md#securitytrackedrefscope) | Status: Experiment. Introduced in GitLab 18.9.<br/><br/>Filter by tracked ref scope. To use this argument, you must have advanced search configured and advanced vulnerability management set up and the `vulnerabilities_across_contexts` feature flag enabled. |  |
-| `validityCheck` | [`[VulnerabilityFindingTokenStatusState!]`](enums.md#vulnerabilityfindingtokenstatusstate) | Status: Experiment. Introduced in GitLab 18.5.<br/><br/>Filter vulnerabilities by validity check. |  |
+| `trackedRefIds` | [`[SecurityProjectTrackedContextID!]`](scalars.md#securityprojecttrackedcontextid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.10.<br/><br/>Filter vulnerabilities by tracked ref IDs. To use this argument, you must have advanced search configured and advanced vulnerability management set up. |  |
+| `trackedRefsScope` | [`SecurityTrackedRefScope`](enums.md#securitytrackedrefscope) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.9.<br/><br/>Filter by tracked ref scope. To use this argument, you must have advanced search configured and advanced vulnerability management set up and the `vulnerabilities_across_contexts` feature flag enabled. |  |
+| `validityCheck` | [`[VulnerabilityFindingTokenStatusState!]`](enums.md#vulnerabilityfindingtokenstatusstate) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.5.<br/><br/>Filter vulnerabilities by validity check. |  |
 
 ## `vulnerabilitiesCountByDay`
 

@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation, feature_category: 
       end
 
       it 'transforms observation to expected json' do
-        expect(Gitlab::Json.parse(subject.to_json).keys).to contain_exactly(*expected_json_keys)
+        expect(Gitlab::Json.parse(subject.to_json).keys).to match_array(expected_json_keys)
       end
     end
 
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation, feature_category: 
           end
 
           it 'transforms observation to expected json' do
-            expect(Gitlab::Json.parse(subject.to_json).keys).to contain_exactly(*expected_json_keys)
+            expect(Gitlab::Json.parse(subject.to_json).keys).to match_array(expected_json_keys)
           end
         end
       end

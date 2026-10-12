@@ -260,22 +260,8 @@ instructions only work on the Linux package-provided PostgreSQL:
 
    Replace `PGBOUNCER_SQL_PASSWORD_HASH` with the strong password hash you generated in the preparation step.
 
-1. The PgBouncer that is shipped with the Linux package is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
-   and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`
-   database:
-
-   ```sql
-   CREATE OR REPLACE FUNCTION public.pg_shadow_lookup(in i_username text, out username text, out password text) RETURNS record AS $$
-   BEGIN
-       SELECT usename, passwd FROM pg_catalog.pg_shadow
-       WHERE usename = i_username INTO username, password;
-       RETURN;
-   END;
-   $$ LANGUAGE plpgsql SECURITY DEFINER;
-
-   REVOKE ALL ON FUNCTION public.pg_shadow_lookup(text) FROM public, pgbouncer;
-   GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
-   ```
+1. Create the [`pg_shadow_lookup` function](../../postgresql/pgbouncer.md#authentication)
+   in the `praefect_production` database.
 
 The database used by Praefect is now configured.
 

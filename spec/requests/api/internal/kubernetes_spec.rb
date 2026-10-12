@@ -496,6 +496,24 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when the agent belongs to another organization' do
+      let_it_be(:agent_organization) { create(:organization) }
+      let_it_be(:organization_agent) do
+        create(:cluster_agent, project: create(:project, organization: agent_organization))
+      end
+
+      it 'sets Current.organization from the agent project', :aggregate_failures do
+        expect(::Current).to receive(:organization=).with(agent_organization).and_call_original
+        expect(::API::API::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys).to include('meta.organization_id' => agent_organization.id)
+        end
+
+        send_request(params: { agent_id: organization_agent.id, agent_config: config })
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
   end
 
   describe 'GET /internal/agents/agentk/agent_info' do
@@ -754,6 +772,40 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         send_request(params: { agent_id: non_existing_record_id, access_type: 'personal_access_token', access_key: personal_access_token.token })
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'when the agent belongs to a different organization than the user' do
+        let_it_be(:agent_organization) { create(:organization) }
+        let_it_be(:agent_project) { create(:project, organization: agent_organization) }
+        let_it_be(:organization_agent) { create(:cluster_agent, project: agent_project) }
+
+        before do
+          Clusters::Agents::Authorizations::UserAccess::RefreshService.new(
+            organization_agent,
+            config: {
+              'user_access' => { 'access_as' => { 'agent' => {} }, 'projects' => [{ 'id' => agent_project.full_path }] }
+            }
+          ).execute
+        end
+
+        it 'sets Current.organization from the agent project', :aggregate_failures do
+          agent_project.add_member(user, :developer)
+
+          expect(::Current).to receive(:organization=).with(agent_organization).and_call_original
+          expect(::API::API::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+            expect(data.stringify_keys).to include('meta.organization_id' => agent_organization.id)
+          end
+
+          send_request(
+            params: {
+              agent_id: organization_agent.id,
+              access_type: 'personal_access_token',
+              access_key: personal_access_token.token
+            }
+          )
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
       end
     end
 

@@ -128,10 +128,8 @@ begin
   if License.current&.cloud?
     puts "✓ License already active (#{License.current.plan}, expires #{License.current.expires_at})"
 
-    add_on = GitlabSubscriptions::AddOn.find_or_create_by!(name: 'duo_enterprise') do |a|
-      a.description = 'GitLab Duo Enterprise'
-    end
-    add_on_purchase = GitlabSubscriptions::AddOnPurchase.find_or_create_by!(add_on: add_on) do |p|
+    add_on = GitlabSubscriptions::SystemDefined::AddOn.find_by!(name: 'duo_enterprise')
+    add_on_purchase = GitlabSubscriptions::AddOnPurchase.find_or_create_by!(subscription_add_on_uid: add_on.id) do |p|
       p.quantity        = 1
       p.started_at      = License.current.starts_at || Date.current
       p.expires_on      = License.current.expires_at
@@ -156,10 +154,8 @@ begin
     warn "SeatLinkData sync failed (non-fatal): #{e.message}" if ENV['DEBUG']
   end
 
-  add_on = GitlabSubscriptions::AddOn.find_or_create_by!(name: 'duo_enterprise') do |a|
-    a.description = 'GitLab Duo Enterprise'
-  end
-  add_on_purchase = GitlabSubscriptions::AddOnPurchase.find_or_create_by!(add_on: add_on) do |p|
+  add_on = GitlabSubscriptions::SystemDefined::AddOn.find_by!(name: 'duo_enterprise')
+  add_on_purchase = GitlabSubscriptions::AddOnPurchase.find_or_create_by!(subscription_add_on_uid: add_on.id) do |p|
       p.quantity        = 1
       p.started_at      = license.starts_at || Date.current
       p.expires_on      = license.expires_at

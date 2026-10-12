@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Wikis::PageHistory, feature_category: :wiki do
+RSpec.describe Wikis::PageHistory, :clean_gitlab_redis_repository_cache, feature_category: :wiki do
   let(:project) { create(:project, :wiki_repo) }
   let(:user) { project.first_owner }
   let(:wiki) { create(:project_wiki, project: project, user: user) }
@@ -218,6 +218,94 @@ RSpec.describe Wikis::PageHistory, feature_category: :wiki do
       expect(messages(history.versions(page: 1))).to eq(['edit 1', 'rename'])
       expect(messages(history.versions(page: 2))).to eq(['create original-paged'])
       expect(history.versions(page: 3)).to be_empty
+    end
+  end
+
+  describe '#slug_at' do
+    let(:title) { 'sub/renamed' }
+    let(:commits) { repository.commits(wiki.default_branch, follow: false, limit: 10).index_by(&:message) }
+
+    before do
+      create_page('original')
+      edit_page('original', rename_to: 'sub/renamed', content: "original content\n", message: 'rename')
+      edit_page('sub/renamed', content: "edit\n", message: 'edit')
+      create_page('unrelated')
+    end
+
+    it 'returns the slug the page had at each commit in its history', :aggregate_failures do
+      expect(history.slug_at(commits['edit'].id)).to eq('sub/renamed')
+      expect(history.slug_at(commits['rename'].id)).to eq('sub/renamed')
+      expect(history.slug_at(commits['create original'].id)).to eq('original')
+    end
+
+    it 'returns nil for a commit outside its history' do
+      expect(history.slug_at(commits['create unrelated'].id)).to be_nil
+    end
+
+    context 'when the history is longer than MAX_VERSIONS' do
+      before do
+        stub_const("#{described_class}::MAX_VERSIONS", 2)
+      end
+
+      it 'returns nil' do
+        expect(history.slug_at(commits['edit'].id)).to be_nil
+      end
+    end
+  end
+
+  describe 'caching' do
+    let(:title) { 'cached' }
+    let(:expected) { ['edit 1', 'rename', 'create original-cached'] }
+
+    before do
+      create_page('original-cached')
+      edit_page('original-cached', rename_to: 'cached', content: "original-cached content\n", message: 'rename')
+      edit_page('cached', content: "edit 1\n", message: 'edit 1')
+    end
+
+    it 'does not walk the history again for the same page version', :aggregate_failures do
+      first_commit_id = repository.commits(wiki.default_branch, limit: 3).last.id
+      described_class.new(wiki.find_page(title)).count
+      cached = described_class.new(wiki.find_page(title))
+
+      expect(repository).not_to receive(:count_commits)
+      expect(repository).not_to receive(:commits)
+      expect(repository).not_to receive(:find_changed_paths!)
+
+      expect(cached.count).to eq(expected.size)
+      expect(messages(cached.versions)).to eq(expected)
+      expect(cached.slug_at(first_commit_id)).to eq('original-cached')
+    end
+
+    it 'walks the history again after a new commit' do
+      described_class.new(wiki.find_page(title)).count
+      edit_page('cached', content: "edit 2\n", message: 'edit 2')
+
+      expect(messages(described_class.new(wiki.find_page(title)).versions)).to eq(['edit 2', *expected])
+    end
+
+    it 'describes the history as of the version of the page it was given', :aggregate_failures do
+      page = wiki.find_page(title)
+      edit_page('cached', content: "edit 2\n", message: 'edit 2')
+      history = described_class.new(page)
+
+      expect(history.count).to eq(expected.size)
+      expect(messages(history.versions)).to eq(expected)
+    end
+
+    context 'when the history is longer than MAX_VERSIONS' do
+      before do
+        stub_const("#{described_class}::MAX_VERSIONS", 2)
+      end
+
+      it 'does not walk the history again for the same page version' do
+        described_class.new(wiki.find_page(title)).count
+        cached = described_class.new(wiki.find_page(title))
+
+        expect(repository).not_to receive(:find_changed_paths!)
+
+        expect(cached.count).to eq(2)
+      end
     end
   end
 

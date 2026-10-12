@@ -17,7 +17,7 @@ RSpec.describe Gitlab::HookData::KeyBuilder do
 
     shared_examples_for 'includes the required attributes' do
       it 'includes the required attributes' do
-        expect(data.keys).to contain_exactly(*attributes)
+        expect(data.keys).to match_array(attributes)
 
         expect(data[:key]).to eq(key.key)
         expect(data[:id]).to eq(key.id)

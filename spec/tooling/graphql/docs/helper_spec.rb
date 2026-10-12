@@ -83,9 +83,11 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
       expect(helper.description(value('PLAIN'))).to eq('A plain value.')
     end
 
-    it 'renders the experiment status and milestone for experimental items' do
-      expect(helper.description(value('EXPERIMENTAL')))
-        .to start_with('Status: Experiment. Introduced in GitLab 16.0.')
+    it 'renders the experiment history text and milestone for experimental items' do
+      expect(helper.description(value('EXPERIMENTAL'))).to eq(
+        'Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) ' \
+          'in GitLab 16.0.<br/><br/>An experimental value.'
+      )
     end
 
     it 'omits the experiment text from the description in block context' do

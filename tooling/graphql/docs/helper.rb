@@ -4,9 +4,6 @@ module Tooling
   module Graphql
     module Docs
       module Helper
-        DEPRECATED_ICON = '{{< icon name="warning" >}}'
-        EXPERIMENT_ICON = '{{< icon name="work-item-test-case" >}}'
-
         # The fields present on every connection object. Excluded from the
         # per-connection fields tables because they are documented once in the
         # connections section.
@@ -119,7 +116,7 @@ module Tooling
 
             {{< history >}}
 
-            - Introduced as an [experiment](#{EXPERIMENT_LINK}) in GitLab #{item.deprecation.milestone}.
+            - #{experiment_history_text(item)}
 
             {{< /history >}}
           MARKDOWN
@@ -295,9 +292,11 @@ module Tooling
           original = item.deprecation.original_description
           return original.to_s if block
 
-          status = "Status: Experiment. Introduced in GitLab #{item.deprecation.milestone}."
+          [experiment_history_text(item), original].compact.join(TABLE_PARAGRAPH_BREAK)
+        end
 
-          [status, original].compact.join(TABLE_PARAGRAPH_BREAK)
+        def experiment_history_text(item)
+          "Introduced as an [experiment](#{EXPERIMENT_LINK}) in GitLab #{item.deprecation.milestone}."
         end
       end
     end

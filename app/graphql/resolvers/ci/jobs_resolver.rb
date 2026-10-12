@@ -64,8 +64,6 @@ module Resolvers
         jobs = jobs.with_type(job_kind) if job_kind
         jobs = jobs.with_when_executed(when_executed) if when_executed.present?
 
-        return jobs unless preload_page_associations?
-
         apply_lookahead(jobs.extending(::Ci::Preloaders::CommitStatusRelationExtension))
       end
 
@@ -110,10 +108,6 @@ module Resolvers
         return [] unless permissions.selections.map(&:name).intersect?(::Ci::BuildPolicy.all_job_write_abilities)
 
         %i[deployments]
-      end
-
-      def preload_page_associations?
-        Feature.enabled?(:batch_preload_pipeline_job_associations, pipeline.project)
       end
 
       def preloads

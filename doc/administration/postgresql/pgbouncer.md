@@ -85,6 +85,42 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 1. Run `gitlab-ctl reconfigure`
 1. At this point, your instance should connect to the database through PgBouncer. If you are having issues, see the [Troubleshooting](#troubleshooting) section
 
+## Authentication
+
+The bundled PgBouncer authenticates clients with
+[`auth_query`](https://www.pgbouncer.org/config.html#auth_query).
+PgBouncer connects to the database as the `pgbouncer` user and calls the `public.pg_shadow_lookup`
+function to get the password hash of the connecting user.
+
+The Linux package creates and maintains this function, and its definition might change in future releases.
+For this reason, the bundled PgBouncer is supported only with PostgreSQL managed by the Linux package.
+For any other PostgreSQL, deploy and manage your own PgBouncer.
+For more information, see [connection pooling](../../install/cloud-services.md#connection-pooling).
+
+When `postgresql['pgbouncer_user_password']` is set, `gitlab-ctl reconfigure` creates or updates
+the function in the GitLab application databases.
+If you change `pgbouncer['auth_query']` from its default, the function is not created.
+
+Some databases are not covered by `gitlab-ctl reconfigure`, such as a manually created Praefect database.
+For these databases, create the function yourself:
+
+```sql
+CREATE OR REPLACE FUNCTION public.pg_shadow_lookup(in i_username text, out username text, out password text) RETURNS record AS $$
+BEGIN
+    SELECT usename, passwd FROM pg_catalog.pg_shadow
+    WHERE usename = i_username INTO username, password;
+    RETURN;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+REVOKE ALL ON FUNCTION public.pg_shadow_lookup(text) FROM public, pgbouncer;
+GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
+```
+
+`gitlab-ctl reconfigure` does not update functions that you create manually.
+After you upgrade GitLab, compare the function with the version in the documentation for your
+GitLab version, and update the function if it has changed.
+
 ## Backups
 
 Do not back up or restore GitLab through a PgBouncer connection: it causes a GitLab outage.

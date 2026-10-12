@@ -1821,7 +1821,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `hostname`   | string | no | Custom hostname of the Telegram API. The default value is `https://api.telegram.org`. |
+| `hostname`   | string | no | URL of the Telegram API server, including `http://` or `https://`. The default value is `https://api.telegram.org`. |
 | `token`   | string | yes | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
 | `room` | string | yes | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
 | `thread` | integer | no | Unique identifier for the target message thread (topic in a forum supergroup). |

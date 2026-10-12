@@ -36,6 +36,11 @@ Each pair provides the following roles:
 Both keys in a pair must be RSA 2048-bit private keys in PEM format.
 If these keys are missing, the service cannot sign tokens and requests fail with a token creation error.
 
+The AI Gateway also verifies the tokens that your GitLab instance signs with its Cloud Connector key
+and caches the public keys of your instance.
+To rotate the Cloud Connector key without authentication failures, see
+[rotate the Cloud Connector key](../administration/gitlab_duo_self_hosted/offline_deployment.md#rotate-the-cloud-connector-key).
+
 ## Install by using Docker
 
 The AI Gateway Docker image contains all necessary code and dependencies

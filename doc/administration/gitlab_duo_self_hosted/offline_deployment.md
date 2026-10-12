@@ -471,7 +471,74 @@ with the AI Gateway image.
 Model weights do not need to be updated when you upgrade GitLab.
 Updates are only required when you change to a different model.
 
+## Rotate the Cloud Connector key
+
+Your GitLab instance signs the tokens it sends to the AI Gateway with its Cloud Connector key.
+The AI Gateway caches the public keys of your instance and rejects a token signed with a key
+it has not loaded.
+
+Prerequisites:
+
+- A single Cloud Connector key. To check, run `sudo gitlab-rake cloud_connector:keys:list`.
+
+To rotate the Cloud Connector key:
+
+1. On the GitLab instance, create a new key:
+
+   ```shell
+   sudo gitlab-rake cloud_connector:keys:create
+   ```
+
+   GitLab publishes the new key and continues to sign tokens with the current key.
+
+1. Restart every AI Gateway container so that the AI Gateway loads the new key:
+
+   ```shell
+   docker restart <container_name>
+   ```
+
+1. Make the new key the signing key:
+
+   ```shell
+   sudo gitlab-rake cloud_connector:keys:rotate
+   ```
+
+1. On every node that runs Puma or Sidekiq, restart them so that they sign with the new key:
+
+   ```shell
+   sudo gitlab-ctl restart puma
+   sudo gitlab-ctl restart sidekiq
+   ```
+
+1. Wait at least one hour after you restart Puma and Sidekiq.
+   Tokens signed with the old key stay valid for up to one hour after they are signed.
+
+1. Remove the old key:
+
+   ```shell
+   sudo gitlab-rake cloud_connector:keys:trim
+   ```
+
+1. Restart every AI Gateway container again.
+   Until every container restarts, the AI Gateway still accepts tokens signed with the old key.
+
 ## Related topics
 
 - [Offline GitLab](../../topics/offline/_index.md)
 - [Self-hosted models](_index.md)
+
+## Troubleshooting
+
+When you work with Agent Platform Self-Hosted in an offline environment,
+you might encounter the following issues.
+
+### Error: `Forbidden by auth provider` when using a new Cloud Connector key
+
+If you run `cloud_connector:keys:rotate` before you restart the AI Gateway, the AI Gateway
+rejects tokens signed with the new key with `Forbidden by auth provider`.
+Puma and Sidekiq processes sign with the new key after they restart,
+and their GitLab Duo requests then fail.
+For example, flows fail to start with `Could not obtain Duo Workflow token`.
+
+To resolve this issue, restart the AI Gateway
+after you create the new key and before GitLab signs tokens with it.

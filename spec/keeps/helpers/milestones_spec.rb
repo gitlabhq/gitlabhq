@@ -140,7 +140,7 @@ RSpec.describe Keeps::Helpers::Milestones, feature_category: :tooling do
         described_class::Milestone.new(version: '17.0', date: '2024-05-16')
       ]
 
-      expect(upcoming_milestones).to contain_exactly(*expected_milestones)
+      expect(upcoming_milestones).to match_array(expected_milestones)
     end
   end
 

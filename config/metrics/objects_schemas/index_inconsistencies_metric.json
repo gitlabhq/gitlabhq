@@ -8,7 +8,7 @@
           "object_name": {
             "type": "string"
           },
-          "type": {
+          "inconsistency_type": {
             "type": "string",
             "description": "Type of index inconsistency"
           }

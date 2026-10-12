@@ -10,6 +10,7 @@ module Gitlab
       Acme::Client::Error::Timeout
       Acme::Client::Error::UnsupportedOperation
       ActiveRecord::ConnectionTimeoutError
+      Gitlab::Ci::Pipeline::Chain::Validate::External::RequestFailed
       Gitlab::RequestContext::RequestDeadlineExceeded
       GRPC::DeadlineExceeded
       JIRA::HTTPError

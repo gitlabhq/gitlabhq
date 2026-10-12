@@ -27,6 +27,7 @@ An AI catalog item, which is either a custom or foundational item.
 
 - [`AiCatalogAgent`](objects.md#aicatalogagent)
 - [`AiCatalogFlow`](objects.md#aicatalogflow)
+- [`AiCatalogSkill`](objects.md#aicatalogskill)
 - [`AiCatalogThirdPartyFlow`](objects.md#aicatalogthirdpartyflow)
 - [`AiFoundationalChatAgent`](objects.md#aifoundationalchatagent)
 
@@ -151,6 +152,15 @@ Represents an issuable.
 
 - [`CiBuildNeed`](objects.md#cibuildneed)
 - [`CiJob`](objects.md#cijob)
+
+## `MavenTargetUpstream`
+
+Maven remote or local upstream that a registry upstream points to.
+
+### Member types {.no_toc}
+
+- [`MavenLocalUpstream`](objects.md#mavenlocalupstream)
+- [`MavenUpstream`](objects.md#mavenupstream)
 
 ## `NamespaceUnion`
 

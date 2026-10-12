@@ -6,13 +6,14 @@ module Wikis
 
     MAX_VERSIONS = 1_000
     CHANGED_PATH_STATUSES = %i[DIFF_STATUS_ADDED DIFF_STATUS_DELETED DIFF_STATUS_RENAMED].freeze
+    CACHE_TTL = 1.hour
 
     def initialize(wiki_page)
       @wiki_page = wiki_page
     end
 
     def count
-      return commits.size if commits
+      return entries.size if entries
 
       path_commit_count
     end
@@ -21,9 +22,15 @@ module Wikis
       per_page = Kaminari.config.default_per_page
       offset = ([page.to_i, 1].max - 1) * per_page
 
-      return commits[offset, per_page] || [] if commits
+      return commits_for(entries[offset, per_page] || []) if entries
 
-      repository.commits(wiki.default_branch, path: wiki_page.path, follow: false, limit: per_page, offset: offset)
+      repository.commits(head_sha, path: wiki_page.path, follow: false, limit: per_page, offset: offset)
+    end
+
+    def slug_at(commit_id)
+      path = entries_by_commit_id&.dig(commit_id)
+
+      url_path(path) if path
     end
 
     private
@@ -33,22 +40,49 @@ module Wikis
     delegate :wiki, to: :wiki_page
     delegate :repository, to: :wiki
 
-    def commits
-      return if path_commit_count > MAX_VERSIONS
-
-      collected = collect_commits
-      collected if collected.size <= MAX_VERSIONS
+    def head_sha
+      wiki_page.version.id
     end
-    strong_memoize_attr :commits
+
+    def entries
+      Gitlab::Redis::RepositoryCache.cache_store.fetch(cache_key, expires_in: CACHE_TTL) do
+        next if path_commit_count > MAX_VERSIONS
+
+        collected = collect_entries
+        collected if collected.size <= MAX_VERSIONS
+      end
+    end
+    strong_memoize_attr :entries
+
+    def cache_key
+      [
+        'wiki_page_history:v1',
+        repository.raw_repository.gl_repository,
+        MAX_VERSIONS,
+        head_sha,
+        Digest::SHA256.hexdigest(wiki_page.path)
+      ].join(':')
+    end
+
+    def entries_by_commit_id
+      entries&.to_h
+    end
+    strong_memoize_attr :entries_by_commit_id
+
+    def commits_for(page_entries)
+      commit_ids = page_entries.map(&:first)
+
+      repository.commits_by(oids: commit_ids).index_by(&:id).values_at(*commit_ids)
+    end
 
     def path_commit_count
-      repository.count_commits(revisions: wiki.default_branch, path: wiki_page.path)
+      repository.count_commits(revisions: head_sha, path: wiki_page.path)
     end
     strong_memoize_attr :path_commit_count
 
-    def collect_commits
+    def collect_entries
       collected = []
-      segment = [wiki.default_branch, wiki_page.path]
+      segment = [head_sha, wiki_page.path]
 
       while segment && collected.size <= MAX_VERSIONS
         revision, path = segment
@@ -57,7 +91,8 @@ module Wikis
         previous_paths = previous_paths_by_commit_id(segment_commits, path)
         rename_index = segment_commits.find_index { |commit| previous_paths.key?(commit.id) }
 
-        collected.concat(rename_index ? segment_commits.first(rename_index + 1) : segment_commits)
+        segment_commits = segment_commits.first(rename_index + 1) if rename_index
+        collected.concat(segment_commits.map { |commit| [commit.id, path] })
         segment = rename_index && previous_segment(segment_commits[rename_index], previous_paths)
       end
 

@@ -243,6 +243,13 @@ class WikiPage
     last_version&.sha
   end
 
+  def as_version_of(current_page)
+    attributes.merge!(slug: current_page.slug, title: current_page.title)
+    self.last_version = current_page.last_version
+
+    self
+  end
+
   def template?
     slug.start_with?(Wiki::TEMPLATES_DIR)
   end
