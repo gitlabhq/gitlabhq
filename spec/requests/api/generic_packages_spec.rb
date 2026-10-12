@@ -388,6 +388,23 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    # #security The same stale legacy column also left create_package authorized, so publishing kept
+    # working after the package registry had been disabled through the project API.
+    context 'when the package registry is disabled through the project API' do
+      before do
+        project.add_developer(user)
+        # The flat attribute write performed by the REST project update endpoint.
+        project.update!(package_registry_access_level: 'disabled')
+      end
+
+      it 'rejects the upload' do
+        expect { upload_file(params, workhorse_headers.merge(personal_access_token_header)) }
+          .to not_change { ::Packages::PackageFile.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'when user can upload packages and has valid credentials' do
       before do
         project.add_developer(user) # -- Does not work in before_all
@@ -1168,6 +1185,25 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         download_file(auth_header)
 
         expect(response).to have_gitlab_http_status(:success)
+      end
+    end
+
+    # #security Disabling the package registry through PUT /projects/:id left the legacy
+    # projects.packages_enabled column true, so anonymous downloads from a public project kept
+    # succeeding after the owner had disabled the registry.
+    context 'when the package registry is disabled through the project API' do
+      let_it_be(:user_role) { :anonymous }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        # The flat attribute write performed by the REST project update endpoint.
+        project.update!(package_registry_access_level: 'disabled')
+      end
+
+      it 'does not serve the package file to an anonymous user' do
+        download_file(auth_header)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

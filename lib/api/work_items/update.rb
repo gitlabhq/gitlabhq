@@ -38,6 +38,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           patch ':work_item_iid' do
             work_item = work_item_for_namespace!(params[:id], params[:work_item_iid])

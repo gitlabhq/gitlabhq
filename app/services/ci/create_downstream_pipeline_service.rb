@@ -149,6 +149,10 @@ module Ci
     end
 
     def can_write_ref?(target_ref)
+      # Workload refs don't match refs/heads/* so the protected-branch check below
+      # would be skipped, letting a Developer bypass branch protection via this path.
+      return false if ::Ci::Workloads::Workload.workload_ref?(target_ref)
+
       access = ::Gitlab::UserAccess.new(current_user, container: downstream_project)
 
       if Gitlab::Git.branch_ref?(target_ref)

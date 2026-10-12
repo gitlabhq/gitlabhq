@@ -53,7 +53,6 @@ module Types
     end
     field :discussions_with_activity, ::Types::Notes::DiscussionType.connection_type,
       null: false,
-      skip_type_authorization: [:read_note, :read_emoji],
       resolver: Resolvers::Notes::DiscussionsResolver,
       connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
       experiment: { milestone: '19.2' },

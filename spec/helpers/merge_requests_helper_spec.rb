@@ -600,8 +600,13 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         allow(current_user).to receive(:gitpod_enabled).and_return(true)
       end
 
-      it 'returns the Ona path' do
-        expect(data[:gitpod_path]).to eq("https://gitpod.example.com##{merge_request_url(merge_request)}")
+      it 'builds the Ona path from the configured host, not the request host' do
+        helper.request.host = 'attacker.example.com'
+
+        expect(data[:gitpod_path]).to eq(
+          "https://gitpod.example.com##{Gitlab.config.gitlab.url}" \
+            "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}"
+        )
       end
     end
   end

@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Ci::GenerateTerraformReportsService, feature_category: :infrastructure_as_code do
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   describe '#execute' do
     let_it_be(:merge_request) { create(:merge_request, :with_terraform_reports, source_project: project) }
 
-    subject { described_class.new(project, nil, id: merge_request.id) }
+    subject { described_class.new(project, user, id: merge_request.id) }
 
     context 'when head pipeline has terraform reports' do
       it 'returns status and data' do

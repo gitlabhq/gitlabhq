@@ -99,6 +99,65 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       end
     end
 
+    context 'when a granular token scoped only to the user boundary targets a group namespace' do
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_project_import).first.name])
+      end
+
+      def upload_archive_with(token, namespace_params)
+        workhorse_finalize(
+          api("/projects/import", personal_access_token: token),
+          method: :post,
+          file_key: :file,
+          params: params.merge(file: file_upload).merge(namespace_params),
+          headers: workhorse_headers,
+          send_rewritten_field: true
+        )
+      end
+
+      it 'denies the import when the group is given as namespace_id', :aggregate_failures do
+        upload_archive_with(user_boundary_pat, namespace_id: namespace.id)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+      end
+
+      it 'denies the import when the group is given as namespace_path', :aggregate_failures do
+        upload_archive_with(user_boundary_pat, namespace_path: namespace.full_path)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+      end
+
+      it 'denies the import when the group is given as the deprecated namespace parameter', :aggregate_failures do
+        upload_archive_with(user_boundary_pat, namespace: namespace.full_path)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+      end
+    end
+
+    context 'when a granular token targets a non-existent namespace path' do
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_project_import).first.name])
+      end
+
+      it 'returns not found instead of falling back to the user boundary' do
+        workhorse_finalize(
+          api("/projects/import", personal_access_token: user_boundary_pat),
+          method: :post,
+          file_key: :file,
+          params: params.merge(file: file_upload, namespace_path: 'this-namespace-does-not-exist'),
+          headers: workhorse_headers,
+          send_rewritten_field: true
+        )
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control = ActiveRecord::QueryRecorder.new { perform_archive_upload }
 
@@ -486,6 +545,21 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       end
     end
 
+    context 'when a granular token scoped only to the user boundary targets a group namespace' do
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_project_import).first.name])
+      end
+
+      it 'denies the cross-boundary import', :aggregate_failures do
+        post api('/projects/remote-import', personal_access_token: user_boundary_pat),
+          params: params.merge(namespace_id: namespace.id)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+      end
+    end
+
     context 'when the response is successful' do
       it 'schedules the import successfully' do
         project = create(
@@ -568,6 +642,21 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
       let(:request) do
         post api('/projects/remote-import-s3', personal_access_token: pat), params: params
+      end
+    end
+
+    context 'when a granular token scoped only to the user boundary targets a group namespace' do
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_project_import).first.name])
+      end
+
+      it 'denies the cross-boundary import', :aggregate_failures do
+        post api('/projects/remote-import-s3', personal_access_token: user_boundary_pat),
+          params: params.merge(namespace_id: namespace.id)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
       end
     end
 

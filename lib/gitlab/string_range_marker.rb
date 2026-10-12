@@ -20,8 +20,6 @@ module Gitlab
 
       marker_ranges = ranges.map { |range| Gitlab::MarkerRange.from_range(range) }
 
-      # identity_mapping? skips position mapping entirely when raw and rich line lengths are equal,
-      # since equal lengths guarantee 1:1 position mapping
       if !html_escaped || identity_mapping?
         rich_marker_ranges = marker_ranges
       else
@@ -57,8 +55,13 @@ module Gitlab
 
     private
 
+    # Equal length alone does not imply a 1:1 raw->rich mapping: an already-html_safe
+    # rich_line passes through html_escape untouched, so it can hold markup while
+    # matching raw_line's length. Absent '<' and '&', no tag or entity can shift offsets.
     def identity_mapping?
-      raw_line.length == rich_line.length
+      raw_line.length == rich_line.length &&
+        rich_line.exclude?('<') &&
+        rich_line.exclude?('&')
     end
 
     def position_mapping
