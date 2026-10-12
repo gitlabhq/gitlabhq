@@ -14,6 +14,10 @@
 # block elements when implied end tags are generated.
 #
 # See https://gitlab.com/gitlab-org/gitlab/-/work_items/594217.
+#
+# This was `config/initializers/html_pipeline_html5_patch.rb`. It moved here so
+# that this gem's own specs parse markup the way GitLab does; `lib/banzai/all.rb`
+# applies it at boot, before Rails runs its initializers.
 
 module HTML
   class Pipeline

@@ -1,0 +1,31 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+# Mirrors the monolith's global settings, so that moving a file into this gem
+# does not change which cops apply to it. See the root `.rubocop.yml`.
+Fips/OpenSSL:
+  Enabled: false
+
+RSpec/ImplicitSubject:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 25
+  AllowSubject: true
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  EnforcedStyle: use_builtin_english_names
+
+# Debt inherited with the moved files, previously held in `.rubocop_todo/`.
+Style/UnlessLogicalOperators:
+  Exclude:
+    - lib/banzai/filter/truncate_visible_filter.rb

@@ -15,6 +15,7 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 
 require 'gitlab/utils/all'
+require 'banzai/all'
 require 'gitlab/email_handler'
 
 require_relative 'freeze_gems'

@@ -182,6 +182,10 @@
     "ProjectNamespaceMarkdownPaths",
     "UserNamespaceMarkdownPaths"
   ],
+  "MavenTargetUpstream": [
+    "MavenLocalUpstream",
+    "MavenUpstream"
+  ],
   "MemberInterface": [
     "GroupMember",
     "PendingGroupMember",

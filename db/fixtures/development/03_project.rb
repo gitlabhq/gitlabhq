@@ -251,7 +251,7 @@ class Gitlab::Seeder::Projects
 end
 
 Gitlab::Seeder.quiet do
-  organization = User.admins.first.organizations.first
+  organization = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin_organization
   projects = Gitlab::Seeder::Projects.new(organization: organization)
   projects.seed!
 end

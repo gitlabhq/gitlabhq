@@ -89,3 +89,6 @@ include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-mfe"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-banzai"

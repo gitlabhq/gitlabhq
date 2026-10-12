@@ -191,6 +191,7 @@ module Gitlab
         {
           type: _('Type changed successfully.'),
           promote_to: _("Promoted successfully."),
+          promote_to_incident: _('Promoted successfully.'),
           set_parent: _('Parent item set successfully.'),
           remove_parent: _('Parent item removed successfully.'),
           add_child: _('Child items added successfully.'),

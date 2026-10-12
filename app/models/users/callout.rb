@@ -134,8 +134,9 @@ module Users
       # 130 removed in revert of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237413
       secrets_manager_nav_badge: 131, # EE-only
       feature_library_shimmer_seen: 132,
-      work_item_decision_log_popover: 133 # EE-only
+      work_item_decision_log_popover: 133, # EE-only
       # 134 removed in https://gitlab.com/gitlab-org/gitlab/-/work_items/631979
+      analytics_dashboards_explore_intro_banner: 135 # EE-only
     }
 
     validates :feature_name,

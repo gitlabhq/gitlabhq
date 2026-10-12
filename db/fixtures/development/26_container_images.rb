@@ -47,7 +47,7 @@ Gitlab::Seeder.quiet do
   flag = 'SEED_CONTAINER_IMAGES'
 
   if ENV[flag]
-    admin_user = User.admins.first
+    admin_user = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin
     images_count = Integer(ENV[flag])
 
     Project.not_mass_generated.visible_to_user(admin_user).sample(1).each do |project|

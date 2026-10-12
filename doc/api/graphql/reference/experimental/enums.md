@@ -5768,6 +5768,7 @@ Name of the feature that the callout is for.
 | Value | Description |
 | ----- | ----------- |
 | `ACTIVE_USER_COUNT_THRESHOLD` | Callout feature name for active_user_count_threshold. |
+| `ANALYTICS_DASHBOARDS_EXPLORE_INTRO_BANNER` | Callout feature name for analytics_dashboards_explore_intro_banner. |
 | `BRANCH_RULES_TIP_CALLOUT` | Callout feature name for branch_rules_tip_callout. |
 | `BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | `CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |

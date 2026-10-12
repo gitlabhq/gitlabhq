@@ -1,7 +1,24 @@
 # frozen_string_literal: true
 
+require_relative "banzai/version"
+require_relative "banzai/configuration"
+
 module Banzai
   ATOM_CONTEXT = { only_path: false, xhtml: true }.freeze
+
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    def configure
+      yield configuration
+    end
+  end
+
+  # `Renderer` is still owned by the monolith and resolves through Zeitwerk at
+  # call time. It moves into this gem once its ActiveRecord coupling is behind
+  # ports; these delegations do not change when it does.
 
   # if you need to render markdown, then you probably need to post_process as well,
   # such as removing references that the current user doesn't have

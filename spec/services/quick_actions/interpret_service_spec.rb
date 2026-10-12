@@ -3910,6 +3910,36 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
   end
 
+  describe '#remove_type_change_success_message' do
+    let_it_be(:work_item) { create(:work_item, :issue, project: project) }
+
+    it 'removes the promote_to_incident message and keeps the others' do
+      _, _, message, _ = service.execute("/promote_to_incident\n/close", work_item)
+
+      expect(message).to eq('Promoted successfully. Closed this item.')
+      expect(service.remove_type_change_success_message(message)).to eq('Closed this item.')
+    end
+
+    it 'removes every occurrence when two commands share the same success message' do
+      expect(service.remove_type_change_success_message('Promoted successfully. Promoted successfully. Closed this item.'))
+        .to eq('Closed this item.')
+    end
+
+    it 'removes the type message and keeps the others' do
+      _, _, message, _ = service.execute("/type Task\n/close", work_item)
+
+      expect(service.remove_type_change_success_message(message)).to eq('Closed this item.')
+    end
+
+    it 'keeps a type error and removes the promote_to_incident message' do
+      _, _, message, _ = service.execute("/type Nonexistent\n/promote_to_incident", work_item)
+
+      expect(message).to include('Failed to convert this work item: Provided type is not supported.')
+      expect(service.remove_type_change_success_message(message))
+        .to eq('Failed to convert this work item: Provided type is not supported.')
+    end
+  end
+
   describe '#explain' do
     let(:service) { described_class.new(container: project, current_user: developer) }
     let(:merge_request) { create(:merge_request, source_project: project) }

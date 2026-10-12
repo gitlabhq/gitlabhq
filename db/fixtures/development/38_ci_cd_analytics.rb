@@ -85,7 +85,7 @@ class Gitlab::Seeder::CiAnalytics # rubocop:disable Style/ClassAndModuleChildren
   end
 
   def admin
-    @admin ||= User.admins.first
+    @admin ||= Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin
   end
 
   def suffix

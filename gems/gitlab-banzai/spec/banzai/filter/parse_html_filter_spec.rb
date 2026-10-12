@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::ParseHtmlFilter, feature_category: :markdown do
+RSpec.describe Banzai::Filter::ParseHtmlFilter do
   include FilterSpecHelper
 
   it 'returns a nokogiri doc' do

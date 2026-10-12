@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'HTML::Pipeline::HTML5Patch', feature_category: :markdown do
+RSpec.describe 'HTML::Pipeline::HTML5Patch' do
   describe '.parse' do
     it 'parses HTML into an HTML5 fragment' do
       doc = HTML::Pipeline.parse('<p>hello</p>')
@@ -36,7 +36,7 @@ RSpec.describe 'HTML::Pipeline::HTML5Patch', feature_category: :markdown do
       doc = HTML::Pipeline.parse(html)
 
       paragraph = doc.at_css('p')
-      expect(paragraph).to be_present
+      expect(paragraph).not_to be_nil
       expect(paragraph.text).to eq('After')
       expect(paragraph.ancestors.map(&:name)).not_to include('ol')
     end
@@ -46,7 +46,7 @@ RSpec.describe 'HTML::Pipeline::HTML5Patch', feature_category: :markdown do
       doc = HTML::Pipeline.parse(html)
 
       paragraph = doc.at_css('p')
-      expect(paragraph).to be_present
+      expect(paragraph).not_to be_nil
       expect(paragraph.text).to eq('After')
       expect(paragraph.ancestors.map(&:name)).not_to include('ol')
     end

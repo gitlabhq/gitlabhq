@@ -5,7 +5,7 @@ token = 'ypCa3Dzb23o5nvsixwPA'
 scopes = Gitlab::Auth.all_available_scopes
 
 Gitlab::Seeder.quiet do
-  User.admins.first.tap do |user|
+  Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin.tap do |user|
     user.personal_access_tokens.find_by(name: 'seeded-api-token')&.destroy
 
     params = {

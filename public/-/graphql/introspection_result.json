@@ -231388,6 +231388,215 @@
         },
         {
           "kind": "OBJECT",
+          "name": "MavenLocalUpstream",
+          "description": "Represents a Maven local upstream registry.",
+          "fields": [
+            {
+              "name": "cacheValidityHours",
+              "description": "Time before the cache expires for the local upstream registry. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "id",
+              "description": "ID of the local upstream registry. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "localGroup",
+              "description": "Group the local upstream registry serves packages from. Null when the local upstream registry targets a project, or when the user cannot read the group. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MavenLocalUpstreamTargetGroup",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "localProject",
+              "description": "Project the local upstream registry serves packages from. Null when the local upstream registry targets a group, or when the user cannot read the project. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MavenLocalUpstreamTargetProject",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "metadataCacheValidityHours",
+              "description": "Time before the cache expires for Maven metadata. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "name",
+              "description": "Name of the local upstream registry. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MavenLocalUpstreamTargetGroup",
+          "description": "Group a Maven local upstream registry serves packages from.",
+          "fields": [
+            {
+              "name": "fullPath",
+              "description": "Full path of the group. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "id",
+              "description": "ID of the group. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "webUrl",
+              "description": "Web URL of the group. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MavenLocalUpstreamTargetProject",
+          "description": "Project a Maven local upstream registry serves packages from.",
+          "fields": [
+            {
+              "name": "fullPath",
+              "description": "Full path of the project. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "id",
+              "description": "ID of the project. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "webUrl",
+              "description": "Web URL of the project. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "MavenMetadata",
           "description": "Maven metadata",
           "fields": [
@@ -231913,6 +232122,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.2."
             },
             {
+              "name": "targetUpstream",
+              "description": "Maven remote or local upstream associated with the registry upstream. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "UNION",
+                "name": "MavenTargetUpstream",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "upstream",
               "description": "Maven upstream associated with the registry upstream. Introduced in GitLab 18.7: Status: Experiment.",
               "args": [],
@@ -231939,6 +232160,27 @@
           ],
           "enumValues": null,
           "possibleTypes": null
+        },
+        {
+          "kind": "UNION",
+          "name": "MavenTargetUpstream",
+          "description": "Maven remote or local upstream that a registry upstream points to.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "MavenLocalUpstream",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "MavenUpstream",
+              "ofType": null
+            }
+          ]
         },
         {
           "kind": "OBJECT",
@@ -433743,6 +433985,12 @@
             {
               "name": "WORK_ITEM_DECISION_LOG_POPOVER",
               "description": "Callout feature name for work_item_decision_log_popover.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ANALYTICS_DASHBOARDS_EXPLORE_INTRO_BANNER",
+              "description": "Callout feature name for analytics_dashboards_explore_intro_banner.",
               "isDeprecated": false,
               "deprecationReason": null
             }

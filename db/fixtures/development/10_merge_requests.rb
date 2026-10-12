@@ -75,7 +75,7 @@ Gitlab::Seeder.quiet do
     title: 'Can be automatically merged'
   }
   Sidekiq::Worker.skipping_transaction_check do
-    merge_request = MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
+    merge_request = MergeRequests::CreateService.new(project: project, current_user: Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin, params: params).execute
     flush_after_commit_queue(merge_request)
   end
   print '.'
@@ -86,7 +86,7 @@ Gitlab::Seeder.quiet do
     title: 'Cannot be automatically merged'
   }
   Sidekiq::Worker.skipping_transaction_check do
-    merge_request = MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
+    merge_request = MergeRequests::CreateService.new(project: project, current_user: Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin, params: params).execute
     flush_after_commit_queue(merge_request)
   end
   print '.'

@@ -22,7 +22,7 @@ class Gitlab::Seeder::Timelogs
     password = SecureRandom.hex.slice(0, 16)
 
     [
-      User.find_by_username("root"),
+      Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin,
       find_or_create_reporter_user("timelogs_reporter_user_1", password),
       find_or_create_reporter_user("timelogs_reporter_user_2", password)
     ].compact
@@ -59,7 +59,7 @@ class Gitlab::Seeder::Timelogs
   end
 
   def self.find_or_create_reporter_user(username, password)
-    organization = User.admins.first.organizations.first
+    organization = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin_organization
     user = User.find_by_username(username)
 
     if user.nil?

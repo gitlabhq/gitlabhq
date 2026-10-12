@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Banzai::FilterArray, feature_category: :markdown do
+RSpec.describe Banzai::FilterArray do
   describe '#insert_after' do
     it 'inserts an element after a provided element' do
       filters = described_class.new(%w[a b c])

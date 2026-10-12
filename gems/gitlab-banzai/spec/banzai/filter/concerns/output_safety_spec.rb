@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Banzai::Filter::Concerns::OutputSafety, feature_category: :markdown do
+RSpec.describe Banzai::Filter::Concerns::OutputSafety do
   subject(:filter) do
     Class.new do
       include Banzai::Filter::Concerns::OutputSafety

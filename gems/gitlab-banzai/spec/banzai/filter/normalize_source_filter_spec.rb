@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'html/pipeline'
-require_relative '../../../support/helpers/filter_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Banzai::Filter::NormalizeSourceFilter, feature_category: :markdown do
+RSpec.describe Banzai::Filter::NormalizeSourceFilter do
   include FilterSpecHelper
 
   it 'removes the UTF8 BOM from the beginning of the text' do

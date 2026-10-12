@@ -24,6 +24,10 @@ module FastSpecHelper
   def self.app_requires
     require_relative 'deprecation_warnings'
     require 'gitlab/utils/all'
+    # Matches `config/application.rb`. The `gitlab-banzai` gem owns `Banzai`,
+    # `Banzai::Filter` and some of `Banzai::Filter::Concerns`, so the namespace
+    # has to be real before `rails_autoload` sets up Zeitwerk over `lib/`.
+    require 'banzai/all'
     require_relative 'rails_autoload'
     ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'
     require_relative '../config/settings'

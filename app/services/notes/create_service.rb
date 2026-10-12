@@ -142,19 +142,26 @@ module Notes
       status = ::Notes::QuickActionsStatus.new(
         command_names: command_names&.flatten,
         commands_only: only_commands)
-      status.add_message(message)
 
+      commands_executed = quick_actions_service.commands_executed_count.to_i > 0
+      update_error = quick_actions_update_errors(note, update_params) if commands_executed
+      status.add_message(message_for_status(message, update_error, update_params))
       note.quick_actions_status = status
 
-      return if quick_actions_service.commands_executed_count.to_i == 0
+      return unless commands_executed
 
-      update_error = quick_actions_update_errors(note, update_params)
       if update_error
         note.errors.add(:validation, update_error)
         status.add_error(update_error)
       end
 
       status.add_error(_('Failed to apply commands.')) if only_commands && message.blank?
+    end
+
+    def message_for_status(message, update_error, update_params)
+      return message unless update_error && update_params[:work_item_type]
+
+      quick_actions_service.remove_type_change_success_message(message)
     end
 
     def quick_actions_update_errors(note, params)

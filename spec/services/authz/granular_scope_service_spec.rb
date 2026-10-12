@@ -3,96 +3,112 @@
 require 'spec_helper'
 
 RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:organization) { create(:organization) }
   let_it_be(:namespace) { create(:group, organization: organization) }
   let_it_be(:namespace_boundary) { ::Authz::Boundary.for(namespace) }
   let_it_be(:other_namespace) { create(:group, organization: organization) }
   let_it_be(:other_namespace_boundary) { ::Authz::Boundary.for(other_namespace) }
+  let_it_be(:instance_boundary) { ::Authz::Boundary.for(:instance) }
+  let_it_be(:user_boundary) { ::Authz::Boundary.for(:user) }
 
   let(:personal_access_token) { create(:personal_access_token, organization: organization) }
   let(:service) { described_class.new(personal_access_token) }
 
+  shared_examples 'rejects the scopes and adds nothing' do
+    it 'returns the error and builds no join rows', :aggregate_failures do
+      expect { result }.not_to change { personal_access_token.personal_access_token_granular_scopes.size }
+      expect(result).to be_error
+      expect(result.message).to eq(expected_message)
+    end
+  end
+
   describe '#add_granular_scopes' do
     subject(:result) { service.add_granular_scopes(scopes_to_add) }
 
-    context 'with a single granular scope' do
-      let(:granular_scope) { build(:granular_scope, boundary: namespace_boundary) }
-      let(:scopes_to_add) { granular_scope }
-
-      it 'adds the granular scope and sets organization_id on both scope and join record' do
-        expect(result).to be_success
-        expect(result.payload[:granular_scopes]).to contain_exactly(granular_scope)
-
-        pat_granular_scope = personal_access_token.personal_access_token_granular_scopes
-          .find_by_granular_scope_id(granular_scope)
-
-        expect(granular_scope.organization_id).to eq(personal_access_token.organization_id)
-        expect(pat_granular_scope.organization_id).to eq(personal_access_token.organization_id)
-      end
-
-      context 'when adding a duplicate namespace scope' do
-        let(:duplicate_scope) { build(:granular_scope, boundary: namespace_boundary) }
-        let(:scopes_to_add) { duplicate_scope }
-
-        before do
-          service.add_granular_scopes(build(:granular_scope, boundary: namespace_boundary))
-        end
-
-        it 'returns an error and does not add the duplicate scope' do
-          expect { result }.not_to change { personal_access_token.granular_scopes.count }
-          expect(result).to be_error
-          expect(result.message).to eq('The token cannot have multiple granular scopes for the same namespace')
-        end
-      end
-
-      context 'when adding duplicate instance-level scopes' do
-        let(:instance_boundary) { ::Authz::Boundary.for(:instance) }
-        let(:instance_scope) { build(:granular_scope, boundary: instance_boundary) }
-        let(:duplicate_instance_scope) { build(:granular_scope, boundary: instance_boundary) }
-        let(:scopes_to_add) { duplicate_instance_scope }
-
-        before do
-          service.add_granular_scopes(instance_scope)
-        end
-
-        it 'returns an error for multiple instance-level scopes' do
-          expect { result }.not_to change { personal_access_token.granular_scopes.count }
-          expect(result).to be_error
-          expect(result.message).to eq('The token cannot have multiple instance-level granular scopes')
-        end
-      end
-    end
-
-    context 'with multiple granular scopes' do
+    context 'with scopes for distinct namespaces' do
       let(:first_scope) { build(:granular_scope, boundary: namespace_boundary) }
       let(:second_scope) { build(:granular_scope, boundary: other_namespace_boundary) }
       let(:scopes_to_add) { [first_scope, second_scope] }
 
-      it 'adds all granular scopes successfully' do
+      it 'adds the scopes and sets organization_id on the scopes and their join rows', :aggregate_failures do
+        organization_id = personal_access_token.organization_id
+
         expect(result).to be_success
         expect(result.payload[:granular_scopes]).to contain_exactly(first_scope, second_scope)
+        expect(personal_access_token.granular_scopes).to contain_exactly(first_scope, second_scope)
+        expect([first_scope, second_scope]).to all(have_attributes(organization_id: organization_id))
+        expect(personal_access_token.reload.personal_access_token_granular_scopes)
+          .to all(have_attributes(organization_id: organization_id))
+      end
+    end
 
-        expect(personal_access_token.granular_scopes)
-          .to contain_exactly(first_scope, second_scope)
-        expect(first_scope.organization_id).to eq(personal_access_token.organization_id)
-        expect(second_scope.organization_id).to eq(personal_access_token.organization_id)
+    context 'when a scope duplicates another' do
+      where(:boundary, :expected_message) do
+        ref(:namespace_boundary) | 'The token cannot have multiple granular scopes for the same namespace'
+        ref(:instance_boundary)  | 'The token cannot have multiple granular scopes with the same access level'
+        ref(:user_boundary)      | 'The token cannot have multiple granular scopes with the same access level'
       end
 
-      context 'when one scope fails validation' do
-        let(:duplicate_namespace_scope) { build(:granular_scope, boundary: namespace_boundary) }
+      with_them do
         let(:valid_scope) { build(:granular_scope, boundary: other_namespace_boundary) }
-        let(:scopes_to_add) { [duplicate_namespace_scope, valid_scope] }
 
-        before do
-          service.add_granular_scopes(build(:granular_scope, boundary: namespace_boundary))
+        context 'when the duplicate is in the same call' do
+          let(:scopes_to_add) do
+            [build(:granular_scope, boundary: boundary), valid_scope, build(:granular_scope, boundary: boundary)]
+          end
+
+          it_behaves_like 'rejects the scopes and adds nothing'
         end
 
-        it 'fails fast and does not add any scopes' do
-          expect { result }.not_to change { personal_access_token.granular_scopes.count }
-          expect(result).to be_error
-          expect(result.message).to eq('The token cannot have multiple granular scopes for the same namespace')
-          expect(personal_access_token.personal_access_token_granular_scopes.map(&:granular_scope))
-            .not_to include(valid_scope)
+        context 'when the duplicate is already on the token' do
+          let(:scopes_to_add) { [valid_scope, build(:granular_scope, boundary: boundary)] }
+
+          before do
+            service.add_granular_scopes(build(:granular_scope, boundary: boundary))
+          end
+
+          it_behaves_like 'rejects the scopes and adds nothing'
+        end
+      end
+    end
+
+    context 'when the token already holds a different standalone scope' do
+      let(:scopes_to_add) { build(:granular_scope, boundary: ::Authz::Boundary.for(:user)) }
+
+      before do
+        service.add_granular_scopes(build(:granular_scope, boundary: instance_boundary))
+      end
+
+      it 'adds the scope alongside the existing one', :aggregate_failures do
+        expect(result).to be_success
+        expect(personal_access_token.granular_scopes.map(&:access)).to contain_exactly('instance', 'user')
+      end
+    end
+
+    context 'when the token is loaded from the database with saved scopes' do
+      let_it_be(:saved_token) do
+        create(:granular_pat,
+          organization: organization, boundary: namespace_boundary, permissions: [:create_member_role])
+      end
+
+      let(:personal_access_token) { PersonalAccessToken.find(saved_token.id) }
+
+      context 'and a scope targets a namespace the token already has' do
+        let(:scopes_to_add) { build(:granular_scope, boundary: namespace_boundary) }
+        let(:expected_message) { 'The token cannot have multiple granular scopes for the same namespace' }
+
+        it_behaves_like 'rejects the scopes and adds nothing'
+      end
+
+      context 'and a scope targets another namespace' do
+        let(:scopes_to_add) { build(:granular_scope, boundary: other_namespace_boundary) }
+
+        it 'adds the scope next to the saved one', :aggregate_failures do
+          expect(result).to be_success
+          expect(PersonalAccessToken.find(saved_token.id).granular_scopes.map(&:namespace_id))
+            .to contain_exactly(namespace.id, other_namespace.id)
         end
       end
     end
@@ -103,41 +119,13 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
       let(:first_scope) { build(:granular_scope, boundary: namespace_boundary) }
       let(:duplicate_scope) { build(:granular_scope, boundary: namespace_boundary) }
 
-      it 'validates against in-memory granular scopes' do
+      it 'validates against in-memory granular scopes', :aggregate_failures do
         result = service.add_granular_scopes(first_scope)
         expect(result).to be_success
 
         result = service.add_granular_scopes(duplicate_scope)
         expect(result).to be_error
         expect(result.message).to eq('The token cannot have multiple granular scopes for the same namespace')
-      end
-    end
-
-    context 'with loaded granular scopes association' do
-      before do
-        existing_scope = build(:granular_scope, boundary: namespace_boundary)
-        service.add_granular_scopes(existing_scope)
-        personal_access_token.granular_scopes.to_a
-      end
-
-      it 'validates against loaded association when adding duplicate namespace' do
-        expect(personal_access_token.granular_scopes.loaded?).to be(true)
-
-        duplicate_scope = build(:granular_scope, boundary: namespace_boundary)
-        result = service.add_granular_scopes(duplicate_scope)
-
-        expect(result).to be_error
-        expect(result.message).to eq('The token cannot have multiple granular scopes for the same namespace')
-      end
-
-      it 'validates against loaded association when adding to different namespace' do
-        expect(personal_access_token.granular_scopes.loaded?).to be(true)
-
-        different_namespace_scope = build(:granular_scope, boundary: other_namespace_boundary)
-        result = service.add_granular_scopes(different_namespace_scope)
-
-        expect(result).to be_success
-        expect(personal_access_token.reload.granular_scopes).to include(different_namespace_scope)
       end
     end
   end

@@ -17,7 +17,7 @@ Sidekiq::Testing.inline! do
         'https://android.googlesource.com/platform/hardware/bsp/kernel/common/v4.4.git'
       ]
 
-      user = User.admins.first
+      user = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin
 
       project_urls.each_with_index do |url, i|
         full_path = url.sub('https://android.googlesource.com/', '')

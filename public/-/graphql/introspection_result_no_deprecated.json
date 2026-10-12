@@ -221168,6 +221168,12 @@
               "description": "Callout feature name for work_item_decision_log_popover.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "ANALYTICS_DASHBOARDS_EXPLORE_INTRO_BANNER",
+              "description": "Callout feature name for analytics_dashboards_explore_intro_banner.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

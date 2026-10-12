@@ -15,8 +15,6 @@ module Authz
     validates :permissions, json_schema: { filename: 'granular_scope_permissions', size_limit: 64.kilobytes }
     validate :organization_match, if: -> { namespace.present? }
 
-    scope :with_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
-
     module Access
       PERSONAL_PROJECTS = :personal_projects
       ALL_MEMBERSHIPS = :all_memberships

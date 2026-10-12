@@ -261,7 +261,7 @@ end
 
 if ENV['SEED_TRIAGE_OPS']
   Gitlab::Seeder.quiet do
-    organization = User.admins.first.organizations.first
+    organization = Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin_organization
 
     seeder = Gitlab::Seeder::TriageOps.new(organization: organization)
     seeder.seed!

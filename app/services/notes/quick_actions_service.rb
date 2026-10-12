@@ -11,7 +11,8 @@ module Notes
   class QuickActionsService < BaseService
     attr_reader :interpret_service
 
-    delegate :commands_executed_count, to: :interpret_service, allow_nil: true
+    delegate :commands_executed_count, :remove_type_change_success_message,
+      to: :interpret_service, allow_nil: true
 
     SUPPORTED_NOTEABLES = %w[WorkItem Issue MergeRequest Commit].freeze
 

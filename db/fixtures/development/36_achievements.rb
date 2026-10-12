@@ -6,7 +6,7 @@ class Gitlab::Seeder::Achievements
   def initialize(group, user_ids)
     @group = group
     @maintainer_ids = group.members.maintainers.pluck_user_ids
-    @maintainer_ids << User.admins.first.id
+    @maintainer_ids << Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin.id
     @user_ids = user_ids
   end
 

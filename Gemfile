@@ -52,6 +52,7 @@ gem 'safe_zip', path: 'gems/safe_zip', feature_category: :job_artifacts
 group :monorepo do
   gem 'gitlab-utils', path: 'gems/gitlab-utils', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'gitlab-configs', path: 'gems/gitlab-configs', feature_category: :settings
+  gem 'gitlab-banzai', path: 'gems/gitlab-banzai', feature_category: :markdown
   gem 'gitlab-mfe', path: 'gems/gitlab-mfe', feature_category: :compliance_management
   gem 'gitlab-email_handler', path: 'gems/gitlab-email_handler', require: false,
     feature_category: :service_desk

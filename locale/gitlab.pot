@@ -11874,6 +11874,9 @@ msgstr ""
 msgid "Analytics|Open GitLab Intelligence"
 msgstr ""
 
+msgid "Analytics|Organization-wide analytics with AI-assisted insights from GitLab Duo."
+msgstr ""
+
 msgid "Analytics|Organization-wide view"
 msgstr ""
 
@@ -11935,6 +11938,9 @@ msgid "Analytics|We couldn't load this data. Please try again later."
 msgstr ""
 
 msgid "Analytics|We couldn't load this data. Try again."
+msgstr ""
+
+msgid "Analytics|Welcome to GitLab Intelligence"
 msgstr ""
 
 msgid "Analytics|You don't have access"
@@ -47200,9 +47206,6 @@ msgstr ""
 msgid "Issue first deployed to production"
 msgstr ""
 
-msgid "Issue has been promoted to incident"
-msgstr ""
-
 msgid "Issue label"
 msgstr ""
 
@@ -62325,7 +62328,7 @@ msgstr ""
 msgid "PersonalAccessToken|The token cannot have multiple granular scopes for the same namespace"
 msgstr ""
 
-msgid "PersonalAccessToken|The token cannot have multiple instance-level granular scopes"
+msgid "PersonalAccessToken|The token cannot have multiple granular scopes with the same access level"
 msgstr ""
 
 msgid "PersonalProject|Learn to move a project to a group"

@@ -19,7 +19,7 @@ Gitlab::Seeder.quiet do
       scopes: 'api read_user openid',
       trusted: true,
       confidential: true,
-      organization: User.admins.first.organizations.first
+      organization: Gitlab::DatabaseImporters::AdminOrganizationImporter.seeded_admin_organization
     )
 
     print '.'

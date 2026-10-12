@@ -672,6 +672,37 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           expect(note.quick_actions_status.command_names).to eq(['confidential'])
           expect(note.quick_actions_status.error_messages).to eq(['Confidential an error occurred'])
         end
+
+        context 'when the type change is rejected by validation' do
+          let_it_be(:parent, freeze: false) { create(:work_item, :issue, project: project) }
+          let_it_be(:child, freeze: false) { create(:work_item, :task, project: project) }
+
+          before_all do
+            create(:parent_link, work_item: child, work_item_parent: parent)
+          end
+
+          it 'reports the error without the success message', :aggregate_failures do
+            note = described_class.new(
+              project, user, noteable: parent, note: '/type Task'
+            ).execute
+
+            expect(parent.reload.work_item_type.name).to eq('Issue')
+            expect(note.quick_actions_status.error?).to be(true)
+            expect(note.quick_actions_status.messages).to be_empty
+            expect(note.quick_actions_status.error_messages).to eq(['Work item type cannot be changed to Task with these child item types.'])
+          end
+
+          it 'keeps the messages of other commands in the same note', :aggregate_failures do
+            note = described_class.new(
+              project, user, noteable: parent, note: "/type Task\n/close"
+            ).execute
+
+            expect(parent.reload.work_item_type.name).to eq('Issue')
+            expect(parent).to be_closed
+            expect(note.quick_actions_status.error?).to be(true)
+            expect(note.quick_actions_status.messages).to eq(['Closed this item.'])
+          end
+        end
       end
     end
 
