@@ -9,7 +9,8 @@ module Types
             adapter = ::Gitlab::Database::Aggregation::Graphql::Adapter
             types_prefix = adapter.types_prefix(graphql_context[:types_prefix])
             response_type = EngineResponseType.build(engine, **graphql_context)
-            inner_resolver = Resolvers::Analytics::Aggregation::AggregationFieldResolver.build(engine, response_type)
+            inner_resolver = Resolvers::Analytics::Aggregation::AggregationFieldResolver
+              .build(engine, response_type, **graphql_context)
 
             Class.new(BaseObject) do
               graphql_name "#{types_prefix}AggregationScope"

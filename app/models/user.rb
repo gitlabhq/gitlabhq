@@ -561,7 +561,6 @@ class User < ApplicationRecord
     :dpop_enabled, :dpop_enabled=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
-    :orbit_enabled, :orbit_enabled=,
     :orbit_agent_enabled, :orbit_agent_enabled=,
     :orbit_agentic_chat_enabled, :orbit_agentic_chat_enabled=,
     :orbit_other_foundational_agents_enabled, :orbit_other_foundational_agents_enabled=,

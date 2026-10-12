@@ -490,9 +490,7 @@ Prerequisites:
 1. Sign in to [Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select **GitLab Credits dashboard**.
 1. From the **Usage period** dropdown list, select the period you want to export data for.
-1. Select **Export usage data**. GitLab generates the export in the background and emails you a link to download the ZIP file.
-
-For GitLab Flex subscriptions, you can start the same export from the [Flex Usage dashboard](gitlab_flex_dashboard.md).
+1. Select **Export usage data**.
 
 ## View your GitLab Credits usage
 

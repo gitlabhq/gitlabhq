@@ -53,30 +53,6 @@ function initTextEditorPreference() {
   handleCheckboxChange();
 }
 
-function initOrbitSubsettings() {
-  const mainCheckbox = document.querySelector('input[type="checkbox"][name="user[orbit_enabled]"]');
-  const subsettingsContainer = document.querySelector('[data-testid="orbit-subsettings"]');
-
-  if (!mainCheckbox || !subsettingsContainer) return;
-
-  const subCheckboxes = [
-    ...subsettingsContainer.querySelectorAll('input[type="checkbox"][name^="user[orbit_"]'),
-  ];
-
-  const handleMainChange = () => {
-    if (mainCheckbox.checked) {
-      subsettingsContainer.classList.remove('gl-hidden');
-      for (const checkbox of subCheckboxes) {
-        checkbox.checked = true;
-      }
-    } else {
-      subsettingsContainer.classList.add('gl-hidden');
-    }
-  };
-
-  mainCheckbox.addEventListener('change', handleMainChange);
-}
-
 function initIntegrations() {
   const el = document.querySelector('#js-profile-preferences-integrations');
 
@@ -99,7 +75,6 @@ function initIntegrations() {
 export default () => {
   initListboxInputs();
   initTextEditorPreference();
-  initOrbitSubsettings();
   initColorModeSelector();
   initIntegrations();
 

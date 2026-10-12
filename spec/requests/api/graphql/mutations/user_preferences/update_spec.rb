@@ -292,7 +292,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         expect(response).to have_gitlab_http_status(:success)
 
         expected_response = if Gitlab.ee?
-                              { 'enabled' => true }.merge(UserPreference::ORBIT_SUBSETTINGS.index_with(true))
+                              { 'enabled' => false }.merge(UserPreference::ORBIT_SUBSETTINGS.index_with(false))
                             else
                               {}
                             end

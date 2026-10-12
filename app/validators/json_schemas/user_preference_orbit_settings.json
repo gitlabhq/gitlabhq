@@ -4,7 +4,7 @@
   "type": "object",
   "properties": {
     "enabled": {
-      "description": "Killswitch for all Orbit functionality. When false, all Orbit subsettings are ignored.",
+      "description": "Not used. Orbit in GitLab Duo follows the group or instance setting.",
       "type": "boolean"
     },
     "orbit_agent_enabled": {

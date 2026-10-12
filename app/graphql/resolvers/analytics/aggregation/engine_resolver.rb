@@ -9,7 +9,11 @@ module Resolvers
             klass = Class.new(BaseEngineResolver)
             klass.engine = engine
             adapter = ::Gitlab::Database::Aggregation::Graphql::Adapter
+            types_prefix = adapter.types_prefix(graphql_context[:types_prefix])
             klass.class_eval do
+              # Anonymous resolvers need a name so graphql-ruby can build `Argument#path`.
+              graphql_name "#{types_prefix}AggregationResolver"
+
               type Types::Analytics::Aggregation::AggregationScopeType.build(engine, **graphql_context),
                 null: true
 

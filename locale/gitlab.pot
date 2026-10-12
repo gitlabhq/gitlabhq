@@ -59359,9 +59359,6 @@ msgstr ""
 msgid "Orbit|Double-click to explore connections"
 msgstr ""
 
-msgid "Orbit|Enable Orbit in GitLab Duo by default"
-msgstr ""
-
 msgid "Orbit|Entities"
 msgstr ""
 
@@ -59478,7 +59475,7 @@ msgstr ""
 msgid "Orbit|Get exact, repeatable results, like exports. Results include only data you have permission to see."
 msgstr ""
 
-msgid "Orbit|GitLab Duo Chat and agents can use Orbit data for groups that have Orbit on. This is the default for users who did not set their own Orbit preference. It has no effect when GitLab Duo is off."
+msgid "Orbit|GitLab Duo Chat and agents can use Orbit data for groups that have Orbit on. This setting turns Orbit in GitLab Duo on or off for all users. It has no effect when GitLab Duo is off."
 msgstr ""
 
 msgid "Orbit|GitLab Duo Chat and agents use Orbit to answer questions across projects."
@@ -60097,7 +60094,7 @@ msgstr ""
 msgid "Orbit|Turn on Orbit for all top-level groups?"
 msgstr ""
 
-msgid "Orbit|Turn on Orbit in GitLab Duo by default"
+msgid "Orbit|Turn on Orbit in GitLab Duo"
 msgstr ""
 
 msgid "Orbit|Turn on for all groups"
@@ -65027,6 +65024,9 @@ msgstr ""
 msgid "Preferences|Orbit in GitLab Duo"
 msgstr ""
 
+msgid "Preferences|Orbit powers GitLab Duo chat and agents across your projects. Choose which Orbit-powered features to use."
+msgstr ""
+
 msgid "Preferences|Other Foundational Agents"
 msgstr ""
 
@@ -65093,9 +65093,6 @@ msgstr ""
 msgid "Preferences|Type in rich text, as you see it."
 msgstr ""
 
-msgid "Preferences|Use Orbit in GitLab Duo"
-msgstr ""
-
 msgid "Preferences|Use relative times"
 msgstr ""
 
@@ -65103,9 +65100,6 @@ msgid "Preferences|Web IDE"
 msgstr ""
 
 msgid "Preferences|Web IDE and Workspaces"
-msgstr ""
-
-msgid "Preferences|When enabled, you can choose which Orbit-powered features to use below. Turning this off disables all Orbit features."
 msgstr ""
 
 msgid "Preferences|When you type a colon (:) in a description or comment box, matching emoji are suggested."

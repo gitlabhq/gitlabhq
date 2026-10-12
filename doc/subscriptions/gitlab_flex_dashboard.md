@@ -92,6 +92,31 @@ To view daily usage by capability:
 1. In the **Month** column, select the current or a past month.
 1. Select the tab for the capability you want to view.
 
+### Export usage data
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/18963) in GitLab 19.4.
+
+{{< /history >}}
+
+You can export the credit usage data for a subscription for the current or a past month.
+
+The export runs in the background, and GitLab emails you a link to download the result.
+The download link expires after seven days.
+
+The download is a ZIP file that contains two CSV files:
+
+- A daily summary file that lists the usage events and credits used on each day of the selected month.
+- A per-event file with one row for each billable event, including the product, flow type, session, user ID,
+  namespace, project, credits used, and token counts.
+
+To export usage data:
+
+1. Open the Flex dashboard.
+1. In the **Month** column, select the month you want to export data for.
+1. Select **Export usage data**.
+
 ## Reservation management
 
 Your reservation is what you commit to for a single calendar month. You can change it for the upcoming month without a contract amendment.

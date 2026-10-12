@@ -67,24 +67,27 @@ To keep using Orbit, add GitLab credits from the group usage quotas page.
 
 {{< /history >}}
 
-Orbit in GitLab Duo is enabled by default on GitLab Self-Managed and GitLab Dedicated.
-The instance default is not applicable on GitLab.com.
-A user's explicit Orbit preference overrides the instance default.
+Orbit in GitLab Duo is on by default. In their preferences, users choose which
+Orbit-powered features to use.
 
-This default doesn't bypass Orbit availability, licensing, or namespace enrollment requirements.
+On GitLab.com, Orbit in GitLab Duo is on for members of a top-level group with Orbit on.
+On GitLab Self-Managed and GitLab Dedicated, an administrator sets the instance-wide
+switch and the instance must have a license with the Orbit feature.
 
-### Turn off Orbit in GitLab Duo by default
+Orbit availability, licensing, and namespace enrollment requirements still apply.
+
+### Turn off Orbit in GitLab Duo for the instance
 
 Prerequisites:
 
 - You must have administrator access.
 - Your instance must have a license with the Orbit feature.
 
-To turn off Orbit in GitLab Duo for users who haven't set an Orbit preference:
+To turn off Orbit in GitLab Duo for all users on the instance:
 
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Orbit**.
-1. Turn off the **Turn on Orbit in GitLab Duo by default** toggle.
+1. Turn off the **Turn on Orbit in GitLab Duo** toggle.
 
 The setting is saved when you change the toggle.
 

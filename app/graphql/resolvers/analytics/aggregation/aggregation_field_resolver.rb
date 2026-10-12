@@ -5,10 +5,13 @@ module Resolvers
     module Aggregation
       module AggregationFieldResolver
         class << self
-          def build(engine, response_type)
+          def build(engine, response_type, **graphql_context)
             klass = Class.new(BaseAggregationFieldResolver)
             adapter = ::Gitlab::Database::Aggregation::Graphql::Adapter
+            types_prefix = adapter.types_prefix(graphql_context[:types_prefix])
             klass.class_eval do
+              graphql_name "#{types_prefix}AggregationFieldResolver"
+
               type response_type.connection_type, null: true
 
               max_page_size engine.max_page_size if engine.max_page_size

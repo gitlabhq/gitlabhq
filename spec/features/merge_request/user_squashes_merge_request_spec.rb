@@ -68,6 +68,9 @@ RSpec.describe 'User squashes a merge request', :js, feature_category: :code_rev
 
     before do
       visit project_new_merge_request_path(project, merge_request: { target_branch: target_branch, source_branch: source_branch })
+      # The page's background /compare/signatures write can race the create on the shared DB
+      # connection and lose NewMergeRequestWorker's after-commit hook, so wait for it first.
+      find('.signature-badge')
       check 'merge_request[squash]'
       click_on 'Create merge request'
       wait_for_requests
