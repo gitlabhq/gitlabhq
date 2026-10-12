@@ -31,7 +31,15 @@ title: Duo workflows
 > [!flag]
 > This data source reads from the GitLab Duo Agent Platform flow analytics engine, which is
 > controlled by a [feature flag](../../../administration/feature_flags/_index.md) named `dap_impact_v1`.
-> The flag is disabled by default. Until an administrator enables it, queries return an error.
+> The flag is disabled by default. An administrator can enable it for a user or for a top-level group.
+>
+> - When enabled for a user, queries return data for every group or project that the user selects and
+>   can read, whether or not those groups have the flag.
+> - When enabled for a top-level group, queries return data when every selected group and project
+>   is in an enabled top-level group.
+>
+> If any selected group or project is outside an enabled top-level group, and the flag
+> is not enabled for the user, queries return an error.
 
 This data source provides aggregated metrics about GitLab Duo Agent Platform flows
 (also called Duo workflows) run across your project or group, including how many

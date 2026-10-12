@@ -8,7 +8,26 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           TimeoutError = Class.new(StandardError)
-          HTTPTimeoutError = Class.new(StandardError)
+
+          class HTTPTimeoutError < StandardError
+            attr_reader :location, :attempts
+
+            def initialize(location:, attempts:)
+              @location = location
+              @attempts = attempts
+
+              super('Remote file could not be fetched because of a timeout error!')
+            end
+
+            def user_message
+              "Remote file `#{location}` could not be fetched after #{attempts} attempts " \
+                "because of a timeout error!"
+            end
+
+            def sentry_extra_data
+              { remote_location: location }
+            end
+          end
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config, :parallel_requests,
             :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,

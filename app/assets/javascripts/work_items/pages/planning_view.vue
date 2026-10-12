@@ -23,7 +23,7 @@ import {
   NAMESPACE_PROJECT,
   STATUS_CLOSED,
 } from '~/issues/constants';
-import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -92,7 +92,6 @@ import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_sav
 
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
 
 import {
   convertLegacyTypeFormat,
@@ -224,7 +223,6 @@ const WorkItemTypeToken = () =>
 const REALTIME_DEBOUNCE_MS = 500;
 
 export default {
-  issuableListTabs,
   WORK_ITEM_CREATE_SOURCES,
   CREATION_CONTEXT_LIST_ROUTE,
   VIEW_CONTEXT,
@@ -256,7 +254,6 @@ export default {
     EmptyStateWithoutAnyTickets,
     NewResourceDropdown,
     NewSavedViewModal,
-    IssuableTabs,
     ListView,
     BoardView,
     TableView,
@@ -295,11 +292,6 @@ export default {
     rootPageFullPath: {
       type: String,
       required: true,
-    },
-    withTabs: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     eeSearchTokens: {
       type: Array,
@@ -622,15 +614,6 @@ export default {
         return false;
       }
       return this.savedViewNotFound || !this.isSubscribedToSavedView;
-    },
-    tabs() {
-      if (this.withTabs) {
-        return this.$options.issuableListTabs;
-      }
-      return [];
-    },
-    currentTabCount() {
-      return this.workItemsCount;
     },
     preferencesChanged() {
       if (!this.initialPreferences) return false;
@@ -1561,16 +1544,6 @@ export default {
           ? VIEW_MODE_LIST
           : draft.viewMode;
     },
-    handleClickTab(state) {
-      if (this.state === state) {
-        return;
-      }
-
-      this.state = state;
-      this.pageParams = getInitialPageParams(this.pageSize);
-
-      this.updateRouterQueryParams();
-    },
     navigateToAllItems() {
       let query;
       if (planningViewAllItemsFilters.value) {
@@ -1703,7 +1676,7 @@ export default {
       }
 
       let tokens = getFilterTokens(window.location.search, {
-        includeStateToken: !this.withTabs,
+        includeStateToken: true,
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
         convertTypeTokens: true,
       });
@@ -2307,48 +2280,7 @@ export default {
           </gl-alert>
         </div>
 
-        <issuable-tabs v-if="withTabs" :tabs="tabs" :current-tab="state" @click="handleClickTab">
-          <template #nav-actions>
-            <div class="gl-flex gl-justify-end gl-gap-3">
-              <gl-button
-                v-if="allowBulkEditing"
-                :disabled="isBulkEditDisabled"
-                data-testid="bulk-edit-start-button"
-                @click="showBulkEditSidebar = true"
-              >
-                {{ __('Bulk edit') }}
-              </gl-button>
-              <create-work-item-modal
-                v-if="showProjectNewWorkItem"
-                :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
-                :full-path="rootPageFullPath"
-                :hide-namespace-selector="!isGroup"
-                :is-group="isGroup"
-                :preselected-work-item-type="preselectedWorkItemType"
-                :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-                @work-item-created="handleWorkItemCreated"
-              />
-              <new-resource-dropdown
-                v-if="showGroupNewWorkItem"
-                :query="$options.searchProjectsQuery"
-                :query-variables="newIssueDropdownQueryVariables"
-                :extract-projects="extractProjects"
-                :group-id="groupId"
-              />
-              <list-actions
-                :can-export="canExport"
-                :show-work-item-by-email-button="showWorkItemByEmail"
-                :work-item-count="currentTabCount"
-                :query-variables="csvExportQueryVariables"
-                :full-path="rootPageFullPath"
-                :url-params="urlParams"
-                :is-group-issues-list="isGroupIssuesList"
-              />
-            </div>
-          </template>
-        </issuable-tabs>
         <saved-views-selectors
-          v-else
           :selected-saved-view="savedView"
           :full-path="rootPageFullPath"
           :saved-views="subscribedSavedViews"
@@ -2562,7 +2494,6 @@ export default {
       v-if="!isBoardView"
       data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
-      :with-tabs="withTabs"
       :query-variables="queryVariables"
       :skip-query="shouldSkipDueToSavedViewState || metadataLoading"
       :work-items-count="workItemsCount"
@@ -2571,11 +2502,9 @@ export default {
       :checked-issuable-ids="checkedIssuableIds"
       :display-settings="displaySettingsSoT"
       :page-size="pageSize"
-      :filter-tokens="filterTokens"
       :api-filter-params="apiFilterParams"
       :sort-key="sortKey"
       :is-sort-key-initialized="isSortKeyInitialized"
-      :state="state"
       :active-item="activeItem"
       @toggle-bulk-edit-sidebar="($evt) => (showBulkEditSidebar = $evt)"
       @refetch-data="handleRefetch"
@@ -2601,11 +2530,7 @@ export default {
           <empty-state-without-any-tickets v-else />
         </template>
 
-        <empty-state-with-any-issues
-          v-else-if="hasWorkItems"
-          :has-search="hasSearch"
-          :with-tabs="false"
-        >
+        <empty-state-with-any-issues v-else-if="hasWorkItems">
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
@@ -2683,11 +2608,7 @@ export default {
       @open-group-by-settings="openGroupByDisplaySettings"
     >
       <template #empty-state>
-        <empty-state-with-any-issues
-          v-if="hasWorkItems || hasWorkItemsFailed"
-          :has-search="hasSearch"
-          :with-tabs="false"
-        >
+        <empty-state-with-any-issues v-if="hasWorkItems || hasWorkItemsFailed">
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"

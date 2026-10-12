@@ -224,5 +224,84 @@ RSpec.describe EmailsOnPushWorker, :mailer, feature_category: :source_code_manag
         end
       end
     end
+
+    context "with rate limiting" do
+      let(:recipients) { 1.upto(3).map { |i| user.email.sub('@', "+#{i}@") }.join("\n") }
+
+      context "when the namespace is over its outbound email limit" do
+        before do
+          allow_next_instance_of(::Gitlab::Email::NamespaceRateLimiter) do |limiter|
+            allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+          end
+        end
+
+        it "suppresses the whole batch and sends no mail", :aggregate_failures do
+          expect(Notify).not_to receive(:repository_push_email)
+
+          perform
+
+          expect(ActionMailer::Base.deliveries).to be_empty
+        end
+
+        it "charges the limiter the full valid-recipient count" do
+          expect_next_instance_of(::Gitlab::Email::NamespaceRateLimiter) do |limiter|
+            expect(limiter).to receive(:rate_limit_batch!).with(3).and_return(true)
+          end
+
+          perform
+        end
+
+        it "builds the limiter scoped to the root namespace with the Email on Push buckets" do
+          expect(::Gitlab::Email::NamespaceRateLimiter).to receive(:new).with(
+            a_hash_including(
+              root_namespace: project.root_namespace,
+              hourly_bucket: :emails_on_push_outbound_emails_per_hour,
+              daily_bucket: :emails_on_push_outbound_emails_per_day,
+              feature_flag: :emails_on_push_email_rate_limit
+            )
+          ).and_call_original
+
+          perform
+        end
+
+        # A Sidekiq retry re-runs perform, which recharges the batch rather
+        # than reusing a prior attempt's result. Pins that intended behaviour
+        # so a future change caching the limiter can't silently drop it.
+        #
+        it "charges the limiter again on every attempt" do
+          expect(::Gitlab::Email::NamespaceRateLimiter).to receive(:new).twice.and_call_original
+
+          2.times { subject.perform(project.id, recipients, data.stringify_keys) }
+        end
+      end
+
+      context "when the namespace is under its outbound email limit" do
+        before do
+          allow_next_instance_of(::Gitlab::Email::NamespaceRateLimiter) do |limiter|
+            allow(limiter).to receive(:rate_limit_batch!).and_return(false)
+          end
+        end
+
+        it "sends mail to every recipient" do
+          perform
+
+          expect(email_recipients).to match_array(recipients.split)
+        end
+      end
+
+      context "when the feature flag is disabled" do
+        before do
+          stub_feature_flags(emails_on_push_email_rate_limit: false)
+        end
+
+        it "does not rate limit and sends mail to every recipient", :aggregate_failures do
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+          perform
+
+          expect(email_recipients).to match_array(recipients.split)
+        end
+      end
+    end
   end
 end

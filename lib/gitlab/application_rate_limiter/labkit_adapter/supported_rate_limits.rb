@@ -72,7 +72,7 @@ module Gitlab
           value.respond_to?(:call) && value.respond_to?(:arity) && value.arity >= 1
         end
 
-        def self.rule_definitions # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity -- static registry of rate-limit definitions
+        def self.rule_definitions # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity -- static registry of rate-limit definitions
           {
             ai_action: ::Labkit::RateLimit::Rule.new(
               name: 'limit_ai_actions_by_user',
@@ -838,6 +838,43 @@ module Gitlab
             ),
             service_desk_outbound_emails_per_day: ::Labkit::RateLimit::Rule.new(
               name: 'limit_service_desk_outbound_emails_per_day_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.day,
+              action: :limit
+            ),
+            # Email on Push reuses the service_desk_outbound_emails_per_*
+            # threshold value but counts into its own buckets, so exhausting the
+            # push quota never throttles Service Desk sends, and vice versa.
+            #
+            emails_on_push_outbound_emails_per_hour: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_emails_on_push_outbound_emails_per_hour_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.hour,
+              action: :limit
+            ),
+            emails_on_push_outbound_emails_per_day: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_emails_on_push_outbound_emails_per_day_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.day,
+              action: :limit
+            ),
+            # Pipelines Email reuses the service_desk_outbound_emails_per_*
+            # threshold value but counts into its own buckets, so exhausting the
+            # pipeline quota never throttles Service Desk or Email on Push sends,
+            # and vice versa.
+            #
+            pipelines_email_outbound_emails_per_hour: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipelines_email_outbound_emails_per_hour_by_namespace',
+              characteristics: %i[namespace],
+              limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
+              period: 1.hour,
+              action: :limit
+            ),
+            pipelines_email_outbound_emails_per_day: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipelines_email_outbound_emails_per_day_by_namespace',
               characteristics: %i[namespace],
               limit: ->(ctx) { ctx&.dig(:threshold) || 0 },
               period: 1.day,

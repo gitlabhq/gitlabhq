@@ -405,7 +405,6 @@ const mountComponent = async ({
     },
     propsData: {
       rootPageFullPath: 'full/path',
-      withTabs: false,
       ...props,
     },
     mocks: {
@@ -1436,7 +1435,7 @@ describe('planning-view', () => {
       await nextTick();
       await waitForPromises();
 
-      expect(findListView().props('filterTokens')).toEqual(
+      expect(findFilteredSearchBar().props('initialFilterValue')).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             type: TOKEN_TYPE_STATE,
@@ -3243,7 +3242,6 @@ describe('planning-view', () => {
 
         it('fills the board empty state with the no results state', () => {
           expect(findBoardView().props('hasWorkItems')).toBe(true);
-          expect(findEmptyStateWithAnyIssues().props('withTabs')).toBe(false);
           expect(findEmptyStateWithAnyIssues().findComponent(GlEmptyState).props()).toMatchObject({
             title: 'No results found',
             description: 'To widen your search, change or remove filters above.',

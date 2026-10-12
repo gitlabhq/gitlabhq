@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category: :consumables_cost_management do
+RSpec.describe Namespace::RootStorageStatistics, feature_category: :consumables_cost_management do
   it { is_expected.to belong_to :namespace }
   it { is_expected.to have_one(:route).through(:namespace) }
 

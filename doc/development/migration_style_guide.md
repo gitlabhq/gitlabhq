@@ -140,6 +140,20 @@ bundle exec rails g migration migration_name_here
 
 This generates the migration file in `db/migrate`.
 
+Do not type the migration version by hand.
+
+The version is the 14-digit timestamp at the start of the filename.
+The version must be unique across the repository, and hand-typed versions often collide with existing migrations.
+
+Use the Rails generator above, which picks a valid version for you.
+
+If you want to create the migration file by hand, use one of these options to ensure the filename has a proper version:
+
+- Use the version from the current UTC time with `date -u +%Y%m%d%H%M%S`.
+- Or run `scripts/refresh-migrations-timestamps`. See [Migration timestamp age](#migration-timestamp-age).
+
+The RuboCop cop `Migration/RoundTimestamp` rejects a version that ends in `0000`, because that pattern points to a hand-typed value.
+
 ### Regular schema migrations to add new models
 
 To create a new model you can use the following Rails generator:
@@ -481,7 +495,7 @@ This script:
 
 1. Updates all migration timestamps to be current
 1. Maintains the relative order of the migrations
-1. Updates both the filename and the timestamp within the migration class
+1. Updates the filename of the migration
 1. Handles both regular and post-deployment migrations
 
 > [!note]

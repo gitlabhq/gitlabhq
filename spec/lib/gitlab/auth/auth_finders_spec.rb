@@ -1001,7 +1001,13 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       end
 
       it 'calls find_caught_up_replica to ensure a recent replica is used' do
-        expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica)
+        # The model lookup sticks as well while stick_new_oauth_tokens_to_primary rolls out
+        #
+        # Revert https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211007 after
+        # rollouts for oauth_lookups_use_load_balancer_sticking and stick_new_oauth_tokens_to_primary
+        # are completed and change this expectation to
+        # expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica)
+        expect(OauthAccessToken.sticking).to receive(:find_caught_up_replica).at_least(:once)
 
         find_oauth_access_token
       end

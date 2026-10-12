@@ -25,6 +25,93 @@ RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_managemen
   end
 
   describe '#highlight' do
+    context 'when limiting inline diff highlighting' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:diff_lines) do
+        texts.each_with_index.map do |text, index|
+          type = text.start_with?('-') ? 'old' : 'new'
+          Gitlab::Diff::Line.new(text, type, index, index + 1, index + 1)
+        end
+      end
+
+      let(:marked) { highlighted_lines.map { |line| line.marker_ranges.any? } }
+
+      subject(:highlighted_lines) { described_class.new(diff_lines, repository: project.repository).highlight }
+
+      where(:old_length, :new_length, :highlighted) do
+        499 | 499 | true
+        500 | 500 | true
+        501 | 500 | false
+        500 | 501 | false
+      end
+
+      with_them do
+        let(:texts) { ["-#{'a' * old_length}", "+#{'b' * new_length}"] }
+
+        it 'only marks pairs within the line length limit', :aggregate_failures do
+          expect(marked[0]).to eq(highlighted)
+          expect(marked[1]).to eq(highlighted)
+        end
+      end
+
+      context 'with a per-file budget' do
+        let(:texts) { %w[-abc -def +xyz +uvw] }
+
+        context 'when the per-file budget is reached exactly' do
+          before do
+            stub_const('Gitlab::Diff::Highlight::MAX_INLINE_DIFF_COST_PER_FILE', 9)
+          end
+
+          it 'still marks the next pair' do
+            expect(marked).to eq([true, true, true, true])
+          end
+        end
+
+        context 'when the per-file budget is exceeded' do
+          before do
+            stub_const('Gitlab::Diff::Highlight::MAX_INLINE_DIFF_COST_PER_FILE', 8)
+          end
+
+          it 'marks the crossing pair but skips later pairs', :aggregate_failures do
+            expect(marked).to eq([true, false, true, false])
+            expect(highlighted_lines[1].rich_text).not_to include('idiff')
+            expect(highlighted_lines[3].rich_text).not_to include('idiff')
+          end
+
+          context 'when an earlier pair exceeds the length limit' do
+            let(:texts) { ["-#{'a' * 501}", '-abc', "+#{'b' * 501}", '+xyz'] }
+
+            it 'does not count that pair against the budget' do
+              expect(marked).to eq([false, true, false, true])
+            end
+          end
+        end
+      end
+
+      context 'when the flag is disabled' do
+        let(:texts) { ["-#{'a' * 501}", "+#{'b' * 501}"] }
+
+        before do
+          stub_feature_flags(limit_inline_diff_highlighting: false)
+        end
+
+        it 'still marks long lines' do
+          expect(marked).to eq([true, true])
+        end
+      end
+
+      context 'when skipped lines contain HTML' do
+        let(:texts) { ["-#{'a' * 501}<script>", "+#{'b' * 501}<script>"] }
+
+        it 'renders the escaped content without inline markers', :aggregate_failures do
+          expect(highlighted_lines.map(&:rich_text)).to all(include('&lt;script&gt;'))
+          expect(highlighted_lines.map(&:rich_text)).to all(exclude('<script>'))
+          expect(highlighted_lines.map(&:rich_text)).to all(exclude('idiff'))
+        end
+      end
+    end
+
     shared_examples_for 'diff highlighter' do
       context "with a diff file" do
         let(:subject) { described_class.new(diff_file, repository: project.repository).highlight }

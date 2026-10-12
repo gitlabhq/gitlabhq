@@ -39,13 +39,6 @@ module Gitlab
     # with every `db_key_base` key. `overrides` replaces evaluated options, e.g.
     # the IV when decrypting a previous value.
     def attr_encrypted_decrypt(attribute, encrypted_value, **overrides)
-      unless Feature.enabled?(:attr_encrypted_multi_key_decrypt, Feature.current_request)
-        return super(attribute, encrypted_value) if overrides.empty?
-
-        key = dynamic_encryption_key(attr_encrypted_encrypted_attributes[attribute.to_sym][:key])
-        return self.class.attr_encrypted_decrypt(attribute, encrypted_value, { key: key, **overrides })
-      end
-
       attr_encrypted_decrypt_with_key_used(attribute, encrypted_value, **overrides).first
     end
 

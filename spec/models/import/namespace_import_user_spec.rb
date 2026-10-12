@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::NamespaceImportUser, type: :model, feature_category: :importers do
+RSpec.describe Import::NamespaceImportUser, feature_category: :importers do
   let(:namespace_import_user) { create(:namespace_import_user) }
 
   describe 'associations' do

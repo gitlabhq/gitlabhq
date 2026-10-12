@@ -5,7 +5,6 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
   let(:factory_name) { nil }
   let(:factory_attributes) { {} }
-  let(:worker_class) { nil }
   let(:table_name) { described_class.table_name }
   let(:connection) { described_class.connection }
   let(:fully_qualified_table_name) { "#{connection.current_schema}.#{table_name}" }
@@ -64,7 +63,10 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
     expect { model.delete }.to change { deleted_records.count }.by(1)
 
-    process_loose_foreign_key_deletions(record: model, worker_class: worker_class)
+    process_loose_foreign_key_definitions(
+      definitions: Gitlab::Database::LooseForeignKeys.definitions_by_table[table_name],
+      record: model
+    )
 
     records_for_model = deleted_records.select { |record| record.primary_key_value == model_id }
 
@@ -99,7 +101,7 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
     debug_print_outstanding_lfk_records
 
     start_process_loose_foreign_key_deletions = Time.now
-    process_loose_foreign_key_deletions(record: parent, worker_class: foreign_key_definition.options[:worker_class])
+    process_loose_foreign_key_definitions(definitions: [foreign_key_definition], record: parent)
     lfk_debug_log("## LFK's processed for parent in #{Time.now - start_process_loose_foreign_key_deletions} seconds##")
 
     debug_print_outstanding_lfk_records
@@ -164,7 +166,7 @@ RSpec.shared_examples 'update by a loose foreign key' do
 
     parent.delete
 
-    process_loose_foreign_key_deletions(record: parent)
+    process_loose_foreign_key_definitions(definitions: [foreign_key_definition], record: parent)
 
     expect(find_model.read_attribute_before_type_cast(options[:target_column])).to eq(options[:target_value])
   end

@@ -32,33 +32,12 @@ describe('EmptyStateWithAnyIssues component', () => {
     });
   });
 
-  describe('when "Open" tab is active', () => {
-    it('shows empty state', () => {
-      mountComponent({ hasSearch: false, isOpenTab: true });
+  it('shows no results found empty state even without search', () => {
+    mountComponent({ hasSearch: false });
 
-      expect(findGlEmptyState().props('title')).toBe('No open issues');
-      expect(findGlEmptyState().props('description')).toBe(
-        'Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
-      );
-    });
-  });
-
-  describe('when "Closed" tab is active', () => {
-    it('shows empty state', () => {
-      mountComponent({ hasSearch: false, isOpenTab: false });
-
-      expect(findGlEmptyState().props('title')).toBe('No closed issues');
-    });
-  });
-
-  describe('when withTabs is false', () => {
-    it('shows no results found empty state even without search', () => {
-      mountComponent({ hasSearch: false, withTabs: false });
-
-      expect(findGlEmptyState().props()).toMatchObject({
-        description: 'To widen your search, change or remove filters above.',
-        title: 'No results found',
-      });
+    expect(findGlEmptyState().props()).toMatchObject({
+      description: 'To widen your search, change or remove filters above.',
+      title: 'No results found',
     });
   });
 });

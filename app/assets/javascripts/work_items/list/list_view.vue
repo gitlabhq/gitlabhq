@@ -14,13 +14,12 @@ import produce from 'immer';
 import { isEmpty } from 'lodash-es';
 import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
-import { convertToSearchQuery, getInitialPageParams } from 'ee_else_ce/work_items/list/utils';
+import { getInitialPageParams } from 'ee_else_ce/work_items/list/utils';
 import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { evictNamespaceWorkItems } from '~/work_items/list/graphql/cache_updates';
-import { STATUS_OPEN } from '~/issues/constants';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { RELATIVE_POSITION_ASC, CREATED_DESC } from '~/work_items/list/constants';
@@ -136,11 +135,6 @@ export default {
       required: false,
       default: DEFAULT_PAGE_SIZE,
     },
-    filterTokens: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     apiFilterParams: {
       type: Object,
       required: false,
@@ -152,10 +146,6 @@ export default {
     },
     isSortKeyInitialized: {
       type: Boolean,
-      required: true,
-    },
-    state: {
-      type: String,
       required: true,
     },
     activeItem: {
@@ -227,15 +217,6 @@ export default {
     },
     isServiceDeskList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
-    },
-    hasSearch() {
-      return Boolean(this.searchQuery);
-    },
-    isOpenTab() {
-      return this.state === STATUS_OPEN;
-    },
-    searchQuery() {
-      return convertToSearchQuery(this.filterTokens);
     },
     showPaginationControls() {
       return !this.isLoading && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
@@ -620,13 +601,7 @@ export default {
         </issuable-item>
       </component>
       <template v-if="!error && workItems.length === 0">
-        <slot
-          name="list-empty-state"
-          :has-search="hasSearch"
-          :is-open-tab="isOpenTab"
-          :with-tabs="false"
-        >
-        </slot>
+        <slot name="list-empty-state"></slot>
       </template>
     </template>
 

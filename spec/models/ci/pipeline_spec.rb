@@ -159,7 +159,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe 'associations' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:all_pipelines)
@@ -306,7 +306,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   describe 'state machine transitions' do
     context 'from failed to success' do
-      let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :failed) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :failed) }
 
       it 'schedules CoverageReportWorker' do
         expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
@@ -327,7 +327,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     describe 'to completed' do
       # need pre-created object to avoid another InternalEvent being triggers in the models create hook
-      let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, user: user, project: project) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, user: user, project: project) }
 
       {
         succeed!: 'success',
@@ -606,7 +606,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe 'pipeline age metric' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     let(:pipeline_age_histogram) do
       ::Gitlab::Ci::Pipeline::Metrics.pipeline_age_histogram
@@ -698,7 +698,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#set_status' do
-    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    let(:pipeline) { build(:ci_pipeline, :created) }
 
     let(:not_transitionable) do
       [
@@ -813,7 +813,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '.processables' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     before do
       create(:ci_build, name: 'build', pipeline: pipeline)
@@ -1131,7 +1131,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '.preload_pipeline_metadata' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, user: user, name: 'Chatops pipeline') }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user, name: 'Chatops pipeline') }
 
     it 'loads associations' do
       result = described_class.preload_pipeline_metadata.first
@@ -1563,7 +1563,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#merge_request_ref?' do
     subject { pipeline.merge_request_ref? }
 
-    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    let(:pipeline) { build(:ci_pipeline, :created) }
 
     it 'calls MergeRequest#merge_request_ref?' do
       expect(MergeRequest).to receive(:merge_request_ref?).with(pipeline.ref)
@@ -1798,7 +1798,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     context 'when pipeline does not have metrics reports' do
       subject { described_class.with_reports(Ci::JobArtifact.of_report_type(:test)) }
 
-      let!(:pipeline_without_report) { create(:ci_empty_pipeline) }
+      let!(:pipeline_without_report) { create(:ci_pipeline) }
 
       it 'does not select the pipeline' do
         is_expected.to be_empty
@@ -2081,7 +2081,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
-        build(:ci_empty_pipeline, :created, project: project, source: nil)
+        build(:ci_pipeline, :created, project: project, source: nil)
       end
 
       it "prevents from creating an object" do
@@ -2090,7 +2090,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when updating existing pipeline' do
-      let(:pipeline) { create(:ci_empty_pipeline, :created) }
+      let(:pipeline) { create(:ci_pipeline, :created) }
 
       before do
         pipeline.update_attribute(:source, nil)
@@ -2102,7 +2102,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when source is unknown' do
-      subject(:pipeline) { create(:ci_empty_pipeline, :created) }
+      subject(:pipeline) { create(:ci_pipeline, :created) }
 
       let(:attr) { :source }
       let(:attr_value) { :unknown }
@@ -2113,7 +2113,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   describe '#config_source' do
     context 'when source is unknown' do
-      subject(:pipeline) { create(:ci_empty_pipeline, :created) }
+      subject(:pipeline) { create(:ci_pipeline, :created) }
 
       let(:attr) { :config_source }
       let(:attr_value) { :unknown_source }
@@ -2123,7 +2123,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#block' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let(:pipeline) { create(:ci_pipeline, :created) }
 
     it 'changes pipeline status to manual' do
       expect(pipeline.block).to be true
@@ -2145,7 +2145,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#valid_commit_sha' do
-    let(:pipeline) { build_stubbed(:ci_empty_pipeline, :created, project: project) }
+    let(:pipeline) { build_stubbed(:ci_pipeline, :created, project: project) }
 
     context 'commit.sha can not start with 00000000' do
       before do
@@ -2160,7 +2160,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#short_sha' do
     subject { pipeline.short_sha }
 
-    let(:pipeline) { build_stubbed(:ci_empty_pipeline, :created) }
+    let(:pipeline) { build_stubbed(:ci_pipeline, :created) }
 
     it 'has 8 items' do
       expect(subject.size).to eq(8)
@@ -2170,7 +2170,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#git_author_login' do
-    let(:pipeline) { build_stubbed(:ci_empty_pipeline, :created, project: project) }
+    let(:pipeline) { build_stubbed(:ci_pipeline, :created, project: project) }
 
     subject { pipeline.git_author_login }
 
@@ -2247,7 +2247,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#retried' do
     subject { pipeline.retried }
 
-    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+    let(:pipeline) { create(:ci_pipeline, :created, project: project) }
     let!(:build1) { create(:ci_build, pipeline: pipeline, name: 'deploy', retried: true) }
 
     before do
@@ -2260,7 +2260,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#coverage' do
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline) }
 
     context 'with multiple pipelines' do
       before_all do
@@ -2295,7 +2295,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#update_builds_coverage' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
 
     context 'builds with coverage_regex defined' do
       let!(:build_1) { create(:ci_build, :success, :trace_with_coverage, trace_coverage: 60.0, pipeline: pipeline) }
@@ -2333,7 +2333,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#retryable?' do
     subject { pipeline.retryable? }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project, created_at: 1.day.ago) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created, project: project, created_at: 1.day.ago) }
 
     context 'no failed builds' do
       before do
@@ -2669,7 +2669,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#auto_canceled?' do
     subject { pipeline.auto_canceled? }
 
-    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    let(:pipeline) { build(:ci_pipeline, :created) }
 
     context 'when it is canceled' do
       before do
@@ -2678,7 +2678,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when there is auto_canceled_by' do
         before do
-          pipeline.auto_canceled_by = create(:ci_empty_pipeline)
+          pipeline.auto_canceled_by = create(:ci_pipeline)
         end
 
         it 'is auto canceled' do
@@ -2706,7 +2706,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe 'pipeline stages' do
-    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    let(:pipeline) { build(:ci_pipeline, :created) }
 
     before do
       create(:ci_stage, name: 'test', pipeline: pipeline, position: 1)
@@ -2728,7 +2728,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#stages' do
-    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    let(:pipeline) { build(:ci_pipeline, :created) }
 
     before do
       create(:ci_stage, project: project, pipeline: pipeline, position: 4, name: 'deploy')
@@ -2762,7 +2762,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe 'state machine' do
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :created) }
 
     let(:current) { Time.current.change(usec: 0) }
     let(:build) { create_build('build1', queued_at: Time.zone.at(0)) }
@@ -2900,7 +2900,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe '#started_at' do
-      let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
+      let(:pipeline) { create(:ci_pipeline, status: from_status) }
 
       %i[created preparing pending].each do |status|
         context "from #{status}" do
@@ -3055,7 +3055,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe 'merge request metrics' do
-      let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
+      let(:pipeline) { create(:ci_pipeline, status: from_status) }
 
       before do
         expect(PipelineMetricsWorker).to receive(:perform_async).with(pipeline.id)
@@ -3109,7 +3109,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe 'merge on success' do
-      let(:pipeline) { create(:ci_empty_pipeline, status: from_status) }
+      let(:pipeline) { create(:ci_pipeline, status: from_status) }
 
       %i[created preparing pending running].each do |status|
         context "from #{status}" do
@@ -3272,7 +3272,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     describe 'auto devops pipeline metrics' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:pipeline) { create(:ci_empty_pipeline, config_source: config_source) }
+      let(:pipeline) { create(:ci_pipeline, config_source: config_source) }
       let(:config_source) { :auto_devops_source }
 
       where(:action, :status) do
@@ -3656,7 +3656,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#branch?' do
     subject { pipeline.branch? }
 
-    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    let(:pipeline) { build(:ci_pipeline, :created) }
 
     context 'when ref is not a tag' do
       before do
@@ -3735,7 +3735,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     context 'when repository exists' do
       using RSpec::Parameterized::TableSyntax
 
-      let_it_be_with_refind(:pipeline) { create(:ci_empty_pipeline) }
+      let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
 
       where(:tag, :ref, :result) do
         false | 'master'              | true
@@ -3756,7 +3756,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when repository does not exist' do
-      let(:pipeline) { build(:ci_empty_pipeline, ref: 'master', project: build(:project)) }
+      let(:pipeline) { build(:ci_pipeline, ref: 'master', project: build(:project)) }
 
       it 'always returns false' do
         expect(pipeline.ref_exists?).to be false
@@ -3955,7 +3955,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#manual_actions' do
     subject { pipeline.manual_actions }
 
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :created) }
 
     it 'when none defined' do
       is_expected.to be_empty
@@ -3983,7 +3983,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#branch_updated?' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let(:pipeline) { create(:ci_pipeline, :created) }
 
     context 'when pipeline has before SHA' do
       before do
@@ -4008,7 +4008,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#modified_paths' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+    let(:pipeline) { create(:ci_pipeline, :created, project: project) }
 
     context 'when old and new revisions are set' do
       before do
@@ -4064,7 +4064,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#changed_paths' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+    let(:pipeline) { create(:ci_pipeline, :created, project: project) }
 
     context 'when old and new revisions are set' do
       before do
@@ -4200,7 +4200,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#has_kubernetes_active?' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+    let(:pipeline) { create(:ci_pipeline, :created, project: project) }
 
     context 'when kubernetes is active' do
       context 'when user configured kubernetes from CI/CD > Clusters' do
@@ -4222,7 +4222,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#has_warnings?' do
     subject { pipeline.has_warnings? }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     context 'build which is allowed to fail fails' do
       before do
@@ -4280,7 +4280,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#number_of_warnings' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     it 'returns the number of warnings' do
       create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop')
@@ -4290,7 +4290,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'supports eager loading of the number of warnings' do
-      pipeline2 = create(:ci_empty_pipeline, :created)
+      pipeline2 = create(:ci_pipeline, :created)
 
       create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop')
       create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline2, name: 'rubocop')
@@ -4314,7 +4314,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     subject { pipeline.needs_processing? }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     where(:processed, :result) do
       nil   | true
@@ -4345,7 +4345,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     def create_pipeline(status, ref, sha)
       create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         status: status,
         ref: ref,
         sha: sha
@@ -4427,18 +4427,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       context 'when refs are specified' do
         before do
-          create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
-          create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
+          create(:ci_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
+          create(:ci_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
 
         let(:refs) { %w[first_ref second_ref third_ref] }
 
         let!(:latest_successful_pipeline_for_first_ref) do
-          create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
+          create(:ci_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
         end
 
         let!(:latest_successful_pipeline_for_second_ref) do
-          create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
+          create(:ci_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
 
         it 'returns the latest successful pipeline for both refs' do
@@ -4459,11 +4459,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     describe '.latest_pipelines_for_ref_by_statuses' do
-      let_it_be(:ref1_success_old) { create(:ci_empty_pipeline, status: :success, ref: 'first_ref') }
-      let_it_be(:ref1_success) { create(:ci_empty_pipeline, status: :success, ref: 'first_ref') }
-      let_it_be(:ref1_failed) { create(:ci_empty_pipeline, status: :failed, ref: 'first_ref') }
-      let_it_be(:ref1_blocked) { create(:ci_empty_pipeline, status: :manual, ref: 'first_ref') }
-      let_it_be(:ref2_success) { create(:ci_empty_pipeline, status: :success, ref: 'second_ref') }
+      let_it_be(:ref1_success_old) { create(:ci_pipeline, status: :success, ref: 'first_ref') }
+      let_it_be(:ref1_success) { create(:ci_pipeline, status: :success, ref: 'first_ref') }
+      let_it_be(:ref1_failed) { create(:ci_pipeline, status: :failed, ref: 'first_ref') }
+      let_it_be(:ref1_blocked) { create(:ci_pipeline, status: :manual, ref: 'first_ref') }
+      let_it_be(:ref2_success) { create(:ci_pipeline, status: :success, ref: 'second_ref') }
 
       context 'when only a ref is passed in' do
         subject(:latest_pipelines_for_ref_by_statuses) { described_class.latest_pipelines_for_ref_by_statuses(ref) }
@@ -4540,7 +4540,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '.latest_pipeline_per_commit' do
     let_it_be(:commit_123_ref_master) do
       create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         status: 'success',
         ref: 'master',
         sha: '123'
@@ -4549,7 +4549,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     let_it_be(:commit_123_ref_develop) do
       create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         status: 'success',
         ref: 'develop',
         sha: '123'
@@ -4558,7 +4558,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     let_it_be(:commit_456_ref_test) do
       create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         status: 'success',
         ref: 'test',
         sha: '456'
@@ -4586,7 +4586,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'when there are two pipelines for a ref and SHA' do
         let!(:commit_123_ref_master_latest) do
           create(
-            :ci_empty_pipeline,
+            :ci_pipeline,
             status: 'failed',
             ref: 'master',
             sha: '123',
@@ -4648,21 +4648,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       # Only in the previous partition, so it can only be found via the fallback.
       let_it_be(:old_only) do
-        create(:ci_empty_pipeline, sha: 'aaa', ref: 'master', project: project, partition_id: 100)
+        create(:ci_pipeline, sha: 'aaa', ref: 'master', project: project, partition_id: 100)
       end
 
       # Only in the current partition.
       let_it_be(:current_only) do
-        create(:ci_empty_pipeline, sha: 'bbb', ref: 'master', project: project, partition_id: 101)
+        create(:ci_pipeline, sha: 'bbb', ref: 'master', project: project, partition_id: 101)
       end
 
       # Present in both partitions; the one in the current partition is newer and must win.
       let_it_be(:both_previous) do
-        create(:ci_empty_pipeline, sha: 'ccc', ref: 'master', project: project, partition_id: 100)
+        create(:ci_pipeline, sha: 'ccc', ref: 'master', project: project, partition_id: 100)
       end
 
       let_it_be(:both_current) do
-        create(:ci_empty_pipeline, sha: 'ccc', ref: 'master', project: project, partition_id: 101)
+        create(:ci_pipeline, sha: 'ccc', ref: 'master', project: project, partition_id: 101)
       end
 
       before do
@@ -4740,42 +4740,42 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     let_it_be(:develop_123) do
       create(
-        :ci_empty_pipeline, status: :success,
+        :ci_pipeline, status: :success,
         ref: 'develop', sha: '123'
       )
     end
 
     let_it_be(:develop_123_2) do
       create(
-        :ci_empty_pipeline, status: :success,
+        :ci_pipeline, status: :success,
         ref: 'develop', sha: '123'
       )
     end
 
     let_it_be(:master_123) do
       create(
-        :ci_empty_pipeline, status: :success,
+        :ci_pipeline, status: :success,
         ref: 'master', sha: '123'
       )
     end
 
     let_it_be(:develop_234) do
       create(
-        :ci_empty_pipeline, status: :success,
+        :ci_pipeline, status: :success,
         ref: 'develop', sha: '234'
       )
     end
 
     let_it_be(:master_234) do
       create(
-        :ci_empty_pipeline, status: :success,
+        :ci_pipeline, status: :success,
         ref: 'master', sha: '234'
       )
     end
 
     let_it_be(:master_234_2) do
       create(
-        :ci_empty_pipeline, status: :success,
+        :ci_pipeline, status: :success,
         ref: 'master', sha: '234'
       )
     end
@@ -4830,7 +4830,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#status', :sidekiq_inline do
     subject { pipeline.reload.status }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     let(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
 
@@ -4924,7 +4924,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#detailed_status' do
     subject { pipeline.detailed_status(user) }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     context 'when pipeline is created' do
       let(:pipeline) { create(:ci_pipeline, :created) }
@@ -5004,7 +5004,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#cancelable?' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     %i[created running pending].each do |status0|
       context "when there is a build #{status0}" do
@@ -5159,7 +5159,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#retry_failed' do
     subject(:latest_status) { pipeline.latest_statuses.pluck(:status) }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     before do
       stub_not_protect_default_branch
@@ -5208,7 +5208,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe 'hooks trigerring' do
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :created) }
 
     %i[
       enqueue
@@ -5259,7 +5259,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe "#merge_requests_as_head_pipeline" do
-    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, status: 'created', ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, status: 'created', ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
       allow_next_instance_of(MergeRequest) do |instance|
@@ -5288,14 +5288,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   describe '#all_merge_requests' do
     let_it_be_with_reload(:project) { create(:project) }
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created, project: project) }
 
     let(:fork) { fork_project(project) }
-    let(:branch_pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
-    let(:fork_pipeline) { create(:ci_empty_pipeline, status: 'created', project: fork, ref: 'master') }
+    let(:branch_pipeline) { create(:ci_pipeline, status: 'created', project: project, ref: 'master') }
+    let(:fork_pipeline) { create(:ci_pipeline, status: 'created', project: fork, ref: 'master') }
 
     shared_examples 'a method that returns all merge requests for a given pipeline' do
-      let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: pipeline_project, ref: 'master') }
+      let(:pipeline) { create(:ci_pipeline, status: 'created', project: pipeline_project, ref: 'master') }
       let(:merge_request) do
         create(
           :merge_request,
@@ -5422,7 +5422,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'for a project unlinked from its fork network' do
       let(:unlinked_fork) { fork_project(project) }
-      let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: unlinked_fork, ref: 'master') }
+      let(:pipeline) { create(:ci_pipeline, status: 'created', project: unlinked_fork, ref: 'master') }
 
       let(:historical_merge_request) do
         create(:merge_request, source_project: unlinked_fork, target_project: project, source_branch: 'master')
@@ -5532,7 +5532,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#same_family_pipeline_ids' do
     subject { pipeline.same_family_pipeline_ids.map(&:id) }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
     context 'when pipeline is not child nor parent' do
       it 'returns just the pipeline id' do
@@ -5781,7 +5781,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#stuck?', :freeze_time do
-    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let(:pipeline) { create(:ci_pipeline, :created) }
 
     before do
       create(:ci_build, :pending, pipeline: pipeline)
@@ -7211,7 +7211,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when pipeline ref is the default branch of the project' do
       let(:pipeline) do
-        build(:ci_empty_pipeline, :created, project: project, ref: project.default_branch)
+        build(:ci_pipeline, :created, project: project, ref: project.default_branch)
       end
 
       it "returns true" do
@@ -7221,7 +7221,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when pipeline ref is not the default branch of the project' do
       let(:pipeline) do
-        build(:ci_empty_pipeline, :created, project: project, ref: 'another_branch')
+        build(:ci_pipeline, :created, project: project, ref: 'another_branch')
       end
 
       it "returns false" do
@@ -8248,7 +8248,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         pipeline.latest_test_report_builds.map(&:project).map(&:full_path)
       end
 
-      multi_build_pipeline = create(:ci_empty_pipeline, :created)
+      multi_build_pipeline = create(:ci_pipeline, :created)
       create(:ci_build, :test_reports, pipeline: multi_build_pipeline, project: project)
       create(:ci_build, :test_reports, pipeline: multi_build_pipeline, project: project)
 
@@ -8281,7 +8281,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         pipeline.builds_with_failed_tests.map(&:project).map(&:full_path)
       end
 
-      multi_build_pipeline = create(:ci_empty_pipeline, :created)
+      multi_build_pipeline = create(:ci_pipeline, :created)
       create(:ci_build, :failed, :test_reports, pipeline: multi_build_pipeline)
       create(:ci_build, :failed, :test_reports, pipeline: multi_build_pipeline)
 
@@ -8324,7 +8324,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#cluster_agent_authorizations' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let(:pipeline) { create(:ci_pipeline, :created) }
     let(:authorization) { instance_double(Clusters::Agents::Authorizations::CiAccess::GroupAuthorization) }
     let(:finder) { double(execute: [authorization]) }
 
@@ -8371,7 +8371,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   it_behaves_like 'it has loose foreign keys' do
-    let(:worker_class) { LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker }
     let(:factory_name) { :ci_pipeline }
   end
 
@@ -8477,7 +8476,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#merge_request_diff' do
     context 'when the pipeline has no merge request' do
       it 'is nil' do
-        pipeline = build(:ci_empty_pipeline)
+        pipeline = build(:ci_pipeline)
 
         expect(pipeline.merge_request_diff).to be_nil
       end

@@ -203,9 +203,10 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
               "JSON Schema requires array types to specify what's in the array using the 'items' property. " \
               "Current schema: #{param_schema.inspect}"
 
-          expect(param_schema['items']).to have_key('type'),
-            "Tool '#{tool_name}' has array parameter '#{param_name}' with 'items' but missing 'type' in items. " \
-              "Current schema: #{param_schema.inspect}"
+          item_keys = param_schema['items'].keys & %w[type oneOf anyOf allOf $ref]
+          expect(item_keys).not_to be_empty,
+            "Tool '#{tool_name}' array param '#{param_name}' items has no 'type' or composition key. " \
+              "Current: #{param_schema.inspect}"
         end
       end
     end

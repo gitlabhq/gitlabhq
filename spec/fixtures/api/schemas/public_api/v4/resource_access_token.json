@@ -54,7 +54,10 @@
       "type": "boolean"
     },
     "access_level": {
-      "type": "integer"
+      "type": [
+        "integer",
+        "null"
+      ]
     },
     "scopes": {
       "type": "array",

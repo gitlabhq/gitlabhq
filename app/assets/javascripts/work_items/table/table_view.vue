@@ -2,13 +2,11 @@
 import { defineAsyncComponent } from 'vue';
 import { GlButton, GlLoadingIcon, GlSkeletonLoader, GlToastMixin } from '@gitlab/ui';
 import { isEmpty, omit } from 'lodash-es';
-import { convertToSearchQuery } from 'ee_else_ce/work_items/list/utils';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 import { evictNamespaceWorkItems } from '~/work_items/list/graphql/cache_updates';
 import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
-import { STATUS_OPEN } from '~/issues/constants';
 import { CREATED_DESC } from '~/work_items/list/constants';
 import { formatNumber, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -93,17 +91,8 @@ export default {
       required: false,
       default: DEFAULT_PAGE_SIZE,
     },
-    filterTokens: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     isSortKeyInitialized: {
       type: Boolean,
-      required: true,
-    },
-    state: {
-      type: String,
       required: true,
     },
     workItemsCount: {
@@ -247,12 +236,6 @@ export default {
     },
     showListEmptyState() {
       return !this.isLoading && !this.error && this.workItems.length === 0;
-    },
-    hasSearch() {
-      return Boolean(convertToSearchQuery(this.filterTokens));
-    },
-    isOpenTab() {
-      return this.state === STATUS_OPEN;
     },
   },
   watch: {
@@ -556,12 +539,6 @@ export default {
       </span>
     </div>
 
-    <slot
-      v-if="showListEmptyState"
-      name="list-empty-state"
-      :has-search="hasSearch"
-      :is-open-tab="isOpenTab"
-      :with-tabs="false"
-    ></slot>
+    <slot v-if="showListEmptyState" name="list-empty-state"></slot>
   </div>
 </template>

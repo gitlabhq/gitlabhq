@@ -654,8 +654,6 @@ scopes:
   - with_trial_started_on
   ee/app/models/ee/group_group_link.rb:
   - not_in_shared_with_group
-  ee/app/models/ee/group_member.rb:
-  - non_owners
   ee/app/models/ee/member.rb:
   - count_members_by_role
   - count_users_by_role

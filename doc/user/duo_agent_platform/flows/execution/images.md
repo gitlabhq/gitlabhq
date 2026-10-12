@@ -47,7 +47,7 @@ The following table lists the current pinned versions:
 | `git-lfs`                             | UBI 9 stock                                             |
 | Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                    |
 | `npm`                                 | Bundled with Node.js 20                                 |
-| `@gitlab/duo-cli`                     | 9.27.0                                                  |
+| `@gitlab/duo-cli`                     | 9.29.0                                                  |
 | `glab` (GitLab CLI)                   | 1.120.0                                                 |
 | `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                        |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, root-based sandboxing)  |
@@ -187,14 +187,14 @@ To configure flows for an offline environment:
    [GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages):
 
    ```shell
-   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.27.0/duo-linux-x64" \
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.29.0/duo-linux-x64" \
      --output duo-linux-x64
    ```
 
 1. Build a custom image that includes the binary:
 
    ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.21
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.22
    COPY duo-linux-x64 /usr/local/bin/duo
    RUN chmod +x /usr/local/bin/duo
    ```
@@ -346,7 +346,7 @@ The following table lists the current pinned versions:
 | `git-lfs`                             | UBI 9 stock                                              |
 | Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                     |
 | `npm`                                 | Bundled with Node.js 20                                  |
-| `@gitlab/duo-cli`                     | 9.27.0                                                   |
+| `@gitlab/duo-cli`                     | 9.29.0                                                   |
 | `glab` (GitLab CLI)                   | 1.120.0                                                  |
 | `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                         |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, userns-based sandboxing) |

@@ -287,8 +287,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
           it 'raises HTTPTimeoutError' do
             expect { content }.to raise_error(
               Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
-              "Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
-                "could not be fetched after 3 attempts because of a timeout error!"
+              'Remote file could not be fetched because of a timeout error!'
             )
           end
 
@@ -401,7 +400,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       it 'raises HTTPTimeoutError' do
         expect { subject }.to raise_error(
           Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
-          'Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched after 3 attempts because of a timeout error!'
+          'Remote file could not be fetched because of a timeout error!'
         )
       end
     end
@@ -616,12 +615,23 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     end
 
     context 'when HTTP request times out' do
-      it 'raises HTTPTimeoutError' do
+      it 'raises HTTPTimeoutError with a message that carries no per-event detail' do
         expect { content }.to raise_error(
           Gitlab::Ci::Config::External::Context::HTTPTimeoutError,
-          "Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
-            "could not be fetched after 3 attempts because of a timeout error!"
+          'Remote file could not be fetched because of a timeout error!'
         )
+      end
+
+      it 'carries the location as data rather than in the message' do
+        expect { content }.to raise_error(Gitlab::Ci::Config::External::Context::HTTPTimeoutError) do |error|
+          masked_location = 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml'
+
+          expect(error.location).to eq(masked_location)
+          expect(error.sentry_extra_data).to eq({ remote_location: masked_location })
+          expect(error.user_message).to eq(
+            "Remote file `#{masked_location}` could not be fetched after 3 attempts because of a timeout error!"
+          )
+        end
       end
 
       it 'logs the timeout' do

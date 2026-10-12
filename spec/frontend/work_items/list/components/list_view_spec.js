@@ -130,7 +130,6 @@ const mountComponent = ({
   hasProjects = true,
   stubs = {},
   isLoggedInValue = true,
-  withTabs = false,
 } = {}) => {
   window.gon = {
     ...window.gon,
@@ -207,7 +206,6 @@ const mountComponent = ({
     propsData: {
       rootPageFullPath: 'full/path',
       queryVariables: defaultQueryVariables,
-      withTabs,
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
       isSortKeyInitialized: true,

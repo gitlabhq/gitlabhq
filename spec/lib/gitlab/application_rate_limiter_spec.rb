@@ -936,7 +936,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           [:key, :interval],
           [:key, :users_allowlist],
           [:key, :peek],
-          [:key, :bypass_header]]
+          [:key, :bypass_header],
+          [:key, :cost]]
       )
     end
 

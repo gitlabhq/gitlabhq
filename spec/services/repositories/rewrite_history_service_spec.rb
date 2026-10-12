@@ -60,6 +60,18 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
       end
     end
 
+    context 'when the owner is inactive' do
+      let(:user) { create(:user, :blocked, owner_of: project) }
+
+      it 'denies access without rewriting or locking the repository' do
+        expect(project).not_to receive(:set_repository_read_only!)
+        expect(Gitlab::Git::RepositoryCleaner).not_to receive(:new)
+
+        is_expected.to be_error
+        expect(execute.message).to eq('Access Denied')
+      end
+    end
+
     context 'when none of arguments are set' do
       let(:blob_oids) { [] }
       let(:redactions) { [] }
@@ -168,6 +180,17 @@ RSpec.describe Repositories::RewriteHistoryService, feature_category: :source_co
       let(:user) { create(:user, maintainer_of: project) }
 
       it 'returns an error' do
+        is_expected.to be_error
+        expect(async_execute.message).to eq('Access Denied')
+      end
+    end
+
+    context 'when the owner is inactive' do
+      let(:user) { create(:user, :blocked, owner_of: project) }
+
+      it 'denies access without scheduling a job' do
+        expect(Repositories::RewriteHistoryWorker).not_to receive(:perform_async)
+
         is_expected.to be_error
         expect(async_execute.message).to eq('Access Denied')
       end

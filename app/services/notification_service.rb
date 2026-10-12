@@ -590,6 +590,9 @@ class NotificationService
   end
 
   def pipeline_finished(pipeline, ref_status: nil, recipients: nil)
+    # Don't rate limit here: shared with member notifications. The Pipelines
+    # Email cap belongs in Integrations::Base::PipelinesEmail#execute.
+    #
     # Must always check project configuration since recipients could be a list of emails
     # from the PipelinesEmailService integration.
     return if pipeline.project.emails_disabled?
@@ -691,6 +694,7 @@ class NotificationService
 
   def repository_rewrite_history_failure(project, user, error)
     return if project.emails_disabled?
+    return unless user.can?(:receive_notifications)
 
     mailer.repository_rewrite_history_failure_email(project, user, error).deliver_later
   end

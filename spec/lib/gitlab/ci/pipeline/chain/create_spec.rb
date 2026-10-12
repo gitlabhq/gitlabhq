@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
   let_it_be(:user) { create(:user) }
 
   let(:pipeline) do
-    build(:ci_empty_pipeline, project: project, ref: 'master', user: user)
+    build(:ci_pipeline, project: project, ref: 'master', user: user)
   end
 
   let(:command) do
@@ -326,7 +326,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     context 'when tag name exceeds maximum length' do
-      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+      let(:pipeline) { build(:ci_pipeline, project: project, ref: 'master', user: user) }
       let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
       let(:job) { build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project, tag_list: ['a' * 256]) }
 
@@ -361,7 +361,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
 
     context 'when the pipeline has a merge request' do
       let(:pipeline) do
-        build(:ci_empty_pipeline, project: project, ref: 'master', user: user, merge_request: merge_request)
+        build(:ci_pipeline, project: project, ref: 'master', user: user, merge_request: merge_request)
       end
 
       it 'sticks the merge request to the primary on the main database' do
@@ -382,7 +382,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
   end
 
   describe 'bulk insert path' do
-    let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+    let(:pipeline) { build(:ci_pipeline, project: project, ref: 'master', user: user) }
     let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
     let(:job1) do
       build(:ci_build,
@@ -493,7 +493,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
 
     context 'with more than 500 builds' do
       def create_large_pipeline(build_count: 550)
-        test_pipeline = build(:ci_empty_pipeline, project: project, ref: 'master', user: user)
+        test_pipeline = build(:ci_pipeline, project: project, ref: 'master', user: user)
         test_stage = build(:ci_stage, pipeline: test_pipeline, project: project)
 
         test_builds = Array.new(build_count) do |i|
@@ -541,7 +541,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     context 'with complex pipeline including needs and build sources' do
-      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+      let(:pipeline) { build(:ci_pipeline, project: project, ref: 'master', user: user) }
       let(:stage1) { build(:ci_stage, pipeline: pipeline, project: project, name: 'build', position: 0) }
       let(:stage2) { build(:ci_stage, pipeline: pipeline, project: project, name: 'test', position: 1) }
       let(:stage3) { build(:ci_stage, pipeline: pipeline, project: project, name: 'deploy', position: 2) }
@@ -644,11 +644,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
 
     context 'when pipeline has duplicate iid during bulk insert' do
       let_it_be(:old_pipeline) do
-        create(:ci_empty_pipeline, project: project, ref: 'master', user: user)
+        create(:ci_pipeline, project: project, ref: 'master', user: user)
       end
 
       let(:pipeline) do
-        build(:ci_empty_pipeline, project: project, ref: 'master', user: user)
+        build(:ci_pipeline, project: project, ref: 'master', user: user)
           .tap { |pipeline| pipeline.write_attribute(:iid, old_pipeline.iid) }
       end
 
@@ -820,7 +820,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     context 'with deployment jobs' do
-      let(:pipeline) { build(:ci_empty_pipeline, project: project, ref: 'master', user: user) }
+      let(:pipeline) { build(:ci_pipeline, project: project, ref: 'master', user: user) }
       let(:stage) { build(:ci_stage, pipeline: pipeline, project: project, name: 'deploy') }
       let(:environment) { create(:environment, project: project, name: 'production') }
       let(:deploy_job) do

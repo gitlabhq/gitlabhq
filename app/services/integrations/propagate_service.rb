@@ -59,10 +59,17 @@ module Integrations
     end
 
     def create_integration_for_projects_without_integration
-      propagate_integrations(
-        Project.without_integration(integration),
-        PropagateIntegrationProjectWorker
-      )
+      scope =
+        if simplified_instance_propagation_batching?
+          # Skip without_integration filter here - the worker re-applies it.
+          # Keeping the batch scope simple avoids expensive OFFSET queries.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/631695
+          Project.in_organization(integration.organization_id)
+        else
+          Project.without_integration(integration)
+        end
+
+      propagate_integrations(scope, PropagateIntegrationProjectWorker)
     end
 
     def update_inherited_integrations
@@ -87,10 +94,21 @@ module Integrations
     end
 
     def create_integration_for_groups_without_integration
-      propagate_integrations(
-        Group.without_integration(integration),
-        PropagateIntegrationGroupWorker
-      )
+      scope =
+        if simplified_instance_propagation_batching?
+          # Skip without_integration filter here - the worker re-applies it.
+          # Keeping the batch scope simple avoids expensive OFFSET queries.
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/631695
+          Group.in_organization(integration.organization_id)
+        else
+          Group.without_integration(integration)
+        end
+
+      propagate_integrations(scope, PropagateIntegrationGroupWorker)
+    end
+
+    def simplified_instance_propagation_batching?
+      Feature.enabled?(:simplified_instance_propagation_batching, integration.organization)
     end
 
     def propagate_integration_to_descendant_groups

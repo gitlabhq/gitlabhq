@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuableSeverity, type: :model do
+RSpec.describe IssuableSeverity do
   let_it_be(:issuable_severity) { create(:issuable_severity) }
 
   describe 'associations' do

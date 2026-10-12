@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::Pipeline do
   let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, user: user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
   let_it_be(:job) { create(:ci_build, name: "rspec", coverage: 30.212, pipeline: pipeline) }
 
   let(:entity) { described_class.new(pipeline) }

@@ -154,7 +154,7 @@ module Gitlab
                   end
 
                   log_http_timeout
-                  raise Context::HTTPTimeoutError, "Remote file `#{masked_location}` could not be fetched after #{max_attempts} attempts because of a timeout error!"
+                  raise Context::HTTPTimeoutError.new(location: masked_location, attempts: max_attempts)
                 rescue Gitlab::HTTP::Error
                   if retry_or_add_error(attempt, max_attempts, "Remote file `#{masked_location}` could not be fetched after #{max_attempts} attempts because of HTTP error!")
                     next

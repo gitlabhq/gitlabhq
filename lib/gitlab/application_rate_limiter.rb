@@ -43,11 +43,18 @@ module Gitlab
       #     incremented but the current throttled state will be returned.
       # @param bypass_header [String, nil] Optional. Raw bypass header value,
       #     matched by a synthetic :skip rule (equal to '1') for visibility.
+      # @param cost [Integer, nil] Optional. For count-mode keys, the amount to
+      #     add to the counter in this one call, so a batch of N can be charged
+      #     without N separate calls; defaults to 1 when omitted. Rejected for
+      #     set-mode (count_distinct) keys, where it is meaningless. Cost-mode
+      #     (resource-usage) keys normally receive their float cost through
+      #     resource_usage_throttled?, not here; a cost passed here is still
+      #     applied, so do not pass one unless you mean to charge that key.
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def throttled?(
+      def throttled?( # rubocop:disable Metrics/ParameterLists -- all optional keyword overrides on an established public API
         key, scope:, resource: nil, threshold: nil, interval: nil, users_allowlist: nil, peek: false,
-        bypass_header: nil)
+        bypass_header: nil, cost: nil)
         raise InvalidKeyError, key unless LabkitAdapter.handled?(key)
 
         scope = validate_scope!(key, scope)
@@ -64,7 +71,8 @@ module Gitlab
           scope: scope,
           rule_context: rule_context,
           users_allowlist: users_allowlist,
-          peek: peek
+          peek: peek,
+          cost: cost
         )
       end
 
@@ -222,7 +230,7 @@ module Gitlab
 
         resource_id = rule_context[:resource_id]
         return false if resource_id && !LabkitAdapter.set_mode?(key)
-        return false if cost && !LabkitAdapter.cost_mode?(key)
+        return false if cost && LabkitAdapter.set_mode?(key)
 
         return false unless LabkitAdapter.handled?(key)
 

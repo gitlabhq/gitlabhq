@@ -676,25 +676,28 @@ module Gitlab
       end
 
       def find_user_from_dependency_proxy_token
-        return unless dependency_proxy_request?
-
-        token, _ = ActionController::HttpAuthentication::Token.token_and_options(current_request)
-
-        return unless token
-
-        user_or_deploy_token = ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
+        user_or_deploy_token = dependency_proxy_requester
 
         # Do not return deploy tokens
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/342481
-        return unless user_or_deploy_token.is_a?(::User)
+        user_or_deploy_token if user_or_deploy_token.is_a?(::User)
+      end
 
-        user_or_deploy_token
-      rescue ActiveRecord::RecordNotFound
-        nil # invalid id used return no user
+      def dependency_proxy_requester
+        strong_memoize(:dependency_proxy_requester) do
+          next unless dependency_proxy_request?
+
+          token, _ = ActionController::HttpAuthentication::Token.token_and_options(current_request)
+          next unless token
+
+          ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
+        rescue ActiveRecord::RecordNotFound
+          nil # invalid id used return no user
+        end
       end
 
       def dependency_proxy_request?
-        Gitlab::PathRegex.dependency_proxy_route_regex.match?(current_request.path)
+        Gitlab::PathRegex.dependency_proxy_containers_route_regex.match?(current_request.path)
       end
 
       def validate_job_token_size!(token)

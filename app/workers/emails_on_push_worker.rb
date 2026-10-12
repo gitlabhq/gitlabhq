@@ -9,6 +9,8 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
 
   attr_reader :email, :skip_premailer
 
+  EMAILS_ON_PUSH_EMAIL_RATE_LIMIT_FEATURE_FLAG = :emails_on_push_email_rate_limit
+
   feature_category :source_code_management
   urgency :low
   worker_resource_boundary :cpu
@@ -60,7 +62,16 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
       end
     end
 
-    Integrations::EmailsOnPush.valid_recipients(recipients).each do |recipient|
+    valid_recipients = Integrations::EmailsOnPush.valid_recipients(recipients)
+
+    # Charged per attempt, so a Sidekiq retry recharges the batch. That
+    # over-counts toward the cap, which is the safe direction for an abuse
+    # control (it can only suppress sooner, never later); exact accounting
+    # is a non-goal of a rate limit, so no idempotency key is used.
+    #
+    return if rate_limited?(project, valid_recipients.size)
+
+    valid_recipients.each do |recipient|
       send_email(
         recipient,
         project_id,
@@ -85,6 +96,19 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   private
+
+  def rate_limited?(project, recipient_count)
+    ::Gitlab::Email::NamespaceRateLimiter.rate_limit_batch_for_project!(
+      project: project,
+      class_name: self.class.name,
+      hourly_bucket: :emails_on_push_outbound_emails_per_hour,
+      daily_bucket: :emails_on_push_outbound_emails_per_day,
+      feature_flag: EMAILS_ON_PUSH_EMAIL_RATE_LIMIT_FEATURE_FLAG,
+      log_message: 'Email on Push outbound email rate limit exceeded',
+      count: recipient_count,
+      overshoot: :soft_cap
+    )
+  end
 
   def send_email(recipient, project_id, options)
     @email ||= Notify.repository_push_email(project_id, options).tap do |mail|

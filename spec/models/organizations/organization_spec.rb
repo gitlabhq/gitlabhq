@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::Organization, type: :model, feature_category: :organization do
+RSpec.describe Organizations::Organization, feature_category: :organization do
   let_it_be_with_refind(:organization) { create(:organization) }
 
   it_behaves_like 'cells claimable model',

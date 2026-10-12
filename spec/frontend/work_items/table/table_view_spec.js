@@ -98,7 +98,6 @@ describe('TableView', () => {
         rootPageFullPath: 'group',
         queryVariables: defaultQueryVariables,
         isSortKeyInitialized: true,
-        state: STATUS_OPEN,
         ...props,
       },
       slots,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
+RSpec.describe Import::SourceUser, feature_category: :importers do
   describe 'associations' do
     it { is_expected.to belong_to(:placeholder_user).class_name('User') }
     it { is_expected.to belong_to(:reassign_to_user).class_name('User') }

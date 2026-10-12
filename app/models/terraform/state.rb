@@ -50,6 +50,10 @@ module Terraform
       deleted_at + GRACE_PERIOD if deleted_at
     end
 
+    def within_grace_period?
+      deleted_at.present? && deleted_at > GRACE_PERIOD.ago
+    end
+
     def update_file!(data, version:, build:)
       # This check is required to maintain backwards compatibility with
       # states that were created prior to versioning being supported.

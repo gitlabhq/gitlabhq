@@ -408,7 +408,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
     context 'when the context has no project, as for a file included by a remote file' do
       let_it_be(:pipeline_project) { create(:project, :repository, developers: user) }
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: pipeline_project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: pipeline_project) }
 
       let(:params) { { file: 'nested-spec-template.yml', ref: 'master', project: project.full_path } }
 

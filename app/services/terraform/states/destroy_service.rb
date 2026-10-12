@@ -10,7 +10,7 @@ module Terraform
       def execute
         return unless state.deleted_at?
 
-        return if delayed_deletion_active? && state.deleted_at > Terraform::State::GRACE_PERIOD.ago
+        return if delayed_deletion_active? && state.within_grace_period?
 
         state.versions.each_batch(column: :version) do |batch|
           process_batch(batch)

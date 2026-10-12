@@ -12,7 +12,7 @@ module API
       , 40 (Maintainer), and 50 (Owner). Defaults to 40.',
           values: [10, 20, 30, 40, 50]
         } do |token, _options|
-        token.user.members.first.access_level
+        token.user.members.first&.access_level
       end
       # rubocop:enable API/AccessLevelStringType
 

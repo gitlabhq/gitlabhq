@@ -22,7 +22,7 @@ The following limits are disabled by default:
 - [Unauthenticated web requests (per IP)](#enable-unauthenticated-web-request-rate-limit).
 - [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
 - [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
-- [Authenticated dependency proxy requests (per user)](#enable-authenticated-dependency-proxy-request-rate-limit).
+- [Authenticated dependency proxy requests (per user or deploy token)](#enable-authenticated-dependency-proxy-request-rate-limit).
 
 > [!note]
 > By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
@@ -103,6 +103,15 @@ To give dependency proxy traffic its own budget, enable a rate limit dedicated t
 image manifest and blob endpoints under `/v2/<group>/dependency_proxy/containers/`. This limit
 applies only to authenticated requests. GitLab does not provide a rate limit for unauthenticated
 dependency proxy requests.
+
+Requests that authenticate with a deploy token count against that deploy token, and each deploy
+token has its own budget. They don't count against the IP address of the client.
+
+The following requests count against the authenticated web request rate limit, per user or per
+deploy token, and not against this limit:
+
+- The Docker authentication request, `GET /v2`.
+- Requests that GitLab makes to store images in the dependency proxy cache.
 
 To enable the authenticated dependency proxy rate limit:
 

@@ -455,18 +455,60 @@ When you use headless mode, the GitLab Duo CLI:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.27.0) in GitLab Duo CLI 9.27.0, during the GitLab 19.5 release.
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.27.0) in GitLab Duo CLI 9.27.0, during the GitLab 19.5 release, [with a feature flag](../../administration/feature_flags/_index.md) named `dap_tool_image_input`. Enabled by default.
 
 {{< /history >}}
 
-In interactive and headless mode, GitLab Duo can read images and use them as context.
-You cannot attach an image to your prompt.
-Instead, in your prompt, name an image file in the repository or an image attached to an issue or
-merge request in the same project.
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
-For more information about how to reference images and the image requirements, see
-[provide images as context](../project/merge_requests/developer.md#provide-images-as-context).
-For example prompts, see [use images as context](../project/merge_requests/developer.md#use-images-as-context).
+Prerequisites:
+
+- GitLab Duo CLI 9.27.0 or later.
+- Use a GitLab-managed model. Models that you host yourself are not supported.
+
+When you run GitLab Duo CLI locally in interactive or headless mode,
+GitLab Duo can read images and use them as context.
+The CLI can read:
+
+- Image files in the repository.
+- Images attached to an issue, merge request, or comment in the same project.
+
+You cannot upload an image directly in your prompt.
+Instead, name an image that already exists:
+
+- For a file in the repository, give the file path. For example, `docs/architecture.png`.
+- For an attachment, give the upload reference as it appears in the Markdown.
+  For example, `/uploads/<secret>/screenshot.png`.
+
+### Image requirements
+
+To use an image as context, the image must meet the following requirements:
+
+- Format: PNG, JPEG, or WebP file
+- Size: 10 MB or smaller
+- Dimensions: Not wider or taller than 8,000 pixels
+
+### Example prompts
+
+You can ask GitLab Duo CLI to fix a UI bug shown in a screenshot attached to an issue:
+
+```plaintext
+Look at the screenshot attached to issue 1234 and fix the alignment bug it shows.
+```
+
+You can ask GitLab Duo CLI to explain an architecture diagram:
+
+```plaintext
+Read docs/architecture.png, explain the data flow, and identify any single points of failure.
+```
+
+You can ask GitLab Duo CLI to turn a whiteboard photo into a design document:
+
+```plaintext
+Read whiteboard.jpg and turn it into a design document in docs/design.md.
+```
 
 ## Select a model
 

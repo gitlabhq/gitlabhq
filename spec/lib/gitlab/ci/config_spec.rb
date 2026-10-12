@@ -647,6 +647,25 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       end
     end
 
+    context 'when fetching a remote include times out' do
+      before do
+        stub_full_request(remote_location).to_timeout
+
+        allow_next_instance_of(Gitlab::Ci::Config::External::File::Remote) do |remote_file|
+          allow(remote_file).to receive(:sleep)
+        end
+      end
+
+      it 'raises TimeoutError naming the remote file' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+
+        expect { config }.to raise_error(
+          described_class::TimeoutError,
+          "Remote file `#{remote_location}` could not be fetched after 3 attempts because of a timeout error!"
+        )
+      end
+    end
+
     context 'when ci_config_fetch_timeout_override feature flag is enabled' do
       before do
         stub_feature_flags(ci_config_fetch_timeout_override: project.root_namespace)

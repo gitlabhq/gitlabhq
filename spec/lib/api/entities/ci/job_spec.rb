@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::Job, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, user: user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
   let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:runner_manager) { create(:ci_runner_machine) }
   let_it_be(:job) { create(:ci_build, pipeline: pipeline, runner_manager: runner_manager) }

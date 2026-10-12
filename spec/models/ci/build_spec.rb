@@ -6600,7 +6600,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe 'loose foreign keys' do
     it_behaves_like 'it has loose foreign keys' do
-      let(:worker_class) { LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker }
       let(:factory_name) { :ci_build }
     end
 

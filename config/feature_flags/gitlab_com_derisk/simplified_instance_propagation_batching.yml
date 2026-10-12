@@ -1,0 +1,10 @@
+---
+name: simplified_instance_propagation_batching
+description: Batch instance-level integration propagation over the plain organization scope instead of the without_integration anti-join.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631695
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260329
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632633
+milestone: '19.5'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

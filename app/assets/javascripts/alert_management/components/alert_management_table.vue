@@ -219,6 +219,8 @@ export default {
   },
   methods: {
     fetchSortedData({ sortBy, sortDesc }) {
+      this.sortBy = sortBy;
+      this.sortDesc = sortDesc;
       this.pagination = initialPaginationState;
       this.sort = sortObjectToString({ sortBy, sortDesc });
     },
@@ -327,8 +329,8 @@ export default {
           :tbody-tr-class="tbodyTrClass"
           :no-local-sorting="true"
           :sort-direction="sortDirection"
-          :sort-desc.sync="sortDesc"
-          :sort-by.sync="sortBy"
+          :sort-desc="sortDesc"
+          :sort-by="sortBy"
           fixed
           hover
           selectable

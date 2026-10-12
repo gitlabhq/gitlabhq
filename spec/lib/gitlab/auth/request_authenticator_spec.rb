@@ -237,6 +237,49 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
         expect(request_authenticator.find_authenticated_requester([:api])).to be_nil
       end
     end
+
+    context 'with a dependency proxy JWT' do
+      let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest' }
+
+      subject(:requester) { request_authenticator.find_authenticated_requester([:api]) }
+
+      before do
+        env['SCRIPT_NAME'] = accessed_path
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
+      end
+
+      context 'with a deploy token' do
+        let(:token) { build_jwt(deploy_token).encoded }
+
+        it { is_expected.to eq(deploy_token) }
+
+        context 'on a path outside the dependency proxy' do
+          let(:accessed_path) { '/foo/bar' }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when the JWT has expired' do
+          it 'returns nil' do
+            travel_to(Time.zone.now + Auth::ContainerProxyAuthenticationService.token_expire_at + 1.minute) do
+              expect(requester).to be_nil
+            end
+          end
+        end
+      end
+
+      context 'with a user' do
+        let(:token) { build_jwt(api_user).encoded }
+
+        it { is_expected.to eq(api_user) }
+
+        it 'decodes the JWT once' do
+          expect(::DependencyProxy::AuthTokenService).to receive(:user_or_deploy_token_from_jwt).once.and_call_original
+
+          requester
+        end
+      end
+    end
   end
 
   describe '#find_user_for_git_or_lfs_request memoization' do
@@ -519,6 +562,26 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
           it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
           it { is_expected.to be_nil } if user_type == :no_user
+        end
+
+        context 'with the auth ping' do
+          let(:accessed_path) { '/v2' }
+
+          it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
+          it { is_expected.to be_nil } if user_type == :no_user
+        end
+
+        context 'with a cache-write upload' do
+          let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest/upload/authorize' }
+
+          it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
+          it { is_expected.to be_nil } if user_type == :no_user
+        end
+
+        context 'with a virtual registry path' do
+          let(:accessed_path) { '/v2/virtual_registries/container/1/library/alpine/manifests/latest' }
+
+          it { is_expected.to be_nil }
         end
 
         context 'with any other path' do

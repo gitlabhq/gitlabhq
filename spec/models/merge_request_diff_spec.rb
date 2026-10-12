@@ -2854,6 +2854,5 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :merge_request_diff }
-    let(:worker_class) { LooseForeignKeys::MergeRequestDiffCommitCleanupWorker }
   end
 end

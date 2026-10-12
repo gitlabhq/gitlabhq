@@ -67,11 +67,7 @@ module Gitlab
           resource_id = context[:resource_id]
           identifier[member_slot] = resource_id if member_slot && resource_id
 
-          # Cost-mode (resource-usage) entries add the measured cost; everything
-          # else is a plain count, labkit's default cost of 1. A zero-cost job
-          # must not create an empty counter, mirroring the resource-usage
-          # strategy, and only cost-mode can be 0.
-          check_cost = SupportedRateLimits.cost_mode?(key) ? cost.to_f : 1
+          check_cost = check_cost_for(key, cost)
           return false if check_cost == 0
 
           result = limiter.check(identifier, cost: check_cost, rule_context: context)
@@ -102,6 +98,18 @@ module Gitlab
         end
 
         private
+
+        # Cost-mode (resource-usage) entries add the measured float cost.
+        # Count-mode entries add 1 per call by default, but a caller may pass an
+        # integer cost to charge a whole batch in one call (e.g. N emails);
+        # absent that, the default stays 1. The cost is passed to labkit as-is,
+        # which rejects a negative and requires a Numeric, so a bad value raises
+        # rather than being silently coerced to a no-op.
+        def check_cost_for(key, cost)
+          return cost.to_f if SupportedRateLimits.cost_mode?(key)
+
+          cost.nil? ? 1 : cost
+        end
 
         # Copies :bypass_header from +context+ onto +identifier+ only when the
         # caller supplied it: true for anything going through #throttled?,

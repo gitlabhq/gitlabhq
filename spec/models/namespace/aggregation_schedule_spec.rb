@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state, type: :model do
+RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   let(:namespace) { create(:namespace) }

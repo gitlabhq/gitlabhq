@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::TraversalHierarchy, type: :model, feature_category: :groups_and_projects do
+RSpec.describe Namespace::TraversalHierarchy, feature_category: :groups_and_projects do
   let!(:root) { create(:group, :with_hierarchy, children: 2, depth: 3) }
 
   shared_context 'with broken hierarchy' do

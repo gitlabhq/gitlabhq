@@ -34,53 +34,130 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
       end
     end
 
-    context 'with a project without integration' do
-      let_it_be(:another_project) { create(:project) }
-
-      it 'calls to PropagateIntegrationProjectWorker' do
-        expect(PropagateIntegrationProjectWorker).to receive(:perform_async)
-          .with(instance_integration.id, another_project.id, another_project.id)
-
-        described_class.new(instance_integration).execute
-      end
-    end
-
-    context 'with a group without integration' do
-      it 'calls to PropagateIntegrationProjectWorker' do
-        expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
-          .with(instance_integration.id, group.id, group.id)
-
-        described_class.new(instance_integration).execute
-      end
-    end
-
-    context 'with a project in a different organization' do
-      let_it_be(:other_organization) { create(:organization) }
-      let_it_be(:project_in_other_org) { create(:project, group: create(:group, organization: other_organization)) }
-
-      it 'does not call PropagateIntegrationProjectWorker for the project' do
-        expect(PropagateIntegrationProjectWorker).not_to receive(:perform_async)
-          .with(instance_integration.id, project_in_other_org.id, anything)
-
-        described_class.new(instance_integration).execute
-      end
-    end
-
-    context 'with a group in a different organization' do
-      let_it_be(:other_organization) { create(:organization) }
-      let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+    context 'when simplified_instance_propagation_batching is enabled' do
+      let(:project_ids) { Project.in_organization(instance_integration.organization).ids }
 
       before do
-        # Excludes the ambient `group` from the batch so it can't combine with
-        # group_in_other_org's id range and mask a failure to filter by organization.
-        create(:jira_integration, :group, group: group)
+        stub_feature_flags(simplified_instance_propagation_batching: instance_integration.organization)
       end
 
-      it 'does not call PropagateIntegrationGroupWorker for the group' do
-        expect(PropagateIntegrationGroupWorker).not_to receive(:perform_async)
-          .with(instance_integration.id, group_in_other_org.id, anything)
+      context 'with projects with and without the integration' do
+        let_it_be(:another_project) { create(:project) }
 
-        described_class.new(instance_integration).execute
+        it 'batches all of them since the worker re-filters', :aggregate_failures do
+          expect(project_ids).to include(project.id, another_project.id)
+          expect(PropagateIntegrationProjectWorker).to receive(:perform_async)
+            .with(instance_integration.id, project_ids.min, project_ids.max)
+
+          described_class.new(instance_integration).execute
+        end
+      end
+
+      context 'with a group that already has the integration' do
+        before do
+          create(:jira_integration, :group, group: group)
+        end
+
+        it 'includes the group in the batch since the worker re-filters' do
+          expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
+            .with(instance_integration.id, group.id, group.id)
+
+          described_class.new(instance_integration).execute
+        end
+      end
+
+      context 'with a project in a different organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:project_in_other_org) { create(:project, group: create(:group, organization: other_organization)) }
+
+        it 'does not include the project in any batch', :aggregate_failures do
+          expect(project_ids).not_to include(project_in_other_org.id)
+          expect(PropagateIntegrationProjectWorker).to receive(:perform_async).once
+            .with(instance_integration.id, project_ids.min, project_ids.max)
+
+          described_class.new(instance_integration).execute
+        end
+      end
+
+      context 'with a group in a different organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+
+        it 'does not include the group in any batch' do
+          expect(PropagateIntegrationGroupWorker).to receive(:perform_async).once
+            .with(instance_integration.id, group.id, group.id)
+
+          described_class.new(instance_integration).execute
+        end
+      end
+
+      context 'when the workers run', :sidekiq_inline do
+        let_it_be(:another_project) { create(:project) }
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+        let_it_be(:project_in_other_org) { create(:project, group: group_in_other_org) }
+
+        it 'creates integrations only for the projects and groups missing one', :aggregate_failures do
+          expect { described_class.new(instance_integration).execute }.to change { Integrations::Jira.count }.by(2)
+
+          expect(Integrations::Jira.find_by(project: another_project).inherit_from_id).to eq(instance_integration.id)
+          expect(Integrations::Jira.find_by(group: group).inherit_from_id).to eq(instance_integration.id)
+          expect(Integrations::Jira.where(project: project)).to contain_exactly(not_inherited_integration)
+          expect(Integrations::Jira.find_by(project: project_in_other_org)).to be_nil
+          expect(Integrations::Jira.find_by(group: group_in_other_org)).to be_nil
+        end
+      end
+    end
+
+    context 'when simplified_instance_propagation_batching is disabled' do
+      before do
+        stub_feature_flags(simplified_instance_propagation_batching: false)
+      end
+
+      context 'with a project without integration' do
+        let_it_be(:another_project) { create(:project) }
+
+        it 'calls to PropagateIntegrationProjectWorker only for the project without integration' do
+          expect(PropagateIntegrationProjectWorker).to receive(:perform_async)
+            .with(instance_integration.id, another_project.id, another_project.id)
+
+          described_class.new(instance_integration).execute
+        end
+      end
+
+      context 'with a group without integration' do
+        it 'calls to PropagateIntegrationGroupWorker' do
+          expect(PropagateIntegrationGroupWorker).to receive(:perform_async)
+            .with(instance_integration.id, group.id, group.id)
+
+          described_class.new(instance_integration).execute
+        end
+      end
+
+      context 'when the only project missing the integration is in a different organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:project_in_other_org) { create(:project, group: create(:group, organization: other_organization)) }
+
+        it 'does not call PropagateIntegrationProjectWorker' do
+          expect(PropagateIntegrationProjectWorker).not_to receive(:perform_async)
+
+          described_class.new(instance_integration).execute
+        end
+      end
+
+      context 'when the only group missing the integration is in a different organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+
+        before do
+          create(:jira_integration, :group, group: group)
+        end
+
+        it 'does not call PropagateIntegrationGroupWorker' do
+          expect(PropagateIntegrationGroupWorker).not_to receive(:perform_async)
+
+          described_class.new(instance_integration).execute
+        end
       end
     end
 

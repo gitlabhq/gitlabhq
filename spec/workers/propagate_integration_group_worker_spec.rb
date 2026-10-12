@@ -47,6 +47,26 @@ RSpec.describe PropagateIntegrationGroupWorker, feature_category: :integrations 
       end
     end
 
+    context 'when every group in the range already has the integration' do
+      before do
+        create(:redmine_integration, :group, group: group, inherit_from_id: integration.id)
+      end
+
+      it 'does not call Integrations::Propagation::BulkCreateService' do
+        expect(Integrations::Propagation::BulkCreateService).not_to receive(:new)
+
+        described_class.new.perform(integration.id, group.id, group.id)
+      end
+
+      it 'does not probe the batch with a LIMIT 1 query' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          described_class.new.perform(integration.id, group.id, group.id)
+        end
+
+        expect(recorder.log.grep(/FROM "namespaces".*LIMIT 1/)).to be_empty
+      end
+    end
+
     context 'with an invalid integration id' do
       it 'returns without failure' do
         expect(Integrations::Propagation::BulkCreateService).not_to receive(:new)

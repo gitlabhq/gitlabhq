@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
 
   let_it_be(:project) { create(:project) }
   let_it_be(:partition_id) { ci_testing_partition_id }
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, partition_id: partition_id) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, partition_id: partition_id) }
   let(:definitions) { [] }
   let(:service) { described_class.new(pipeline, definitions: definitions) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::Error, type: :model, feature_category: :observability do
+RSpec.describe ErrorTracking::Error, feature_category: :observability do
   let_it_be_with_reload(:error) { create(:error_tracking_error) }
 
   describe 'relationships' do

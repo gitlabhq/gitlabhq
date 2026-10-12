@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseForeignKeys::DeletedRecord, type: :model, feature_category: :database do
+RSpec.describe LooseForeignKeys::DeletedRecord, feature_category: :database do
   it_behaves_like 'a loose foreign key record that includes DeletedRecordConcern class methods' do
     let_it_be(:deleted_record_1) do
       described_class.create!(fully_qualified_table_name: table, primary_key_value: 5, cleanup_attempts: 2)

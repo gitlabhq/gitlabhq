@@ -30,6 +30,24 @@ RSpec.describe Repositories::RewriteHistoryWorker, feature_category: :source_cod
       perform
     end
 
+    context 'when the owner is inactive' do
+      let(:user) { create(:user, :blocked, owner_of: project) }
+
+      it 'does not rewrite the repository and reports the failure', :aggregate_failures do
+        user
+
+        expect(Gitlab::Git::RepositoryCleaner).not_to receive(:new)
+        expect_next_found_instance_of(Project) do |found_project|
+          expect(found_project).not_to receive(:set_repository_read_only!)
+        end
+        expect_next_instance_of(NotificationService) do |instance|
+          expect(instance).to receive(:repository_rewrite_history_failure).with(project, user, 'Access Denied')
+        end
+
+        perform
+      end
+    end
+
     context 'when project id is not valid' do
       let(:project_id) { non_existing_record_id }
 

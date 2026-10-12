@@ -202,6 +202,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
     end
   end
 
+  describe '.limit_for the per-feature outbound-email rules' do
+    %i[
+      emails_on_push_outbound_emails_per_hour
+      emails_on_push_outbound_emails_per_day
+      pipelines_email_outbound_emails_per_hour
+      pipelines_email_outbound_emails_per_day
+    ].each do |key|
+      it "resolves #{key} from the caller threshold, defaulting to 0", :aggregate_failures do
+        expect(described_class.limit_for(key, context: { threshold: 7 })).to eq(7)
+        expect(described_class.limit_for(key)).to eq(0)
+      end
+    end
+  end
+
   describe '.period_for' do
     let(:configured_period_rule) do
       ::Labkit::RateLimit::Rule.new(

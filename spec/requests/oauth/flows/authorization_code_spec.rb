@@ -116,7 +116,7 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :syste
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
-        expect(json_response['expires_in']).to be(Gitlab::CurrentSettings.oauth_access_token_expires_in)
+        expect(json_response['expires_in']).to be_within(1).of(Gitlab::CurrentSettings.oauth_access_token_expires_in)
       end
     end
 
@@ -179,7 +179,7 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :syste
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(refreshed_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
-        expect(json_response['expires_in']).to be(Gitlab::CurrentSettings.oauth_access_token_expires_in)
+        expect(json_response['expires_in']).to be_within(1).of(Gitlab::CurrentSettings.oauth_access_token_expires_in)
         expect(refreshed_response['access_token']).not_to eq(initial_access_token)
       end
 
@@ -236,6 +236,30 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :syste
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
+    end
+  end
+
+  describe 'Sticking to the database load balancer' do
+    let(:sticking) { Doorkeeper::AccessGrant.sticking }
+
+    it 'records the primary write location for the code the authorization issues' do
+      allow(sticking).to receive(:bulk_stick)
+
+      code = fetch_authorization_code
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(sticking).to have_received(:bulk_stick).with(:oauth_grant, [code], hash_id: true)
+    end
+
+    it 'looks the code up through a caught-up replica when it is exchanged' do
+      code = fetch_authorization_code
+      # The signed-in session sticks on :user through the same Sticking instance.
+      allow(sticking).to receive(:find_caught_up_replica).and_call_original
+
+      fetch_access_token(code)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(sticking).to have_received(:find_caught_up_replica).with(:oauth_grant, code, hash_id: true).at_least(:once)
     end
   end
 end

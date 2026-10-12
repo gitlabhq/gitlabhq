@@ -27,7 +27,6 @@ module Mcp
           input_schema: {
             type: 'object',
             properties: {
-              # Source work item identification (one set required)
               url: {
                 type: 'string',
                 description: 'GitLab URL for the source work item.'
@@ -44,8 +43,6 @@ module Mcp
                 type: 'integer',
                 description: 'Internal ID of the source work item. Required if URL is not provided.'
               },
-
-              # Target work items
               work_items_ids: {
                 type: 'array',
                 description:
@@ -53,13 +50,11 @@ module Mcp
                   'source) or global IDs (gid://gitlab/WorkItem/<id>) for work items in other ' \
                   'projects or groups. Maximum 10 items.',
                 items: {
-                  type: %w[integer string]
+                  anyOf: [{ type: 'integer' }, { type: 'string' }]
                 },
                 minItems: 1,
                 maxItems: 10
               },
-
-              # Relationship type
               link_type: {
                 type: 'string',
                 description: 'Type of relationship between the work items. Defaults to "relates_to".',

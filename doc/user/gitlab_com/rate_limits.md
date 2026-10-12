@@ -52,6 +52,7 @@ Some unauthenticated requests do not count against the unauthenticated limit of 
 each hour from an IP address:
 
 - Git over HTTPS requests
+- Container image requests to the [dependency proxy](../packages/dependency_proxy/_index.md)
 - Sign-in requests, including [SAML SSO](../group/saml_sso/_index.md) and sign-in with a
   third-party provider such as Google or GitHub
 - [OAuth 2.0](../../api/oauth2.md) authorization, access token, device authorization, and dynamic client

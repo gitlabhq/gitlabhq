@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def find_authenticated_requester(request_formats)
-        deploy_token_from_request || user(request_formats)
+        deploy_token_from_request || dependency_proxy_deploy_token || user(request_formats)
       end
 
       def user(request_formats)
@@ -98,6 +98,11 @@ module Gitlab
       end
 
       private
+
+      def dependency_proxy_deploy_token
+        user_or_deploy_token = dependency_proxy_requester
+        user_or_deploy_token if user_or_deploy_token.is_a?(::DeployToken)
+      end
 
       # Use a minimal subset of find_user_from_any_authentication_method
       # so only token types allowed for GraphQL can authenticate users.

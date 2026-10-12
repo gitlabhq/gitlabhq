@@ -293,38 +293,5 @@ RSpec.describe Gitlab::EncryptedAttribute, feature_category: :system_access do
         expect(hook.custom_headers).to eq({})
       end
     end
-
-    context 'when the attr_encrypted_multi_key_decrypt feature flag is disabled' do
-      let!(:hook) do
-        create_with_key(old_key) do
-          create(:project_hook, project: project, url: 'https://example.com/hook',
-            url_variables: { 'abc' => 'foo' }, custom_headers: { 'X-Foo' => 'bar' })
-        end
-      end
-
-      before do
-        stub_feature_flags(attr_encrypted_multi_key_decrypt: false)
-      end
-
-      it 'decrypts once with the current key' do
-        record = ProjectHook.find(hook.id)
-
-        expect(count_decrypts(ProjectHook) { expect(record.url).to eq('https://example.com/hook') }).to eq(1)
-      end
-
-      it 'does not decrypt with a previous key' do
-        stub_db_key_base_keys(old_key, new_key)
-
-        expect { ProjectHook.find(hook.id).url }.to raise_error(OpenSSL::Cipher::CipherError)
-      end
-
-      it 'decrypts the previous URL and URL variables on update' do
-        ProjectHook.find(hook.id).update!(url: 'https://example.com/other')
-
-        hook.reload
-        expect(hook.url_variables).to eq({})
-        expect(hook.custom_headers).to eq({})
-      end
-    end
   end
 end

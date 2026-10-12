@@ -500,6 +500,13 @@ describe('AlertManagementTable', () => {
 
       expect(wrapper.vm.$data.sort).toBe('SEVERITY_ASC');
     });
+
+    it('passes the new sort column and direction back to the table', async () => {
+      findAlertsTable().vm.$emit('sort-changed', { sortBy: 'severity', sortDesc: false });
+      await nextTick();
+
+      expect(findAlertsTable().props()).toMatchObject({ sortBy: 'severity', sortDesc: false });
+    });
   });
 
   describe('Search', () => {

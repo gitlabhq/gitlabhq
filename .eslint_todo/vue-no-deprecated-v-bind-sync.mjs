@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/alert_management/components/alert_management_table.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/stage_table.vue',
     'app/assets/javascripts/boards/components/board_form.vue',
     'app/assets/javascripts/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue',

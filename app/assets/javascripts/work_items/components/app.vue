@@ -12,11 +12,6 @@ export default {
       required: false,
       default: undefined,
     },
-    withTabs: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
   },
   computed: {
     pageKey() {
@@ -31,7 +26,6 @@ export default {
     <router-view
       :key="pageKey"
       :root-page-full-path="rootPageFullPath"
-      :with-tabs="withTabs"
       class="work-item-router-view"
       data-testid="work-item-router-view"
     />

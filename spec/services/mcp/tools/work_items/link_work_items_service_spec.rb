@@ -128,7 +128,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsService, feature_category: :m
               description: 'Work items to link to: plain iids (resolved in the same project or group as the ' \
                 'source) or global IDs (gid://gitlab/WorkItem/<id>) for work items in other ' \
                 'projects or groups. Maximum 10 items.',
-              items: { type: %w[integer string] },
+              items: { anyOf: [{ type: 'integer' }, { type: 'string' }] },
               minItems: 1,
               maxItems: 10
             },

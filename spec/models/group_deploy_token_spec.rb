@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupDeployToken, type: :model do
+RSpec.describe GroupDeployToken do
   let_it_be(:group) { create(:group) }
   let_it_be(:deploy_token) { create(:deploy_token) }
   let_it_be(:group_deploy_token) { create(:group_deploy_token, group: group, deploy_token: deploy_token) }

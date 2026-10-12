@@ -4903,6 +4903,12 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end.to enqueue_mail_with(Notify, :repository_rewrite_history_failure_email, project, user, any_args)
       end
 
+      it 'does not email a blocked user' do
+        expect do
+          notification.repository_rewrite_history_failure(project, blocked_user, 'Some error')
+        end.not_to have_enqueued_mail(Notify, :repository_rewrite_history_failure_email)
+      end
+
       it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
         let(:notification_target)  { project }
         let(:notification_trigger) { notification.repository_rewrite_history_failure(project, user, 'Some error') }

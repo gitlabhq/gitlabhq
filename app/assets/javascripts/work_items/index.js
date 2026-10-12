@@ -14,7 +14,7 @@ import { createRouter } from './router';
 
 Vue.use(VueApollo);
 
-export const initWorkItemsRoot = ({ workItemType, withTabs } = {}) => {
+export const initWorkItemsRoot = ({ workItemType } = {}) => {
   const el = document.querySelector('#js-work-items');
 
   if (!el) {
@@ -85,7 +85,6 @@ export const initWorkItemsRoot = ({ workItemType, withTabs } = {}) => {
       return createElement(App, {
         props: {
           rootPageFullPath: fullPath,
-          withTabs,
         },
       });
     },

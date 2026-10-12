@@ -117,10 +117,7 @@ class ProjectsController < Projects::ApplicationController
       project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
-      redirect_to(
-        project_path(@project, custom_import_params.merge({ organization_path: nil })),
-        notice: safe_format(_("Project '%{project_name}' was successfully created."), project_name: @project.name)
-      )
+      redirect_to project_path(@project, custom_import_params.merge({ organization_path: nil }))
     else
       render 'new'
     end

@@ -1,0 +1,10 @@
+---
+name: limit_inline_diff_highlighting
+description: Limits inline diff highlighting
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/632465
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261060
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633028
+milestone: '19.5'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

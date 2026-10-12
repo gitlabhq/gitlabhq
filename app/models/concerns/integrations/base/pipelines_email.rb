@@ -11,6 +11,8 @@ module Integrations
 
       RECIPIENTS_LIMIT = 30
 
+      PIPELINES_EMAIL_EMAIL_RATE_LIMIT_FEATURE_FLAG = :pipelines_email_email_rate_limit
+
       class_methods do
         def title
           _('Pipeline status emails')
@@ -109,6 +111,14 @@ module Integrations
 
           return unless all_recipients.any?
 
+          return if project&.emails_disabled?
+
+          # Throttle here rather than in NotificationService#pipeline_finished
+          # so only this external-recipient path is capped, never member
+          # pipeline notifications.
+          #
+          return if !force && rate_limited?(all_recipients.count)
+
           pipeline_id = data[:object_attributes][:id]
           PipelineNotificationWorker.new.perform(pipeline_id, 'recipients' => all_recipients)
         end
@@ -134,6 +144,19 @@ module Integrations
         end
 
         private
+
+        def rate_limited?(recipient_count)
+          ::Gitlab::Email::NamespaceRateLimiter.rate_limit_batch_for_project!(
+            project: project,
+            class_name: self.class.name,
+            hourly_bucket: :pipelines_email_outbound_emails_per_hour,
+            daily_bucket: :pipelines_email_outbound_emails_per_day,
+            feature_flag: PIPELINES_EMAIL_EMAIL_RATE_LIMIT_FEATURE_FLAG,
+            log_message: 'Pipelines Email outbound email rate limit exceeded',
+            count: recipient_count,
+            overshoot: :soft_cap
+          )
+        end
 
         def number_of_recipients_within_limit
           return if recipients.blank?

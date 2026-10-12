@@ -28,13 +28,11 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       click_button('Create project')
     end
 
-    # Waiting for page to load to project is created in the backend
-    expect(page).to have_content("successfully created")
+    expect(page).to have_current_path("/#{user.username}/empty", ignore_query: true)
     wait_for_requests
 
     project = Project.last
 
-    expect(page).to have_current_path(project_path(project), ignore_query: true)
     expect(page).to have_content('Empty')
     expect(page).to have_content('git init')
     expect(page).to have_content('git remote')
@@ -59,13 +57,9 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       click_button('Create project')
     end
 
-    # Waiting for page to load to project is created in the backend
-    expect(page).to have_content("successfully created")
+    expect(page).to have_current_path("/#{user.username}/with-initial-commits", ignore_query: true)
     wait_for_requests
 
-    project = Project.last
-
-    expect(page).to have_current_path(project_path(project), ignore_query: true)
     expect(page).to have_content('With initial commits')
     expect(page).to have_content('Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist')
     expect(page).to have_content('README.md Initial commit')
@@ -93,13 +87,9 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
         click_button('Create project')
       end
 
-      # Waiting for page to load to project is created in the backend
-      expect(page).to have_content("successfully created")
+      expect(page).to have_current_path("/#{user.username}/with-initial-commits", ignore_query: true)
       wait_for_requests
 
-      project = Project.last
-
-      expect(page).to have_current_path(project_path(project), ignore_query: true)
       expect(page).to have_content('With initial commits')
     end
 
@@ -138,8 +128,8 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
 
       click_button('Create project')
 
-      # Waiting for page to load to project is created in the backend
-      expect(page).to have_content("Project 'A Subgroup Project' was successfully created")
+      # Waiting for page to load after project is created in the backend
+      expect(page).to have_current_path(%r{/a-subgroup-project}, ignore_query: true)
       wait_for_requests
 
       project = Project.last
@@ -169,8 +159,8 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
         click_button('Create project')
       end
 
-      # Waiting for page to load to project is created in the backend
-      expect(page).to have_content("Project 'a-new-project' was successfully created")
+      # Waiting for page to load after project is created in the backend
+      expect(page).to have_current_path(%r{/a-new-project}, ignore_query: true)
       wait_for_requests
 
       project = Project.find_by(name: 'a-new-project')
@@ -197,13 +187,10 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
         click_button('Create project')
       end
 
-      # Waiting for page to load to project is created in the backend
-      expect(page).to have_content("Project 'With Default Integration' was successfully created")
+      expect(page).to have_current_path("/#{user.username}/with-default-integration", ignore_query: true)
       wait_for_requests
 
       project = Project.last
-
-      expect(page).to have_current_path(project_path(project), ignore_query: true)
 
       visit(project_settings_integrations_path(project))
 

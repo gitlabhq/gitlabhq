@@ -422,6 +422,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         count = Gitlab::Redis::RateLimiting.with { |r| r.get(group_key) }
         expect(count.to_i).to eq(1)
       end
+
+      it 'charges an integer batch cost in a single call on a count-mode key' do
+        described_class.run!(:web_hook_calls, scope: { namespace: namespace }, context: { threshold: 100 }, cost: 5)
+
+        count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
+        expect(count.to_i).to eq(5)
+      end
+
+      it 'exceeds in one call when the batch cost tips past the threshold' do
+        result = described_class.run!(:web_hook_calls, scope: { namespace: namespace },
+          context: { threshold: 3 }, cost: 4)
+
+        expect(result).to be(true)
+      end
     end
 
     context 'with a cost-mode key (main_db_duration_limit_per_worker)' do

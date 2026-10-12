@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Variables do
   let_it_be(:project) { create(:project) }
 
   let(:pipeline) do
-    build(:ci_empty_pipeline, project: project, ref: 'master', source: :push)
+    build(:ci_pipeline, project: project, ref: 'master', source: :push)
   end
 
   let(:ci_build) do

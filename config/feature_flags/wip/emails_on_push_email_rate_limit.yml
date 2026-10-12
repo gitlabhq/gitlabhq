@@ -1,0 +1,10 @@
+---
+name: emails_on_push_email_rate_limit
+description: Gates enforcement of the per-namespace Email on Push outbound email rate limit
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631892
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260055
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/632408
+milestone: '19.5'
+group: group::source code hardening and modernization
+type: wip
+default_enabled: false

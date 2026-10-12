@@ -190,4 +190,48 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
       end
     end
   end
+
+  describe '#within_grace_period?' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when deleted_at is nil' do
+      let(:state) { build(:terraform_state, project: project, deleted_at: nil) }
+
+      it 'returns false' do
+        expect(state.within_grace_period?).to be(false)
+      end
+    end
+
+    context 'around the grace period boundary', :freeze_time do
+      let(:boundary) { described_class::GRACE_PERIOD.ago }
+
+      let(:state_before) { create(:terraform_state, project: project, deleted_at: boundary - 1.second) }
+      let(:state_at) { create(:terraform_state, project: project, deleted_at: boundary) }
+      let(:state_after) { create(:terraform_state, project: project, deleted_at: boundary + 1.second) }
+
+      it 'agrees with .ready_for_destruction and never both match or both miss a state' do
+        states = [state_before, state_at, state_after]
+        ready_states = described_class.ready_for_destruction
+
+        states.each do |state|
+          in_scope = ready_states.include?(state)
+          in_predicate = state.within_grace_period?
+
+          expect(in_scope).not_to eq(in_predicate)
+        end
+      end
+
+      it 'returns false at exactly GRACE_PERIOD.ago' do
+        expect(state_at.within_grace_period?).to be(false)
+      end
+
+      it 'returns false 1 second before GRACE_PERIOD.ago' do
+        expect(state_before.within_grace_period?).to be(false)
+      end
+
+      it 'returns true 1 second after GRACE_PERIOD.ago' do
+        expect(state_after.within_grace_period?).to be(true)
+      end
+    end
+  end
 end

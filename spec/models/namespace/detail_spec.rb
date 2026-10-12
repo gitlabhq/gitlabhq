@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_projects do
+RSpec.describe Namespace::Detail, feature_category: :groups_and_projects do
   describe 'associations' do
     it { is_expected.to belong_to :namespace }
     it { is_expected.to belong_to(:creator).class_name('User') }

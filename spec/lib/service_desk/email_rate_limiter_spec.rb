@@ -15,7 +15,8 @@ RSpec.describe ServiceDesk::EmailRateLimiter, :clean_gitlab_redis_rate_limiting,
   end
 
   shared_examples 'a project that is never rate limited' do
-    specify do
+    specify :aggregate_failures do
+      expect(Gitlab::ApplicationRateLimiter).not_to receive(:peek)
       expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
 
       expect(limiter.rate_limit_batch!(1)).to be(false)
@@ -47,12 +48,18 @@ RSpec.describe ServiceDesk::EmailRateLimiter, :clean_gitlab_redis_rate_limiting,
       end
 
       it 'suppresses the batch once the hourly limit is exceeded' do
+        # Strict: Service Desk suppresses the batch that trips the window, so a
+        # limit of N sends exactly N before the next batch is suppressed.
         3.times { expect(limiter.rate_limit_batch!(1)).to be(false) }
 
         expect(limiter.rate_limit_batch!(1)).to be(true)
       end
 
       it 'suppresses a batch that straddles the limit and still consumes the budget' do
+        # A batch of 2 against a remaining budget of 3 sends, bringing the
+        # counter to 3; the next batch of 2 trips the window and is suppressed
+        # all-or-none, and the counter stays over for the rest of the window.
+        #
         limiter.rate_limit_batch!(2)
 
         expect(limiter.rate_limit_batch!(2)).to be(true)
@@ -152,7 +159,8 @@ RSpec.describe ServiceDesk::EmailRateLimiter, :clean_gitlab_redis_rate_limiting,
           allow(logger).to receive(:warn) { |args| payload = args }
         end
 
-        # Exhausts the hourly limit of 1 and the daily limit of 50 in one batch.
+        # One oversized batch trips both the hourly limit of 1 and the daily
+        # limit of 50 in a single charge.
         expect(limiter.rate_limit_batch!(60)).to be(true)
 
         expect(payload[Labkit::Fields::ADDITIONAL_DETAILS]).to include("exceeded_windows: 'hourly,daily'")
@@ -181,7 +189,9 @@ RSpec.describe ServiceDesk::EmailRateLimiter, :clean_gitlab_redis_rate_limiting,
         sibling_project = create(:project, namespace: project.namespace, service_desk_enabled: true)
         sibling_limiter = described_class.new(sibling_project)
 
-        expect(limiter.rate_limit_batch!(1)).to be(false)
+        # First batch of 2 trips the shared window (strict), charging the
+        # counter over the limit; the sibling then sees it as exhausted too.
+        expect(limiter.rate_limit_batch!(2)).to be(true)
         expect(sibling_limiter.rate_limit_batch!(1)).to be(true)
       end
 

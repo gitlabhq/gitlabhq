@@ -6,6 +6,8 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       PREFIX_REGEXP = /\A(.)/
+      MAX_INLINE_DIFF_LINE_LENGTH = 500
+      MAX_INLINE_DIFF_COST_PER_FILE = 6_000_000
 
       attr_reader :diff_file, :diff_lines, :repository, :project
 
@@ -53,10 +55,24 @@ module Gitlab
 
       def populate_marker_ranges
         pair_selector = Gitlab::Diff::PairSelector.new(@raw_lines)
+        limit_inline_diffs = Feature.enabled?(:limit_inline_diff_highlighting, project)
+        inline_diff_cost = 0
 
         pair_selector.each do |old_index, new_index|
           old_line = diff_lines[old_index]
           new_line = diff_lines[new_index]
+
+          if limit_inline_diffs
+            break if inline_diff_cost > MAX_INLINE_DIFF_COST_PER_FILE
+
+            old_length = old_line.text(prefix: false).length
+            new_length = new_line.text(prefix: false).length
+
+            next if [old_length, new_length].max > MAX_INLINE_DIFF_LINE_LENGTH
+
+            # The budget is a soft cap: the pair that crosses it is still highlighted.
+            inline_diff_cost += old_length * new_length
+          end
 
           old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_line.text, new_line.text, offset: 1).inline_diffs
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespaceStatistics, type: :model, feature_category: :consumables_cost_management do
+RSpec.describe NamespaceStatistics, feature_category: :consumables_cost_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 

@@ -18,6 +18,14 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
     Gitlab::DataBuilder::Pipeline.build(pipeline)
   end
 
+  # The outbound rate limit ships flag-off, so the existing send specs assert
+  # the pre-limit behaviour. The dedicated 'with rate limiting' context stubs
+  # the limiter directly rather than relying on this flag state.
+  #
+  before do
+    stub_feature_flags(pipelines_email_email_rate_limit: false)
+  end
+
   describe 'Validations' do
     context 'when integration is active' do
       before do
@@ -458,6 +466,110 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
         end
 
         it_behaves_like 'sending email'
+      end
+    end
+
+    context 'with rate limiting' do
+      let(:recipients) { 'a@gitlab.com,b@gitlab.com,c@gitlab.com' }
+
+      before do
+        subject.recipients = recipients
+      end
+
+      context 'when over the limit' do
+        before do
+          allow_next_instance_of(::Gitlab::Email::NamespaceRateLimiter) do |limiter|
+            allow(limiter).to receive(:rate_limit_batch!).and_return(true)
+          end
+        end
+
+        it 'suppresses the whole batch and does not enqueue', :aggregate_failures do
+          expect(PipelineNotificationWorker).not_to receive(:new)
+
+          subject.execute(data)
+        end
+
+        it 'charges the limiter with the full recipient count' do
+          expect_next_instance_of(::Gitlab::Email::NamespaceRateLimiter) do |limiter|
+            expect(limiter).to receive(:rate_limit_batch!).with(3).and_return(true)
+          end
+
+          subject.execute(data)
+        end
+
+        it 'builds the limiter scoped to the root namespace with the Pipelines Email buckets' do
+          expect(::Gitlab::Email::NamespaceRateLimiter).to receive(:new).with(
+            a_hash_including(
+              root_namespace: project.root_namespace,
+              hourly_bucket: :pipelines_email_outbound_emails_per_hour,
+              daily_bucket: :pipelines_email_outbound_emails_per_day,
+              feature_flag: :pipelines_email_email_rate_limit
+            )
+          ).and_call_original
+
+          subject.execute(data)
+        end
+
+        it 'skips the limiter on the forced test path and still enqueues', :aggregate_failures do
+          expect(::Gitlab::Email::NamespaceRateLimiter).not_to receive(:new)
+
+          expect_next_instance_of(PipelineNotificationWorker) do |worker|
+            expect(worker).to receive(:perform).with(
+              pipeline.id, 'recipients' => %w[a@gitlab.com b@gitlab.com c@gitlab.com]
+            )
+          end
+
+          subject.execute(data, force: true)
+        end
+      end
+
+      context 'when under the limit' do
+        before do
+          allow_next_instance_of(::Gitlab::Email::NamespaceRateLimiter) do |limiter|
+            allow(limiter).to receive(:rate_limit_batch!).and_return(false)
+          end
+        end
+
+        it 'enqueues normally' do
+          expect_next_instance_of(PipelineNotificationWorker) do |worker|
+            expect(worker).to receive(:perform).with(
+              pipeline.id, 'recipients' => %w[a@gitlab.com b@gitlab.com c@gitlab.com]
+            )
+          end
+
+          subject.execute(data)
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(pipelines_email_email_rate_limit: false)
+        end
+
+        it 'never consults the rate limiter and enqueues', :aggregate_failures do
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+          expect_next_instance_of(PipelineNotificationWorker) do |worker|
+            expect(worker).to receive(:perform).with(
+              pipeline.id, 'recipients' => %w[a@gitlab.com b@gitlab.com c@gitlab.com]
+            )
+          end
+
+          subject.execute(data)
+        end
+      end
+
+      context 'when emails are disabled for the project' do
+        before do
+          allow(project).to receive(:emails_disabled?).and_return(true)
+        end
+
+        it 'does not charge the limiter and does not enqueue', :aggregate_failures do
+          expect(::Gitlab::Email::NamespaceRateLimiter).not_to receive(:new)
+          expect(PipelineNotificationWorker).not_to receive(:new)
+
+          subject.execute(data)
+        end
       end
     end
   end

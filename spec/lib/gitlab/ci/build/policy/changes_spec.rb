@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
     describe 'paths matching' do
       let(:pipeline) do
         build(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           ref: 'master',
           source: :push,
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
 
       let(:pipeline) do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           ref: 'master',
           source: :push,
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
 
       let(:pipeline) do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           ref: 'feature',
           source: source,

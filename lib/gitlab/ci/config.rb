@@ -190,7 +190,8 @@ module Gitlab
 
       rescue Gitlab::Ci::Config::External::Context::TimeoutError, Gitlab::Ci::Config::External::Context::HTTPTimeoutError => e
         Gitlab::ErrorTracking.track_exception(e)
-        raise TimeoutError, e.message
+        # HTTPTimeoutError keeps its location out of `message` for Sentry grouping.
+        raise TimeoutError, e.try(:user_message) || e.message
 
       rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
         Gitlab::ErrorTracking.track_exception(e)
