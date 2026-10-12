@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.3.5 (2026-10-12)
+
+### Fixed (1 change)
+
+- [Remove stale merge_request event from Developer flow triggers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/961f0dea6ed1967b30fb8360b9b372d133602ee2)
+
+### Security (1 change)
+
+- [Fix incorrect `merge_request` variable name](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b050ffb23dd446640ce4906fb52da84ffef1ca80) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6941))
+
 ## 19.3.4 (2026-10-07)
 
 ### Added (1 change)
