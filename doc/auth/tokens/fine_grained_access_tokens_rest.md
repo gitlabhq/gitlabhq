@@ -2168,6 +2168,8 @@ Grants the ability to create, delete, promote, read, subscribe, and update label
 | Delete | Project | `DELETE` | `/projects/:id/labels/:name` |
 | Delete | Group | `DELETE` | `/groups/:id/labels` |
 | Delete | Group | `DELETE` | `/groups/:id/labels/:name` |
+| Delete | Group | `DELETE` | `/projects/:id/labels` |
+| Delete | Group | `DELETE` | `/projects/:id/labels/:name` |
 | Promote | Project | `PUT` | `/projects/:id/labels/:name/promote` |
 | Promote | Project | `PUT` | `/projects/:id/labels/promote` |
 | Read | Project | `GET` | `/projects/:id/labels` |
@@ -2182,6 +2184,8 @@ Grants the ability to create, delete, promote, read, subscribe, and update label
 | Update | Project | `PUT` | `/projects/:id/labels/:name` |
 | Update | Group | `PUT` | `/groups/:id/labels` |
 | Update | Group | `PUT` | `/groups/:id/labels/:name` |
+| Update | Group | `PUT` | `/projects/:id/labels` |
+| Update | Group | `PUT` | `/projects/:id/labels/:name` |
 
 #### Service Ping
 

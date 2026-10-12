@@ -86,7 +86,8 @@ module API
         use :project_label_update_params
         exactly_one_of :label_id, :name
       end
-      route_setting :authorization, permissions: :update_label, boundary_type: :project
+      route_setting :authorization, permissions: :update_label, boundary: -> { label_update_boundary },
+        boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
       put ':id/labels' do
         update_label(user_project, Entities::ProjectLabel)
       end
@@ -102,7 +103,8 @@ module API
         optional :name, type: String, desc: 'The name of the label to be deleted'
         exactly_one_of :label_id, :name
       end
-      route_setting :authorization, permissions: :delete_label, boundary_type: :project
+      route_setting :authorization, permissions: :delete_label, boundary: -> { label_owner_boundary },
+        boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
       delete ':id/labels' do
         delete_label(user_project)
       end
@@ -132,7 +134,8 @@ module API
         requires :name, type: String, desc: 'The name or id of the label to be updated'
         use :project_label_update_params
       end
-      route_setting :authorization, permissions: :update_label, boundary_type: :project
+      route_setting :authorization, permissions: :update_label, boundary: -> { label_update_boundary },
+        boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
       put ':id/labels/:name' do
         update_label(user_project, Entities::ProjectLabel)
       end
@@ -145,7 +148,8 @@ module API
       params do
         requires :name, type: String, desc: 'The name or id of the label to be deleted'
       end
-      route_setting :authorization, permissions: :delete_label, boundary_type: :project
+      route_setting :authorization, permissions: :delete_label, boundary: -> { label_owner_boundary },
+        boundaries: [{ boundary_type: :project }, { boundary_type: :group }]
       delete ':id/labels/:name' do
         delete_label(user_project)
       end

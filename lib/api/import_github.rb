@@ -41,7 +41,8 @@ module API
       optional :pagination_limit, type: Integer, desc: 'Pagination limit', values: 1..100
     end
     route_setting :authorization, permissions: :create_github_import,
-      boundaries: [{ boundary_type: :group, boundary_param: :target_namespace }, { boundary_type: :user }]
+      boundary: -> { github_import_boundary },
+      boundaries: [{ boundary_type: :group }, { boundary_type: :user }]
     post 'import/github' do
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
 

@@ -37,6 +37,7 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
         end
       end
 
+      let_it_be(:user) { create(:user, :with_namespace) }
       let_it_be(:params) do
         {
           bitbucket_email: 'user@example.com',
@@ -49,6 +50,46 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
       let(:boundary_object) { :user }
       let(:request) do
         post api('/import/bitbucket', personal_access_token: pat), params: params
+      end
+    end
+
+    context 'when a granular token scoped only to the user boundary targets a group namespace' do
+      let_it_be(:group) { create(:group, developers: [user]) }
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_bitbucket_import).first.name])
+      end
+
+      it 'denies the cross-boundary import', :aggregate_failures do
+        post api('/import/bitbucket', personal_access_token: user_boundary_pat), params: {
+          bitbucket_email: 'user@example.com',
+          bitbucket_api_token: 'token123',
+          repo_path: 'path/to/repo',
+          target_namespace: group.full_path
+        }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+      end
+    end
+
+    context 'when a granular token targets a non-existent namespace path' do
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_bitbucket_import).first.name])
+      end
+
+      it 'returns not found instead of falling back to the user boundary' do
+        expect(Import::BitbucketService).not_to receive(:new)
+
+        post api('/import/bitbucket', personal_access_token: user_boundary_pat), params: {
+          bitbucket_email: 'user@example.com',
+          bitbucket_api_token: 'token123',
+          repo_path: 'path/to/repo',
+          target_namespace: 'this-namespace-does-not-exist'
+        }
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

@@ -278,14 +278,13 @@ If a rebase or force push fails, restore your branch from its backup:
 
 ## Approving after rebase
 
-If you rebase a branch, you've added commits. If your project is configured to
+After you rebase a branch, Git changes the Git committer and preserves the Git author for each
+rebased commit. If your project is configured to
 [prevent approvals by users who add commits](../../user/project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits),
-you can't approve a merge request you've rebased. In addition, users who were previously committers,
-and could not previously approve, might now be able to approve the changes.
+GitLab excludes you as the Git committer from approval. GitLab also excludes each original Git author.
 
-Additionally, users who approved and then performed a rebase might still show as having approved
-the merge request. However, the user's approval does not count toward the required approvals for
-the merge request.
+After you approve and rebase a merge request, GitLab can continue to show your approval.
+Your approval does not count toward the required approvals for the merge request.
 
 ## Related topics
 
