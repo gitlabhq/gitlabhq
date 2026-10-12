@@ -6,7 +6,7 @@ RSpec.describe Ci::BridgePolicy, feature_category: :continuous_integration do
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:downstream_project) { create(:project, :small_repo) }
-  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be_with_refind(:bridge) { create(:ci_bridge, pipeline: pipeline, downstream: downstream_project) }
 
   let(:policy) do

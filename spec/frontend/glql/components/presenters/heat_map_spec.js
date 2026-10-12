@@ -118,7 +118,7 @@ describe('HeatMapPresenter', () => {
   });
 
   it('describes the chart for assistive technology', () => {
-    expect(findChart().props('options').aria.label.description).toBe(
+    expect(findChart().props('options').aria.label.description).toContain(
       'Heat map of Total count by User and Language.',
     );
   });
@@ -189,5 +189,36 @@ describe('HeatMapPresenter', () => {
 
     expect(mounted.text()).toContain('Total count');
     expect(mounted.text()).toContain('12,345');
+  });
+
+  describe('description for assistive technology', () => {
+    const descriptionFor = (provide) => {
+      const mounted = shallowMountExtended(HeatMapPresenter, {
+        propsData: {
+          data: {
+            nodes: [
+              { user: 'user-0', language: 'ruby', totalCount: 5 },
+              { user: 'user-1', language: 'go', totalCount: 9 },
+            ],
+          },
+          fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        },
+        provide,
+        stubs: { DimensionRoutedChart },
+      });
+
+      return mounted.findComponent(HeatMapChart).props('options').aria.label.description;
+    };
+
+    it('leads with the panel title and states the highest value', () => {
+      const description = descriptionFor({ getVisualizationTitle: () => 'Sessions by tier' });
+
+      expect(description).toMatch(/^Sessions by tier\. Heat map of Total count by/);
+      expect(description).toContain('Highest is 9 for user-1 and go.');
+    });
+
+    it('starts with the chart shape outside a dashboard panel', () => {
+      expect(descriptionFor({})).toMatch(/^Heat map of Total count by/);
+    });
   });
 });

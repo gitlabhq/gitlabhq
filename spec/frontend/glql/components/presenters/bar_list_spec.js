@@ -71,13 +71,14 @@ const QUANTILES_WITH_COUNT = { nodes: [{ Median: 33840, p75: 82800, throughputCo
 describe('BarListPresenter', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(BarListPresenter, {
       propsData: {
         data: MOCK_AGGREGATED_DATA_ONE_DIM,
         fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
         ...props,
       },
+      provide,
       // Render the real routing shell so validation and loading behave as they
       // do in production; the chart itself stays stubbed.
       stubs: { DimensionRoutedChart },
@@ -110,6 +111,20 @@ describe('BarListPresenter', () => {
       const total = rows().reduce((sum, { share }) => sum + share, 0);
 
       expect(total).toBeCloseTo(100);
+    });
+  });
+
+  describe('chart title for assistive technology', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Where credits went' });
+
+      expect(findChart().props('accessibleTitle')).toBe('Where credits went');
+    });
+
+    it('passes no title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().props('accessibleTitle')).toBe('');
     });
   });
 

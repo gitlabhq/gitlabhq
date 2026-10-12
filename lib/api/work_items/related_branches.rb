@@ -62,6 +62,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           get ':work_item_iid/related_branches' do
             render_related_branches_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))

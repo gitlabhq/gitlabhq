@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_category: :importers do
+  include StubRequests
+
   let_it_be(:user) { create(:user) }
   let_it_be(:parent, freeze: false) { create(:project) }
   let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
@@ -40,11 +42,13 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_cat
     context 'successfully imports repository' do
       let(:project_data) { { 'httpUrlToRepo' => 'http://test.git' } }
 
-      it 'imports new repository into destination project' do
+      it 'imports new repository into destination project with the validated resolved address' do
         url = project_data['httpUrlToRepo'].sub("://", "://oauth2:#{bulk_import_configuration.access_token}@")
 
+        stub_dns(project_data['httpUrlToRepo'], ip_address: '8.8.8.9')
+
         expect(context.portable).to receive(:ensure_repository)
-        expect(context.portable.repository).to receive(:fetch_as_mirror).with(url)
+        expect(context.portable.repository).to receive(:fetch_as_mirror).with(url, resolved_address: '8.8.8.9')
 
         pipeline.run
       end
@@ -95,6 +99,60 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_cat
       expect(service).to receive(:execute)
 
       pipeline.after_run(context)
+    end
+  end
+
+  describe '#get_resolved_address' do
+    let(:url) { 'https://example.com/foo.git' }
+
+    subject(:resolved_address) { pipeline.send(:get_resolved_address, url) }
+
+    context 'when the resolved host is present and the scheme is http(s)' do
+      it 'returns the validated hostname' do
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_return([URI('https://example.com/foo.git'), '93.184.216.34'])
+
+        expect(resolved_address).to eq('example.com')
+      end
+    end
+
+    context 'when the resolved host is blank' do
+      it 'returns an empty string' do
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_return([URI('https://example.com/foo.git'), nil])
+
+        expect(resolved_address).to eq('')
+      end
+    end
+
+    context 'when the scheme is not http(s)' do
+      it 'returns an empty string' do
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
+          .and_return([URI('ssh://example.com/foo.git'), '93.184.216.34'])
+
+        expect(resolved_address).to eq('')
+      end
+    end
+  end
+
+  describe '#dns_rebind_protection?' do
+    subject(:dns_rebind_protection) { pipeline.send(:dns_rebind_protection?) }
+
+    context 'when an http proxy is configured' do
+      it 'returns false' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+
+        expect(dns_rebind_protection).to be(false)
+      end
+    end
+
+    context 'when no http proxy is configured' do
+      it 'returns the current setting' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(false)
+        allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(true)
+
+        expect(dns_rebind_protection).to be(true)
+      end
     end
   end
 end

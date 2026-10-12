@@ -8,6 +8,11 @@ import { vueErrorHandler } from '../../../sentry/vue_error_handler';
 
 import { logDevNotice, logError } from '../../logger';
 import { compatConfig } from './compat_config';
+import {
+  assertComponentPluginsInstalled,
+  assertPluginsInstalled,
+  shouldAssertPluginsInstalled,
+} from './plugin_install_state';
 
 export * from '@vue/compat';
 
@@ -16,6 +21,13 @@ class GitLabPatchedVue extends VueCompatOriginal {
     const appName = rawConfig?.name;
     if (appName) {
       logDevNotice(`[V] Using Vue.js 3 (with @vue/compat) for ${appName}`);
+    }
+
+    if (shouldAssertPluginsInstalled()) {
+      // A throwaway app gets the same copy of global mixins as the app below.
+      // eslint-disable-next-line no-underscore-dangle
+      const getMixins = () => VueCompatOriginal.createApp({})._context.mixins;
+      assertPluginsInstalled(rawConfig, getMixins, appName);
     }
 
     const config = rawConfig?.el ? { ...rawConfig } : rawConfig;
@@ -51,6 +63,15 @@ class GitLabPatchedVue extends VueCompatOriginal {
 }
 
 GitLabPatchedVue.configureCompat(compatConfig);
+
+if (shouldAssertPluginsInstalled()) {
+  // Registered first, so @vue/compat copies it into every app.
+  GitLabPatchedVue.mixin({
+    created() {
+      assertComponentPluginsInstalled(this);
+    },
+  });
+}
 
 // This is temporary place for this
 // We are basically mirroring app/assets/javascripts/commons/vue.js

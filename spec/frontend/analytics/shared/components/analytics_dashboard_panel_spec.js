@@ -86,7 +86,7 @@ describe('AnalyticsDashboardPanel', () => {
   const findVisualization = () => wrapper.findComponent(LineChart);
   const findSegmentedControl = () => wrapper.findComponent(GlSegmentedControl);
 
-  const createWrapper = ({ props = {}, provide = {} } = {}) => {
+  const createWrapper = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(AnalyticsDashboardPanel, {
       provide: {
         hasUltimateLicense: true,
@@ -113,6 +113,7 @@ describe('AnalyticsDashboardPanel', () => {
         ExtendedDashboardPanel,
         GlSprintf,
         LineChart,
+        ...stubs,
       },
     });
   };
@@ -774,6 +775,25 @@ describe('AnalyticsDashboardPanel', () => {
         },
       });
       expect(findExtendedDashboardPanel().props('title')).toBe('overridden title');
+    });
+  });
+
+  describe('visualization title for assistive technology', () => {
+    const TitleProbe = {
+      inject: ['getVisualizationTitle'],
+      template: '<span data-testid="title-probe">{{ getVisualizationTitle() }}</span>',
+    };
+
+    it('keeps the provided title current when the panel title changes', async () => {
+      mockFetch.mockResolvedValue([{ name: 'foo' }]);
+      createWrapper({ props: { title: 'First title' }, stubs: { LineChart: TitleProbe } });
+      await waitForPromises();
+
+      expect(wrapper.findByTestId('title-probe').text()).toBe('First title');
+
+      await wrapper.setProps({ title: 'Second title' });
+
+      expect(wrapper.findByTestId('title-probe').text()).toBe('Second title');
     });
   });
 

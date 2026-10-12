@@ -104,6 +104,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/notes' do
@@ -127,6 +128,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/notes/:note_id' do
@@ -148,6 +150,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :create_note,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           post ':work_item_iid/notes' do

@@ -381,7 +381,7 @@ module MergeRequestsHelper
   def gitpod_merge_request_url(merge_request)
     return unless Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
 
-    "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(merge_request)}"
+    "#{Gitlab::CurrentSettings.gitpod_url}##{Gitlab::UrlBuilder.build(merge_request)}"
   end
 
   def default_suggestion_commit_message(project)

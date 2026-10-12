@@ -61,6 +61,14 @@ export default {
   },
   props: {
     /**
+     * A name for the chart that screen readers announce.
+     */
+    accessibleTitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    /**
      * `[{ name: String, values: [Number, Number] }]`, in display order.
      * `values[0]` grows left from the centre, `values[1]` grows right.
      */
@@ -201,6 +209,7 @@ export default {
   >
     <gl-chart
       :options="fullOptions"
+      :accessible-title="accessibleTitle"
       height="auto"
       responsive
       class="gl-grow gl-overflow-hidden"

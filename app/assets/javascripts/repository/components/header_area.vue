@@ -76,7 +76,6 @@ export default {
     'uploadPath',
     'newDirPath',
     'projectRootPath',
-    'comparePath',
     'isReadmeView',
     'isFork',
     'needsToFork',

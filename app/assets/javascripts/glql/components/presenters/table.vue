@@ -78,6 +78,9 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: false,
@@ -118,6 +121,9 @@ export default {
     };
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     pageSize() {
       return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
     },
@@ -263,6 +269,11 @@ export default {
     </p>
     <div class="gl-table-shadow" data-print-scale-container>
       <table class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden" data-print-scale-target>
+        <caption v-if="visualizationTitle" class="gl-sr-only" data-testid="table-caption">
+          {{
+            visualizationTitle
+          }}
+        </caption>
         <thead class="!gl-border-b gl-text-sm">
           <tr>
             <th-resizable

@@ -211,7 +211,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def accessibility_reports
     if @merge_request.has_accessibility_reports?
-      reports_response(@merge_request.compare_accessibility_reports)
+      reports_response(@merge_request.compare_accessibility_reports(current_user))
     else
       head :no_content
     end
@@ -232,11 +232,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   # documented in doc/development/rails_endpoints/index.md
   def codequality_reports
-    reports_response(@merge_request.compare_codequality_reports)
+    reports_response(@merge_request.compare_codequality_reports(current_user))
   end
 
   def terraform_reports
-    reports_response(@merge_request.find_terraform_reports)
+    reports_response(@merge_request.find_terraform_reports(current_user))
   end
 
   def exposed_artifacts

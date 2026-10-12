@@ -1153,6 +1153,32 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       end
     end
 
+    context 'when the target ref is a workload ref' do
+      let(:workload_ref) { "refs/workloads/abc123/head" }
+
+      let(:trigger) do
+        {
+          trigger: {
+            project: downstream_project.full_path,
+            branch: workload_ref
+          }
+        }
+      end
+
+      it 'does not create a downstream pipeline' do
+        expect { subject }.not_to change { Ci::Pipeline.count }
+        expect(subject).to be_error
+        expect(subject.message).to eq("Pre-conditions not met")
+      end
+
+      it 'drops the bridge with insufficient_bridge_permissions' do
+        subject
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq 'insufficient_bridge_permissions'
+      end
+    end
+
     context 'when there is no such branch in downstream project' do
       let(:trigger) do
         {

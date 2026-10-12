@@ -142,6 +142,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/discussions' do
@@ -164,6 +165,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/discussions/:discussion_id' do

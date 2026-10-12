@@ -15,11 +15,6 @@ export default {
     },
   },
   mixins: [getRefMixin],
-  inject: {
-    projectRootPath: {
-      default: '',
-    },
-  },
   props: {
     currentPath: {
       type: String,

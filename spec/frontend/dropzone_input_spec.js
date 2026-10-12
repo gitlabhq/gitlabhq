@@ -245,6 +245,18 @@ describe('dropzone_input', () => {
       expect(textareaValue()).toEqual('![test]{width=663 height=325}');
     });
 
+    it('does not append dimensions for non-embeddable media links', async () => {
+      await pasteFileAndAwaitUpload({
+        fileName: 'test.mkv',
+        mimeType: 'video/x-matroska',
+        markdown: '[test.mkv](/url/to/file)',
+        dimensions: { width: 663, height: 325 },
+      });
+
+      expect(uploadedFileNames()).toEqual(['test.mkv']);
+      expect(textareaValue()).toEqual('[test.mkv](/url/to/file)');
+    });
+
     it('preserves undo history', async () => {
       let execCommandMock;
       const fileName = 'undo-file.png';

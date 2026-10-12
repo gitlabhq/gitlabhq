@@ -47,6 +47,18 @@ module API
         end
       end
 
+      def import_target_namespace
+        if params[:namespace_id].present?
+          find_namespace(params[:namespace_id])
+        elsif params[:namespace_path].present?
+          find_namespace_by_path(params[:namespace_path])
+        elsif params[:namespace].present?
+          find_namespace(params[:namespace])
+        else
+          current_user.namespace
+        end
+      end
+
       def filtered_override_params(params)
         override_params = params.delete(:override_params)
         filter_attributes_using_license!(override_params) if override_params
@@ -111,12 +123,8 @@ module API
         consumes ['multipart/form-data']
       end
       route_setting :authorization, permissions: :create_project_import,
-        boundaries: [
-          { boundary_type: :group, boundary_param: :namespace_id },
-          { boundary_type: :group, boundary_param: :namespace_path },
-          { boundary_type: :group, boundary_param: :namespace },
-          { boundary_type: :user }
-        ]
+        boundary: -> { import_target_boundary(import_target_namespace) },
+        boundaries: [{ boundary_type: :group }, { boundary_type: :user }]
       post 'import' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -239,12 +247,8 @@ module API
         ]
       end
       route_setting :authorization, permissions: :create_project_import,
-        boundaries: [
-          { boundary_type: :group, boundary_param: :namespace_id },
-          { boundary_type: :group, boundary_param: :namespace_path },
-          { boundary_type: :group, boundary_param: :namespace },
-          { boundary_type: :user }
-        ]
+        boundary: -> { import_target_boundary(import_target_namespace) },
+        boundaries: [{ boundary_type: :group }, { boundary_type: :user }]
       post 'remote-import' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
@@ -411,12 +415,8 @@ module API
         ]
       end
       route_setting :authorization, permissions: :create_project_import,
-        boundaries: [
-          { boundary_type: :group, boundary_param: :namespace_id },
-          { boundary_type: :group, boundary_param: :namespace_path },
-          { boundary_type: :group, boundary_param: :namespace },
-          { boundary_type: :user }
-        ]
+        boundary: -> { import_target_boundary(import_target_namespace) },
+        boundaries: [{ boundary_type: :group }, { boundary_type: :user }]
       post 'remote-import-s3' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 

@@ -32,9 +32,13 @@ describe('TablePresenter', () => {
     window.location.origin = 'https://gitlab.com';
   });
 
-  const createWrapper = async ({ data, fields, ...moreProps }, mountFn = shallowMountExtended) => {
+  const createWrapper = async (
+    { data, fields, provide = {}, ...moreProps },
+    mountFn = shallowMountExtended,
+  ) => {
     wrapper = mountFn(TablePresenter, {
       propsData: { data, fields, ...moreProps },
+      provide,
     });
 
     await nextTick();
@@ -498,6 +502,26 @@ describe('TablePresenter', () => {
       expect(wrapper.findByTestId('column-0').findComponent(GlIcon).props('name')).toBe(
         'arrow-down',
       );
+    });
+  });
+
+  describe('caption', () => {
+    it('names the table with the panel title for screen readers', async () => {
+      await createWrapper({
+        data: MOCK_ISSUES,
+        fields: MOCK_FIELDS,
+        provide: { getVisualizationTitle: () => 'Group comparison' },
+      });
+
+      const caption = wrapper.findByTestId('table-caption');
+      expect(caption.text()).toBe('Group comparison');
+      expect(caption.classes()).toContain('gl-sr-only');
+    });
+
+    it('has no caption outside a dashboard panel', async () => {
+      await createWrapper({ data: MOCK_ISSUES, fields: MOCK_FIELDS });
+
+      expect(wrapper.findByTestId('table-caption').exists()).toBe(false);
     });
   });
 

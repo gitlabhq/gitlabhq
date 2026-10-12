@@ -28,8 +28,9 @@ const TWO_DIM_DATA = {
 describe('TwoDimensionsBarList', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsBarList, {
+      provide,
       propsData: {
         data: TWO_DIM_DATA,
         primaryDimension: USER,
@@ -216,6 +217,20 @@ describe('TwoDimensionsBarList', () => {
       await wrapper.setProps({ page: 1 });
 
       expect(rows()[0].share).toBe(15);
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().props('accessibleTitle')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().props('accessibleTitle')).toBe('');
     });
   });
 });

@@ -61,8 +61,9 @@ const DATA = {
 describe('SingleDimensionColumnChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(SingleDimensionColumnChart, {
+      provide,
       propsData: {
         data: DATA,
         dimension: DIMENSION,
@@ -410,6 +411,20 @@ describe('SingleDimensionColumnChart', () => {
 
       expect(w.text()).toContain('1,234');
       expect(w.text()).toContain('567');
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findColumnChart().attributes('accessible-title')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findColumnChart().attributes('accessible-title')).toBe('');
     });
   });
 });

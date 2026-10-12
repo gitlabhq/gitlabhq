@@ -71,6 +71,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           get ':work_item_iid/related_merge_requests' do
             render_related_merge_requests_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))

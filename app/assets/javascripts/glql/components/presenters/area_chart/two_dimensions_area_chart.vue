@@ -19,6 +19,9 @@ const STACK_ID = 'secondary-dimension';
 export default {
   name: 'TwoDimensionsAreaChart',
   components: { GlAreaChart, FormattedTooltipContent },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: true,
@@ -38,6 +41,9 @@ export default {
     },
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     chartData() {
       const { groups, bars } = buildStackedByDimension({
         nodes: this.data.nodes,
@@ -96,7 +102,12 @@ export default {
 </script>
 
 <template>
-  <gl-area-chart :data="chartData" :option="chartOptions" :include-legend-avg-max="false">
+  <gl-area-chart
+    :data="chartData"
+    :option="chartOptions"
+    :accessible-title="visualizationTitle"
+    :include-legend-avg-max="false"
+  >
     <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content

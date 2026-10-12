@@ -18,8 +18,9 @@ const DATA = {
 describe('TwoDimensionsColumnChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsColumnChart, {
+      provide,
       propsData: {
         data: DATA,
         primaryDimension: PRIMARY_DIM,
@@ -236,6 +237,20 @@ describe('TwoDimensionsColumnChart', () => {
 
       expect(w.text()).toContain('ruby');
       expect(w.text()).not.toContain('python');
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().attributes('accessible-title')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().attributes('accessible-title')).toBe('');
     });
   });
 });

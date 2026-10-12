@@ -40,6 +40,9 @@ import {
 export default {
   name: 'SingleDimensionBarChart',
   components: { GlBarChart, FormattedTooltipContent },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: true,
@@ -81,6 +84,9 @@ export default {
     };
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     // Share labels and per-category colours describe one series. With several
     // metrics there is no single total and no single bar per category, so
     // both fall back to the plain rendering.
@@ -197,6 +203,7 @@ export default {
   <gl-bar-chart
     :data="chartData"
     :option="chartOptions"
+    :accessible-title="visualizationTitle"
     :presentation="presentation"
     :height="chartHeight"
     :x-axis-title="xAxisTitle"

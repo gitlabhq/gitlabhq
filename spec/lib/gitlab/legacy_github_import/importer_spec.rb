@@ -364,6 +364,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
     before do
       allow(Import::PlaceholderReferences::Store).to receive(:new).and_return(store)
       allow(store).to receive(:empty?).and_return(true)
+      allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).and_return([Addressable::URI.parse(project.import_url), nil])
 
       # Lower wait and timeout limit to make spec faster
       stub_const("#{described_class}::PLACEHOLDER_LOAD_SLEEP", 0.01)
@@ -535,6 +536,25 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
         expect(project.import_state.last_error).to eq error.to_json
       end
 
+      context 'when the wiki remote does not exist' do
+        before do
+          allow(project.wiki.repository).to receive(:import_repository).and_raise(
+            Gitlab::Git::Repository::NoRepository.new(
+              'creating repository: cloning repository: repository at given URL not found'
+            )
+          )
+        end
+
+        it 'does not add a wiki error' do
+          importer.execute
+
+          wiki_errors = Gitlab::Json.parse(project.import_state.last_error)['errors']
+            .select { |error| error['type'] == 'wiki' }
+
+          expect(wiki_errors).to be_empty
+        end
+      end
+
       context 'when comment has invalid created date' do
         let(:comment_with_invalid_date) do
           {
@@ -598,6 +618,84 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
         )
 
         subject.client
+      end
+    end
+
+    describe '#import_wiki' do
+      let(:wiki_import_url) { "#{repo_root}/foo/group/project.wiki.git" }
+
+      before do
+        allow(project.wiki).to receive(:repository_exists?).and_return(false)
+      end
+
+      it 'passes the resolved address to import_repository' do
+        allow(importer).to receive(:get_resolved_address).and_return('93.184.216.34')
+
+        expect(project.wiki.repository)
+          .to receive(:import_repository)
+          .with(wiki_import_url, resolved_address: '93.184.216.34')
+
+        importer.send(:import_wiki)
+
+        expect(importer.errors).to be_empty
+      end
+
+      context 'when the wiki URL is blocked' do
+        it 'records a wiki error and does not import the repository' do
+          allow(importer).to receive(:get_resolved_address)
+            .and_raise(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, 'Requests to localhost are not allowed')
+
+          expect(project.wiki.repository).not_to receive(:import_repository)
+
+          importer.send(:import_wiki)
+
+          expect(importer.errors)
+            .to include({ type: :wiki, errors: 'Requests to localhost are not allowed' })
+        end
+      end
+    end
+
+    describe '#get_resolved_address' do
+      let(:url) { "#{repo_root}/foo/group/project.wiki.git" }
+      let(:validated_url) { Addressable::URI.parse('https://93.184.216.34/foo/group/project.wiki.git') }
+
+      it 'returns the hostname of the validated URL when a host is resolved' do
+        allow(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .and_return([validated_url, 'try.gitea.io'])
+
+        expect(importer.send(:get_resolved_address, url)).to eq('93.184.216.34')
+      end
+
+      it 'returns an empty string when no host is resolved' do
+        allow(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .and_return([validated_url, nil])
+
+        expect(importer.send(:get_resolved_address, url)).to eq('')
+      end
+
+      it 'disables DNS rebinding protection when an HTTP proxy is configured' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+
+        expect(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .with(url, hash_including(dns_rebind_protection: false))
+          .and_return([validated_url, 'try.gitea.io'])
+
+        importer.send(:get_resolved_address, url)
+      end
+
+      it 'passes dns_rebind_protection: false when the setting is disabled' do
+        allow(Gitlab).to receive(:http_proxy_env?).and_return(false)
+        allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(false)
+
+        expect(Gitlab::HTTP_V2::UrlBlocker)
+          .to receive(:validate!)
+          .with(url, hash_including(dns_rebind_protection: false))
+          .and_return([validated_url, 'try.gitea.io'])
+
+        importer.send(:get_resolved_address, url)
       end
     end
   end

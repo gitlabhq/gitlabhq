@@ -548,6 +548,51 @@ RSpec.describe API::Labels, feature_category: :team_planning do
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
+
+      context 'with a granular token' do
+        let(:token_boundary) { project }
+        let(:pat) do
+          create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(token_boundary),
+            permissions: %w[delete_label])
+        end
+
+        before_all do
+          group.add_developer(user)
+        end
+
+        it 'returns 403 when the token is scoped only to the project', :aggregate_failures do
+          delete api("/projects/#{project.id}/labels/#{group_label.id}", personal_access_token: pat)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_granular_scope')
+          expect(group_label.reload).to be_present
+        end
+
+        it 'returns 204 for a project label when the token is scoped to the project' do
+          delete api("/projects/#{project.id}/labels/#{label1.id}", personal_access_token: pat)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        it 'returns 403 for the deprecated route when the token is scoped only to the project', :aggregate_failures do
+          delete api("/projects/#{project.id}/labels", personal_access_token: pat),
+            params: { name: valid_group_label_title_1 }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_granular_scope')
+          expect(group_label.reload).to be_present
+        end
+
+        context 'when the token is scoped to the group' do
+          let(:token_boundary) { group }
+
+          it 'returns 204' do
+            delete api("/projects/#{project.id}/labels/#{group_label.id}", personal_access_token: pat)
+
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
+        end
+      end
     end
   end
 
@@ -637,6 +682,64 @@ RSpec.describe API::Labels, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['priority']).to eq(5)
         expect(json_response['name']).to eq('new label name')
+      end
+
+      context 'with a granular token' do
+        let(:token_boundary) { project }
+        let(:pat) do
+          create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(token_boundary),
+            permissions: %w[update_label])
+        end
+
+        before_all do
+          group.add_developer(user)
+        end
+
+        it 'allows updating of group label priority with a project-scoped token', :aggregate_failures do
+          put api("/projects/#{project.id}/labels/#{group_label.id}", personal_access_token: pat),
+            params: { priority: 5 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['priority']).to eq(5)
+        end
+
+        it 'returns 403 when a project-scoped token updates other fields', :aggregate_failures do
+          put api("/projects/#{project.id}/labels/#{group_label.id}", personal_access_token: pat),
+            params: { new_name: 'new label name' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_granular_scope')
+          expect(group_label.reload.title).to eq(valid_group_label_title_1)
+        end
+
+        it 'returns 200 when a project-scoped token updates a project label' do
+          put api("/projects/#{project.id}/labels/#{label1.id}", personal_access_token: pat),
+            params: { new_name: 'new label name' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq('new label name')
+        end
+
+        it 'returns 403 when a project-scoped token edits other fields on the deprecated route', :aggregate_failures do
+          put api("/projects/#{project.id}/labels", personal_access_token: pat),
+            params: { label_id: group_label.id, new_name: 'new label name' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_granular_scope')
+          expect(group_label.reload.title).to eq(valid_group_label_title_1)
+        end
+
+        context 'when the token is scoped to the group' do
+          let(:token_boundary) { group }
+
+          it 'returns 200 when updating the group label', :aggregate_failures do
+            put api("/projects/#{project.id}/labels/#{group_label.id}", personal_access_token: pat),
+              params: { new_name: 'new label name' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['name']).to eq('new label name')
+          end
+        end
       end
     end
   end

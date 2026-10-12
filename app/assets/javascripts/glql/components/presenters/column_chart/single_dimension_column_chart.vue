@@ -22,6 +22,9 @@ import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
 export default {
   name: 'SingleDimensionColumnChart',
   components: { GlColumnChart, GlStackedColumnChart, FormattedTooltipContent },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: true,
@@ -42,6 +45,9 @@ export default {
     },
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     // GlColumnChart renders 1 metric (single series) or 2 metrics on a dual y-axis.
     // 3+ metrics, or stacking 2+, go through GlStackedColumnChart on a single axis.
     // One metric has nothing to stack against, and would gain an unwanted legend.
@@ -130,6 +136,7 @@ export default {
     :group-by="multiMetricData.groups"
     :bars="multiMetricData.bars"
     :option="chartOptions"
+    :accessible-title="visualizationTitle"
     :presentation="presentation"
     :include-legend-avg-max="false"
   >
@@ -145,6 +152,7 @@ export default {
     v-else
     :bars="primaryBars"
     :option="chartOptions"
+    :accessible-title="visualizationTitle"
     x-axis-type="category"
     :x-axis-title="dimensionLabel"
     :y-axis-title="yAxisTitle"

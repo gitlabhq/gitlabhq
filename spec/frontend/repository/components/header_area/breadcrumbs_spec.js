@@ -17,13 +17,7 @@ Vue.use(VueApollo);
 describe('Repository breadcrumbs component', () => {
   let wrapper;
 
-  const factory = ({
-    currentPath,
-    extraProps = {},
-    mockRoute = {},
-    projectRootPath = TEST_PROJECT_PATH,
-    mountOptions = {},
-  } = {}) => {
+  const factory = ({ currentPath, extraProps = {}, mockRoute = {}, mountOptions = {} } = {}) => {
     const apolloProvider = createApolloProvider();
 
     apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -35,9 +29,6 @@ describe('Repository breadcrumbs component', () => {
 
     wrapper = shallowMount(Breadcrumbs, {
       apolloProvider,
-      provide: {
-        projectRootPath,
-      },
       propsData: {
         currentPath,
         ...extraProps,
@@ -61,23 +52,6 @@ describe('Repository breadcrumbs component', () => {
   });
 
   it('renders the `gl-breadcrumb` component', () => {
-    expect(findGLBreadcrumb().exists()).toBe(true);
-    expect(findGLBreadcrumb().props()).toMatchObject({
-      items: [
-        {
-          path: '/',
-          text: '',
-          to: '/-/tree',
-        },
-      ],
-    });
-  });
-
-  it('renders the correct breadcrumbs for an instance with relative URL', () => {
-    factory({
-      projectRootPath: 'repo/test-project/path',
-    });
-
     expect(findGLBreadcrumb().exists()).toBe(true);
     expect(findGLBreadcrumb().props()).toMatchObject({
       items: [

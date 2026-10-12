@@ -28,6 +28,7 @@ function getErrorMessage(res) {
 }
 
 async function transformMediaMarkdown(md, file) {
+  if (!md.startsWith('!')) return md;
   const dimensions = await getLimitedMediaDimensions(file);
   if (!dimensions) return md;
   // eslint-disable-next-line @gitlab/require-i18n-strings

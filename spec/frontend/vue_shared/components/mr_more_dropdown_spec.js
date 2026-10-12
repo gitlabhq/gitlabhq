@@ -1,8 +1,10 @@
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { setCookie } from '~/lib/utils/common_utils';
 import MRMoreActionsDropdown from '~/vue_shared/components/mr_more_dropdown.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -21,6 +23,7 @@ describe('MR More actions sidebar', () => {
   const findReportAbuseOption = () => wrapper.find('[data-testid="report-abuse-option"]');
   const findLockMergeRequestOption = () => wrapper.find('[data-testid="lock-merge-request"]');
   const findAiOverviewToggle = () => wrapper.findByTestId('toggle-ai-overview');
+  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
 
   const createComponent = ({
     isCurrentUser = true,
@@ -127,6 +130,15 @@ describe('MR More actions sidebar', () => {
       createComponent({ isCurrentUser: false });
 
       expect(findReportAbuseOption().exists()).toBe(true);
+    });
+
+    it('reports from the current page URL rather than the server-rendered url prop', async () => {
+      createComponent({ isCurrentUser: false });
+
+      wrapper.findComponentByTestId('report-abuse-option').vm.$emit('action');
+      await nextTick();
+
+      expect(findAbuseCategorySelector().props('reportedFromUrl')).toBe(window.location.href);
     });
   });
 

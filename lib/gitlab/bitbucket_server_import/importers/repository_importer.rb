@@ -14,7 +14,9 @@ module Gitlab
           log_info(import_stage: 'import_repository', message: 'starting import')
 
           if project.empty_repo?
-            project.repository.import_repository(project.unsafe_import_url)
+            resolved_address = get_resolved_address(project.unsafe_import_url)
+
+            project.repository.import_repository(project.unsafe_import_url, resolved_address: resolved_address)
 
             validate_repository_size!
 
@@ -43,6 +45,33 @@ module Gitlab
 
         def update_clone_time
           project.touch(:last_repository_updated_at)
+        end
+
+        def get_resolved_address(url)
+          validated_url, resolved_host = Gitlab::HTTP_V2::UrlBlocker.validate!(
+            url,
+            schemes: Project::VALID_IMPORT_PROTOCOLS,
+            ports: Project::VALID_IMPORT_PORTS,
+            allow_localhost: allow_local_requests?,
+            allow_local_network: allow_local_requests?,
+            dns_rebind_protection: dns_rebind_protection?,
+            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+          )
+
+          return '' if resolved_host.blank? || !validated_url.scheme.in?(%w[http https])
+
+          validated_url.hostname.to_s
+        end
+
+        def allow_local_requests?
+          Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+        end
+
+        def dns_rebind_protection?
+          return false if Gitlab.http_proxy_env?
+
+          Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
         end
 
         def validate_repository_size!

@@ -71,8 +71,9 @@ const DATA = {
 describe('SingleDimensionBarChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(SingleDimensionBarChart, {
+      provide,
       propsData: {
         data: DATA,
         dimension: DIMENSION,
@@ -539,6 +540,20 @@ describe('SingleDimensionBarChart', () => {
       });
 
       expect(w.text()).toContain('ruby (Language)');
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().attributes('accessible-title')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().attributes('accessible-title')).toBe('');
     });
   });
 });

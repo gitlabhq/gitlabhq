@@ -376,6 +376,46 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         }
       end
     end
+
+    context 'when a granular token scoped only to the user boundary targets a group namespace' do
+      let_it_be(:group) { create(:group) }
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_github_import).first.name])
+      end
+
+      before_all do
+        group.add_maintainer(user)
+      end
+
+      it 'denies the cross-boundary import' do
+        post api('/import/github', personal_access_token: user_boundary_pat), params: {
+          target_namespace: group.full_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_granular_scope')
+      end
+    end
+
+    context 'when a granular token targets a non-existent namespace path' do
+      let(:user_boundary_pat) do
+        create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user),
+          permissions: [::Authz::PermissionGroups::Assignable.for_permission(:create_github_import).first.name])
+      end
+
+      it 'returns not found instead of falling back to the user boundary' do
+        post api('/import/github', personal_access_token: user_boundary_pat), params: {
+          target_namespace: 'this-namespace-does-not-exist',
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe "POST /import/github/cancel" do

@@ -22,8 +22,9 @@ const DATA = {
 describe('TwoDimensionsBarChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsBarChart, {
+      provide,
       propsData: {
         data: DATA,
         primaryDimension: PRIMARY_DIM,
@@ -264,6 +265,20 @@ describe('TwoDimensionsBarChart', () => {
       });
 
       expect(w.text()).toContain('u0 (User by Language)');
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().attributes('accessible-title')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().attributes('accessible-title')).toBe('');
     });
   });
 });

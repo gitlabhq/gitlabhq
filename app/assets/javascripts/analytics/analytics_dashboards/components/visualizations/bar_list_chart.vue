@@ -99,6 +99,14 @@ export default {
   },
   props: {
     /**
+     * A name for the chart that screen readers announce.
+     */
+    accessibleTitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    /**
      * Rows to render, in display order:
      * `[{ name: String, value: Number, share: Number, label?: String, trend?: { text: String, variant: String } }]`
      * `share` is a percentage of the whole and sets the bar length. `label` stands in for the
@@ -407,6 +415,7 @@ export default {
     >
       <gl-chart
         :options="fullOptions"
+        :accessible-title="accessibleTitle"
         height="auto"
         responsive
         class="gl-grow gl-overflow-hidden"

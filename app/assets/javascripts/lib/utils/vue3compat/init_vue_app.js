@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { logDevNotice } from '../../logger';
 import { createMountWrapper, replaceWithMountWrapperContents } from './mount_wrapper';
 import { toHandlerKey } from './to_handler_key';
+import { assertPluginsInstalled, shouldAssertPluginsInstalled } from './plugin_install_state';
 
 const resolveElement = (el) => (el instanceof Element ? el : document.querySelector(el));
 
@@ -255,6 +256,11 @@ export function initVueApp({
   }
 
   plugins.forEach((plugin) => (Array.isArray(plugin) ? app.use(...plugin) : app.use(plugin)));
+
+  if (shouldAssertPluginsInstalled()) {
+    // eslint-disable-next-line no-underscore-dangle
+    assertPluginsInstalled({ store, router, apolloProvider }, () => app._context.mixins, name);
+  }
 
   const wrapperEl = createMountWrapper(targetEl);
   const vm = app.mount(wrapperEl);

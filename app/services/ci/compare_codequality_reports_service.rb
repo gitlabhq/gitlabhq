@@ -11,7 +11,7 @@ module Ci
     end
 
     def get_report(pipeline)
-      pipeline&.codequality_reports
+      pipeline&.accessible_codequality_reports(current_user)
     end
   end
 end

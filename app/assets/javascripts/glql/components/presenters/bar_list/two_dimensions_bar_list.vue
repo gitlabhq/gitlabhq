@@ -13,6 +13,9 @@ export default {
     BarListChart,
     GlButton,
   },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: true,
@@ -50,6 +53,9 @@ export default {
     };
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     stacked() {
       return buildStackedByDimension({
         nodes: this.data.nodes,
@@ -117,7 +123,7 @@ export default {
 </script>
 <template>
   <div>
-    <bar-list-chart :data="rows" />
+    <bar-list-chart :data="rows" :accessible-title="visualizationTitle" />
     <gl-button
       v-if="canExpand"
       category="tertiary"

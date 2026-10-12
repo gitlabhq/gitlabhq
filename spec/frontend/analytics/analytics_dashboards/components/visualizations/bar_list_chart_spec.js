@@ -649,4 +649,18 @@ describe('BarListChart', () => {
       });
     });
   });
+
+  describe('accessible title', () => {
+    it('passes it to the chart, which names itself for screen readers', () => {
+      createWrapper({ accessibleTitle: 'Panel title' });
+
+      expect(findChart().props('accessibleTitle')).toBe('Panel title');
+    });
+
+    it('passes no title by default', () => {
+      createWrapper();
+
+      expect(findChart().props('accessibleTitle')).toBe('');
+    });
+  });
 });

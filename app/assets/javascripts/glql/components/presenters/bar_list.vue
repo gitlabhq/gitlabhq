@@ -58,6 +58,9 @@ export default {
     GlKeysetPagination,
     GlSkeletonLoader,
   },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: false,
@@ -102,6 +105,9 @@ export default {
     };
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     queryMetrics() {
       return metricsOf(this.fields);
     },
@@ -311,6 +317,7 @@ export default {
         :value-labels="valueLabels"
         :color="color"
         :scale="scale"
+        :accessible-title="visualizationTitle"
       />
     </div>
     <dimension-routed-chart
@@ -328,6 +335,7 @@ export default {
           :value-labels="valueLabels"
           :color="color"
           :scale="scale"
+          :accessible-title="visualizationTitle"
         />
       </template>
       <template #two-dimensions="{ dimensions, metric }">

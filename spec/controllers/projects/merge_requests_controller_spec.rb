@@ -1163,7 +1163,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: [] } }
       let(:job_options) { {} }
 
@@ -1299,7 +1299,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: [] } }
 
       context 'while signed out' do
@@ -1420,7 +1420,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     context 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: { 'files' => {} } } }
 
       context 'while signed out' do
@@ -1524,7 +1524,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:report) { { status: :parsed, data: [] } }
 
       context 'while signed out' do
@@ -1655,7 +1655,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     describe 'permissions on a public project with private CI/CD' do
-      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:project) { project_public_with_private_builds }
       let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
 
       context 'while signed out' do
@@ -1826,6 +1826,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq({ 'summary' => 1 })
         end
+
+        # Regression for gitlab-org/gitlab#597328: the comparison must receive the
+        # current user so base and head report artifacts are authorized per viewer.
+        it 'passes the current user to the report comparison' do
+          expect_next_found_instance_of(MergeRequest) do |found_mr|
+            expect(found_mr).to receive(:compare_accessibility_reports)
+              .with(user)
+              .and_return(accessibility_comparison)
+          end
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
 
       context 'when user created corrupted accessibility reports' do
@@ -1936,6 +1950,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq({ 'summary' => 1 })
+        end
+
+        # Regression for gitlab-org/gitlab#597328: the comparison must receive the
+        # current user so base and head report artifacts are authorized per viewer.
+        it 'passes the current user to the report comparison' do
+          expect_next_found_instance_of(MergeRequest) do |found_mr|
+            expect(found_mr).to receive(:compare_codequality_reports)
+              .with(user)
+              .and_return(codequality_comparison)
+          end
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

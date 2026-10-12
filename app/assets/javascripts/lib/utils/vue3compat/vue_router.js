@@ -7,6 +7,7 @@ import {
   START_LOCATION,
 } from '@gitlab/vue-router-vue3';
 import { transformRoutes, normalizeLocation, EMPTY_ROUTE_COMPONENT } from './vue_router_helper';
+import { PLUGIN_MIXIN, VUE_ROUTER } from './plugin_install_state';
 
 const mode = (value, options) => {
   if (!value) return null;
@@ -312,6 +313,7 @@ export default class VueRouterCompat {
 
   static install() {
     Vue.mixin({
+      [PLUGIN_MIXIN]: VUE_ROUTER,
       beforeCreate() {
         const { app } = this.$.appContext;
         const { router } = this.$options;

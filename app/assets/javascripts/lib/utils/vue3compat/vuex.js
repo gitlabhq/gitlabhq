@@ -7,6 +7,7 @@ import {
   mapMutations,
   createNamespacedHelpers,
 } from '@gitlab/vuex-vue3';
+import { PLUGIN_MIXIN, VUEX } from './plugin_install_state';
 
 export { mapState, mapGetters, mapActions, mapMutations, createNamespacedHelpers };
 
@@ -22,6 +23,7 @@ export default {
 
   install() {
     Vue.mixin({
+      [PLUGIN_MIXIN]: VUEX,
       beforeCreate() {
         const { app } = this.$.appContext;
         const { store } = this.$options;

@@ -18,8 +18,9 @@ const DATA = {
 describe('TwoDimensionsAreaChart', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsAreaChart, {
+      provide,
       propsData: {
         data: DATA,
         primaryDimension: PRIMARY_DIM,
@@ -198,6 +199,20 @@ describe('TwoDimensionsAreaChart', () => {
 
       expect(w.text()).toContain('1,234');
       expect(w.text()).toContain('567');
+    });
+  });
+
+  describe('accessible title', () => {
+    it('names the chart with the panel title inside a dashboard panel', () => {
+      createComponent({}, { getVisualizationTitle: () => 'Panel title' });
+
+      expect(findChart().attributes('accessible-title')).toBe('Panel title');
+    });
+
+    it('has no chart title outside a dashboard panel', () => {
+      createComponent();
+
+      expect(findChart().attributes('accessible-title')).toBe('');
     });
   });
 });

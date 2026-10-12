@@ -17,6 +17,9 @@ const EMPTY_VALUE = '-';
 export default {
   name: 'TwoDimensionsColumnChart',
   components: { GlStackedColumnChart, FormattedTooltipContent },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: true,
@@ -41,6 +44,9 @@ export default {
     },
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     chart() {
       return buildStackedByDimension({
         nodes: this.data.nodes,
@@ -113,6 +119,7 @@ export default {
     :group-by="chart.groups"
     :bars="bars"
     :option="chartOptions"
+    :accessible-title="visualizationTitle"
     presentation="stacked"
     :include-legend-avg-max="false"
   >

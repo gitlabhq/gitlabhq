@@ -42,6 +42,11 @@ export default {
     // dashboard page that provides this.
     isProject: { default: false },
   },
+  // GLQL presenters name their chart or table with this for assistive technology.
+  // A getter keeps it current when the title changes; Vue 2 does not unwrap an injected ref.
+  provide() {
+    return { getVisualizationTitle: () => this.panelTitle };
+  },
   props: {
     visualization: {
       type: Object,

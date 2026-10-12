@@ -1,4 +1,5 @@
 <script>
+import { maxBy } from 'lodash-es';
 import { __, sprintf } from '~/locale';
 import HeatMapChart from '~/analytics/analytics_dashboards/components/visualizations/heat_map_chart.vue';
 import {
@@ -22,6 +23,9 @@ const largestFirst = (entries, max) =>
 export default {
   name: 'HeatMapPresenter',
   components: { DimensionRoutedChart, FormattedTooltipContent, HeatMapChart },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: false,
@@ -46,6 +50,9 @@ export default {
   },
   emits: { error: null },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     description() {
       return this.displayConfig?.description;
     },
@@ -105,11 +112,16 @@ export default {
     },
     // Compact in the cell so a value fits a narrow column, full digits in the
     // tooltip where there is room. The chart cannot name its own axes, so the
-    // description for assistive technology is supplied here too.
-    optionsFor(dimensions, metric) {
+    // description for assistive technology is supplied here too, from the same cells.
+    chartPropsFor(dimensions, metric) {
+      const cells = this.cellsFor(dimensions, metric);
+
       return {
-        formatValue: axisFormatterFor(baseFieldKeyOf(metric)),
-        aria: { label: { description: this.ariaDescription(dimensions, metric) } },
+        data: cells,
+        options: {
+          formatValue: axisFormatterFor(baseFieldKeyOf(metric)),
+          aria: { label: { description: this.ariaDescription(dimensions, metric, cells) } },
+        },
       };
     },
     // Labelled from the metric, so a query alias renames it.
@@ -121,12 +133,30 @@ export default {
 
       return (_label, value) => format(value);
     },
-    ariaDescription(dimensions, metric) {
-      return sprintf(__('Heat map of %{metric} by %{columns} and %{rows}.'), {
+    ariaDescription(dimensions, metric, cells) {
+      const title = this.visualizationTitle;
+      const axes = {
         metric: labelWithParameter(metric),
         columns: labelWithParameter(dimensions[0]),
         rows: labelWithParameter(dimensions[1]),
-      });
+      };
+      // Separate strings rather than prepending the title, so translators see its punctuation.
+      const shape = title
+        ? sprintf(__('%{title}. Heat map of %{metric} by %{columns} and %{rows}.'), {
+            ...axes,
+            title,
+          })
+        : sprintf(__('Heat map of %{metric} by %{columns} and %{rows}.'), axes);
+      const highest = maxBy(cells, 'value');
+      const peak = highest
+        ? sprintf(__('Highest is %{value} for %{column} and %{row}.'), {
+            value: formatterFor(baseFieldKeyOf(metric))(highest.value),
+            row: highest.row,
+            column: highest.column,
+          })
+        : '';
+
+      return [shape, peak].filter(Boolean).join(' ');
     },
   },
   DISPLAY_TYPES,
@@ -145,10 +175,7 @@ export default {
       @error="$emit('error', $event)"
     >
       <template #two-dimensions="{ dimensions, metric }">
-        <heat-map-chart
-          :data="cellsFor(dimensions, metric)"
-          :options="optionsFor(dimensions, metric)"
-        >
+        <heat-map-chart v-bind="chartPropsFor(dimensions, metric)">
           <template #tooltip-content="{ value }">
             <formatted-tooltip-content
               :content="tooltipContent(metric, value)"

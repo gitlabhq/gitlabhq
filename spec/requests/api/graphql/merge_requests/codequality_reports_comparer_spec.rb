@@ -104,7 +104,9 @@ RSpec.describe 'Query.project.mergeRequest.codequalityReportsComparer', feature_
 
   before do
     allow_next_found_instance_of(MergeRequest) do |merge_request|
-      allow(merge_request).to receive(:compare_codequality_reports).and_return(mock_report)
+      # .with(user) guards gitlab-org/gitlab#597328: the resolver must thread the
+      # current user so base/head report artifacts are authorized per viewer.
+      allow(merge_request).to receive(:compare_codequality_reports).with(user).and_return(mock_report)
     end
   end
 

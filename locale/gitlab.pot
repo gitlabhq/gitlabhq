@@ -1660,6 +1660,9 @@ msgstr ""
 msgid "%{title} webhook (for example, `%{example}`)."
 msgstr ""
 
+msgid "%{title}. Heat map of %{metric} by %{columns} and %{rows}."
+msgstr ""
+
 msgid "%{title}: %{exceptions}"
 msgstr ""
 
@@ -44162,6 +44165,9 @@ msgid "High or unknown vulnerabilities present"
 msgstr ""
 
 msgid "High risk."
+msgstr ""
+
+msgid "Highest is %{value} for %{column} and %{row}."
 msgstr ""
 
 msgid "Highest role:"

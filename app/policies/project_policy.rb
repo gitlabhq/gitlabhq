@@ -256,7 +256,12 @@ class ProjectPolicy < BasePolicy
       cross_project_push_allowed_for_job_token?
   end
 
-  condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
+  # The package registry setting is stored twice: on project_features as
+  # package_registry_access_level, and on the legacy projects.packages_enabled column. Treat the
+  # registry as disabled when either says so, so that a stale value cannot grant access.
+  condition(:packages_disabled, scope: :subject) do
+    !@subject.packages_enabled || !@subject.project_feature&.package_registry_enabled?
+  end
 
   condition(:runner_registration_token_enabled, scope: :subject) { @subject.namespace.allow_runner_registration_token? }
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:overrides) do
     %i[
       create_build_service_proxy
@@ -33,7 +33,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
   end
 
   shared_context 'pipeline and build for project' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
   end
 
@@ -640,7 +640,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     let_it_be(:guest) { create(:user) }
     let_it_be_with_reload(:project) { create(:project, :public, namespace: owner.namespace, maintainers: maintainer, developers: developer, reporters: reporter, guests: guest) }
 
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, source: :webide) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, source: :webide) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
 
     before do
@@ -662,7 +662,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         end
 
         context 'when build is not from a webide pipeline' do
-          let(:pipeline) { create(:ci_empty_pipeline, project: project, source: :chat) }
+          let(:pipeline) { create(:ci_pipeline, project: project, source: :chat) }
 
           it { expect_disallowed(:read_web_ide_terminal, :update_web_ide_terminal, :create_build_service_proxy) }
         end

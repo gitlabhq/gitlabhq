@@ -6,7 +6,7 @@
 - rapid_diffs_enabled = Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
 - ai_overview_available = ai_overview_available?
 - ai_overview_enabled = ai_overview_enabled?
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.9-panel_header_actions", true, hide_gutter_toggle, show_lock, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, ai_overview_available, ai_overview_enabled]
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.9-panel_header_actions", true, hide_gutter_toggle, show_lock, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, ai_overview_available, ai_overview_enabled, issuable_author_is_current_user(@merge_request), current_user&.require_ssh_key?]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
@@ -30,7 +30,7 @@
 
       - more_dropdown_json = nil
       - if current_user
-        - more_dropdown_data = { mr: { iid: @merge_request.iid, draft: @merge_request.draft, target_project_id: @merge_request.target_project_id }, url: merge_request_url(@merge_request), is_current_user: issuable_author_is_current_user(@merge_request), can_update_merge_request: can_update_merge_request, open: @merge_request.open?, is_merged: @merge_request.merged?, source_project_missing: @merge_request.source_project_missing?, clipboard_text: @merge_request.to_reference(full: true), reported_user_id: @merge_request.author.id, ai_overview_available: ai_overview_available, ai_overview_enabled: ai_overview_enabled, show_lock: show_lock }
+        - more_dropdown_data = { mr: { iid: @merge_request.iid, draft: @merge_request.draft, target_project_id: @merge_request.target_project_id }, url: merge_request_path(@merge_request), is_current_user: issuable_author_is_current_user(@merge_request), can_update_merge_request: can_update_merge_request, open: @merge_request.open?, is_merged: @merge_request.merged?, source_project_missing: @merge_request.source_project_missing?, clipboard_text: @merge_request.to_reference(full: true), reported_user_id: @merge_request.author.id, ai_overview_available: ai_overview_available, ai_overview_enabled: ai_overview_enabled, show_lock: show_lock }
         - more_dropdown_json = more_dropdown_data.to_json
       - code_dropdown_json = @merge_request.source_project ? code_dropdown_data(@merge_request).to_json : nil
       - title_actions_data = { project_path: @merge_request.project.full_path, iid: @merge_request.iid, id: @merge_request.id, can_update: can_update_merge_request.to_s, is_signed_in: current_user.present?.to_s, edit_path: edit_project_merge_request_path(@project, @merge_request), report_abuse_path: add_category_abuse_reports_path, code_dropdown: code_dropdown_json, more_dropdown: more_dropdown_json }

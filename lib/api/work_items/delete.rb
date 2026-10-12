@@ -51,6 +51,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :delete_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           delete ':work_item_iid' do
             resource_parent = resolve_namespace_resource_parent!(params[:id])

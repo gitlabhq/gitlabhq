@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import { createApolloProvider, ApolloProvider } from '@vue/apollo-option';
 import { ApolloMutation } from '@vue/apollo-components';
+import { PLUGIN_MIXIN, VUE_APOLLO } from './plugin_install_state';
 
 export { ApolloMutation };
 
@@ -85,6 +86,8 @@ function resolveApolloProvider(vm) {
 // mixin. Registered before any component is created and using only native
 // Vue 3 hook names — nothing relies on @vue/compat lifecycle aliasing.
 const apolloMixin = {
+  [PLUGIN_MIXIN]: VUE_APOLLO,
+
   beforeCreate() {
     const provider = resolveApolloProvider(this);
     // Cached on every instance (even null) so children resolve in O(1).

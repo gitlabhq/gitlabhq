@@ -91,6 +91,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           get ':work_item_iid/children' do
             parent_work_item = work_item_for_namespace!(params[:id], params[:work_item_iid])
@@ -111,6 +112,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           post ':work_item_iid/children/:child_id' do
             resource_parent = resolve_namespace_resource_parent!(params[:id])
@@ -132,6 +134,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           delete ':work_item_iid/children/:child_id' do
             resource_parent = resolve_namespace_resource_parent!(params[:id])
@@ -153,6 +156,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :update_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           put ':work_item_iid/children/:child_id' do
             resource_parent = resolve_namespace_resource_parent!(params[:id])

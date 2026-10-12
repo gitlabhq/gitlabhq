@@ -373,6 +373,24 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
       end
     end
 
+    context 'when a SHA is injected through a newline in the path param' do
+      let(:injected_sha) { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
+      let(:file_path) { 'master/CONTRIBUTING.md' }
+      let(:params) { { path: "\n#{injected_sha}/files/ruby/popen.rb" } }
+
+      it 'does not serve the blob from the injected SHA' do
+        allow(Gitlab::Workhorse).to receive(:send_git_blob).and_call_original
+
+        get_show
+
+        injected_blob = project.repository.blob_at(injected_sha, 'files/ruby/popen.rb')
+
+        expect(Gitlab::Workhorse).not_to have_received(:send_git_blob).with(
+          anything, have_attributes(id: injected_blob.id)
+        )
+      end
+    end
+
     context 'when gitaly is unavailable' do
       let(:file_path) { 'master/README.md' }
 

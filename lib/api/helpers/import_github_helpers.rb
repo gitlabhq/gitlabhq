@@ -18,6 +18,10 @@ module API
         :github
       end
 
+      def github_import_boundary
+        import_target_boundary(Namespace.find_by_full_path(params[:target_namespace]))
+      end
+
       def provider_unauthorized
         error!("Wrong credentials", 401)
       end

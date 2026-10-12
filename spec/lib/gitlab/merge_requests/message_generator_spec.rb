@@ -3,17 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_review_workflow do
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+
   let(:merge_commit_template) { nil }
   let(:squash_commit_template) { nil }
-  let(:project) do
-    create(
-      :project,
-      :public,
-      :repository,
-      merge_commit_template: merge_commit_template,
-      squash_commit_template: squash_commit_template
-    )
-  end
 
   let(:current_user) { create(:user, name: 'John Doe', email: 'john.doe@example.com') }
   let(:author) { current_user }
@@ -35,6 +28,10 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
   end
 
   subject { described_class.new(merge_request: merge_request, current_user: current_user) }
+
+  before do
+    project.update!(merge_commit_template: merge_commit_template, squash_commit_template: squash_commit_template)
+  end
 
   shared_examples_for 'commit message with template' do |message_template_name|
     it 'returns nil when template is not set in target project' do

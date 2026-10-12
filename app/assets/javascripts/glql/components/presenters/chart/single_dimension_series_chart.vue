@@ -31,6 +31,9 @@ export default {
     GlLineChart,
     FormattedTooltipContent,
   },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     variant: {
       required: true,
@@ -56,6 +59,9 @@ export default {
     },
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     chartComponent() {
       return CHART_BY_VARIANT[this.variant];
     },
@@ -116,6 +122,7 @@ export default {
     :is="chartComponent"
     :data="chartData"
     :option="chartOptions"
+    :accessible-title="visualizationTitle"
     :include-legend-avg-max="false"
   >
     <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>

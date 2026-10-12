@@ -27,6 +27,7 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
     allow(request).to receive(:format=)
     allow(request).to receive(:get?)
     allow(request).to receive(:head?)
+    allow(request).to receive(:query_parameters).and_return({})
   end
 
   describe '#assign_ref_vars' do
@@ -67,6 +68,31 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
         end
 
         it { is_expected.to be_nil }
+
+        context 'when ref_type is only in the request body' do
+          let(:params) { ActionController::Parameters.new(path: path, ref: ref, ref_type: 'heads') }
+
+          before do
+            allow(request).to receive(:query_parameters).and_return({})
+          end
+
+          it 'ignores the body-supplied ref_type' do
+            is_expected.to be_nil
+          end
+        end
+
+        context 'when ref_type is in the query string' do
+          let(:params) { ActionController::Parameters.new(path: path, ref: ref) }
+
+          before do
+            allow(request).to receive(:query_parameters)
+              .and_return(ActiveSupport::HashWithIndifferentAccess.new(ref_type: 'heads'))
+          end
+
+          it 'honors the query-string ref_type' do
+            is_expected.to eq 'heads'
+          end
+        end
       end
     end
 
@@ -80,8 +106,11 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
       end
     end
 
-    context 'when a ref_type parameter is provided' do
-      let(:params) { ActionController::Parameters.new(path: path, ref: ref, ref_type: 'tags') }
+    context 'when a ref_type query parameter is provided' do
+      before do
+        allow(request).to receive(:query_parameters)
+          .and_return(ActiveSupport::HashWithIndifferentAccess.new(ref_type: 'tags'))
+      end
 
       it 'sets a fully_qualified_ref variable' do
         fully_qualified_ref = "refs/tags/#{ref}"
@@ -331,7 +360,12 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
   describe '#ref_type' do
     subject { ref_type }
 
-    let(:params) { ActionController::Parameters.new(ref_type: ref_type_input) }
+    let(:params) { ActionController::Parameters.new }
+
+    before do
+      allow(request).to receive(:query_parameters)
+        .and_return(ActiveSupport::HashWithIndifferentAccess.new(ref_type: ref_type_input))
+    end
 
     where(:ref_type_input, :ref_type_output) do
       [

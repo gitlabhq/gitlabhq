@@ -53,6 +53,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
+            boundary: -> { namespace_path_boundary },
             boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
           get ':work_item_iid/award_emoji' do
             parent_work_item = work_item_for_namespace!(params[:id], params[:work_item_iid])

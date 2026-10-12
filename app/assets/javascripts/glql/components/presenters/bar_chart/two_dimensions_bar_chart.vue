@@ -16,6 +16,9 @@ import { barCategoryAxisOptions, barChartHeightFor } from './bar_chart_options';
 export default {
   name: 'TwoDimensionsBarChart',
   components: { GlBarChart, FormattedTooltipContent },
+  inject: {
+    getVisualizationTitle: { default: () => () => '' },
+  },
   props: {
     data: {
       required: true,
@@ -40,6 +43,9 @@ export default {
     },
   },
   computed: {
+    visualizationTitle() {
+      return this.getVisualizationTitle();
+    },
     chart() {
       return buildStackedByDimension({
         nodes: this.data.nodes,
@@ -121,6 +127,7 @@ export default {
   <gl-bar-chart
     :data="chartData"
     :option="chartOptions"
+    :accessible-title="visualizationTitle"
     presentation="stacked"
     :height="chartHeight"
     :x-axis-title="xAxisTitle"

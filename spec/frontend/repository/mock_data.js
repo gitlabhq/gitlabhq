@@ -241,7 +241,6 @@ export const headerAppInjected = {
   uploadPath: '/project/upload',
   newDirPath: '/project/new-directory',
   projectRootPath: '/project/root/path',
-  comparePath: undefined,
   isReadmeView: false,
   isFork: false,
   needsToFork: true,
