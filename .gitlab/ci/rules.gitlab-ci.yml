@@ -1231,6 +1231,12 @@
   - "doc/ci/jobs/fine_grained_permissions.md"
   - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
 
+.api-high-impact-entity-patterns: &api-high-impact-entity-patterns
+  - "{,ee/}lib/{,**/}api/{,**/}*.rb"
+  - "lib/gitlab/rest_api/entity_usage_radius_analyzer.rb"
+  - "lib/tasks/gitlab/api/entity_baseline_check.rake"
+  - "rubocop/cop/api/config/api_entity_exposure_baseline.yml"
+
 .skills-patterns: &skills-patterns
   - ".claude/skills/**/*"
 
@@ -4217,6 +4223,10 @@
 .rails:rules:api-high-impact-entity-baseline-check:
   rules:
     - <<: *if-default-branch-schedule-weekly
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: *api-high-impact-entity-patterns
 
 .rails:rules:api-high-impact-entity-baseline-check:notify:
   rules:

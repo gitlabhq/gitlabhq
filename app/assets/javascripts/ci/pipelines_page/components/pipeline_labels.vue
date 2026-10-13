@@ -33,7 +33,8 @@ export default {
       return this.pipeline.source === TRIGGER_ORIGIN;
     },
     isForked() {
-      return this.pipeline?.project?.forked;
+      // REST returns `forked`, GraphQL returns `isForked`.
+      return this.pipeline?.project?.forked || this.pipeline?.project?.isForked;
     },
     showMergedResultsBadge() {
       // A merge train pipeline is technically also a merged results pipeline,

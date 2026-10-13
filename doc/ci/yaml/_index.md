@@ -2582,7 +2582,7 @@ MR widget, pipeline job list, and analytics graphs.
 - An RE2 regular expression. Must start and end with `/`. Must match the coverage number.
   May match surrounding text as well, so you don't need to use a regular expression character group
   to capture the exact number.
-  Because it uses RE2 syntax, all groups must be non-capturing.
+  Use a capturing group to select the coverage percentage when the matched line contains other numbers.
 
 **Example of `coverage`**:
 
@@ -2603,6 +2603,7 @@ In this example:
 
 - If there is more than one matched line in the job output, the last line is used.
 - If there are multiple matches in a single line, the last match is used.
+- If the regular expression uses capturing groups, the last matched capture is used as the fragment.
 - If there are multiple coverage numbers in the matched fragment, the first number is used.
 - Leading zeros are removed.
 - Coverage output from [child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)

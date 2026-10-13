@@ -324,6 +324,8 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     where(:throttle_name, :setting_prefix, :method, :path, :headers) do
       'throttle_unauthenticated_git_http' | 'throttle_unauthenticated_git_http' | :get |
         '/gitlab-org/gitlab-test.git/info/refs?service=git-upload-pack' | {}
+      'throttle_unauthenticated_git_http' | 'throttle_unauthenticated_git_http' | :get |
+        '/gitlab-org/gitlab-test/info/refs?service=git-upload-pack' | {}
       'throttle_authenticated_git_http' | 'throttle_authenticated_git_http' | :get |
         lazy { "/#{project.full_path}.git/info/refs?service=git-upload-pack" } | ref(:git_auth_headers)
       'throttle_authenticated_git_lfs' | 'throttle_authenticated_git_lfs' | :get |

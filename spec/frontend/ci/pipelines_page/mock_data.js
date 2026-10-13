@@ -288,7 +288,12 @@ export const mockBranchPipeline = {
   },
   mergeRequest: null,
   mergeRequestEventType: null,
-  project: { __typename: 'Project', id: 'gid://gitlab/Project/19', fullPath: 'root/ci-project' },
+  project: {
+    __typename: 'Project',
+    id: 'gid://gitlab/Project/19',
+    fullPath: 'root/ci-project',
+    isForked: false,
+  },
   hasManualActions: true,
   hasScheduledActions: false,
   pipelineSchedule: null,

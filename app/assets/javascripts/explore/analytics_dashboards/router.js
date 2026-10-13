@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 
 export default (basePath, breadcrumbState) => {
   return new VueRouter({
-    routes: createRoutes(breadcrumbState),
+    routes: [...createRoutes(breadcrumbState), { path: '*', redirect: '/' }],
     mode: 'history',
     base: basePath,
   });

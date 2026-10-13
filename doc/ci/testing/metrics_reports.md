@@ -88,14 +88,14 @@ When working with metrics reports, you might encounter the following issues.
 
 You might see **Metrics report scanning detected no new changes** when viewing metrics reports in merge requests.
 
-This issue occurs when:
+This issue occurs when your GitLab subscription doesn't include metrics reports,
+which require the Premium or Ultimate tier. In that case, GitLab ignores the metrics,
+so the message displays even when the metrics changed.
 
-- The target branch doesn't have a baseline metrics report for comparison.
-- Your GitLab subscription doesn't include metrics reports (Premium or Ultimate required).
+This issue also occurs when GitLab can't read any metrics from your metrics file.
+For example, every line is a comment or has a metric name but no value.
 
 To resolve this issue:
 
 1. Verify your GitLab subscription tier includes metrics reports.
-1. Ensure the target branch has a pipeline with metrics reports configured.
-   To ensure one is available, run pipelines on the target branch that produce metrics report artifacts.
-1. Verify that your metrics file uses valid OpenMetrics format.
+1. Verify each metric in your metrics file has a name followed by a value.

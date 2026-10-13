@@ -523,6 +523,8 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     let(:web_path) { '/users/sign_in' }
     let(:api_path) { '/api/v4/projects' }
     let(:git_path) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
+    let(:git_path_without_suffix) { "/#{project.full_path}/info/refs" }
+    let(:file_path_with_git) { "/#{project.full_path}/-/raw/main/file.git/info/refs" }
     let(:health_check_path) { '/-/health' }
 
     subject { request.throttle_unauthenticated_web? }
@@ -541,6 +543,8 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       # Git paths are excluded from web throttle
       ref(:git_path) | true  | true  | false
       ref(:git_path) | true  | false | false
+      ref(:git_path_without_suffix) | true | true | false
+      ref(:file_path_with_git) | true | true | true
 
       # Health check paths are skipped
       ref(:health_check_path) | true  | true  | false
@@ -621,6 +625,7 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     let_it_be(:project) { create(:project) }
 
     let(:git_info_refs_path) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
+    let(:git_info_refs_without_suffix) { "/#{project.full_path}/info/refs" }
     let(:git_lfs_path) { "/#{project.full_path}.git/info/lfs/objects/batch" }
     let(:web_path) { '/users/sign_in' }
 
@@ -637,6 +642,7 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       ref(:git_info_refs_path) | false | false | false
       ref(:git_info_refs_path) | true  | true  | false
       ref(:git_info_refs_path) | false | true  | false
+      ref(:git_info_refs_without_suffix) | true | false | false
 
       # Git LFS paths are excluded when LFS throttle is enabled
       ref(:git_lfs_path) | true  | true  | false
@@ -661,6 +667,7 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     let_it_be(:project) { create(:project) }
 
     let(:git_clone_project_path_get_info_refs) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
+    let(:git_clone_get_info_refs_without_suffix) { "/#{project.full_path}/info/refs" }
     let(:git_clone_path_post_git_upload_pack) { "/#{project.full_path}.git/git-upload-pack" }
     let(:git_lfs_path) { "/#{project.full_path}.git/info/lfs/objects/batch" }
 
@@ -671,6 +678,9 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       ref(:git_clone_project_path_get_info_refs) | false | true  | false
       ref(:git_clone_project_path_get_info_refs) | true  | false | false
       ref(:git_clone_project_path_get_info_refs) | false | false | false
+
+      ref(:git_clone_get_info_refs_without_suffix) | true  | true  | true
+      ref(:git_clone_get_info_refs_without_suffix) | false | true  | false
 
       ref(:git_clone_path_post_git_upload_pack)  | true  | true  | true
       ref(:git_clone_path_post_git_upload_pack)  | false | false | false
@@ -830,6 +840,7 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     let_it_be(:project) { create(:project) }
 
     let(:git_info_refs_path) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
+    let(:git_info_refs_without_suffix) { "/#{project.full_path}/info/refs" }
     let(:git_receive_pack_path) { "/#{project.full_path}.git/git-receive-pack" }
     let(:git_upload_pack_path) { "/#{project.full_path}.git/git-upload-pack" }
     let(:git_lfs_path) { "/#{project.full_path}.git/info/lfs/objects/batch" }
@@ -841,6 +852,9 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       ref(:git_info_refs_path)     | false | true  | true
       ref(:git_info_refs_path)     | true  | false | false
       ref(:git_info_refs_path)     | false | false | false
+
+      ref(:git_info_refs_without_suffix) | true | true  | true
+      ref(:git_info_refs_without_suffix) | true | false | false
 
       ref(:git_receive_pack_path)  | true  | true  | true
       ref(:git_receive_pack_path)  | false | true  | true

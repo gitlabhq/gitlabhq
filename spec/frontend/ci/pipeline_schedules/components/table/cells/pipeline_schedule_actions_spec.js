@@ -1,7 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineScheduleActions from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_actions.vue';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   mockPipelineScheduleNodes,
   mockPipelineScheduleCurrentUser,
@@ -83,11 +82,6 @@ describe('Pipeline schedule actions', () => {
   it('edit button links to edit schedule path', () => {
     createComponent();
 
-    const { schedule } = defaultProps;
-    const id = getIdFromGraphQLId(schedule.id);
-
-    const expectedPath = `${schedule.editPath}?id=${id}`;
-
-    expect(findEditScheduleBtn().attributes('href')).toBe(expectedPath);
+    expect(findEditScheduleBtn().attributes('href')).toBe(defaultProps.schedule.editPath);
   });
 });

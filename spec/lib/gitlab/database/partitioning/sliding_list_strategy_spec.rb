@@ -202,6 +202,44 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
     end
   end
 
+  describe '#missing_partitions_for_replica' do
+    context 'when the active partition is empty' do
+      it 'is empty, because that partition is already the spare' do
+        expect(strategy.missing_partitions_for_replica).to be_empty
+      end
+    end
+
+    context 'when the active partition holds data' do
+      before do
+        connection.execute("INSERT INTO #{table_name} (partition, created_at) VALUES (2, now())")
+      end
+
+      it 'is the next partition in the series, without checking next_partition_if' do
+        missing = strategy.missing_partitions_for_replica
+
+        expect(missing.map(&:value)).to eq([3])
+      end
+    end
+
+    context 'when only an older partition holds data' do
+      before do
+        connection.execute("INSERT INTO #{table_name} (partition, created_at) VALUES (1, now())")
+      end
+
+      it 'is empty' do
+        expect(strategy.missing_partitions_for_replica).to be_empty
+      end
+    end
+
+    context 'when there are no partitions for the table' do
+      it 'returns a partition for value 1' do
+        connection.execute("drop table #{table_name}_1; drop table #{table_name}_2;")
+
+        expect(strategy.missing_partitions_for_replica.map(&:value)).to eq([1])
+      end
+    end
+  end
+
   describe '#extra_partitions' do
     before do
       (3..10).each do |i|

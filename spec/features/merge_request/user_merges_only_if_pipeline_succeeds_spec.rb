@@ -25,7 +25,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
     context 'when an active pipeline running' do
       let!(:pipeline) do
         create(
-          :ci_empty_pipeline,
+          :ci_pipeline,
           project: project,
           sha: merge_request.diff_head_sha,
           ref: merge_request.source_branch,
@@ -49,7 +49,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
   context 'when project has CI enabled' do
     let!(:pipeline) do
       create(
-        :ci_empty_pipeline,
+        :ci_pipeline,
         project: project,
         sha: merge_request.diff_head_sha,
         ref: merge_request.source_branch,

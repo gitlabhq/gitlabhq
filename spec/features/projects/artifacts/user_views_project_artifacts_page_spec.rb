@@ -6,7 +6,7 @@ RSpec.describe 'User views project artifacts page', :js, feature_category: :job_
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:job_with_artifacts) { create(:ci_build, :artifacts, name: 'test1', pipeline: pipeline) }
   let_it_be(:job_with_trace) { create(:ci_build, :trace_artifact, name: 'test3', pipeline: pipeline) }
   let_it_be(:job_without_artifacts) { create(:ci_build, name: 'test2', pipeline: pipeline) }

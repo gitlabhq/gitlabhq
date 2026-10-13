@@ -125,6 +125,7 @@ export const generateMockPipeline = ({
   project: {
     id: 'gid://gitlab/Project/1',
     fullPath: 'gitlab-org/gitlab',
+    isForked: false,
     __typename: 'Project',
   },
   downstream,
@@ -299,6 +300,7 @@ export const mockPipelineUpdateResponse = {
       project: {
         id: 'gid://gitlab/Project/19',
         fullPath: 'root/ci-project',
+        isForked: false,
         __typename: 'Project',
       },
       hasManualActions: false,

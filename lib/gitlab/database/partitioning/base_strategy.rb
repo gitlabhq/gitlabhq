@@ -23,6 +23,15 @@ module Gitlab
           nil
         end
 
+        def missing_partitions
+          raise NotImplementedError
+        end
+
+        # Partitions to create on a database that receives its rows through logical replication
+        def missing_partitions_for_replica
+          missing_partitions
+        end
+
         protected
 
         def ensure_connection_set

@@ -22,6 +22,7 @@ RSpec.describe Ci::PipelineSchedulesHelper, feature_category: :continuous_integr
         daily_limit: nil,
         project_id: project.id,
         project_path: project.full_path,
+        schedule_id: pipeline_schedule.id,
         schedules_path: pipeline_schedules_path(project),
         settings_link: project_settings_ci_cd_path(project),
         timezone_data: timezones.to_json,

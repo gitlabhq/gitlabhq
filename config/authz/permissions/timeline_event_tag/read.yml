@@ -1,0 +1,3 @@
+---
+name: read_timeline_event_tag
+description: Grants the ability to read tags for incident timeline events

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Artifact file', :js, feature_category: :job_artifacts do
   let(:project) { create(:project, :public) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
   def visit_file(path)

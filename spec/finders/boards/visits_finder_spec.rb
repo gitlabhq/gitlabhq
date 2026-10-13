@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Boards::VisitsFinder, feature_category: :planning_views do
   describe '#latest' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     context 'when a project board' do
-      let(:project)       { create(:project) }
-      let(:project_board) { create(:board, project: project) }
+      let_it_be(:project)       { create(:project) }
+      let_it_be(:project_board) { create(:board, project: project) }
 
       subject(:finder) { described_class.new(project_board.resource_parent, user) }
 
@@ -32,8 +32,8 @@ RSpec.describe Boards::VisitsFinder, feature_category: :planning_views do
     end
 
     context 'when a group board' do
-      let(:group)       { create(:group) }
-      let(:group_board) { create(:board, group: group) }
+      let_it_be(:group)       { create(:group) }
+      let_it_be(:group_board) { create(:board, group: group) }
 
       subject(:finder) { described_class.new(group_board.resource_parent, user) }
 

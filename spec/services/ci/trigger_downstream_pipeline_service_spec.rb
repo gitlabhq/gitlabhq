@@ -100,7 +100,9 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
 
       context 'when the limit is not exceeded' do
         it 'schedules the downstream pipeline worker' do
-          service.execute
+          # A different bridge, so the worker does not deduplicate the second job
+          other_bridge = create(:ci_bridge, status: :created, options: bridge_options, pipeline: pipeline, user: user)
+          described_class.new(other_bridge).execute
 
           expect { execute }.to change { ::Ci::CreateDownstreamPipelineWorker.jobs.size }.by(1)
           expect(bridge).not_to be_failed

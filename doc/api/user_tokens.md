@@ -19,10 +19,13 @@ Use this API to interact with personal access tokens and impersonation tokens. F
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
+- `granular_scopes` parameter and response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/630541) in GitLab 19.5.
 
 {{< /history >}}
 
-Creates a personal access token for a specified user.
+Creates a personal access token for a specified user. To create a
+[fine-grained personal access token](../auth/tokens/fine_grained_access_tokens.md),
+use `granular_scopes` instead of `scopes`.
 
 Token values are included with the response, but cannot be retrieved later.
 
@@ -42,7 +45,15 @@ Supported attributes:
 | `name`       | string  | yes      | Name of personal access token. |
 | `description`| string  | no       | Description of personal access token. Maximum: 255 characters. |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
-| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
+| `scopes`     | array   | Conditional | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). Required if `granular_scopes` is not provided. Cannot be used with `granular_scopes`. |
+| `granular_scopes` | array | Conditional | Fine-grained scopes of the token, one object for each scope. Required if `scopes` is not provided. Cannot be used with `scopes`. |
+| `granular_scopes[].access` | string | yes | Resources the scope grants access to. One of `personal_projects`, `all_memberships`, `selected_memberships`, `user`, or `instance`. |
+| `granular_scopes[].permissions` | array | yes | Permissions the scope grants. For more information, see [available fine-grained permissions](../auth/tokens/fine_grained_access_tokens.md#available-fine-grained-permissions). |
+| `granular_scopes[].group_ids` | integer array | no | IDs of the groups the scope applies to, when `access` is `selected_memberships`. |
+| `granular_scopes[].project_ids` | integer array | no | IDs of the projects the scope applies to, when `access` is `selected_memberships`. |
+
+The scopes in `granular_scopes` apply to the user the token is for. With `selected_memberships`,
+that user must have access to each group and project you list.
 
 Example request:
 
@@ -51,6 +62,16 @@ curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --data "name=mytoken" --data "expires_at=2017-04-04" \
   --data "scopes[]=api" \
+  --url "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
+```
+
+Example request for a fine-grained personal access token:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"name": "mytoken", "expires_at": "2017-04-04", "granular_scopes": [{"access": "selected_memberships", "permissions": ["read_job"], "project_ids": [6]}]}' \
   --url "https://gitlab.example.com/api/v4/users/42/personal_access_tokens"
 ```
 
@@ -74,16 +95,24 @@ Example response:
 }
 ```
 
+> [!note]
+> For tokens created with granular scopes, the response also includes a `granular_scopes`
+> attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
+
 ## Create a personal access token
 
 {{< history >}}
 
+- `granular_scopes` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243428) in GitLab 19.2.
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
 - `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632314) in GitLab 19.5.
 
 {{< /history >}}
 
-Creates a personal access token for your account. For security purposes, the token:
+Creates a personal access token for your account. To create a
+[fine-grained personal access token](../auth/tokens/fine_grained_access_tokens.md),
+use `granular_scopes` instead of `scopes`. For security purposes, a token created with `scopes`:
 
 - Is limited to the [`k8s_proxy` and `self_rotate` scope](../security/tokens/access_token_scopes.md).
 
@@ -103,8 +132,15 @@ Supported attributes:
 |:-------------|:-------|:---------|:------------|
 | `name`       | string | yes      | Name of personal access token. |
 | `description`| string | no       | Description of personal access token. Maximum: 255 characters. |
-| `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy` and `self_rotate`. |
+| `scopes`     | array  | Conditional | Array of approved scopes. Only accepts `k8s_proxy` and `self_rotate`. Required if `granular_scopes` is not provided. Cannot be used with `granular_scopes`. |
 | `expires_at` | date  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
+| `granular_scopes` | array | Conditional | Fine-grained scopes of the token, one object for each scope. Required if `scopes` is not provided. Cannot be used with `scopes`. |
+| `granular_scopes[].access` | string | yes | Resources the scope grants access to. One of `personal_projects`, `all_memberships`, `selected_memberships`, `user`, or `instance`. |
+| `granular_scopes[].permissions` | array | yes | Permissions the scope grants. For more information, see [available fine-grained permissions](../auth/tokens/fine_grained_access_tokens.md#available-fine-grained-permissions). |
+| `granular_scopes[].group_ids` | integer array | no | IDs of the groups the scope applies to, when `access` is `selected_memberships`. |
+| `granular_scopes[].project_ids` | integer array | no | IDs of the projects the scope applies to, when `access` is `selected_memberships`. |
+
+With `selected_memberships`, you must have access to each group and project you list.
 
 Example request:
 
@@ -295,6 +331,7 @@ Example response:
 
 {{< history >}}
 
+- `granular_scopes` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243990) in GitLab 19.2.
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242819) in GitLab 19.2 [with a feature flag](../administration/feature_flags/_index.md) named `expose_last_used_ips_for_access_tokens`. Disabled by default.
 - `last_used_ips` in the response [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603636) in GitLab 19.4. Feature flag `expose_last_used_ips_for_access_tokens` removed.
 - `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/632315) in GitLab 19.5.
@@ -302,6 +339,7 @@ Example response:
 {{< /history >}}
 
 Creates an impersonation token for a specified user. These tokens are used to act on behalf of a user and can perform API calls as well as Git read and write actions. These tokens are not visible to the associated user on their profile settings page.
+To create a fine-grained impersonation token, use `granular_scopes` instead of `scopes`.
 
 Token values are included with the response, but cannot be retrieved later.
 
@@ -321,7 +359,15 @@ Supported attributes:
 | `name`       | string  | yes      | Name of impersonation token |
 | `description`| string  | no       | Description of impersonation token |
 | `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
-| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md).  |
+| `scopes`     | array   | Conditional | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). Required if `granular_scopes` is not provided. Cannot be used with `granular_scopes`. |
+| `granular_scopes` | array | Conditional | Fine-grained scopes of the token, one object for each scope. Required if `scopes` is not provided. Cannot be used with `scopes`. |
+| `granular_scopes[].access` | string | yes | Resources the scope grants access to. One of `personal_projects`, `all_memberships`, `selected_memberships`, `user`, or `instance`. |
+| `granular_scopes[].permissions` | array | yes | Permissions the scope grants. For more information, see [available fine-grained permissions](../auth/tokens/fine_grained_access_tokens.md#available-fine-grained-permissions). |
+| `granular_scopes[].group_ids` | integer array | no | IDs of the groups the scope applies to, when `access` is `selected_memberships`. |
+| `granular_scopes[].project_ids` | integer array | no | IDs of the projects the scope applies to, when `access` is `selected_memberships`. |
+
+The scopes in `granular_scopes` apply to the user the token is for. With `selected_memberships`,
+that user must have access to each group and project you list.
 
 Example request:
 

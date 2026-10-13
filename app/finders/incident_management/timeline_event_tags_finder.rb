@@ -19,7 +19,7 @@ module IncidentManagement
     attr_reader :user, :timeline_event, :params
 
     def allowed?
-      Ability.allowed?(user, :read_incident_management_timeline_event_tag, timeline_event)
+      Ability.allowed?(user, :read_timeline_event_tag, timeline_event)
     end
   end
 end

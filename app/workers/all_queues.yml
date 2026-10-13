@@ -2730,7 +2730,7 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 3
-  :idempotent: false
+  :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_default
 - :name: pipeline_default:ci_drop_pipeline

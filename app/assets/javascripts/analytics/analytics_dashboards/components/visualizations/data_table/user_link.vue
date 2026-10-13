@@ -30,7 +30,7 @@ export default {
 };
 </script>
 <template>
-  <gl-avatar-link target="blank" :href="webUrl">
+  <gl-avatar-link target="_blank" :href="webUrl">
     <gl-avatar-labeled
       :label="name"
       :sub-label="`@${username}`"

@@ -18542,8 +18542,10 @@ paths:
     post:
       operationId: postApiV4UsersUserIdPersonalAccessTokens
       summary: Create a personal access token for a user
-      description: Creates a personal access token for a user. Token values are included
-        with the response, but cannot be retrieved later. Administrators only.
+      description: Creates a personal access token for a user. To create a fine-grained
+        personal access token, use `granular_scopes` instead of `scopes`. Token values
+        are included with the response, but cannot be retrieved later. Administrators
+        only.
       tags:
       - Access tokens
       responses:
@@ -109399,9 +109401,51 @@ components:
             - read_service_ping
           description: Array of approved scopes. For a list of possible values, see
             [access token scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/).
+            Exactly one of `scopes`, `granular_scopes` must be provided.
+          nullable: true
+        granular_scopes:
+          type: array
+          description: List of granular scopes to assign. Exactly one of `scopes`,
+            `granular_scopes` must be provided.
+          items:
+            type: object
+            properties:
+              access:
+                type: string
+                enum:
+                - personal_projects
+                - all_memberships
+                - selected_memberships
+                - user
+                - instance
+                description: Access to configure for the granular scope.
+                minLength: 1
+              permissions:
+                type: array
+                items:
+                  type: string
+                description: List of permissions for the granular scope.
+                nullable: true
+              project_ids:
+                type: array
+                items:
+                  type: integer
+                description: IDs of projects to associate with the granular scope,
+                  when access is `selected_memberships`.
+                nullable: true
+              group_ids:
+                type: array
+                items:
+                  type: integer
+                description: IDs of groups to associate with the granular scope, when
+                  access is `selected_memberships`.
+                nullable: true
+            required:
+            - access
+            - permissions
+          nullable: true
       required:
       - name
-      - scopes
     postApiV4UserKeysRequest:
       type: object
       properties:

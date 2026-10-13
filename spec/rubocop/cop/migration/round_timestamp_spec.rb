@@ -16,12 +16,12 @@ RSpec.describe RuboCop::Cop::Migration::RoundTimestamp, feature_category: :datab
     RUBY
   end
 
-  script_advice = 'Run `scripts/refresh-migrations-timestamps` to give new migrations a generated, unique version.'
+  script_advice = 'Run `scripts/refresh-migrations-timestamps` to generate a unique version.'
   manual_advice = 'Rename the file and its `schema_migrations` marker to the current UTC time ' \
     '(`date -u +%Y%m%d%H%M%S`) so the version is unique.'
 
   def message(version, advice)
-    "Migration version #{version} ends in 0000, which suggests it was written by hand. #{advice}"
+    "Migration version #{version} ends in 0000, which makes collisions likely. #{advice}"
   end
 
   shared_examples 'flags a hand-written version' do |path, advice|

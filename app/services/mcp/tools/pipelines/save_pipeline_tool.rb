@@ -28,7 +28,7 @@ module Mcp
 
         register_version VERSIONS[:v0_1_0], {}
 
-        # The pipeline mutations find the ID with GlobalID::Locator, which raises for a missing pipeline.
+        # The mutations' GlobalID::Locator lookup raises for a missing pipeline.
         def execute
           super
         rescue ActiveRecord::RecordNotFound
@@ -125,7 +125,6 @@ module Mcp
         end
 
         def process_result(result)
-          # The project (create) or the pipeline (retry, cancel) exists by now, so this is a denial.
           if resource_access_denied?(result)
             return ::Mcp::Tools::Base::Response.error(
               extract_error_messages(result['errors']).join(', '), reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED

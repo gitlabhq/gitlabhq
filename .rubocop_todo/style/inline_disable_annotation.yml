@@ -656,7 +656,6 @@ Style/InlineDisableAnnotation:
     - 'app/workers/ci/build_finished_worker.rb'
     - 'app/workers/ci/build_prepare_worker.rb'
     - 'app/workers/ci/build_schedule_worker.rb'
-    - 'app/workers/ci/create_downstream_pipeline_worker.rb'
     - 'app/workers/ci/delete_unit_tests_worker.rb'
     - 'app/workers/ci/external_pull_requests/create_pipeline_worker.rb'
     - 'app/workers/ci/pipeline_artifacts/expire_artifacts_worker.rb'

@@ -26,7 +26,7 @@ describe('UserLink', () => {
     it('renders the avatar link', () => {
       expect(findAvatarLink().attributes()).toEqual({
         href: 'https://gitlab.com/fakeuser',
-        target: 'blank',
+        target: '_blank',
       });
     });
 

@@ -97,7 +97,7 @@ export default {
         :data-name="user.name"
         :data-user-id="userId(user)"
         :data-username="user.username"
-        target="blank"
+        target="_blank"
         :href="user.webUrl"
         class="js-user-link"
         data-testid="assigned-user"

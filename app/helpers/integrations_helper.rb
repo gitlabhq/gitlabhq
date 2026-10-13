@@ -355,12 +355,18 @@ module IntegrationsHelper
 
   def integration_level(integration)
     if integration.instance_level?
-      'instance'
+      custom_organization_integration?(integration) ? 'organization' : 'instance'
     elsif integration.group_level?
       'group'
     else
       'project'
     end
+  end
+
+  # Organization defaults are stored as instance-level rows owned by a custom organization.
+  # `organization_level?` can't be used here because every instance-level row has an `organization_id`.
+  def custom_organization_integration?(integration)
+    !::Organizations::Organization.default?(integration.organization_id)
   end
 
   def serialize_integration(integration, group: nil, project: nil, organization: nil)

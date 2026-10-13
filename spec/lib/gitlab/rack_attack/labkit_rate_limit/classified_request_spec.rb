@@ -27,6 +27,12 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
 
         expect(facts_for('/gitlab/api/v4/projects')).to include(path: '/api/v4/projects')
       end
+
+      it 'classifies info/refs without .git as git under a relative URL root' do
+        allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab')
+
+        expect(facts_for('/gitlab/group/project/info/refs')).to include(git_http_non_lfs: true)
+      end
     end
 
     describe 'classification facts' do
@@ -46,14 +52,14 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
         expect(facts_for('/-/collector/i')).to include(web_or_frontend: false)
       end
 
-      # An LFS path matches the git regex too, since repository_git_lfs_route_regex
-      # nests inside it, so one fact excludes both from the unauthenticated rules.
-      it 'is git_http for a git path and for an LFS path, and not for anything else', :aggregate_failures do
-        expect(facts_for('/group/project.git/info/refs')).to include(git_http: true)
-        expect(facts_for('/group/project.git/info/lfs/objects/batch')).to include(git_http: true)
-        expect(facts_for('/group/project.git/gitlab-lfs/objects/abc')).to include(git_http: true)
-        expect(facts_for('/group/project')).to include(git_http: false)
-        expect(facts_for('/api/v4/projects')).to include(git_http: false)
+      it 'is git_http_non_lfs for a git path, with or without .git, and not for LFS or anything else',
+        :aggregate_failures do
+        expect(facts_for('/group/project.git/info/refs')).to include(git_http_non_lfs: true)
+        expect(facts_for('/group/project/info/refs')).to include(git_http_non_lfs: true)
+        expect(facts_for('/group/project.git/info/lfs/objects/batch')).to include(git_http_non_lfs: false)
+        expect(facts_for('/group/project.git/gitlab-lfs/objects/abc')).to include(git_http_non_lfs: false)
+        expect(facts_for('/group/project')).to include(git_http_non_lfs: false)
+        expect(facts_for('/api/v4/projects')).to include(git_http_non_lfs: false)
       end
 
       it 'reflects the bypass header only when set to 1', :aggregate_failures do

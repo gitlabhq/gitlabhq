@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class CreateDownstreamPipelineWorker # rubocop:disable Scalability/IdempotentWorker
+  class CreateDownstreamPipelineWorker
     include ::ApplicationWorker
     include ::PipelineQueue
 
@@ -10,6 +10,9 @@ module Ci
     data_consistency :sticky
     urgency :low
     deduplicate :until_executed, if_deduplicated: :reschedule_once, including_scheduled: true
+    # Not strictly idempotent (concurrent runs can create two downstream pipelines), but deduplication
+    # only applies to idempotent workers. See https://gitlab.com/gitlab-org/gitlab/-/work_items/632905
+    idempotent!
 
     def perform(bridge_id)
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464668')

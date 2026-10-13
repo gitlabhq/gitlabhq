@@ -362,8 +362,6 @@ module Gitlab
         end
 
         class VariablesValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
-
           def validate_each(record, attribute, value)
             if options[:array_values]
               validate_key_array_values(record, attribute, value)
@@ -382,6 +380,19 @@ module Gitlab
             unless validate_array_value_variables(value)
               record.errors.add(attribute, 'should be a hash of key value pairs, value can be an array')
             end
+          end
+
+          private
+
+          def validate_variables(variables)
+            variables.is_a?(Hash) && variables.flatten.all? { |value| AlphanumericValidator.validate(value) }
+          end
+
+          def validate_array_value_variables(variables)
+            variables.is_a?(Hash) &&
+              variables.keys.all? { |value| AlphanumericValidator.validate(value) } &&
+              variables.values.all? { |v| !v.nil? } &&
+              variables.values.flatten(1).all? { |value| AlphanumericValidator.validate(value) }
           end
         end
 

@@ -240,6 +240,36 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
   end
 
+  describe '#integration_level' do
+    subject(:level) { helper.send(:integration_level, integration) }
+
+    context 'with a project integration' do
+      let(:integration) { build_stubbed(:jira_integration, project: project) }
+
+      it { is_expected.to eq('project') }
+    end
+
+    context 'with a group integration' do
+      let(:integration) { build_stubbed(:jira_integration, :group, group: build_stubbed(:group)) }
+
+      it { is_expected.to eq('group') }
+    end
+
+    context 'with an instance integration in the default organization' do
+      let_it_be(:organization) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the helper branches on the default organization so we need to test this
+      let(:integration) { build_stubbed(:jira_integration, :instance, organization: organization) }
+
+      it { is_expected.to eq('instance') }
+    end
+
+    context 'with an instance integration in a custom organization' do
+      let_it_be(:organization) { create(:organization) }
+      let(:integration) { build_stubbed(:jira_integration, :instance, organization: organization) }
+
+      it { is_expected.to eq('organization') }
+    end
+  end
+
   describe 'organization-scoped paths' do
     let_it_be(:organization) { create(:organization) }
     let(:integration) { build_stubbed(:jira_integration, :instance, organization: organization) }
@@ -303,6 +333,11 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
           reset_path: reset_organization_admin_settings_integration_path(organization, integration),
           form_path: organization_admin_settings_integration_path(organization, integration)
         )
+      end
+
+      it 'reports the organization level' do
+        expect(helper.integration_form_data(integration, organization: organization))
+          .to include(integration_level: 'organization')
       end
     end
 

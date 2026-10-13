@@ -309,9 +309,20 @@ To resolve this issue, ensure all test names and classes are unique.
 
 You might not see the **Test summary** panel at all in merge requests.
 
-This issue can happen when the target branch has no test data for comparison.
+This issue occurs when the pipeline shown in the merge request has no JUnit report.
+For example:
 
-To resolve this issue, run a pipeline on your target branch to generate baseline test data.
+- No job in the pipeline defines [`artifacts:reports:junit`](../yaml/artifacts_reports.md#artifactsreportsjunit).
+- The `artifacts:reports:junit` path doesn't match any file that the job creates.
+  The job log shows a `no matching files` warning for that path.
+- A directive such as `[skip ci]` in the commit message or the merge request title [skips the pipeline](../pipelines/_index.md#skip-a-pipeline).
+
+To resolve this issue:
+
+1. Ensure a job defines `artifacts:reports:junit` with a path that matches the report file your tests create.
+1. Create a new commit without `[skip ci]` in the commit message.
+1. If the merge request title contains `[skip ci]`, remove it.
+1. Push the commit to run a new pipeline.
 
 ### JUnit XML parsing errors
 

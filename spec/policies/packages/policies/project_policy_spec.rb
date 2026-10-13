@@ -9,6 +9,12 @@ RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_reg
 
   subject(:policy) { described_class.new(current_user, project.packages_policy_subject) }
 
+  describe 'delegation' do
+    let(:current_user) { guest }
+
+    it { is_expected.to delegate_to(ProjectPolicy) }
+  end
+
   describe 'deploy token access' do
     let!(:project_deploy_token) do
       create(:project_deploy_token, project: project, deploy_token: deploy_token)
@@ -40,72 +46,48 @@ RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_reg
       ref(:private_project)  | ProjectFeature::DISABLED | ref(:anonymous)  | false
       ref(:private_project)  | ProjectFeature::DISABLED | ref(:non_member) | false
       ref(:private_project)  | ProjectFeature::DISABLED | ref(:guest)      | false
-      ref(:private_project)  | ProjectFeature::DISABLED | ref(:reporter)   | false
-      ref(:private_project)  | ProjectFeature::DISABLED | ref(:developer)  | false
-      ref(:private_project)  | ProjectFeature::DISABLED | ref(:maintainer) | false
       ref(:private_project)  | ProjectFeature::DISABLED | ref(:owner)      | false
       ref(:private_project)  | ProjectFeature::DISABLED | ref(:admin)      | false
 
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:anonymous)  | false
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:non_member) | false
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:guest)      | true
-      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:reporter)   | true
-      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:developer)  | true
-      ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:maintainer) | true
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:owner)      | true
       ref(:private_project)  | ProjectFeature::PRIVATE  | ref(:admin)      | true
 
       ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:anonymous)  | true
       ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:non_member) | true
       ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:guest)      | true
-      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:reporter)   | true
-      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:developer)  | true
-      ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:maintainer) | true
       ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:owner)      | true
       ref(:private_project)  | ProjectFeature::PUBLIC   | ref(:admin)      | true
 
       ref(:internal_project) | ProjectFeature::DISABLED | ref(:anonymous)  | false
       ref(:internal_project) | ProjectFeature::DISABLED | ref(:non_member) | false
       ref(:internal_project) | ProjectFeature::DISABLED | ref(:guest)      | false
-      ref(:internal_project) | ProjectFeature::DISABLED | ref(:reporter)   | false
-      ref(:internal_project) | ProjectFeature::DISABLED | ref(:developer)  | false
-      ref(:internal_project) | ProjectFeature::DISABLED | ref(:maintainer) | false
       ref(:internal_project) | ProjectFeature::DISABLED | ref(:owner)      | false
       ref(:internal_project) | ProjectFeature::DISABLED | ref(:admin)      | false
 
       ref(:internal_project) | ProjectFeature::ENABLED  | ref(:anonymous)  | false
       ref(:internal_project) | ProjectFeature::ENABLED  | ref(:non_member) | true
       ref(:internal_project) | ProjectFeature::ENABLED  | ref(:guest)      | true
-      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:reporter)   | true
-      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:developer)  | true
-      ref(:internal_project) | ProjectFeature::ENABLED  | ref(:maintainer) | true
       ref(:internal_project) | ProjectFeature::ENABLED  | ref(:owner)      | true
       ref(:internal_project) | ProjectFeature::ENABLED  | ref(:admin)      | true
 
       ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:anonymous)  | true
       ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:non_member) | true
       ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:guest)      | true
-      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:reporter)   | true
-      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:developer)  | true
-      ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:maintainer) | true
       ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:owner)      | true
       ref(:internal_project) | ProjectFeature::PUBLIC   | ref(:admin)      | true
 
       ref(:public_project)   | ProjectFeature::DISABLED | ref(:anonymous)  | false
       ref(:public_project)   | ProjectFeature::DISABLED | ref(:non_member) | false
       ref(:public_project)   | ProjectFeature::DISABLED | ref(:guest)      | false
-      ref(:public_project)   | ProjectFeature::DISABLED | ref(:reporter)   | false
-      ref(:public_project)   | ProjectFeature::DISABLED | ref(:developer)  | false
-      ref(:public_project)   | ProjectFeature::DISABLED | ref(:maintainer) | false
       ref(:public_project)   | ProjectFeature::DISABLED | ref(:owner)      | false
       ref(:public_project)   | ProjectFeature::DISABLED | ref(:admin)      | false
 
       ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:anonymous)  | true
       ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:non_member) | true
       ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:guest)      | true
-      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:reporter)   | true
-      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:developer)  | true
-      ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:maintainer) | true
       ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:owner)      | true
       ref(:public_project)   | ProjectFeature::PUBLIC   | ref(:admin)      | true
     end

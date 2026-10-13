@@ -956,7 +956,7 @@ class ProjectPolicy < BasePolicy
   rule { ~dependency_proxy_for_packages_available }.prevent :admin_dependency_proxy_packages_settings
 
   rule { can?(:read_project) }.policy do
-    enable :read_incident_management_timeline_event_tag
+    enable :read_timeline_event_tag
     enable :read_project_metadata
   end
 

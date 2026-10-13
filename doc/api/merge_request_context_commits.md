@@ -35,7 +35,8 @@ Parameters:
 Example request:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/15/merge_requests/12/context_commits"
 ```
 
@@ -103,8 +104,9 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-  --header 'Content-Type: application/json' \
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
   --data '{"commits": ["51856a574ac3302a95f82483d6c7396b1e0783cb"]}' \
   --url "https://gitlab.example.com/api/v4/projects/15/merge_requests/12/context_commits"
 ```

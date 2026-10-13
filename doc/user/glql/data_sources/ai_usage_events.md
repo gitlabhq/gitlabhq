@@ -184,7 +184,7 @@ information, see [analytics mode sorting](../_index.md#sorting).
   mode: analytics
   query: type = AiUsageEvent and group = "gitlab-org" and timestamp > -30d
   dimensions: timestamp(weekly) as "Week"
-  metrics: totalCount(event=["request_review_duo_code_review_on_mr_by_author", "request_review_duo_code_review_on_mr_by_non_author"]) as "Requested", totalCount(event="publish_duo_code_review_comments") as "With comments", totalCount(event="find_no_issues_duo_code_review_after_review") as "Without comments"
+  metrics: totalCount(event=["request_review_duo_code_review_on_mr_by_author", "request_review_duo_code_review_on_mr_by_non_author"]) as "Requested", totalCount(event="post_comment_duo_code_review_on_diff") as "With comments", totalCount(event="find_no_issues_duo_code_review_after_review") as "Without comments"
   sort: timestamp desc
   ```
   ````

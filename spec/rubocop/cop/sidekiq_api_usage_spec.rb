@@ -64,6 +64,30 @@ RSpec.describe RuboCop::Cop::SidekiqApiUsage, feature_category: :scalability do
     RUBY
   end
 
+  context 'when calling perform_bulk' do
+    let(:perform_bulk_msg) { described_class::PERFORM_BULK_MSG }
+
+    it 'registers offence for calling perform_bulk on a worker' do
+      expect_offense(<<~RUBY)
+        MyWorker.perform_bulk([[1], [2]])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{perform_bulk_msg}
+      RUBY
+    end
+
+    it 'registers offence for calling perform_bulk after set' do
+      expect_offense(<<~RUBY)
+        MyWorker.set(queue: 'default').perform_bulk([[1]])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{perform_bulk_msg}
+      RUBY
+    end
+
+    it 'registers no offences for calling bulk_perform_async' do
+      expect_no_offenses(<<~RUBY)
+        MyWorker.bulk_perform_async([[1], [2]])
+      RUBY
+    end
+  end
+
   it 'registers offence when assigning Sidekiq API classes' do
     expect_offense(<<~RUBY)
       retry_set = Sidekiq::RetrySet.new

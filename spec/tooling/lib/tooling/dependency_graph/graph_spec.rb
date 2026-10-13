@@ -51,6 +51,30 @@ RSpec.describe Tooling::DependencyGraph::Graph, feature_category: :tooling do
     end
   end
 
+  describe '#affected_by' do
+    it 'returns only the monolith when files outside of the gems change' do
+      expect(graph.affected_by(%w[app/models/user.rb gems/not-a-gem/file.rb gems/gem-a-other/file.rb]))
+        .to eq(%w[.])
+    end
+
+    it 'returns the changed gem and the monolith when a gem changes' do
+      expect(graph.affected_by(%w[gems/gem-a/lib/gem_a.rb])).to eq(%w[. gems/gem-a])
+    end
+
+    it 'returns the gems that depend on a changed gem directly or transitively' do
+      expect(graph.affected_by(%w[gems/gem-b/lib/gem_b.rb]))
+        .to eq(%w[. gems/gem-a gems/gem-b gems/gem-d vendor/gems/gem-c])
+    end
+
+    it 'returns a changed gem without a lockfile' do
+      expect(graph.affected_by(%w[gems/gem-without-lockfile/lib/file.rb])).to eq(%w[gems/gem-without-lockfile])
+    end
+
+    it 'returns nothing when nothing changes' do
+      expect(graph.affected_by([])).to eq([])
+    end
+  end
+
   describe '#to_mermaid' do
     it 'renders each bundle as a node and each dependency as an edge' do
       expect(graph.to_mermaid).to eq(<<~MERMAID.chomp)

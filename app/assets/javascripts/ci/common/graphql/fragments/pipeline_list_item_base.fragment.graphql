@@ -59,6 +59,7 @@ fragment PipelineListItemBase on Pipeline {
   project {
     id
     fullPath
+    isForked
   }
   hasManualActions
   hasScheduledActions

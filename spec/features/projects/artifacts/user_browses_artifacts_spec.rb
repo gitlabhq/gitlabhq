@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User browses artifacts", feature_category: :job_artifacts do
   let(:project) { create(:project, :public) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
   let(:browse_url) { browse_project_job_artifacts_path(project, job, "other_artifacts_0.1.2") }
 
@@ -98,7 +98,7 @@ RSpec.describe "User browses artifacts", feature_category: :job_artifacts do
 
     context "when the project is private" do
       let!(:private_project) { create(:project, :private) }
-      let(:pipeline) { create(:ci_empty_pipeline, project: private_project) }
+      let(:pipeline) { create(:ci_pipeline, project: private_project) }
       let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
       let(:user) { create(:user) }
 
@@ -115,7 +115,7 @@ RSpec.describe "User browses artifacts", feature_category: :job_artifacts do
 
     context "when the project is private and pages access control is enabled" do
       let!(:private_project) { create(:project, :private) }
-      let(:pipeline) { create(:ci_empty_pipeline, project: private_project) }
+      let(:pipeline) { create(:ci_pipeline, project: private_project) }
       let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
       let(:user) { create(:user) }
 

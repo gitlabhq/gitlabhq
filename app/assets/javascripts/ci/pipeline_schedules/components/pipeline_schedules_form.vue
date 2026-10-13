@@ -13,7 +13,7 @@ import {
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
-import { visitUrl, queryToObject } from '~/lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
 import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
@@ -23,8 +23,6 @@ import createPipelineScheduleMutation from '../graphql/mutations/create_pipeline
 import updatePipelineScheduleMutation from '../graphql/mutations/update_pipeline_schedule.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
 import VariablesForm from '../../common/variables_form.vue';
-
-const scheduleId = queryToObject(window.location.search).id;
 
 const trackingMixin = InternalEvents.mixin();
 const EVENT_NAME = 'modify_inputs_on_pipeline_schedule_page';
@@ -72,6 +70,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    scheduleId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   apollo: {
     schedule: {
@@ -79,7 +82,7 @@ export default {
       variables() {
         return {
           projectPath: this.projectPath,
-          ids: scheduleId,
+          ids: [this.scheduleId],
         };
       },
       update(data) {
@@ -87,13 +90,13 @@ export default {
       },
       result({ data }) {
         if (data) {
-          const {
-            project: {
-              pipelineSchedules: { nodes },
-            },
-          } = data;
+          const schedule = data.project?.pipelineSchedules?.nodes[0];
 
-          const schedule = nodes[0];
+          if (!schedule) {
+            createAlert({ message: this.$options.i18n.scheduleFetchError });
+            return;
+          }
+
           const variables = schedule.variables?.nodes || [];
 
           this.description = schedule.description;
@@ -114,7 +117,7 @@ export default {
         }
       },
       skip() {
-        return !this.editing;
+        return !this.editing || !this.scheduleId;
       },
       error() {
         createAlert({ message: this.$options.i18n.scheduleFetchError });

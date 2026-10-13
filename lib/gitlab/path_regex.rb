@@ -194,8 +194,15 @@ module Gitlab
       @repository_route_regex ||= /(#{full_namespace_route_regex}|#{personal_snippet_repository_path_regex})\.*/
     end
 
+    # Unanchored, so it matches .git anywhere in a path; routing anchors it, the auth finders do not.
     def repository_git_route_regex
       @repository_git_route_regex ||= /#{repository_route_regex}\.git/
+    end
+
+    # Git over HTTP for the rate limiters. Anchored like the router's constraint on the path, and also matches
+    # info/refs without .git, which the router redirects, so a clone can start there.
+    def repository_git_http_route_regex
+      @repository_git_http_route_regex ||= %r{\A/#{repository_route_regex}(?:\.git|/info/refs\z)}
     end
 
     def repository_git_lfs_route_regex

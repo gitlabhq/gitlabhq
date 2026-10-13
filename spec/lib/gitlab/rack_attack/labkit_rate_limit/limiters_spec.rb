@@ -285,6 +285,7 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       packages: '/api/v4/projects/1/packages/npm/foo',
       files: '/api/v4/projects/1/repository/files/app.rb',
       git: '/gitlab-org/gitlab.git/info/refs',
+      git_without_suffix: '/gitlab-org/gitlab/info/refs',
       git_lfs: '/gitlab-org/gitlab.git/info/lfs/objects/batch'
     }
 
@@ -353,16 +354,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_git_http' => {
-        path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+        path: paths[:git], web_or_frontend: true, git_http_non_lfs: true,
         setting_unauthenticated_git_http: true, setting_unauthenticated_web: true
       },
       'authenticated_git_http' => {
-        path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+        path: paths[:git], web_or_frontend: true, git_http_non_lfs: true,
         setting_authenticated_git_http: true, setting_authenticated_web: true,
         requester_type: 'user', requester_id: '1'
       },
       'authenticated_git_lfs' => {
-        path: paths[:git_lfs], web_or_frontend: true, git_http: true, git_http_non_lfs: false,
+        path: paths[:git_lfs], web_or_frontend: true, git_http_non_lfs: false,
         setting_authenticated_git_lfs: true, setting_authenticated_web: true,
         requester_type: 'user', requester_id: '1'
       }
@@ -381,12 +382,17 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
     # setting, so the fall-through it asserts is reachable.
     git_exclusion_cases = {
       'unauthenticated web excludes every git path' => [
-        { path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+        { path: paths[:git], web_or_frontend: true, git_http_non_lfs: true,
+          setting_unauthenticated_web: true },
+        :setting_unauthenticated_git_http, 'unauthenticated_git_http', nil
+      ],
+      'unauthenticated web excludes info/refs without .git' => [
+        { path: paths[:git_without_suffix], web_or_frontend: true, git_http_non_lfs: true,
           setting_unauthenticated_web: true },
         :setting_unauthenticated_git_http, 'unauthenticated_git_http', nil
       ],
       'authenticated web excludes non-LFS git' => [
-        { path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+        { path: paths[:git], web_or_frontend: true, git_http_non_lfs: true,
           setting_authenticated_web: true, requester_type: 'user', requester_id: '1' },
         :setting_authenticated_git_http, 'authenticated_git_http', nil
       ],
@@ -394,7 +400,7 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       # through rather than going uncounted. setting_authenticated_git_http stays on
       # to assert the git http rule still does not claim an LFS path.
       'authenticated git http excludes LFS' => [
-        { path: paths[:git_lfs], web_or_frontend: true, git_http: true, git_http_non_lfs: false,
+        { path: paths[:git_lfs], web_or_frontend: true, git_http_non_lfs: false,
           setting_authenticated_web: true, setting_authenticated_git_http: true,
           requester_type: 'user', requester_id: '1' },
         :setting_authenticated_git_lfs, 'authenticated_git_lfs', 'authenticated_web'

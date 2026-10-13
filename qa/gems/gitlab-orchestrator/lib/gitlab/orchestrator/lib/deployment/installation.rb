@@ -14,7 +14,6 @@ module Gitlab
         extend Helpers::Output
         extend Helpers::Shell
 
-        LICENSE_SECRET = "gitlab-license"
         TROUBLESHOOTING_LINK = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/gems/gitlab-orchestrator?ref_type=heads#troubleshooting"
 
         # Ignore metrics events when logging events on deploy failure,
@@ -38,9 +37,6 @@ module Gitlab
 
           Helpers::Spinner.spin("uninstalling helm release '#{name}'") do
             helm.uninstall(name, namespace: namespace, timeout: timeout)
-
-            log("Removing license secret", :info)
-            puts cleanup_configuration.kubeclient.delete_resource("secret", LICENSE_SECRET)
           end
 
           Helpers::Spinner.spin("removing configuration specific objects") do
@@ -115,29 +111,15 @@ module Gitlab
           @helm ||= Helm::Client.new
         end
 
-        # Gitlab license
-        #
-        # @return [String]
-        def license
-          @license ||= ENV["QA_EE_LICENSE"] || ENV["EE_LICENSE"]
-        end
-
-        # Helm values for license secret
+        # Helm values for test environment
         #
         # @return [Hash]
-        def license_values
-          return {} unless license
-
+        def test_environment_values
           {
             global: {
               extraEnv: {
                 GITLAB_LICENSE_MODE: "test",
                 CUSTOMER_PORTAL_URL: "https://customers.staging.gitlab.com"
-              }
-            },
-            gitlab: {
-              license: {
-                secret: LICENSE_SECRET
               }
             }
           }
@@ -161,7 +143,7 @@ module Gitlab
 
         # Execute pre-deployment setup which consists of:
         #   * chart setup
-        #   * namespace and license creation
+        #   * namespace creation
         #   * optional configuration specific pre-deploy setup
         #
         # @return [String] chart reference
@@ -169,7 +151,6 @@ module Gitlab
           Helpers::Spinner.spin("running pre-deployment setup") do
             chart_reference = helm.add_gitlab_helm_chart(chart_sha)
             create_namespace
-            create_license
 
             configuration.run_pre_deployment_setup
 
@@ -186,7 +167,7 @@ module Gitlab
           args.push(*component_version_values.flat_map { |v| ["--set", v] }) if ci
           args.push("--set", cli_values.join(",")) unless cli_values.empty?
           values = DefaultValues.common_values(gitlab_domain)
-            .deep_merge(license_values)
+            .deep_merge(test_environment_values)
             .deep_merge(env_values)
             .deep_merge(configuration.values)
             .deep_stringify_keys
@@ -229,17 +210,6 @@ module Gitlab
           return log("namespace already exists, skipping", :warn) if e.message.include?("already exists")
 
           raise(e)
-        end
-
-        # Create gitlab license
-        #
-        # @return [void]
-        def create_license
-          log("Creating gitlab license secret", :info)
-          return log("`QA_EE_LICENSE|EE_LICENSE` variable is not set, skipping", :warn) unless license
-
-          secret = Kubectl::Resources::Secret.new(LICENSE_SECRET, "license", license)
-          puts mask_secrets(kubeclient.create_resource(secret), [license, Base64.encode64(license)])
         end
 
         # Handle helm upgrade failure

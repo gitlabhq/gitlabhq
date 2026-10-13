@@ -44,6 +44,21 @@ module Gitlab
           end
         end
 
+        # The publisher points the column default at a new partition in the transaction that creates
+        # it, so its rows follow right away. DDL is not replicated, so a replica keeps one empty
+        # partition ahead instead of waiting for next_partition_if.
+        def missing_partitions_for_replica
+          ensure_connection_set
+
+          if no_partitions_exist?
+            [initial_partition]
+          elsif holds_data?(active_partition)
+            [next_partition]
+          else
+            []
+          end
+        end
+
         def initial_partition
           ensure_connection_set
 
@@ -180,6 +195,16 @@ module Gitlab
         def different_connection_names?
           model.connection_db_config.name !=
             Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection)
+        end
+
+        def holds_data?(partition)
+          conn = model.connection
+
+          conn.select_value(<<~SQL.squish).present?
+            SELECT 1 FROM #{conn.quote_table_name(table_name)}
+            WHERE #{conn.quote_column_name(partitioning_key)} = #{Integer(partition.value)}
+            LIMIT 1
+          SQL
         end
 
         def current_default_value

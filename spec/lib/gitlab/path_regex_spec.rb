@@ -547,6 +547,40 @@ RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.repository_git_http_route_regex' do
+      subject { described_class.repository_git_http_route_regex }
+
+      it { is_expected.to match('/group/project.git/info/refs') }
+      it { is_expected.to match('/group/project.git/git-upload-pack') }
+      it { is_expected.to match('/group/project.git/info/lfs/objects/batch') }
+      it { is_expected.to match('/group/project.git') }
+      it { is_expected.to match('/group/project.wiki.git/info/refs') }
+      it { is_expected.to match('/group/project/info/refs') }
+      it { is_expected.to match('/group/subgroup/project/info/refs') }
+      it { is_expected.to match('/group/project.wiki/info/refs') }
+      it { is_expected.to match('/group.wiki/info/refs') }
+      it { is_expected.to match('/snippets/1/info/refs') }
+      it { is_expected.to match('/group/project/snippets/1/info/refs') }
+
+      it { is_expected.not_to match('/group/project') }
+      it { is_expected.not_to match('/group/project/info/refs/extra') }
+      it { is_expected.not_to match('/group/project/info/refs/') }
+      it { is_expected.not_to match('/group/project/-/info/refs') }
+      it { is_expected.not_to match('/group/project/git-upload-pack') }
+      it { is_expected.not_to match('/group/project/info/lfs/objects/batch') }
+      it { is_expected.not_to match('/group/project/-/blob/main/info/refs') }
+      it { is_expected.not_to match('/group/project/blob/main/info/refs') }
+      it { is_expected.not_to match('/api/v4/projects/1/info/refs') }
+      it { is_expected.not_to match('/info/refs') }
+
+      context 'with .git inside a path the router does not send to Git' do
+        it { is_expected.not_to match('/group/project/-/raw/main/file.git/info/refs') }
+        it { is_expected.not_to match('/group/project/-/blob/main/file.git') }
+        it { is_expected.not_to match('/api/v4/projects/1/repository/branches/feature.git/info') }
+        it { is_expected.not_to match('/-/ide/project/group/project.git') }
+      end
+    end
+
     describe '.repository_wiki_git_route_regex' do
       subject { %r{\A#{described_class.repository_wiki_git_route_regex}\z} }
 

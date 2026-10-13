@@ -30,8 +30,8 @@ RSpec.describe Resolvers::BoardsResolver, feature_category: :planning_views do
     end
 
     describe 'multiple_issue_boards_available?' do
-      let!(:board2) { create(:board, name: 'Two', resource_parent: board_parent) }
-      let!(:board1) { create(:board, name: 'One', resource_parent: board_parent) }
+      let_it_be(:board2) { create(:board, name: 'Two', resource_parent: board_parent) }
+      let_it_be(:board1) { create(:board, name: 'One', resource_parent: board_parent) }
 
       it 'returns multiple boards' do
         allow(board_parent).to receive(:multiple_issue_boards_available?).and_return(true)
@@ -72,13 +72,13 @@ RSpec.describe Resolvers::BoardsResolver, feature_category: :planning_views do
     end
 
     context 'when project boards' do
-      let(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
+      let_it_be_with_reload(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
 
       it_behaves_like 'group and project boards resolver'
     end
 
     context 'when group boards' do
-      let(:board_parent) { create(:group) }
+      let_it_be_with_reload(:board_parent) { create(:group) }
 
       it_behaves_like 'group and project boards resolver'
     end

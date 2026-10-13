@@ -87,7 +87,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/features/merge_trains/user_adds_merge_request_to_merge_train_spec.rb'
     - 'ee/spec/features/merge_trains/user_adds_to_merge_train_when_checks_pass_spec.rb'
     - 'ee/spec/features/oncall_schedules/user_creates_schedule_spec.rb'
-    - 'ee/spec/features/profiles/usage_quotas/usage_quotas_spec.rb'
     - 'ee/spec/features/projects/analytics/cycle_analytics_spec.rb'
     - 'ee/spec/features/projects/analytics/dashboards_spec.rb'
     - 'ee/spec/features/projects/audit_events_spec.rb'

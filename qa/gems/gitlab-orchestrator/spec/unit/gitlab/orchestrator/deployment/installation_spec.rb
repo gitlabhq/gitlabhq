@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Installation, :aggregate_failur
     let(:retry_attempts) { 0 }
 
     let(:kubeclient) do
-      instance_double(Gitlab::Orchestrator::Kubectl::Client, create_namespace: "", create_resource: "", execute: "")
+      instance_double(Gitlab::Orchestrator::Kubectl::Client, create_namespace: "", execute: "")
     end
 
     let(:helmclient) do
@@ -51,9 +51,6 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Installation, :aggregate_failur
             RAILS_ENV_VAR: "val"
           }
         },
-        gitlab: {
-          license: { secret: "gitlab-license" }
-        },
         **config_values
       }.deep_stringify_keys.to_yaml
     end
@@ -68,10 +65,6 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Installation, :aggregate_failur
       })
 
       allow(installation).to receive(:execute_shell)
-    end
-
-    around do |example|
-      ClimateControl.modify({ "QA_EE_LICENSE" => "license" }) { example.run }
     end
 
     context "with deployment failure" do
@@ -158,9 +151,6 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Installation, :aggregate_failur
         )
 
         expect(kubeclient).to have_received(:create_namespace)
-        expect(kubeclient).to have_received(:create_resource).with(
-          Gitlab::Orchestrator::Kubectl::Resources::Secret.new("gitlab-license", "license", "license")
-        )
         expect(configuration).to have_received(:run_pre_deployment_setup)
         expect(configuration).to have_received(:run_post_deployment_setup)
       end
@@ -219,10 +209,9 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Installation, :aggregate_failur
 
       it "performs cleanup" do
         expect { installation.uninstall("gitlab", cleanup_configuration: cleanup_configuration, timeout: "10m") }.to(
-          output(match(/Performing full deployment cleanup/).and(match(/Removing license secret/))).to_stdout
+          output(match(/Performing full deployment cleanup/)).to_stdout
         )
         expect(helm).to have_received(:uninstall).with("gitlab", namespace: "gitlab", timeout: "10m")
-        expect(kubeclient).to have_received(:delete_resource).with("secret", "gitlab-license")
         expect(kubeclient).to have_received(:delete_resource).with("namespace", "gitlab")
         expect(cleanup_configuration).to have_received(:run)
       end

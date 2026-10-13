@@ -106,7 +106,7 @@ Use the alternative attributes instead.
 | `emails_disabled` | Use `emails_enabled` instead. |
 | `issues_enabled` | Use `issues_access_level` instead. |
 | `jobs_enabled` | Use `builds_access_level` instead. |
-| `merge_requests_enabled` | Use `merge_request_access_level` instead. |
+| `merge_requests_enabled` | Use `merge_requests_access_level` instead. |
 | `snippets_enabled` | Use `snippets_access_level` instead. |
 | `wiki_enabled` | Use `wiki_access_level` instead. |
 | `restrict_user_defined_variables` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510) in GitLab 17.7. Use `ci_pipeline_variables_minimum_override_role` instead. |
@@ -208,8 +208,7 @@ following response attributes:
 | `container_expiration_policy.enabled` | boolean | Whether the container expiration policy is enabled. |
 | `container_expiration_policy.keep_n` | integer | Number of container images to keep. |
 | `container_expiration_policy.older_than` | string | Remove container images older than this value. |
-| `container_expiration_policy.name_regex` | string | Deprecated. Use `name_regex_delete` instead. Regular expression to match container image names. |
-| `container_expiration_policy.name_regex_delete` | string | Regular expression to match container image names to delete. |
+| `container_expiration_policy.name_regex` | string | Regular expression to match container image names. |
 | `container_expiration_policy.name_regex_keep` | string | Regular expression to match container image names to keep. |
 | `container_expiration_policy.next_run_at` | datetime | Timestamp for the next scheduled policy run. |
 | `repository_object_format` | string | Object format used by the repository. Possible values: `sha1` or `sha256`. |
@@ -420,8 +419,7 @@ Example response:
     "enabled": false,
     "keep_n": null,
     "older_than": null,
-    "name_regex": null, // to be deprecated in GitLab 13.0 in favor of `name_regex_delete`
-    "name_regex_delete": null,
+    "name_regex": null,
     "name_regex_keep": null,
     "next_run_at": "2020-01-07T21:42:58.658Z"
   },
@@ -697,7 +695,7 @@ following response attributes:
 | `container_expiration_policy.enabled` | boolean | Whether the container expiration policy is enabled. |
 | `container_expiration_policy.keep_n` | integer | Number of container images to keep. |
 | `container_expiration_policy.older_than` | string | Remove container images older than this value. |
-| `container_expiration_policy.name_regex` | string | Deprecated. Use `name_regex_delete` instead. Regular expression to match container image names. |
+| `container_expiration_policy.name_regex` | string | Regular expression to match container image names. |
 | `container_expiration_policy.name_regex_keep` | string | Regular expression to match container image names to keep. |
 | `container_expiration_policy.next_run_at` | datetime | Timestamp for the next scheduled policy run. |
 | `repository_object_format` | string | Object format used by the repository (sha1 or sha256). |
@@ -1072,7 +1070,7 @@ following response attributes:
 | `container_expiration_policy.enabled` | boolean | Whether the container expiration policy is enabled. |
 | `container_expiration_policy.keep_n` | integer | Number of container images to keep. |
 | `container_expiration_policy.older_than` | string | Remove container images older than this value. |
-| `container_expiration_policy.name_regex` | string | Deprecated. Use `name_regex_delete` instead. Regular expression to match container image names. |
+| `container_expiration_policy.name_regex` | string | Regular expression to match container image names. |
 | `container_expiration_policy.name_regex_keep` | string | Regular expression to match container image names to keep. |
 | `container_expiration_policy.next_run_at` | datetime | Timestamp for the next scheduled policy run. |
 | `repository_object_format` | string | Object format used by the repository (sha1 or sha256). |
@@ -1545,7 +1543,7 @@ following response attributes:
 | `container_expiration_policy.enabled` | boolean | Whether the container expiration policy is enabled. |
 | `container_expiration_policy.keep_n` | integer | Number of container images to keep. |
 | `container_expiration_policy.older_than` | string | Remove container images older than this value. |
-| `container_expiration_policy.name_regex` | string | Deprecated. Use `name_regex_delete` instead. Regular expression to match container image names. |
+| `container_expiration_policy.name_regex` | string | Regular expression to match container image names. |
 | `container_expiration_policy.name_regex_keep` | string | Regular expression to match container image names to keep. |
 | `container_expiration_policy.next_run_at` | datetime | Timestamp for the next scheduled policy run. |
 | `repository_object_format` | string | Object format used by the repository (sha1 or sha256). |
@@ -2221,7 +2219,7 @@ Supported general project attributes:
 | `build_timeout`                                    | integer | No                             | The maximum amount of time, in seconds, that a job can run. |
 | `ci_config_path`                                   | string  | No                             | The path to CI configuration file. |
 | `cicd_catalog_enabled`                             | boolean | No                             | Set whether the project is published to the [CI/CD Catalog](../ci/components/_index.md#cicd-catalog). Requires the Owner role for the project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3. |
-| `container_expiration_policy_attributes`           | hash    | No                             | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). See the [container registry](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) documentation for more information on `cadence`, `keep_n`, and `older_than` values. |
+| `container_expiration_policy_attributes`           | hash    | No                             | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_keep` (string), `enabled` (boolean). For details about `cadence`, `keep_n`, and `older_than` values, see [use the cleanup policy API](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api). |
 | `container_registry_enabled`                       | boolean | No                             | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string  | No                             | The [default branch](../user/project/repository/branches/default.md) name. Accepts a branch name (for example, `main`) or a fully qualified reference (for example, `refs/heads/main`). If a fully qualified reference is provided, the API strips the `refs/heads/` prefix. Requires `initialize_with_readme` to be `true`. |
 | `description`                                      | string  | No                             | Short project description. |
@@ -2442,7 +2440,7 @@ Supported general project attributes:
 | `ci_pipeline_variables_minimum_override_role`      | string            | No       | You can specify which role can override variables. One of `owner`, `maintainer`, `developer`, or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. In GitLab 17.1 to 17.7, `restrict_user_defined_variables` must be enabled. |
 | `ci_push_repository_for_job_token_allowed`         | boolean           | No       | Enable or disable the ability to push to the project repository using job token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. |
 | `cicd_catalog_enabled`                             | boolean           | No       | Set whether the project is published to the [CI/CD Catalog](../ci/components/_index.md#cicd-catalog). Requires the Owner role for the project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3. |
-| `container_expiration_policy_attributes`           | hash              | No       | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
+| `container_expiration_policy_attributes`           | hash              | No       | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                       | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                      | string            | No       | Short project description. |

@@ -68,7 +68,8 @@ GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images"
 ```
 
@@ -114,8 +115,9 @@ PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --request PUT  --form 'url=http://example.com' \
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form 'url=http://example.com' \
   --form 'url_text=Example website' \
   --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
 ```

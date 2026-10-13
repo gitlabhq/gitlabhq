@@ -50,4 +50,12 @@ describe('analytics dashboards router', () => {
       expect(route.meta.getName()).toBe(breadcrumbState.name);
     });
   });
+
+  it('redirects unknown routes to the root list route', async () => {
+    await router.push('/3/unknown/path');
+
+    // Vue Router 4 exposes currentRoute as a ref
+    const currentRoute = router.currentRoute.value ?? router.currentRoute;
+    expect(currentRoute.name).toBe('root');
+  });
 });

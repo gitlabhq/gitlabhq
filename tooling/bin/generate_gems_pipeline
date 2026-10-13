@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require_relative '../lib/tooling/dependency_graph/generate_gems_pipeline'
+
+options = { parent_pipeline_id: ENV['CI_PIPELINE_ID'] }
+
+OptionParser.new do |opts|
+  opts.on("-c", "--changed-files-path PATH", String, "File with the changed files") do |value|
+    # All gems are tested when changed_files_path is not set
+    options[:changed_files_path] = value unless ENV['GLCI_GEMS_TEST_ALL'] == 'true'
+  end
+
+  opts.on("-o", "--output-path PATH", String, "Where to write the generated child pipeline") do |value|
+    options[:output_path] = value
+  end
+
+  opts.on("-h", "--help", "Print this help") do
+    puts opts
+    exit
+  end
+end.parse!
+
+Tooling::DependencyGraph::GenerateGemsPipeline.new(**options).generate!

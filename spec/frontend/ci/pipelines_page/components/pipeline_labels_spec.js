@@ -158,22 +158,23 @@ describe('Pipeline label component', () => {
   });
 
   describe('fork badge', () => {
-    describe('when project is not forked', () => {
-      it('does not render the badge', () => {
+    describe('when the project is not a fork', () => {
+      beforeEach(() => {
         createComponent();
+      });
 
+      it('does not render the badge', () => {
         expect(findForkTag().exists()).toBe(false);
       });
     });
 
-    describe('when project is forked', () => {
+    describe.each`
+      source       | project
+      ${'REST'}    | ${{ forked: true }}
+      ${'GraphQL'} | ${{ isForked: true }}
+    `('when the project is a fork in the $source response', ({ project }) => {
       beforeEach(() => {
-        const forkedPipeline = { ...defaultProps.pipeline };
-        forkedPipeline.project.forked = true;
-
-        createComponent({
-          ...forkedPipeline,
-        });
+        createComponent({ pipeline: { ...defaultProps.pipeline, project } });
       });
 
       it('renders the badge', () => {

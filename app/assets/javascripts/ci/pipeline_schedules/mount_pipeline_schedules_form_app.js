@@ -23,6 +23,7 @@ export default (selector, editing = false) => {
     defaultBranch,
     projectId,
     projectPath,
+    scheduleId,
     schedulesPath,
     settingsLink,
     canSetPipelineVariables,
@@ -48,6 +49,7 @@ export default (selector, editing = false) => {
       timezoneData: JSON.parse(timezoneData),
       editing,
       canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
+      scheduleId,
     },
   });
 };

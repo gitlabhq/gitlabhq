@@ -112465,7 +112465,7 @@
                 },
                 {
                   "name": "trackedRefIds",
-                  "description": "Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref IDs. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -112485,7 +112485,7 @@
                 },
                 {
                   "name": "trackedRefsScope",
-                  "description": "Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref scope. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "ENUM",
                     "name": "SecurityTrackedRefScope",
@@ -187101,7 +187101,7 @@
                 },
                 {
                   "name": "trackedRefIds",
-                  "description": "Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref IDs. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -187121,7 +187121,7 @@
                 },
                 {
                   "name": "trackedRefsScope",
-                  "description": "Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref scope. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "ENUM",
                     "name": "SecurityTrackedRefScope",
@@ -187378,7 +187378,7 @@
                 },
                 {
                   "name": "trackedRefIds",
-                  "description": "Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref IDs. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -187398,7 +187398,7 @@
                 },
                 {
                   "name": "trackedRefsScope",
-                  "description": "Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref scope. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "ENUM",
                     "name": "SecurityTrackedRefScope",
@@ -329914,7 +329914,7 @@
             },
             {
               "name": "policyEvaluations",
-              "description": "Recorded evaluations of the policies stored in the policy store for the organization or group, newest first. For a group, only evaluations of the group's own policies are returned. Returns `null` when the current user cannot read the policies of the container. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Recorded evaluations of the policies stored in the policy store for the organization or group, newest first. For a group, evaluations of its own and descendant groups' policies are returned, plus evaluations of inherited policies recorded against the group's projects. Returns `null` when the current user cannot read the policies of the container. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "policyId",
@@ -335429,7 +335429,7 @@
                 },
                 {
                   "name": "trackedRefIds",
-                  "description": "Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref IDs. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -335449,7 +335449,7 @@
                 },
                 {
                   "name": "trackedRefsScope",
-                  "description": "Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref scope. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "ENUM",
                     "name": "SecurityTrackedRefScope",
@@ -446469,7 +446469,7 @@
                 },
                 {
                   "name": "trackedRefIds",
-                  "description": "Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref IDs. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -446489,7 +446489,7 @@
                 },
                 {
                   "name": "trackedRefsScope",
-                  "description": "Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled. Introduced in GitLab 19.0: Status: Experiment.",
+                  "description": "Filter dependencies by tracked ref scope. Applied only on `Project.dependencies`, and ignored on other fields. Requires advanced search configured, advanced dependency management set up, and the `vulnerabilities_across_contexts` and `project_dependency_tracked_ref` feature flags enabled; the request is rejected otherwise. Introduced in GitLab 19.0: Status: Experiment.",
                   "type": {
                     "kind": "ENUM",
                     "name": "SecurityTrackedRefScope",

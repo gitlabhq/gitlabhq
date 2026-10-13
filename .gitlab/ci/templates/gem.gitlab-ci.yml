@@ -13,6 +13,9 @@ spec:
 ---
 .gems:rules:$[[inputs.gem_name]]:
   rules:
+    # The jobs in .gitlab/ci/gems.gitlab-ci.yml test the gems instead.
+    - if: '$GLCI_GEMS_DEPENDENCY_GRAPH == "true" || $GLCI_GEMS_TEST_ALL == "true"'
+      when: never
     - if: "'$[[inputs.enabled]]' != 'true'"
       when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'

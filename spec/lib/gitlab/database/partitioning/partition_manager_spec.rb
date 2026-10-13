@@ -165,8 +165,9 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { partitioned_table_name }
     let(:partitioning_strategy) do
-      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil,
-        validate_and_fix: nil, analyze_interval: nil, default_analyze_interval?: false)
+      double(missing_partitions: [], missing_partitions_for_replica: partitions, extra_partitions: [],
+        after_adding_partitions: nil, validate_and_fix: nil, analyze_interval: nil,
+        default_analyze_interval?: false)
     end
 
     let(:partitions) do
@@ -189,12 +190,13 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
     end
 
-    it 'creates the missing partitions and leaves the parent table and its existing partitions alone', :aggregate_failures do
+    it 'creates the partitions the strategy needs on a replica and leaves the parent table and its existing partitions alone', :aggregate_failures do
       expect(manager).to receive(:create_partition_tables).with(partitions)
       expect(manager).to receive(:attach_partition_tables).with(partitions)
 
       sync_partitions
 
+      expect(partitioning_strategy).not_to have_received(:missing_partitions)
       expect(partitioning_strategy).not_to have_received(:validate_and_fix)
       expect(partitioning_strategy).not_to have_received(:after_adding_partitions)
       expect(partitioning_strategy).not_to have_received(:extra_partitions)

@@ -11,13 +11,13 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
 
   describe 'is_author condition' do
     context 'when user is the author' do
-      let(:saved_view) { create(:saved_view, created_by_id: user.id) }
+      let_it_be(:saved_view) { create(:saved_view, created_by_id: user.id) }
 
       it { expect_allowed(:read_saved_view) }
     end
 
     context 'when user is not the author and saved view is private' do
-      let(:saved_view) { create(:saved_view, created_by_id: other_user.id, namespace: group, private: true) }
+      let_it_be(:saved_view) { create(:saved_view, created_by_id: other_user.id, namespace: group, private: true) }
 
       before_all do
         group.add_developer(user)
@@ -31,7 +31,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
     context 'when user is nil' do
       subject(:policy) { described_class.new(nil, saved_view) }
 
-      let(:saved_view) { create(:saved_view) }
+      let_it_be(:saved_view) { create(:saved_view) }
 
       it { expect_disallowed(:read_saved_view) }
       it { expect_disallowed(:update_saved_view) }
@@ -41,10 +41,10 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
 
   describe 'update and delete shared saved views' do
     context 'when namespace is a group' do
-      let(:saved_view) { create(:saved_view, namespace: group, private: false) }
+      let_it_be(:saved_view) { create(:saved_view, namespace: group, private: false) }
 
       context 'when user has the planner role that grants update and delete shared saved view permissions' do
-        before do
+        before_all do
           group.add_planner(user)
         end
 
@@ -144,7 +144,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
       let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
 
       context 'when user is the author' do
-        let(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
+        let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
 
         before_all do
           group.add_guest(user)
@@ -249,7 +249,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
       let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
 
       context 'when user is the author' do
-        let(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
+        let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
 
         before_all do
           group.add_guest(user)
@@ -297,7 +297,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
       let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
 
       context 'when user is the author' do
-        let(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
+        let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
 
         before_all do
           group.add_guest(user)
@@ -341,7 +341,7 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :planni
 
     context 'with private saved view' do
       context 'when user is the author' do
-        let(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
+        let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
 
         before_all do
           group.add_guest(user)

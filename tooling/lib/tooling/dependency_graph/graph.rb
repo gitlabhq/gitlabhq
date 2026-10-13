@@ -22,6 +22,21 @@ module Tooling
         @to_h ||= bundle_dirs.to_h { |dir| [dir, dependencies_of(dir)] } # rubocop:disable Rails/IndexWith -- runs under plain Ruby, no ActiveSupport
       end
 
+      # @param changed_files [Array<String>] paths relative to the root
+      # @return [Array<String>] the bundle directories that contain the changed files,
+      #   and the ones that depend on them directly or transitively
+      def affected_by(changed_files)
+        queue = changed_files.map { |file| bundle_dir_of(file) }.uniq
+        affected = Set.new
+
+        until queue.empty?
+          dir = queue.shift
+          queue.concat(dependents.fetch(dir, [])) if affected.add?(dir)
+        end
+
+        affected.to_a.sort
+      end
+
       # @return [String] the graph as a Mermaid flowchart, with an arrow from each
       #   bundle to each in-repo gem it depends on
       def to_mermaid
@@ -36,6 +51,16 @@ module Tooling
       private
 
       attr_reader :root
+
+      def dependents
+        @dependents ||= to_h.each_with_object({}) do |(dir, dependencies), result|
+          dependencies.each { |dependency| (result[dependency] ||= []) << dir }
+        end
+      end
+
+      def bundle_dir_of(file)
+        to_h.each_key.find { |dir| dir != MONOLITH && file.start_with?("#{dir}/") } || MONOLITH
+      end
 
       def mermaid_id(dir)
         dir == MONOLITH ? 'monolith' : dir.tr('^a-zA-Z0-9_', '_')

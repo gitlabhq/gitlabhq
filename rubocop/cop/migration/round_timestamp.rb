@@ -20,9 +20,8 @@ module RuboCop
         include MigrationHelpers
         include RangeHelp
 
-        MSG = 'Migration version %{version} ends in 0000, which suggests it was written by hand. %{advice}'
-        SCRIPT_ADVICE = 'Run `scripts/refresh-migrations-timestamps` to give new migrations a generated, ' \
-          'unique version.'
+        MSG = 'Migration version %{version} ends in 0000, which makes collisions likely. %{advice}'
+        SCRIPT_ADVICE = 'Run `scripts/refresh-migrations-timestamps` to generate a unique version.'
         MANUAL_ADVICE = 'Rename the file and its `schema_migrations` marker to the current UTC time ' \
           '(`date -u +%Y%m%d%H%M%S`) so the version is unique.'
 

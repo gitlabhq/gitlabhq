@@ -58,7 +58,7 @@ test:
   image: registry.gitlab.com/gitlab-org/cli:latest
   script:
     - glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL
-    - glab -R $CI_PROJECT_PATH securefile download --all --output-dir="where/to/save"
+    - glab -R $CI_PROJECT_URL securefile download --all --output-dir="where/to/save"
 ```
 
 In this example, all variables are [predefined variables](../variables/predefined_variables.md)
@@ -71,7 +71,7 @@ test:
   image: registry.gitlab.com/gitlab-org/cli:latest
   script:
     - glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL
-    - glab -R $CI_PROJECT_PATH securefile download $SECURE_FILE_ID --path="where/to/save/file.txt"
+    - glab -R $CI_PROJECT_URL securefile download $SECURE_FILE_ID --path="where/to/save/file.txt"
 ```
 
 The `SECURE_FILE_ID` CI/CD variable needs to be passed to the job explicitly, for example

@@ -117,7 +117,7 @@ module Gitlab
       end
 
       def git_path?
-        matches?(::Gitlab::PathRegex.repository_git_route_regex)
+        matches?(::Gitlab::PathRegex.repository_git_http_route_regex)
       end
 
       def git_lfs_path?

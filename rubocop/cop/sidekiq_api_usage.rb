@@ -9,6 +9,10 @@ module RuboCop
           'Sidekiq::Client.via(..) { ... } block to remain shard aware. ' \
           'See doc/development/sidekiq/index.md#sharding for more information.'
 
+      PERFORM_BULK_MSG = 'Refrain from using `perform_bulk`, it bypasses Sidekiq shard routing. ' \
+          'Use `bulk_perform_async_with_contexts` or `bulk_perform_async` instead. ' \
+          'See doc/development/sidekiq/index.md#sharding for more information.'
+
       ALLOWED_WORKER_METHODS = [
         :skipping_transaction_check,
         :raise_inside_transaction_exception,
@@ -22,7 +26,14 @@ module RuboCop
         (send (const (const nil? :Sidekiq) $_  ) $... )
       PATTERN
 
+      # @!method using_perform_bulk?(node)
+      def_node_matcher :using_perform_bulk?, <<~PATTERN
+        (send _ :perform_bulk ...)
+      PATTERN
+
       def on_send(node)
+        return add_offense(node, message: PERFORM_BULK_MSG) if using_perform_bulk?(node)
+
         using_sidekiq_api?(node) do |klass, methods_called|
           next if klass == :Testing
 

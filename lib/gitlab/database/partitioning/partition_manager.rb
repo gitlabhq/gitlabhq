@@ -93,6 +93,7 @@ module Gitlab
 
         def missing_partitions
           return [] unless connection.table_exists?(model.table_name)
+          return model.partitioning_strategy.missing_partitions_for_replica if logical_replication_subscriber?
 
           model.partitioning_strategy.missing_partitions
         end

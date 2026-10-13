@@ -7,62 +7,10 @@ RSpec.describe Packages::Policies::GroupPolicy, feature_category: :package_regis
 
   subject { described_class.new(current_user, group.packages_policy_subject) }
 
-  describe 'read_package' do
-    context 'with admin' do
-      let(:current_user) { admin }
+  describe 'delegation' do
+    let(:current_user) { guest }
 
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { expect_allowed(:read_package) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { expect_disallowed(:read_package) }
-      end
-    end
-
-    context 'with owner' do
-      let(:current_user) { owner }
-
-      it { expect_allowed(:read_package) }
-    end
-
-    context 'with maintainer' do
-      let(:current_user) { maintainer }
-
-      it { expect_allowed(:read_package) }
-    end
-
-    context 'with reporter' do
-      let(:current_user) { reporter }
-
-      it { expect_allowed(:read_package) }
-    end
-
-    context 'with guest' do
-      let(:current_user) { guest }
-
-      it { expect_allowed(:read_package) }
-
-      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
-        before do
-          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
-        end
-
-        it { expect_disallowed(:read_package) }
-      end
-    end
-
-    context 'with non member' do
-      let(:current_user) { create(:user) }
-
-      it { expect_disallowed(:read_package) }
-    end
-
-    context 'with anonymous' do
-      let(:current_user) { nil }
-
-      it { expect_disallowed(:read_package) }
-    end
+    it { is_expected.to delegate_to(GroupPolicy) }
   end
 
   describe 'deploy token access' do

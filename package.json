@@ -274,7 +274,7 @@
     "yjs": "^13.6.30"
   },
   "devDependencies": {
-    "@gitlab/eslint-plugin": "^24.1.0",
+    "@gitlab/eslint-plugin": "^24.3.0",
     "@gitlab/frontend-tests": "0.1.2",
     "@gitlab/jest-metrics-exporter": "^0.2.0",
     "@gitlab/noop": "^1.0.1",

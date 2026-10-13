@@ -312,6 +312,9 @@ export default [
           config: './config/webpack.config.js',
         },
       },
+      // `*_worker.js` gets its default export from the worker loader and the Jest transformer.
+      // `node_modules` repeats the shared config's value, which this array replaces.
+      'import-x/ignore': ['node_modules', '_worker\\.js$'],
     },
 
     rules: {

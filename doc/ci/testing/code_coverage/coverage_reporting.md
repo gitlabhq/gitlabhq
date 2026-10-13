@@ -49,7 +49,7 @@ Test these carefully, as tool output formats can change over time.
 | Tool       | Language | Command        | Regex pattern |
 | ---------- | -------- | -------------- | ------------- |
 | pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
-| SimpleCov  | Ruby     | `rspec spec`   | `/Line\sCoverage:\s\d+\.\d+%/` |
+| SimpleCov  | Ruby     | `rspec spec`   | `/Line [Cc]overage:\s+(?:\d+\s*\/\s*\d+\s+\()?(\d+(?:\.\d+)?%)/` |
 
 {{< /tab >}}
 

@@ -8,6 +8,7 @@ module Ci
         default_branch: project.default_branch,
         project_id: project.id,
         project_path: project.full_path,
+        schedule_id: schedule.id,
         schedules_path: pipeline_schedules_path(project),
         settings_link: project_settings_ci_cd_path(project),
         timezone_data: timezone_data.to_json,

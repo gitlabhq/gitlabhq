@@ -234,7 +234,7 @@ module Gitlab
             files = request::FILES_PATH_REGEX
             mcp = request::MCP_PATH_REGEX
             packages = ::Gitlab::Regex::Packages::API_PATH_REGEX
-            git = ::Gitlab::PathRegex.repository_git_route_regex
+            git = ::Gitlab::PathRegex.repository_git_http_route_regex
             git_lfs = ::Gitlab::PathRegex.repository_git_lfs_route_regex
 
             {
@@ -311,8 +311,8 @@ module Gitlab
               'throttle_unauthenticated_web' => {
                 limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
                 match: {
-                  web_or_frontend: true, requester_id: nil, runner_id: nil, git_http: false,
-                  setting_unauthenticated_web: true
+                  web_or_frontend: true, requester_id: nil, runner_id: nil,
+                  setting_unauthenticated_web: true, path: { nre: git }
                 }
               },
               'throttle_authenticated_web' => {

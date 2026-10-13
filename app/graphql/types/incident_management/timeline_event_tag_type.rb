@@ -7,7 +7,7 @@ module Types
 
       description 'Describes a tag on an incident management timeline event.'
 
-      authorize :read_incident_management_timeline_event_tag
+      authorize :read_timeline_event_tag
 
       field :id,
         Types::GlobalIDType[::IncidentManagement::TimelineEventTag],

@@ -25,6 +25,10 @@ RSpec.describe Ci::CreateDownstreamPipelineWorker, feature_category: :continuous
     )
   end
 
+  it_behaves_like 'an idempotent worker' do
+    let(:job_args) { [bridge.id] }
+  end
+
   describe '#perform' do
     context 'when bridge exists' do
       let(:service) { double('pipeline creation service') }

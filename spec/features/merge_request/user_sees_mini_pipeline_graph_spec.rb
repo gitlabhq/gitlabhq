@@ -6,7 +6,7 @@ RSpec.describe 'Merge request < User sees pipeline mini graph', :js, feature_cat
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project, head_pipeline: pipeline) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running', sha: project.commit.id) }
+  let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: 'running', sha: project.commit.id) }
   let(:build) { create(:ci_build, pipeline: pipeline, stage: 'test') }
 
   dropdown_selector = '[data-testid="pipeline-mini-graph-dropdown"]'

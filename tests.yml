@@ -59,6 +59,13 @@ mapping:
       - 'scripts/generate_jest_pipeline\.rb'
     test: 'spec/scripts/generate_jest_pipeline_spec.rb'
 
+  # The gems pipeline generator selects gems from the dependency graph
+  - source:
+      - 'tooling/bin/generate_gems_pipeline'
+      - 'tooling/lib/tooling/dependency_graph/generate_gems_pipeline\.rb'
+      - 'tooling/lib/tooling/dependency_graph/graph\.rb'
+    test: 'spec/tooling/lib/tooling/dependency_graph/generate_gems_pipeline_spec.rb'
+
   # Map config to respective specs
   - source: 'config/(?<rest>.+)\..*'
     test: 'spec/config/%{rest}_spec.rb'

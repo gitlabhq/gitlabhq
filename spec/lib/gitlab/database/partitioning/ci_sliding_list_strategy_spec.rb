@@ -122,6 +122,26 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     end
   end
 
+  describe '#missing_partitions_for_replica' do
+    context 'when next_partition_if is true' do
+      let(:next_partition_if) { proc { |partition| partition.values.max < 102 } }
+
+      it 'is the next partition in the series, like missing_partitions' do
+        expect(strategy.missing_partitions_for_replica.map(&:values)).to eq([[102]])
+      end
+    end
+
+    context 'when the active partition holds data', :suppress_gitlab_schemas_validate_connection do
+      before do
+        connection.execute("INSERT INTO #{table_name} (partition_id, created_at) VALUES (101, now())")
+      end
+
+      it 'does not add a spare partition' do
+        expect(strategy.missing_partitions_for_replica).to be_empty
+      end
+    end
+  end
+
   describe '#missing_partitions' do
     context 'when next_partition_if returns true' do
       let(:next_partition_if) { proc { |partition| partition.values.max < 102 } }

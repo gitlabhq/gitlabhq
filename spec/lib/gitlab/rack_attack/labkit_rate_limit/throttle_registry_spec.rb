@@ -97,9 +97,12 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
         expect(entry.match).to be_present
         expect(entry.match.keys).to all(be_a(Symbol))
         # values are what Labkit's Matcher accepts: a Regexp (path or the /./ presence
-        # gate), a String (method), a boolean (classification / enable settings), or
-        # nil (the unauthenticated rules' requester_id / runner_id absence gate).
-        expect(entry.match.values).to all(be_a(Regexp).or(be_a(String)).or(be_in([true, false, nil])))
+        # gate), a String (method), a boolean (classification / enable settings), nil
+        # (the unauthenticated rules' requester_id / runner_id absence gate), or an
+        # { nre: } Hash (the unauthenticated web rule's git exclusion).
+        expect(entry.match.values).to all(
+          be_a(Regexp).or(be_a(String)).or(be_in([true, false, nil])).or(be_a(Hash))
+        )
       end
     end
 
@@ -140,8 +143,13 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
         entry = described_class.all.fetch(web_id)
 
         expect(entry.match).to include(web_or_frontend: true)
-        expect(entry.match).not_to have_key(:path)
       end
+    end
+
+    it 'narrows throttle_unauthenticated_web by path only to exclude git', :aggregate_failures do
+      expect(described_class.all.fetch('throttle_unauthenticated_web').match[:path])
+        .to eq({ nre: Gitlab::PathRegex.repository_git_http_route_regex })
+      expect(described_class.all.fetch('throttle_authenticated_web').match).not_to have_key(:path)
     end
 
     it 'orders the web rules after the git rules and before the general API rules', :aggregate_failures do

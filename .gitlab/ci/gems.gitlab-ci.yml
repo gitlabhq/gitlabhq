@@ -1,0 +1,70 @@
+# Tests the in-repo gems in `gems/` and `vendor/gems/` that are affected by the changes: the
+# changed gems and the gems that depend on them. See tooling/lib/tooling/dependency_graph/generate_gems_pipeline.rb.
+#
+# These jobs replace the gem jobs of .gitlab/ci/templates/gem.gitlab-ci.yml when
+# GLCI_GEMS_DEPENDENCY_GRAPH is "true". Set GLCI_GEMS_TEST_ALL to "true" to run them and test
+# all gems without any changes.
+.gems:rules:dependency-graph:
+  rules:
+    - if: '$GLCI_GEMS_TEST_ALL == "true"'
+    - if: '$GLCI_GEMS_DEPENDENCY_GRAPH != "true"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+      variables:
+        GLCI_GEMS_TEST_ALL: "true"
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      changes:
+        - ".gitlab/ci/gems.gitlab-ci.yml"
+        - ".gitlab/ci/gitlab-gems.gitlab-ci.yml"
+        - ".gitlab/ci/vendored-gems.gitlab-ci.yml"
+        - ".gitlab/ci/templates/gem.gitlab-ci.yml"
+        - "tooling/bin/generate_gems_pipeline"
+        - "tooling/lib/tooling/dependency_graph/generate_gems_pipeline.rb"
+        - "scripts/validate-monorepo-gem"
+        - "tooling/lib/tooling/dependency_graph/graph.rb"
+        - "gems/gem.gitlab-ci.yml"
+        - "gems/gem-pg.gitlab-ci.yml"
+        # The RuboCop configuration that each gem in gems/ inherits
+        - "gems/config/**/*"
+        # Gems load the monolith cops: https://gitlab.com/gitlab-org/gitlab/-/issues/419915
+        - "rubocop/**/*"
+      variables:
+        GLCI_GEMS_TEST_ALL: "true"
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      changes:
+        - "{gems,vendor/gems}/**/*"
+
+gems:dependency_graph:
+  extends:
+    - .with-ruby-slim-image
+    - .repo-from-artifacts
+    - .gems:rules:dependency-graph
+  stage: prepare
+  needs:
+    - !reference [.repo-from-artifacts, needs]
+    # Without its changed files, all gems are tested.
+    - job: detect-tests
+      optional: true
+  script:
+    - |
+      tooling/bin/generate_gems_pipeline \
+        --changed-files-path "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" \
+        --output-path tmp/gems-pipeline.yml
+    - cat tmp/gems-pipeline.yml
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - tmp/gems-pipeline.yml
+
+gems:test:
+  extends:
+    - .gems:rules:dependency-graph
+  needs:
+    - gems:dependency_graph
+  inherit:
+    variables: false
+  trigger:
+    include:
+      - artifact: tmp/gems-pipeline.yml
+        job: gems:dependency_graph
+    strategy: depend

@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export const i18n = {
   playTooltip: s__('PipelineSchedules|Run scheduled pipeline'),
@@ -47,11 +46,6 @@ export default {
     canRemove() {
       return this.schedule.userPermissions.adminPipelineSchedule;
     },
-    editPathWithIdParam() {
-      const id = getIdFromGraphQLId(this.schedule.id);
-
-      return `${this.schedule.editPath}?id=${id}`;
-    },
   },
 };
 </script>
@@ -79,7 +73,7 @@ export default {
       <gl-button
         v-if="canUpdate"
         v-gl-tooltip
-        :href="editPathWithIdParam"
+        :href="schedule.editPath"
         :title="$options.i18n.editTooltip"
         :aria-label="$options.i18n.editTooltip"
         icon="pencil"

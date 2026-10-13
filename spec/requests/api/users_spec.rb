@@ -5658,7 +5658,9 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       post api(path, admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('name is missing, scopes is missing')
+      expect(json_response['error']).to eq(
+        'name is missing, scopes, granular_scopes are missing, exactly one parameter must be provided'
+      )
     end
 
     it 'returns a 404 error if user not found' do
@@ -5703,6 +5705,16 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['active']).to be_truthy
       expect(json_response['revoked']).to be_falsey
       expect(json_response['token']).to be_present
+      expect(json_response).not_to have_key('granular_scopes')
+    end
+
+    it 'does not load granular scopes to present a token created with scopes', :aggregate_failures do
+      recorder = ActiveRecord::QueryRecorder.new do
+        post api(path, admin, admin_mode: true), params: params
+      end
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(recorder.log).not_to include(a_string_matching(/"(personal_access_token_)?granular_scopes"/))
     end
 
     context 'when an error is thrown by the model' do
@@ -5723,6 +5735,280 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']).to eq(error_message)
+      end
+    end
+
+    context 'when creating a personal access token with granular scopes' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:access) { 'user' }
+      let(:granular_scopes) { [{ access: access, permissions: ['read_job'] }] }
+      let(:granular_params) do
+        { name: name, expires_at: expires_at, description: description, granular_scopes: granular_scopes }
+      end
+
+      where(:access) do
+        %w[user instance all_memberships personal_projects]
+      end
+
+      with_them do
+        it 'creates a granular personal access token for the user', :aggregate_failures do
+          post api(path, admin, admin_mode: true), params: granular_params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['name']).to eq(name)
+          expect(json_response['description']).to eq(description)
+          expect(json_response['expires_at']).to eq(expires_at.to_date.iso8601)
+          expect(json_response['user_id']).to eq(user.id)
+          expect(json_response['granular']).to be(true)
+          expect(json_response['token']).to be_present
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => access, 'permissions' => ['read_job'])
+          )
+
+          created_token = user.personal_access_tokens.find(json_response['id'])
+          expect(created_token.impersonation).to be(false)
+          expect(created_token.granular_scopes.count).to eq(1)
+          expect(created_token.granular_scopes.first.access).to eq(access)
+          expect(created_token.granular_scopes.first.permissions).to eq(['read_job'])
+        end
+      end
+
+      it 'passes the user and creation_source api to the service' do
+        expect(::Authn::PersonalAccessTokens::CreateGranularService).to receive(:new)
+          .with(hash_including(
+            current_user: admin,
+            target_user: user,
+            params: hash_including(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
+          ))
+          .and_call_original
+
+        post api(path, admin, admin_mode: true), params: granular_params
+      end
+
+      it "is listed with the user's own personal access tokens", :aggregate_failures do
+        post api(path, admin, admin_mode: true), params: granular_params
+
+        expect(response).to have_gitlab_http_status(:created)
+        token_id = json_response['id']
+
+        get api('/personal_access_tokens', user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(a_hash_including('id' => token_id, 'granular' => true))
+      end
+
+      it 'looks the user up once', :aggregate_failures do
+        allow(User).to receive(:find_by).and_call_original
+
+        post api(path, admin, admin_mode: true), params: granular_params
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(User).to have_received(:find_by).with(id: user.id).once
+      end
+
+      context 'when access is personal_projects' do
+        let(:access) { 'personal_projects' }
+
+        it "binds the scope to the user's namespace", :aggregate_failures do
+          post api(path, admin, admin_mode: true), params: granular_params
+
+          expect(response).to have_gitlab_http_status(:created)
+
+          created_token = user.personal_access_tokens.find(json_response['id'])
+          expect(created_token.granular_scopes.first.namespace_id).to eq(user.namespace_id)
+        end
+      end
+
+      context 'when access is selected_memberships' do
+        let(:access) { 'selected_memberships' }
+        let_it_be(:project) { create(:project, developers: [user]) }
+        let_it_be(:second_project) { create(:project, developers: [user]) }
+        let_it_be(:group) { create(:group, developers: [user]) }
+
+        let(:granular_scopes) do
+          [{ access: access, permissions: ['read_job'], project_ids: [project.id], group_ids: [group.id] }]
+        end
+
+        it 'scopes the token to the given projects and groups and returns their IDs', :aggregate_failures do
+          post api(path, admin, admin_mode: true), params: granular_params
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['granular_scopes']).to contain_exactly(
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => project.id, 'group_id' => nil),
+            a_hash_including('access' => access, 'permissions' => ['read_job'],
+              'project_id' => nil, 'group_id' => group.id)
+          )
+
+          created_token = user.personal_access_tokens.find(json_response['id'])
+          expect(created_token.granular_scopes.map(&:namespace_id)).to contain_exactly(
+            group.id, project.project_namespace.id
+          )
+        end
+
+        context 'when the user cannot read the given group' do
+          let_it_be(:other_group) { create(:group, :private) }
+
+          let(:granular_scopes) do
+            [{ access: access, permissions: ['read_job'], group_ids: [other_group.id] }]
+          end
+
+          it 'returns a 404 and creates no token', :aggregate_failures do
+            expect do
+              post api(path, admin, admin_mode: true), params: granular_params
+            end.not_to change { user.personal_access_tokens.count }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when presenting the granular scopes of the new token' do
+          # CreateGranularService writes a row for every scope, so each token is created through it before
+          # its request, and the request presents that token as the service returned it. The requests then
+          # differ only in the number of scopes they present.
+          def create_through_service(projects)
+            scopes = projects.map do |project|
+              ::Authz::GranularScope.new(access: access, permissions: ['read_job'],
+                namespace: ::Authz::Boundary.for(project).namespace)
+            end
+
+            ::Authn::PersonalAccessTokens::CreateGranularService.new(
+              current_user: user, organization: current_organization, granular_scopes: scopes,
+              params: { name: name }
+            ).execute
+          end
+
+          def post_presenting(service_response)
+            allow_next_instance_of(::Authn::PersonalAccessTokens::CreateGranularService) do |service|
+              allow(service).to receive(:execute).and_return(service_response)
+            end
+
+            post api(path, admin, admin_mode: true), params: granular_params
+          end
+
+          it 'avoids N+1 queries', :aggregate_failures do
+            # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+            User.find(admin.id).update_column(:last_activity_on, Date.current)
+
+            # Every token is created before the first request stubs the service.
+            warm_up = create_through_service([project])
+            one_scope = create_through_service([project])
+            two_scopes = create_through_service([project, second_project])
+
+            post_presenting(warm_up)
+
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_presenting(one_scope) }
+
+            expect { post_presenting(two_scopes) }.not_to exceed_all_query_limit(control)
+            expect(json_response['granular_scopes'].pluck('project_id')).to contain_exactly(
+              project.id, second_project.id
+            )
+          end
+        end
+      end
+
+      context 'when both scopes and granular_scopes are given' do
+        it 'returns a validation error', :aggregate_failures do
+          post api(path, admin, admin_mode: true), params: granular_params.merge(scopes: %w[api])
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('scopes, granular_scopes are mutually exclusive')
+        end
+      end
+
+      context 'when granular_scopes is an empty array' do
+        let(:granular_scopes) { [] }
+
+        it 'does not create a personal access token', :aggregate_failures do
+          post api(path, admin, admin_mode: true), params: granular_params, as: :json
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('At least one granular scope must be provided')
+        end
+      end
+
+      context 'when the granular_personal_access_tokens feature flag is enabled for the administrator only' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens: admin)
+        end
+
+        it 'returns a 404' do
+          post api(path, admin, admin_mode: true), params: granular_params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the user does not exist' do
+        it 'returns a 404 error', :aggregate_failures do
+          post api("/users/#{non_existing_record_id}/personal_access_tokens", admin, admin_mode: true),
+            params: granular_params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 User Not Found')
+        end
+      end
+
+      context 'when authenticated with a granular token' do
+        let(:instance_boundary) { ::Authz::Boundary.for(:instance) }
+        let(:calling_token) do
+          create(:granular_pat, user: admin, boundary: instance_boundary, permissions: [:create_personal_access_token])
+        end
+
+        context 'when the new token requests permissions the calling token does not have' do
+          it 'returns a 403 error', :aggregate_failures do
+            post api(path, personal_access_token: calling_token), params: granular_params
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['message']).to eq(
+              'A granular token can only create tokens with equal or lesser permissions.'
+            )
+          end
+        end
+
+        context 'when the new token requests permissions the calling token already has' do
+          let(:access) { 'instance' }
+          let(:granular_scopes) { [{ access: access, permissions: ['create_personal_access_token'] }] }
+
+          it 'creates the token for the user', :aggregate_failures do
+            post api(path, personal_access_token: calling_token), params: granular_params
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(user.personal_access_tokens.find(json_response['id']).granular_scopes.first.permissions)
+              .to eq(['create_personal_access_token'])
+          end
+        end
+      end
+    end
+
+    context 'when the instance enforces fine-grained personal access tokens' do
+      let(:granular_params) do
+        {
+          name: name, expires_at: expires_at, description: description,
+          granular_scopes: [{ access: 'user', permissions: ['read_job'] }]
+        }
+      end
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:granular_tokens_enforced?).and_return(true)
+      end
+
+      it 'refuses a legacy token for the user', :aggregate_failures do
+        post api(path, admin, admin_mode: true), params: params
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq(
+          'Creation of legacy personal access tokens is disabled. Use a fine-grained token instead.'
+        )
+      end
+
+      it 'creates a fine-grained token for the user', :aggregate_failures do
+        post api(path, admin, admin_mode: true), params: granular_params
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['granular']).to be(true)
+        expect(user.personal_access_tokens.find(json_response['id'])).to be_granular
       end
     end
   end

@@ -1319,27 +1319,47 @@ module API
           before { authenticated_as_admin! }
 
           desc 'Create a personal access token for a user' do
-            detail 'Creates a personal access token for a user. Token values are included with the response, but ' \
+            detail 'Creates a personal access token for a user. To create a fine-grained personal access token, ' \
+              'use `granular_scopes` instead of `scopes`. Token values are included with the response, but ' \
               'cannot be retrieved later. Administrators only.'
             success Entities::PersonalAccessTokenWithToken
             tags ['access_tokens']
           end
           params do
             use :create_personal_access_token_params
-            requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
+            optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
               desc: 'Array of approved scopes. For a list of possible values, see [access token scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/).'
+            use :granular_scope_params
+            exactly_one_of :scopes, :granular_scopes
           end
           route_setting :authorization, permissions: :create_personal_access_token, boundary_type: :instance,
             assignable_when: [:admin]
           post feature_category: :system_access do
-            response = ::PersonalAccessTokens::CreateService.new(
-              current_user: current_user, target_user: target_user, organization_id: Current.organization.id, params: declared_params(include_missing: false).merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
-            ).execute
+            user = target_user
+
+            response =
+              if params[:granular_scopes]
+                not_found! if Feature.disabled?(:granular_personal_access_tokens, user)
+
+                all_params = declared_params(include_missing: false)
+                granular_scopes = build_granular_scopes(user, all_params[:granular_scopes])
+                token_params = all_params.except(:granular_scopes)
+                  .merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
+
+                create_granular_token(current_user, granular_scopes, token_params, target_user: user)
+              else
+                ::PersonalAccessTokens::CreateService.new(
+                  current_user: current_user, target_user: user, organization_id: Current.organization.id, params: declared_params(include_missing: false).merge(creation_source: PersonalAccessToken::CREATION_SOURCE_API)
+                ).execute
+              end
 
             if response.success?
-              present response.payload[:personal_access_token], with: Entities::PersonalAccessTokenWithToken
+              personal_access_token = response.payload[:personal_access_token]
+
+              present personal_access_token, with: Entities::PersonalAccessTokenWithToken,
+                **granular_scopes_options_for([personal_access_token])
             else
-              render_api_error!(response.message, response.http_status || :unprocessable_entity)
+              render_api_error!(response.message, response.http_status || response.reason || :unprocessable_entity)
             end
           end
         end

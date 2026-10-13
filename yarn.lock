@@ -1480,10 +1480,10 @@
     vue-runtime-helpers "^1.1.2"
     zod "^4.4.3"
 
-"@gitlab/eslint-plugin@^24.1.0":
-  version "24.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-24.1.0.tgz#f1bdaac235a75bd5adf6d512fe3e45ebff6938d0"
-  integrity sha512-xHyKzc6UkRPdM9l2qJGRxd4FCpK6YJFW7R02Su1yuvbD0yd4mjUVRjvD6XsYtwYtYoi4ES218D2/dCMF/kUq7w==
+"@gitlab/eslint-plugin@^24.3.0":
+  version "24.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-24.3.0.tgz#8734814b021cb1df6d6258a1c028fb62c0e8bde9"
+  integrity sha512-2KFxkgxCv6Progk83zZb85+xPV7mmAHP7g98hg7Xb6bDW2qG5u2li6HSDLYrSVSz8lhYf1/7rSdX4jhr+zNgMA==
   dependencies:
     "@eslint/js" "^10.0.1"
     eslint-config-prettier "^10.0.0"

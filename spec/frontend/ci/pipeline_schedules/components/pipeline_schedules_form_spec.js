@@ -30,9 +30,9 @@ Vue.use(VueApollo);
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
   joinPaths: jest.fn().mockReturnValue(''),
-  queryToObject: jest.fn().mockReturnValue({ id: '1' }),
 }));
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -84,6 +84,7 @@ describe('Pipeline schedules form', () => {
 
   const createComponent = ({
     editing = false,
+    scheduleId = editing ? '1' : null,
     requestHandlers,
     canSetPipelineVariables = true,
   } = {}) => {
@@ -92,6 +93,7 @@ describe('Pipeline schedules form', () => {
         timezoneData: timezoneDataFixture,
         editing,
         canSetPipelineVariables,
+        scheduleId,
       },
       provide: {
         ...defaultProvide,
@@ -408,6 +410,59 @@ describe('Pipeline schedules form', () => {
       expect(findPipelineVariables().props('initialVariables')).toHaveLength(2);
       expect(findPipelineVariables().props('initialVariables')[0].key).toBe(variables[0].key);
       expect(findPipelineVariables().props('initialVariables')[1].key).toBe(variables[1].key);
+    });
+
+    it('fetches the schedule identified by scheduleId', async () => {
+      createComponent({
+        editing: true,
+        scheduleId: '2',
+        requestHandlers: [[getPipelineSchedulesQuery, querySuccessHandler]],
+      });
+
+      await waitForPromises();
+
+      expect(querySuccessHandler).toHaveBeenCalledWith(expect.objectContaining({ ids: ['2'] }));
+    });
+
+    it('does not fetch any schedule when editing without a scheduleId', async () => {
+      createComponent({
+        editing: true,
+        scheduleId: null,
+        requestHandlers: [[getPipelineSchedulesQuery, querySuccessHandler]],
+      });
+
+      await waitForPromises();
+
+      expect(querySuccessHandler).not.toHaveBeenCalled();
+      expect(findDescription().props('value')).toBe('');
+    });
+
+    it('shows an error when the schedule is not found', async () => {
+      const notFoundHandler = jest.fn().mockResolvedValue({
+        data: {
+          ...mockSinglePipelineScheduleNode.data,
+          project: {
+            ...mockSinglePipelineScheduleNode.data.project,
+            pipelineSchedules: {
+              ...mockSinglePipelineScheduleNode.data.project.pipelineSchedules,
+              count: 0,
+              nodes: [],
+            },
+          },
+        },
+      });
+
+      createComponent({
+        editing: true,
+        requestHandlers: [[getPipelineSchedulesQuery, notFoundHandler]],
+      });
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred while trying to fetch the pipeline schedule.',
+      });
+      expect(findDescription().props('value')).toBe('');
     });
 
     it('schedule fetch failure', async () => {

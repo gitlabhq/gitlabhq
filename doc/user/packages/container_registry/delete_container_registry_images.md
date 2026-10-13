@@ -73,6 +73,22 @@ information, see the following endpoints:
 - [Delete an individual Registry repository tag](../../../api/container_registry.md#delete-a-registry-repository-tag)
 - [Delete Registry repository tags in bulk](../../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
 
+## Use the registry API
+
+To delete an image tag by reference, [get a registry token](authenticate_with_container_registry.md#authenticate-with-the-registry-api)
+with the `delete` action, then send a `DELETE` request to the `manifests` endpoint.
+The registry must have the [`tag_delete` feature](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/docker/v2/api.md#delete-tag) enabled.
+
+```shell
+curl --request DELETE \
+  --header "Authorization: Bearer <registry_token>" \
+  --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+  --url "https://${CI_REGISTRY}/v2/${CI_PROJECT_PATH}/manifests/${CI_COMMIT_SHORT_SHA}"
+```
+
+If your project path contains uppercase letters, convert `CI_PROJECT_PATH` to lowercase,
+because registry repository paths are lowercase.
+
 ## Use GitLab CI/CD
 
 > [!note]

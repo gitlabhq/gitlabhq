@@ -111,6 +111,49 @@ To use CI/CD to authenticate with the container registry, you can use:
   echo "<access_token>" | docker login $CI_REGISTRY -u <username> --password-stdin
   ```
 
+## Authenticate with the registry API
+
+The container registry has its own API, separate from the GitLab REST API.
+To call it, get a registry token from GitLab, then pass it in the `Authorization: Bearer` header.
+A registry token is different from a personal, project, or group access token.
+
+To get a registry token, send a request to the `/jwt/auth` endpoint with the
+[scope and actions](https://distribution.github.io/distribution/spec/auth/scope/) the token needs:
+
+```shell
+SCOPE="repository:${CI_PROJECT_PATH}:delete" # or push, pull
+
+curl --request GET \
+  --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
+  --url "${CI_SERVER_URL}/jwt/auth?service=container_registry&scope=${SCOPE}"
+```
+
+The response is JSON, and the registry token is its `token` field.
+Registry repository paths are lowercase, so if your project path contains uppercase letters,
+convert `CI_PROJECT_PATH` to lowercase before you use it.
+
+For more information, see the [token authentication specification](https://distribution.github.io/distribution/spec/auth/token/).
+
+### List all container repositories
+
+Prerequisites:
+
+- You must have administrator access.
+
+To list every container repository on the instance, get a registry token with the `registry:catalog:*` scope,
+then send a request to the `_catalog` endpoint:
+
+```shell
+SCOPE="registry:catalog:*"
+
+curl --request GET \
+  --user "<admin-username>:<admin-password>" \
+  --url "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
+
+curl --header "Authorization: Bearer <registry_token>" \
+  --url "https://gitlab.example.com:5050/v2/_catalog"
+```
+
 ## Troubleshooting
 
 ### Error: `docker login` command fails with `access forbidden`

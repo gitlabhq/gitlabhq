@@ -61,6 +61,10 @@ module Gitlab
               'ai_duo_workflows_fetch_session_credits_cron_worker',
               { 'cron' => cron_for_session_credits }
             )
+            Gitlab::SidekiqConfig::CronJobs.config.set_job(
+              'ai_duo_workflows_sync_session_credits_cron_worker',
+              { 'cron' => cron_for_session_credits_sync_v2 }
+            )
           end
         end
 
@@ -72,6 +76,15 @@ module Gitlab
           offset = Digest::SHA256.hexdigest("#{uuid}session_credits").to_i(16) % 15
 
           "#{offset}-59/15 * * * * UTC"
+        end
+
+        # Every 30 minutes at an instance-specific offset, so the v2 fan-out does not land
+        # on the half hour and sits on a different minute from the v1 cron while both run.
+        def cron_for_session_credits_sync_v2
+          uuid = Gitlab::CurrentSettings.uuid || GITLAB_INSTANCE_UUID_NOT_SET
+          offset = Digest::SHA256.hexdigest("#{uuid}session_credits_sync_v2").to_i(16) % 30
+
+          "#{offset}-59/30 * * * * UTC"
         end
 
         # Computes a per-instance random schedule from the instance UUID so that

@@ -26,6 +26,11 @@ module Gitlab
           desired_partitions - current_partitions
         end
 
+        # Skips SlidingListStrategy's spare partition: replicated ci_partitions rows already give a replica headroom
+        def missing_partitions_for_replica
+          missing_partitions
+        end
+
         def validate_and_fix; end
 
         def after_adding_partitions; end
