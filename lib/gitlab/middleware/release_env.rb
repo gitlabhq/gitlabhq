@@ -9,7 +9,11 @@ module Gitlab
     # chance to release memory for the last request.
     ReleaseEnv = Struct.new(:app) do
       def call(env)
-        app.call(env).tap { env.clear }
+        status, headers, body = app.call(env)
+
+        # Streaming responses return from `app.call` as soon as the headers are
+        # committed and keep reading the env while the body is being produced.
+        [status, headers, Rack::BodyProxy.new(body) { env.clear }]
       end
     end
   end
